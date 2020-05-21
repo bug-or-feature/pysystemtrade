@@ -22,6 +22,7 @@ class mongoFuturesInstrumentData(futuresInstrumentData):
         # this won't create the index if it already exists
         self._mongo.create_index("instrument_code")
 
+        # TODO mask password in console and logs for host configs with authentication built in
         self.name = "simData connection for futures instruments, mongodb %s/%s @ %s -p %s " % (
             self._mongo.database_name, self._mongo.collection_name, self._mongo.host, self._mongo.port)
 
