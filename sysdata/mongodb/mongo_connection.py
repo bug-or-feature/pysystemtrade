@@ -1,6 +1,7 @@
 from pymongo import MongoClient, ASCENDING
 from copy import copy
 import numpy as np
+import re
 
 from syscore.genutils import get_safe_from_dict
 from sysdata.private_config import get_list_of_private_then_default_key_values
@@ -13,7 +14,8 @@ DEFAULT_MONGO_PORT = 27017
 MONGO_ID_STR = '_id_'
 MONGO_ID_KEY = '_id'
 
-
+# regular expression pattern for mongodb connection URLs
+host_pattern = re.compile('^(mongodb://)([^:]+):([^@]+)@([^:]+)')
 
 def mongo_defaults(**kwargs):
     """
@@ -70,8 +72,9 @@ class mongoDb(object):
         self.db=db
 
     def __repr__(self):
+        clean_host = clean_mongo_host(self.host)
         return "Mongodb database: host %s, port %d, db name %s" % \
-               (self.host, self.port, self.database_name)
+               (clean_host, self.port, self.database_name)
 
 
     def close(self):
@@ -117,8 +120,9 @@ class mongoConnection(object):
         self.client.close()
 
     def __repr__(self):
+        clean_host = clean_mongo_host(self.host)
         return "Mongodb connection: host %s, port %d, db name %s, collection %s" % \
-               (self.host, self.port, self.database_name, self.collection_name)
+               (clean_host, self.port, self.database_name, self.collection_name)
 
     def get_indexes(self):
 
@@ -185,3 +189,18 @@ def create_update_dict(mongo_record_dict):
     new_dict = [("$%s" % key, value) for key,value in mongo_record_dict.items()]
 
     return new_dict
+
+
+def clean_mongo_host(host_string):
+    """
+    If the host string is a mongodb connection URL with authentication values, then return just the host part
+    :param host_string
+    :return: host name part only
+    """
+
+    clean_host = host_string
+    match = host_pattern.match(host_string)
+    if match is not None:
+        clean_host = match.group(4)
+
+    return clean_host
