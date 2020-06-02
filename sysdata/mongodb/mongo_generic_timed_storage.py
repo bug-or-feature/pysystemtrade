@@ -24,8 +24,7 @@ class mongoListOfEntriesData(listOfEntriesData):
 
         # this won't create the index if it already exists
 
-        self.name = "Data connection for %s, mongodb %s/%s @ %s -p %s " % (self._data_name(),
-            self._mongo.database_name, self._mongo.collection_name, self._mongo.host, self._mongo.port)
+        self.name = "Data connection for %s" % repr(self._mongo)
 
     def __repr__(self):
         return self.name

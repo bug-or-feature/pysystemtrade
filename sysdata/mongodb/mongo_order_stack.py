@@ -34,8 +34,7 @@ class mongoOrderStackData(orderStackData):
         return "Generic order stack"
 
     def __repr__(self):
-        return "Data connection for %s, mongodb %s/%s @ %s -p %s " % (self._name,
-            self._mongo.database_name, self._mongo.collection_name, self._mongo.host, self._mongo.port)
+        return "Data connection for %s" % repr(self._mongo)
 
     def _modify_order_on_stack_no_checking(self, order):
         self._mongo.collection.update_one(dict(key = order.key), {'$set':order.as_dict()})

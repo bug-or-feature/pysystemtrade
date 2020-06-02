@@ -139,8 +139,7 @@ class mongoIBclientIDtracker(object):
         # this won't create the index if it already exists
         self._mongo.create_index("client_id")
 
-        self.name = "Tracking IB client IDs, mongodb %s/%s @ %s -p %s " % (
-            self._mongo.database_name, self._mongo.collection_name, self._mongo.host, self._mongo.port)
+        self.name = "Tracking IB client IDs, %s" % repr(self._mongo)
 
         self.log = log
         self._idoffset = idoffset

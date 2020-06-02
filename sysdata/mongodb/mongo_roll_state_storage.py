@@ -21,8 +21,7 @@ class mongoRollStateData(rollStateData):
         # this won't create the index if it already exists
         self._mongo.create_index("instrument_code")
 
-        self.name = "Data connection for futures roll state, mongodb %s/%s @ %s -p %s " % (
-            self._mongo.database_name, self._mongo.collection_name, self._mongo.host, self._mongo.port)
+        self.name = "Data connection for futures roll state, %s" % repr(self._mongo)
 
     def __repr__(self):
         return self.name
