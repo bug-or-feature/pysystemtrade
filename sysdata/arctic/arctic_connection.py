@@ -34,12 +34,15 @@ class articConnection(object):
         self.database_name = database_name
         self.collection_name = collection_name
         self.host = host
+        self.mongo_db = mongo_db
 
         self.store = store
         self.library_name = library_name
         self.library = library
 
     def __repr__(self):
+        #return "Arctic connection: %s" % repr(self.mongo_db)
+
         return "Arctic connection: host %s, db name %s, collection %s" % \
-               (self.host, self.database_name, self.collection_name)
+            (self.host, self.database_name, self.collection_name)
 
