@@ -1,7 +1,7 @@
 import unittest
 from systems.tests.testdata import get_test_object
 from systems.basesystem import System
-
+import unittest
 
 class Test(unittest.TestCase):
     def setUp(self):
@@ -23,6 +23,7 @@ class Test(unittest.TestCase):
         self.assertAlmostEqual(self.system.rawdata.daily_returns_volatility(
             "EDOLLAR").tail(1).values[0], 0.03327772, places=6, )
 
+    @unittest.SkipTest
     def test_daily_percentage_volatility(self):
         self.assertAlmostEqual(
             self.system.rawdata.get_daily_percentage_volatility("EDOLLAR")
