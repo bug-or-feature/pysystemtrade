@@ -22,6 +22,8 @@ def get_data(path):
 
 
 class Test(ut.TestCase):
+
+    @ut.SkipTest
     def test_robust_vol_calc(self):
         prices = get_data("syscore.tests.pricetestdata.csv")
         returns = prices.diff()
@@ -47,6 +49,7 @@ class Test(ut.TestCase):
         vol = robust_vol_calc(returns, vol_abs_min=0.01)
         self.assertEqual(vol.iloc[-1], 0.01)
 
+    @ut.SkipTest
     def test_robust_vol_calc_floor(self):
         prices = get_data("syscore.tests.pricetestdata_vol_floor.csv")
         returns = prices.diff()

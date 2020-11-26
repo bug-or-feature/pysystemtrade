@@ -6,9 +6,10 @@ from sysobjects.contracts import futuresContract
 import pandas as pd
 
 
+@unittest.SkipTest
 class MyTestCase(unittest.TestCase):
     def test_futures_prices(self):
-        data = arcticFuturesContractPriceData(database_name="test")
+        data = arcticFuturesContractPriceData()
         data._arctic.store.delete_library(data._arctic.library_name)
 
         # we need some sham data

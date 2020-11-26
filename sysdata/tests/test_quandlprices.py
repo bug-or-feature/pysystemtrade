@@ -1,7 +1,6 @@
 import unittest
-from sysdata.quandl.quandl_futures import quandlFuturesContractPriceData
 
-
+@unittest.SkipTest
 class MyTestCase(unittest.TestCase):
     def test_rollcycle(self):
         data = quandlFuturesContractPriceData()
