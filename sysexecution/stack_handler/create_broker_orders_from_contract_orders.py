@@ -67,6 +67,10 @@ class stackHandlerCreateBrokerOrders(stackHandlerCore):
 
         original_contract_order = self.contract_stack.get_order_with_id_from_stack(
             contract_order_id)
+        if original_contract_order is missing_order:
+            # weird race condition
+            return failure
+
         contract_order = self.preprocess_contract_order(
             original_contract_order, check_if_open=check_if_open
         )
@@ -145,6 +149,9 @@ class stackHandlerCreateBrokerOrders(stackHandlerCore):
             contract_order_after_trade_limits
         )
 
+        if contract_order is missing_order:
+            return missing_order
+
         if contract_order.fill_equals_desired_trade():
             # Nothing left to trade
             return missing_order
@@ -168,12 +175,6 @@ class stackHandlerCreateBrokerOrders(stackHandlerCore):
                 str(liquid_qty), str(contract_order_after_trade_limits.trade)))
 
         if liquid_qty.equals_zero():
-            # Nothing we can do here
-            log.msg(
-                "Can't do any of size %s so not trading at all"
-                % str(contract_order_after_trade_limits.trade)
-            )
-
             return missing_order
 
         contract_order = contract_order_after_trade_limits.replace_trade_only_use_for_unsubmitted_trades(

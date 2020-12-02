@@ -12,7 +12,7 @@ strategy_list:
 """
 from syscore.objects import resolve_function
 
-from sysproduction.data.get_data import dataBlob
+from sysdata.data_blob import dataBlob
 from sysproduction.data.controls import diagProcessConfig
 from sysproduction.run_process import processToRun
 from sysproduction.data.strategies import get_list_of_strategies
@@ -23,13 +23,13 @@ def run_systems():
     data = dataBlob(log_name=process_name)
     list_of_timer_names_and_functions = get_list_of_timer_functions_for_strategies(
         process_name, data)
+
     system_process = processToRun(
         process_name,
         data,
         list_of_timer_names_and_functions,
         use_strategy_config=True)
     system_process.main_loop()
-
 
 def get_list_of_timer_functions_for_strategies(process_name, data):
     list_of_strategy_names = get_list_of_strategies()
