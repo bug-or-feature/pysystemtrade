@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+
+  mongo:
+    image: "mongo"
+    container_name: mongodb
+    restart: always
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+
+  ib-gateway:
+    image: "mvberg/ib-gateway-docker"
+    container_name: tws
+    ports:
+      - "4002:4002"
+      - "5901:5900"
+    volumes:
+      - ./ib/IBController.ini:/root/IBController/IBController.ini
+      - ./ib/jts.ini:/root/Jts/jts.ini
+    environment:
+      - TZ=Europe/London
+      # Variables pulled from /IBController/IBControllerGatewayStart.sh
+      - VNC_PASSWORD=1234 # CHANGEME
+      - TWS_MAJOR_VRSN=974
+      - IBC_INI=/root/IBController/IBController.ini
+      - IBC_PATH=/opt/IBController
+      - TWS_PATH=/root/Jts
+      - TWS_CONFIG_PATH=/root/Jts
+      - LOG_PATH=/opt/IBController/Logs
+      - JAVA_PATH=/opt/i4j_jres/1.8.0_152/bin # JRE is bundled starting with TWS 952
+      - TRADING_MODE=live # either paper or live
+      - TWSUSERID=geachy189 # IB account
+      - TWSPASSWORD=WwfcYZRAL3ETwsV6Wr # IB account password
+      - FIXUSERID=
+      - FIXPASSWORD=
+      - APP=GATEWAY
+
+  pysystemtrade:
+    build: .
+    container_name: pysystemtrade
+    command: tail -F /dev/null
+    stop_signal: SIGINT
+
