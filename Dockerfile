@@ -3,10 +3,10 @@ FROM python:3.8.6
 RUN mkdir /usr/src/echos
 WORKDIR /usr/src/pysystemtrade
 COPY requirements.txt ./
-RUN python -m pip install --upgrade pip
+#RUN python -m pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install nose
-RUN pip install flake8
+#RUN pip install nose
+#RUN pip install flake8
 
 COPY . .
 
