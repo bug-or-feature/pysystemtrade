@@ -1,9 +1,11 @@
+from syscore.objects import arg_not_supplied
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysobjects.roll_calendars import rollCalendar
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
+from sysproduction.data.prices import get_valid_instrument_code_from_user
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
@@ -12,11 +14,13 @@ Generate a 'best guess' roll calendar based on some price data for individual co
 
 
 def build_and_write_roll_calendar(
-    instrument_code, output_datapath=None, check_before_writing=True
+    instrument_code, output_datapath=arg_not_supplied, check_before_writing=True
 ):
 
-    if output_datapath is None:
-        print("*** WARNING *** This will overwrite the provided roll calendar. Better to use a temporary directory!")
+    if output_datapath is arg_not_supplied:
+        print("*** WARNING *** This will overwrite the provided roll calendar. Might be better to use a temporary directory!")
+    else:
+        print("Writing to %s" % output_datapath)
 
     artic_prices = arcticFuturesContractPriceData()
     mongo_rollparameters = mongoRollParametersData()
@@ -94,3 +98,8 @@ def check_saved_roll_calendar(
     return roll_calendar
 
 
+if __name__ == "__main__":
+    input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    instrument_code = get_valid_instrument_code_from_user()
+    ## MODIFY DATAPATH IF REQUIRED
+    build_and_write_roll_calendar(instrument_code, output_datapath=arg_not_supplied)
