@@ -7,7 +7,7 @@ Apply a check to each price series
 from syscore.objects import success, failure
 
 from sysdata.futures.futures_per_contract_prices import DAILY_PRICE_FREQ
-from sysproduction.data.get_data import dataBlob
+from sysdata.data_blob import dataBlob
 from sysproduction.data.prices import (
     diagPrices,
     updatePrices,
@@ -19,7 +19,7 @@ from sysdata.futures.manual_price_checker import manual_price_checker
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 from sysobjects.contracts import futuresContract
 
-def interactive_manual_check_historical_prices(instrument_code: str):
+def interactive_manual_check_historical_prices():
     """
     Do a daily update for futures contract prices, using IB historical data
 

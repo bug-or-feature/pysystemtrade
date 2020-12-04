@@ -1,3 +1,4 @@
+from sysdata.production.trade_limits import tradeLimit, listOfTradeLimits
 from sysdata.production.locks import lockData, lock_off, lock_on
 from sysdata.mongodb.mongo_connection import mongoConnection, MONGO_ID_KEY
 from syslogdiag.log import logtoscreen
@@ -61,12 +62,3 @@ class mongoLockData(lockData):
         ]
 
         return output_list
-
-    def _get_list_of_trade_limits_for_cursor(self, cursor):
-
-        trade_limits = [(tradeLimit.from_dict(db_dict))
-                        for db_dict in list_of_dicts]
-
-        list_of_trade_limits = listOfTradeLimits(trade_limits)
-
-        return list_of_trade_limits

@@ -62,7 +62,7 @@ class ibFuturesContractData(futuresContractData):
             self, contract_object: futuresContract):
         raise NotImplementedError("IB is ready only")
 
-    def get_contract_object_with_IB_data(self, original_contract_object: futuresContract) ->futuresContract:
+    def get_contract_object_with_IB_data(self, futures_contract: futuresContract) ->futuresContract:
         """
         Return contract_object with IB instrument meta data and correct expiry date added
 
@@ -70,49 +70,49 @@ class ibFuturesContractData(futuresContractData):
         :return: modified contract_object
         """
 
-        contract_object = self._get_contract_object_with_IB_metadata(original_contract_object)
-        if contract_object is missing_contract:
+        futures_contract_with_ib_data = self._get_contract_object_with_IB_metadata(futures_contract)
+        if futures_contract_with_ib_data is missing_contract:
             return missing_contract
 
-        new_expiry = self._get_actual_expiry_date_given_contract_with_ib_metadata(contract_object)
+        futures_contract_with_ib_data = futures_contract_with_ib_data.update_expiry_dates_one_at_a_time_with_method(self._get_actual_expiry_date_given_single_contract_with_ib_metadata)
 
-        if new_expiry is missing_contract:
-            return missing_contract
-
-        contract_object.update_expiry_date(new_expiry)
-
-        return contract_object
+        return futures_contract_with_ib_data
 
 
 
-    def get_actual_expiry_date_for_contract(self, contract_object: futuresContract) -> expiryDate:
+    def get_actual_expiry_date_for_single_contract(self, futures_contract: futuresContract) -> expiryDate:
         """
-        FIXME CONSIDER USE OF get_contract_object_with_IB_data INSTEAD
         Get the actual expiry date of a contract from IB
 
-        :param contract_object: type futuresContract
+        :param futures_contract: type futuresContract
         :return: YYYYMMDD or None
         """
-
-        log = contract_object.log(self.log)
-        contract_object_with_ib_data = self._get_contract_object_with_IB_metadata(
-            contract_object)
-        if contract_object_with_ib_data is missing_contract:
-            log.msg("Can't resolve contract so can't find expiry date")
+        log = futures_contract.specific_log(self.log)
+        if futures_contract.is_spread_contract():
+            log.warn("Can't find expiry for multiple leg contract here")
             return missing_contract
 
-        expiry_date = self._get_actual_expiry_date_given_contract_with_ib_metadata(contract_object_with_ib_data)
+        contract_object_with_ib_data = self.get_contract_object_with_IB_data(futures_contract)
+        if contract_object_with_ib_data is missing_contract:
+            return missing_contract
+
+        expiry_date = contract_object_with_ib_data.expiry_date
 
         return expiry_date
 
 
-    def _get_actual_expiry_date_given_contract_with_ib_metadata(self, contract_object_with_ib_data: futuresContract) -> expiryDate:
-        expiry_date = self.ibconnection.broker_get_contract_expiry_date(
-            contract_object_with_ib_data
+    def _get_actual_expiry_date_given_single_contract_with_ib_metadata(self, futures_contract_with_ib_data: futuresContract) -> expiryDate:
+        log = futures_contract_with_ib_data.specific_log(self.log)
+        if futures_contract_with_ib_data.is_spread_contract():
+            log.warn("Can't find expiry for multiple leg contract here")
+            return missing_contract
+
+        expiry_date = self.ibconnection.broker_get_single_contract_expiry_date(
+            futures_contract_with_ib_data
         )
 
         if expiry_date is missing_contract:
-            log = contract_object_with_ib_data.log(self.log)
+            log = futures_contract_with_ib_data.log(self.log)
             log.msg("No IB expiry date found")
             return missing_contract
         else:
@@ -162,8 +162,8 @@ class ibFuturesContractData(futuresContractData):
         return min_tick_size
 
 
-    def is_contract_okay_to_trade(self, contract_object: futuresContract) -> bool:
-        trading_hours = self.get_trading_hours_for_contract(contract_object)
+    def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
+        trading_hours = self.get_trading_hours_for_contract(futures_contract)
         trading_hours_checker = manyTradingStartAndEnd(trading_hours)
 
         return trading_hours_checker.okay_to_trade_now()
@@ -177,17 +177,17 @@ class ibFuturesContractData(futuresContractData):
         return trading_hours_checker.less_than_one_hour_left()
 
 
-    def get_trading_hours_for_contract(self, contract_object: futuresContract) :
+    def get_trading_hours_for_contract(self, futures_contract: futuresContract) :
         """
 
-        :param contract_object:
+        :param futures_contract:
         :return: list of paired date times
         """
-        new_log = contract_object.log(self.log)
+        new_log = futures_contract.log(self.log)
 
-        contract_object_with_ib_data = self.get_contract_object_with_IB_data(contract_object)
+        contract_object_with_ib_data = self.get_contract_object_with_IB_data(futures_contract)
         if contract_object_with_ib_data is missing_contract:
-            new_log.msg("Can't resolve contract so can't find expiry date")
+            new_log.msg("Can't resolve contract")
             return missing_contract
 
         trading_hours = self.ibconnection.ib_get_trading_hours(

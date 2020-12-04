@@ -1,6 +1,6 @@
 from sysdata.fx.spotfx import fxPricesData
 from sysobjects.spot_fx_prices import fxPrices
-from sysdata.arctic.arctic_connection import articConnection
+from sysdata.arctic.arctic_connection import articData
 from syslogdiag.log import logtoscreen
 import pandas as pd
 
@@ -14,7 +14,7 @@ class arcticFxPricesData(fxPricesData):
     def __init__(self, mongo_db=None, log=logtoscreen("arcticFxPricesData")):
 
         super().__init__(log=log)
-        self._arctic = articConnection(SPOTFX_COLLECTION, mongo_db=mongo_db)
+        self._arctic = articData(SPOTFX_COLLECTION, mongo_db=mongo_db)
 
     @property
     def arctic(self):
@@ -34,8 +34,7 @@ class arcticFxPricesData(fxPricesData):
 
         fx_data = self.arctic.read(currency_code)
 
-        # Returns a pd.Series which should have the right format
-        fx_prices = fxPrices(fx_data['values'])
+        fx_prices = fxPrices(fx_data[fx_data.columns[0]])
 
         return fx_prices
 
@@ -50,7 +49,11 @@ class arcticFxPricesData(fxPricesData):
         self, currency_code: str, fx_price_data: fxPrices
     ):
         self.log.label(currency_code=currency_code)
-        self.arctic.write(currency_code, pd.Series(fx_price_data))
+        fx_price_data_aspd = pd.Series(fx_price_data)
+        fx_price_data_aspd.columns = ['price']
+        fx_price_data_aspd = fx_price_data_aspd.astype(float)
+
+        self.arctic.write(currency_code, fx_price_data_aspd)
         self.log.msg(
             "Wrote %s lines of prices for %s to %s"
             % (len(fx_price_data), currency_code, str(self)), fx_code = currency_code

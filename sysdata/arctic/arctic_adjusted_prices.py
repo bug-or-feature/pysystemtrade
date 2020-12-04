@@ -2,7 +2,7 @@ from sysdata.futures.adjusted_prices import (
     futuresAdjustedPricesData,
 )
 from sysobjects.adjusted_prices import futuresAdjustedPrices
-from sysdata.arctic.arctic_connection import articConnection
+from sysdata.arctic.arctic_connection import articData
 from syslogdiag.log import logtoscreen
 import pandas as pd
 
@@ -19,7 +19,7 @@ class arcticFuturesAdjustedPricesData(futuresAdjustedPricesData):
 
         super().__init__(log=log)
 
-        self._arctic = articConnection(ADJPRICE_COLLECTION, mongo_db=mongo_db)
+        self._arctic = articData(ADJPRICE_COLLECTION, mongo_db=mongo_db)
 
 
     def __repr__(self):
@@ -40,7 +40,7 @@ class arcticFuturesAdjustedPricesData(futuresAdjustedPricesData):
     def _get_adjusted_prices_without_checking(self, instrument_code: str) -> futuresAdjustedPrices:
         data = self.arctic.read(instrument_code)
 
-        instrpricedata = futuresAdjustedPrices(data)
+        instrpricedata = futuresAdjustedPrices(data[data.columns[0]])
 
         return instrpricedata
 
@@ -55,6 +55,7 @@ class arcticFuturesAdjustedPricesData(futuresAdjustedPricesData):
         self, instrument_code: str, adjusted_price_data: futuresAdjustedPrices
     ):
         adjusted_price_data_aspd = pd.Series(adjusted_price_data)
+        adjusted_price_data_aspd.columns = ['price']
         adjusted_price_data_aspd = adjusted_price_data_aspd.astype(float)
         self.arctic.write(instrument_code, adjusted_price_data_aspd)
         self.log.msg(

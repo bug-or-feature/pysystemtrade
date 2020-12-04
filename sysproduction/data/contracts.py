@@ -13,7 +13,7 @@ from sysobjects.dict_of_named_futures_per_contract_prices import setOfNamedContr
 from sysobjects.contracts import futuresContract
 
 from sysproduction.data.prices import get_valid_instrument_code_from_user, diagPrices
-from sysproduction.data.get_data import dataBlob
+from sysdata.data_blob import dataBlob
 
 missing_expiry = datetime.datetime(1900, 1, 1)
 
@@ -223,7 +223,7 @@ def get_valid_instrument_code_and_contractid_from_user(
     invalid_input = True
     while invalid_input:
         if instrument_code is None:
-            instrument_code = get_valid_instrument_code_from_user(data)
+            instrument_code = get_valid_instrument_code_from_user(data, source = 'single')
 
         if include_priced_contracts:
             dates_to_choose_from = diag_prices.contract_dates_with_price_data_for_instrument_code(instrument_code)

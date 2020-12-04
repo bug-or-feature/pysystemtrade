@@ -10,7 +10,7 @@ from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesDat
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData, futuresAdjustedPrices
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 
-from sysproduction.data.get_data import dataBlob
+from sysdata.data_blob import dataBlob
 
 from sysobjects.multiple_prices import price_name
 
@@ -133,11 +133,11 @@ class updatePrices(object):
         self.data = data
 
     def update_prices_for_contract(
-        self, contract_object: futuresContract, ib_prices: futuresContractPrices, check_for_spike=True
+        self, contract_object: futuresContract, new_prices: futuresContractPrices, check_for_spike=True
     ):
 
         return self.data.db_futures_contract_price.update_prices_for_contract(
-            contract_object, ib_prices, check_for_spike=check_for_spike
+            contract_object, new_prices, check_for_spike=check_for_spike
         )
 
     def add_multiple_prices(
@@ -156,10 +156,11 @@ class updatePrices(object):
 
 
 def get_valid_instrument_code_from_user(
-        data: dataBlob=arg_not_supplied, allow_all: bool=False, all_code = "ALL") -> str:
+        data: dataBlob=arg_not_supplied, allow_all: bool=False, all_code = "ALL",
+            source = 'multiple') -> str:
     if data is arg_not_supplied:
         data = dataBlob()
-    all_instruments = get_list_of_instruments(data)
+    all_instruments = get_list_of_instruments(data, source=source)
     invalid_input = True
     input_prompt = "Instrument code?"
     if allow_all:
@@ -178,6 +179,11 @@ def get_valid_instrument_code_from_user(
 
     return instrument_code
 
-def get_list_of_instruments(data: dataBlob=arg_not_supplied) -> list:
+def get_list_of_instruments(data: dataBlob=arg_not_supplied, source = 'multiple') -> list:
     price_data = diagPrices(data)
-    return price_data.get_list_of_instruments_in_multiple_prices()
+    if source=="multiple":
+        return price_data.get_list_of_instruments_in_multiple_prices()
+    elif source=="single":
+        return price_data.get_list_of_instruments_with_contract_prices()
+    else:
+        raise Exception("%s not recognised must be multiple or single")

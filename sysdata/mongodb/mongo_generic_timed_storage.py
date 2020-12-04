@@ -1,8 +1,7 @@
 from sysdata.production.generic_timed_storage import listOfEntriesData
 from sysdata.mongodb.mongo_connection import (
     mongoConnection,
-    MONGO_ID_KEY,
-    mongo_clean_ints,
+    MONGO_ID_KEY
 )
 from syslogdiag.log import logtoscreen
 from syscore.objects import success, missing_data

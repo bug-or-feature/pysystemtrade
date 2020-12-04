@@ -1,26 +1,28 @@
-from sysdata.csv.csv_sim_futures_data import csvFuturesSimData
+from syscore.objects import arg_not_supplied
+from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
 from sysobjects.roll_calendars import rollCalendar
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
-from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 
 """
 Generate the roll calendars from existing data
 """
 
-if __name__ == "__main__":
-    csv_roll_calendars = csvRollCalendarData()
+def generate_roll_calendars_from_provided_multiple_csv_prices(output_datapath):
+    if output_datapath is arg_not_supplied:
+        print("USING DEFAULT DATAPATH WILL OVERWRITE PROVIDED DATA in /data/futures/")
+    else:
+        print("Writing to %s" % output_datapath)
+    input("This will overwrite any existing roll calendars: CRTL-C if you aren't sure!" % str(output_datapath))
+    csv_roll_calendars = csvRollCalendarData(datapath=output_datapath)
     sim_futures_data = csvFuturesSimData()
-    mongo_rollparameters = mongoRollParametersData()
 
     instrument_list = sim_futures_data.get_instrument_list()
 
     for instrument_code in instrument_list:
         print(instrument_code)
-        multiple_prices = sim_futures_data.get_all_multiple_prices(
+        multiple_prices = sim_futures_data.get_multiple_prices(
             instrument_code)
 
-        roll_parameters = mongo_rollparameters.get_roll_parameters(
-            instrument_code)
         roll_calendar = rollCalendar.back_out_from_multiple_prices(
             multiple_prices
         )
@@ -29,3 +31,6 @@ if __name__ == "__main__":
 
         # We ignore duplicates since this is run regularly
         csv_roll_calendars.add_roll_calendar(instrument_code, roll_calendar, ignore_duplication=True)
+
+if __name__ == "__main__":
+    generate_roll_calendars_from_provided_multiple_csv_prices()

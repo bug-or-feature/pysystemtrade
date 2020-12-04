@@ -10,9 +10,9 @@ LIST_OF_MONGO_PARAMS = ["db", "host"]
 # DO NOT CHANGE THIS VALUE!!!! IT WILL SCREW UP ARCTIC
 DEFAULT_MONGO_PORT = 27017
 
-MONGO_ID_STR = "_id_"
-MONGO_ID_KEY = "_id"
 
+MONGO_INDEX_ID = "_id_"
+MONGO_ID_KEY = "_id"
 
 def mongo_defaults(**kwargs):
     """
@@ -109,7 +109,7 @@ class mongoConnection(object):
 
     """
 
-    def __init__(self, collection_name, mongo_db=None):
+    def __init__(self, collection_name: str, mongo_db: mongoDb=None):
 
         if mongo_db is None:
             mongo_db = mongoDb()
@@ -143,7 +143,7 @@ class mongoConnection(object):
             return []
 
         # '__id__' is always in index if there is data
-        raw_index_information.pop(MONGO_ID_STR)
+        raw_index_information.pop(MONGO_INDEX_ID)
 
         # mongo have buried this deep...
         index_keys = [index_entry["key"][0][0]
@@ -191,19 +191,5 @@ def mongo_clean_ints(dict_to_clean):
             key_value = float(key_value)
 
         new_dict[key_name] = key_value
-
-    return new_dict
-
-
-def create_update_dict(mongo_record_dict):
-    """
-    Mongo needs $key names to do updates
-
-    :param mongo_record_dict: dict
-    :return: dict
-    """
-
-    new_dict = [("$%s" % key, value)
-                for key, value in mongo_record_dict.items()]
 
     return new_dict
