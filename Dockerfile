@@ -1,5 +1,7 @@
 FROM python:3.8.6
 
+RUN apt-get update && apt-get install -y vim && apt-get install -y less
+
 RUN mkdir /usr/src/echos
 WORKDIR /usr/src/pysystemtrade
 COPY requirements.txt ./
@@ -16,7 +18,10 @@ ENV PYSYS_CODE /usr/src/pysystemtrade
 ENV SCRIPT_PATH $PYSYS_CODE/sysproduction/linux/scripts
 ENV ECHO_PATH=/usr/src/echos
 
-#RUN chmod +x $PYSYS_CODE/sysproduction/linux/scripts/interactive_diagnostics
+RUN echo 'export PATH="$SCRIPT_PATH:$PATH"' >> ~/.bashrc
+RUN echo 'export PYTHONPATH="$SCRIPT_PATH:$PYTHONPATH"' >> ~/.bashrc
+
+RUN chmod +x $PYSYS_CODE/sysproduction/linux/scripts/interactive_diagnostics
 
 #CMD [ "python", "./your-daemon-or-script.py" ]
 #CMD [ "python", "sysinit/futures/repocsv_spotfx_prices.py" ]
