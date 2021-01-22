@@ -139,6 +139,41 @@ def view_broker_order_list(data):
     for order in broker_orders:
         print(order)
 
+def view_positions(data):
+    data_broker = dataBroker(data)
+
+    diag_positions = diagPositions(data)
+    data_optimal = dataOptimalPositions(data)
+    ans0 = data_optimal.get_pd_of_position_breaks()
+    ans1 = diag_positions.get_all_current_strategy_instrument_positions()
+    ans2 = data_broker.get_db_contract_positions_with_IB_expiries()
+    ans3 = data_broker.get_all_current_contract_positions()
+    print("Optimal vs actual")
+    print(ans0.sort_values("breaks"))
+    print("Strategy positions")
+    print(ans1.as_pd_df().sort_values("instrument_code"))
+    print("\n Contract level positions")
+    print(ans2.as_pd_df().sort_values(["instrument_code", "contract_date"]))
+    breaks = diag_positions.get_list_of_breaks_between_contract_and_strategy_positions()
+    if len(breaks) > 0:
+        print(
+            "\nBREAKS between strategy and contract positions: %s\n" %
+            str(breaks))
+    else:
+        print("(No breaks positions consistent)")
+    print("\n Broker positions")
+    print(ans3.as_pd_df().sort_values(["instrument_code", "contract_date"]))
+    breaks = data_broker.get_list_of_breaks_between_broker_and_db_contract_positions()
+    if len(breaks) > 0:
+        print(
+            "\nBREAKS between broker and DB stored contract positions: %s\n"
+            % str(breaks)
+        )
+    else:
+        print("(No breaks positions consistent)")
+    return None
+
+
 
 def spawn_contracts_from_instrument_orders(data):
     stack_handler = stackHandler(data)
@@ -180,7 +215,7 @@ def create_balance_trade(data):
     )
     print("Or perhaps you are trading manually")
     print("Trades have to be attributed to a strategy (even roll trades)")
-    strategy_name = get_valid_strategy_name_from_user(data=data)
+    strategy_name = get_valid_strategy_name_from_user(data=data, source="positions")
     instrument_code, contract_date = get_valid_instrument_code_and_contractid_from_user(
         data)
     fill_qty = get_and_convert(
@@ -234,7 +269,7 @@ def create_instrument_balance_trade(data):
     default_account = data_broker.get_broker_account()
 
     print("Use to fix breaks between instrument strategy and contract level positions")
-    strategy_name = get_valid_strategy_name_from_user(data=data)
+    strategy_name = get_valid_strategy_name_from_user(data=data, source="positions")
     instrument_code = get_valid_instrument_code_from_user(data)
     fill_qty = get_and_convert(
         "Quantity ",
@@ -321,7 +356,7 @@ def create_manual_trade(data):
 
 
 def enter_manual_instrument_order(data):
-    strategy_name = get_valid_strategy_name_from_user(data=data)
+    strategy_name = get_valid_strategy_name_from_user(data=data, source="positions")
     instrument_code = get_valid_instrument_code_from_user(data)
     qty = get_and_convert(
         "Quantity (-ve for sell, +ve for buy?)",

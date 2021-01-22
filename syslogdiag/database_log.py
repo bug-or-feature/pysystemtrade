@@ -1,9 +1,10 @@
 import itertools
 
 from syscore.objects import missing_data
-from syslogdiag.log import logger, logEntry, LEVEL_ID, INVERSE_MAP
+from sysdata.base_data import baseData
+from syslogdiag.log import logger, logEntry, LEVEL_ID, INVERSE_MAP, logtoscreen
 
-from sysproduction.diagnostic.emailing import send_production_mail_msg
+from syslogdiag.email_via_db_interface import send_production_mail_msg
 
 LOG_COLLECTION_NAME = "Logs"
 EMAIL_ON_LOG_LEVEL = [4]
@@ -46,15 +47,12 @@ class logToDb(logger):
 
     def email_user(self, log_entry):
         data = self.data
-        try:
-            send_production_mail_msg(data, str(log_entry), "*CRITICAL ERROR*")
-        except BaseException:
-            self.error("Couldn't email user")
+        send_production_mail_msg(data, str(log_entry), "*CRITICAL ERROR*")
 
 
-class logData(object):
-    def __init__(self):
-        pass
+class logData(baseData):
+    def __init__(self, log = logger("logData")):
+        super().__init__(log=log)
 
     def get_log_items_with_level(
         self, log_level, attribute_dict=dict(), lookback_days=1

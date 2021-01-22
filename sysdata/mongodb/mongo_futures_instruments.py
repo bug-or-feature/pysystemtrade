@@ -1,8 +1,8 @@
-
+from syscore.objects import arg_not_supplied
 
 from sysdata.futures.instruments import futuresInstrumentData
 from sysobjects.instruments import  futuresInstrumentWithMetaData
-from sysdata.mongodb.mongo_generic import mongoData, missing_data
+from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey, missing_data
 from syslogdiag.log import logtoscreen
 
 INSTRUMENT_COLLECTION = "futures_instruments"
@@ -16,11 +16,11 @@ class mongoFuturesInstrumentData(futuresInstrumentData):
 
     """
 
-    def __init__(self, mongo_db=None, log=logtoscreen(
+    def __init__(self, mongo_db=arg_not_supplied, log=logtoscreen(
             "mongoFuturesInstrumentData")):
 
         super().__init__(log=log)
-        self._mongo_data = mongoData(INSTRUMENT_COLLECTION, "instrument_code", mongo_db = mongo_db)
+        self._mongo_data = mongoDataWithSingleKey(INSTRUMENT_COLLECTION, "instrument_code", mongo_db = mongo_db)
 
     def __repr__(self):
         return "mongoFuturesInstrumentData %s" % str(self.mongo_data)

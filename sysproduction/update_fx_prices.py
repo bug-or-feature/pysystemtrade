@@ -2,12 +2,12 @@
 Update spot FX prices using interactive brokers data, dump into mongodb
 """
 
-from syscore.objects import success, failure, data_error
-
+from syscore.objects import success, failure
+from syscore.merge_data import spike_in_data
 from sysdata.data_blob import dataBlob
 from sysproduction.data.currency_data import dataCurrency
 from sysproduction.data.broker import dataBroker
-from sysproduction.diagnostic.emailing import send_production_mail_msg
+from syslogdiag.email_via_db_interface import send_production_mail_msg
 
 
 def update_fx_prices():
@@ -56,8 +56,9 @@ def update_fx_prices_for_code(fx_code: str, data: dataBlob):
         fx_code, new_fx_prices, check_for_spike=True
     )
 
-    if rows_added is data_error:
+    if rows_added is spike_in_data:
         report_fx_data_spike(data, fx_code)
+        return failure
 
     return success
 

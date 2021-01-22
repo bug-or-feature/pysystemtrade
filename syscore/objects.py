@@ -4,13 +4,6 @@ Do fun things with objects and classes
 from collections import namedtuple
 import importlib
 
-class Singleton(object):
-    _instance = None
-    def __new__(class_, *args, **kwargs):
-        if not isinstance(class_._instance, class_):
-            class_._instance = object.__new__(class_, *args, **kwargs)
-        return class_._instance
-
 class missingData(Exception):
     pass
 
@@ -55,17 +48,12 @@ no_parent = _named_object("no parent")
 rolling_cant_trade = _named_object("rolling can't trade")
 ROLL_PSEUDO_STRATEGY = "_ROLL_PSEUDO_STRATEGY"
 
-data_error = _named_object("data error")
 not_updated = _named_object("not updated")
 
 class status(_named_object):
     pass
 success = status("success")
 failure = status("failure")
-
-process_stop = _named_object("process stop")
-process_no_run = _named_object("process no run")
-process_running = _named_object("process running")
 
 arg_not_supplied = _named_object("arg not supplied")
 user_exit = _named_object("exit")
@@ -230,7 +218,5 @@ def hasallattr(some_object, attrlist=[]):
     return all([hasattr(some_object, attrname) for attrname in attrlist])
 
 
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()
+def get_class_name(class_object):
+    return class_object.__name__

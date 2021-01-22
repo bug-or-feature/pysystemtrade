@@ -28,7 +28,7 @@ def interactive_manual_check_historical_prices():
     :return: Nothing
     """
     with dataBlob(log_name="Update-Historical-prices-manually") as data:
-        instrument_code = get_valid_instrument_code_from_user(data)
+        instrument_code = get_valid_instrument_code_from_user(data, source='single')
         check_instrument_ok_for_broker(data, instrument_code)
         data.log.label(instrument_code = instrument_code)
         update_historical_prices_with_checks_for_instrument(
@@ -85,6 +85,7 @@ def update_historical_prices_with_checks_for_instrument_and_contract(
     :return: None
     """
     diag_prices = diagPrices(data)
+
     intraday_frequency = diag_prices.get_intraday_frequency_for_historical_download()
     daily_frequency = DAILY_PRICE_FREQ
 
@@ -98,7 +99,7 @@ def update_historical_prices_with_checks_for_instrument_and_contract(
 
 
 def get_and_check_prices_for_frequency(
-        data: dataBlob, contract_object: futuresContract, frequency="D"):
+        data: dataBlob, contract_object: futuresContract, frequency=DAILY_PRICE_FREQ):
 
     broker_data = dataBroker(data)
     price_data = diagPrices(data)

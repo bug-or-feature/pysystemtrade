@@ -1,5 +1,3 @@
-import datetime
-
 import numpy as np
 
 from collections import namedtuple
@@ -15,7 +13,7 @@ from sysbrokers.IB.ib_misc_data import ibMiscData
 
 from syscore.objects import missing_data, arg_not_supplied, missing_order, missing_contract
 
-from sysdata.production.current_positions import contractPosition
+from sysobjects.production.positions import contractPosition
 
 from sysexecution.base_orders import adjust_spread_order_single_benchmark
 from sysexecution.broker_orders import create_new_broker_order_from_contract_order
@@ -26,7 +24,7 @@ from sysobjects.contracts import futuresContract
 from sysdata.data_blob import dataBlob
 from sysproduction.data.positions import diagPositions
 from sysproduction.data.currency_data import dataCurrency
-from sysproduction.data.controls import diagProcessConfig
+from sysproduction.data.control_process import diagControlProcess
 
 benchmarkPriceCollection = namedtuple(
     "benchmarkPriceCollection",
@@ -110,7 +108,7 @@ class dataBroker(object):
     def less_than_one_hour_of_trading_leg_for_contract(
             self, contract: futuresContract):
 
-        diag_controls = diagProcessConfig()
+        diag_controls = diagControlProcess()
         hours_left_before_process_finishes = diag_controls.how_long_in_hours_before_trading_process_finishes()
 
         if hours_left_before_process_finishes<1:
@@ -169,12 +167,12 @@ class dataBroker(object):
         for idx in range(len(original_position_list)):
             position_entry = original_position_list[idx]
             actual_expiry = self.get_actual_expiry_date_for_single_contract(
-                position_entry.contract_object
+                position_entry.contract
             ).as_str()
+            position = position_entry.position
+            contract = futuresContract(position_entry.instrument_code, actual_expiry)
             new_entry = contractPosition(
-                position_entry.position,
-                position_entry.instrument_code,
-                actual_expiry)
+                position,contract)
             original_position_list[idx] = new_entry
 
         return original_position_list
@@ -435,7 +433,7 @@ class dataBroker(object):
             offside_qty,
         ) = self.get_current_size_for_contract_order_by_leg(contract_order)
 
-        new_qty = contract_order.trade.apply_minima(offside_qty)
+        new_qty = contract_order.trade.reduce_trade_size_proportionally_to_abs_limit_per_leg(offside_qty)
 
         return new_qty
 
