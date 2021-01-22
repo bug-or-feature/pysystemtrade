@@ -53,8 +53,9 @@ class stackHandlerCreateBrokerOrders(stackHandlerCore):
             )
             if contract_order.fill_equals_desired_trade():
                 continue
-            if contract_order.is_order_controlled_by_algo():
+            elif contract_order.is_order_controlled_by_algo():
                 continue
+
             self.create_broker_order_for_contract_order(
                 contract_order_id, check_if_open=check_if_open
             )
@@ -75,6 +76,7 @@ class stackHandlerCreateBrokerOrders(stackHandlerCore):
             original_contract_order, check_if_open=check_if_open
         )
         if contract_order is missing_order:
+            #print("Empty order not submitting to algo")
             return None
 
         contract_order = check_and_if_required_allocate_algo_to_single_contract_order(
@@ -118,6 +120,7 @@ class stackHandlerCreateBrokerOrders(stackHandlerCore):
             original_contract_order.instrument_code
         )
         if instrument_locked:
+            #print("Instrument is locked for order %s" % str(original_contract_order))
             return missing_order
 
         # CHECK IF OPEN
@@ -129,6 +132,7 @@ class stackHandlerCreateBrokerOrders(stackHandlerCore):
                 )
             )
             if not market_open:
+                #print("market is closed for order %s" % str(original_contract_order))
                 return missing_order
 
         # RESIZE
@@ -145,14 +149,21 @@ class stackHandlerCreateBrokerOrders(stackHandlerCore):
         contract_order_after_trade_limits = self.what_contract_trade_is_possible(
             remaining_contract_order)
 
+        #print("Order after trade limits%s" % str(contract_order_after_trade_limits))
+
         contract_order = self.liquidity_size_contract_order(
             contract_order_after_trade_limits
         )
 
+        #print("Order after liquiditysizing %s" % str(contract_order))
+
         if contract_order is missing_order:
+            #print("Order %s is zero, not trading" % str(contract_order))
             return missing_order
 
         if contract_order.fill_equals_desired_trade():
+            #print("Order is completely filled %s" % str(contract_order))
+
             # Nothing left to trade
             return missing_order
 

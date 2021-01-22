@@ -1,11 +1,13 @@
 from copy import copy
 
 from sysbrokers.IB.ib_connection import connectionIB
-from syscore.objects import arg_not_supplied
+from syscore.objects import arg_not_supplied, get_class_name
+from syscore.text import camel_case_split
 from sysdata.mongodb.mongo_connection import mongoDb
 from sysdata.mongodb.mongo_log import logToMongod
 from syslogdiag.log import logger
 
+from sysdata.mongodb.mongo_IB_client_id import mongoIbBrokerClientIdData
 
 class dataBlob(object):
     def __init__(
@@ -130,7 +132,7 @@ class dataBlob(object):
         except Exception as e:
                 class_name = get_class_name(class_object)
                 msg = (
-                        "Error %s couldn't evaluate %s(mongo_db=self.mongo_db, log = self.log.setup(component = %s)) \
+                        "Error '%s' couldn't evaluate %s(mongo_db=self.mongo_db, log = self.log.setup(component = %s)) \
                         This might be because import is missing\
                          or arguments don't follow pattern" % (str(e), class_name, class_name))
                 self._raise_and_log_error(msg)
@@ -167,7 +169,7 @@ class dataBlob(object):
 
         return resolved_instance
 
-    def _get_csv_paths_for_class(self, class_object):
+    def _get_csv_paths_for_class(self, class_object) -> str:
         class_name = get_class_name(class_object)
         csv_data_paths = self.csv_data_paths
         if csv_data_paths is arg_not_supplied:
@@ -199,7 +201,7 @@ class dataBlob(object):
         attr_name = self._get_new_name(class_name)
         self._add_new_class_with_new_name(resolved_instance, attr_name)
 
-    def _get_new_name(self, class_name: str):
+    def _get_new_name(self, class_name: str) -> str:
         split_up_name = camel_case_split(class_name)
         attr_name = identifying_name(
             split_up_name, keep_original_prefix=self._keep_original_prefix
@@ -228,6 +230,8 @@ class dataBlob(object):
     def close(self):
         if self._ib_conn is not arg_not_supplied:
             self.ib_conn.close_connection()
+            self.db_ib_broker_client_id.release_clientid(
+                self.ib_conn.client_id())
 
         # No need to explicitly close Mongo connections; handled by Python garbage collection
 
@@ -235,7 +239,11 @@ class dataBlob(object):
     def ib_conn(self):
         ib_conn = getattr(self, "_ib_conn", arg_not_supplied)
         if ib_conn is arg_not_supplied:
-            ib_conn = connectionIB(log=self.log, mongo_db=self.mongo_db)
+
+            ## default to tracking ID through mongo change if required
+            self.add_class_object(mongoIbBrokerClientIdData)
+            client_id = self.db_ib_broker_client_id.return_valid_client_id()
+            ib_conn = connectionIB(client_id, log=self.log)
             self._ib_conn = ib_conn
 
         return ib_conn
@@ -249,7 +257,7 @@ class dataBlob(object):
 
         return mongo_db
 
-    def _raise_and_log_error(self, error_msg):
+    def _raise_and_log_error(self, error_msg: str):
         self.log.critical(error_msg)
         raise Exception(error_msg)
 
@@ -257,7 +265,7 @@ class dataBlob(object):
     def log(self):
         log = getattr(self, "_log", arg_not_supplied)
         if log is arg_not_supplied:
-            log = logToMongod(self.log_name, data=self, mongo_db=self.mongo_db)
+            log = logToMongod(self.log_name, mongo_db=self.mongo_db, data = self)
             log.set_logging_level("on")
             self._log = log
 
@@ -272,7 +280,7 @@ class dataBlob(object):
 source_dict = dict(arctic="db", mongo="db", csv="db", ib="broker")
 
 
-def identifying_name(split_up_name, keep_original_prefix=False):
+def identifying_name(split_up_name: list, keep_original_prefix=False)-> str:
     """
     Turns sourceClassNameData into broker_class_name or db_class_name
 
@@ -307,17 +315,3 @@ def identifying_name(split_up_name, keep_original_prefix=False):
     return "_".join(lower_split_up_name)
 
 
-def camel_case_split(str):
-    words = [[str[0]]]
-
-    for c in str[1:]:
-        if words[-1][-1].islower() and c.isupper():
-            words.append(list(c))
-        else:
-            words[-1].append(c)
-
-    return ["".join(word) for word in words]
-
-
-def get_class_name(class_object):
-    return class_object.__name__

@@ -1,3 +1,5 @@
+import datetime
+
 from dataclasses import  dataclass
 
 from syscore.objects import arg_not_supplied, missing_contract
@@ -170,6 +172,13 @@ class futuresContract(object):
     def expiry_date(self):
         return self.contract_date.expiry_date
 
+    def expired(self):
+        expiry_date = self.expiry_date
+        if expiry_date<datetime.datetime.now():
+            return True
+        else:
+            return False
+
     def update_single_expiry_date(self, new_expiry_date: expiryDate):
         self.contract_date.update_single_expiry_date(new_expiry_date)
 
@@ -261,7 +270,13 @@ class listOfFuturesContracts(list):
 
         return unique_list_of_instruments
 
-    def contracts_with_price_data_for_instrument_code(self, instrument_code: str):
+    def contract_date_str_for_contracts_in_list_for_instrument_code(self, instrument_code: str) -> list:
+        list_of_contracts = self.contracts_in_list_for_instrument_code(instrument_code)
+        list_of_date_str = list_of_contracts.list_of_dates()
+        list_of_date_str = list(set(list_of_date_str))
+        return list_of_date_str
+
+    def contracts_in_list_for_instrument_code(self, instrument_code: str):
         list_of_contracts = [
             contract
             for contract in self

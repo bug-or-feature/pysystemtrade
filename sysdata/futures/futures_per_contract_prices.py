@@ -1,5 +1,5 @@
 from sysdata.base_data import baseData
-from syscore.objects import data_error
+from syscore.merge_data import spike_in_data
 
 from sysobjects.contracts import futuresContract, listOfFuturesContracts
 from sysobjects.contract_dates_and_expiries import listOfContractDateStr
@@ -75,7 +75,7 @@ class futuresContractPriceData(baseData):
 
         list_of_contracts_with_price_data = self.get_contracts_with_price_data()
         list_of_contracts_for_instrument = \
-            list_of_contracts_with_price_data.contracts_with_price_data_for_instrument_code(instrument_code)
+            list_of_contracts_with_price_data.contracts_in_list_for_instrument_code(instrument_code)
 
         return list_of_contracts_for_instrument
 
@@ -185,7 +185,7 @@ class futuresContractPriceData(baseData):
 
     def update_prices_for_contract(
         self,
-        futures_contract_object: futuresContract,
+        contract_object: futuresContract,
         new_futures_per_contract_prices: futuresContractPrices,
         check_for_spike: bool=True,
     ) -> int:
@@ -195,22 +195,30 @@ class futuresContractPriceData(baseData):
         :param new_futures_prices:
         :return: int, number of rows
         """
-        new_log = futures_contract_object.log(self.log)
+        new_log = contract_object.log(self.log)
+
+        if len(new_futures_per_contract_prices) == 0:
+            new_log.msg("No new data")
+            return 0
 
         old_prices = self.get_prices_for_contract_object(
-            futures_contract_object)
+            contract_object)
         merged_prices = old_prices.add_rows_to_existing_data(
             new_futures_per_contract_prices, check_for_spike=check_for_spike
         )
 
-        if merged_prices is data_error:
+        if merged_prices is spike_in_data:
             new_log.msg(
                 "Price has moved too much - will need to manually check - no price updated done")
-            return data_error
+            return spike_in_data
 
         rows_added = len(merged_prices) - len(old_prices)
 
-        if rows_added == 0:
+        if rows_added<0:
+            new_log.critical("Can't remove prices something gone wrong!")
+            return 0
+
+        elif rows_added == 0:
             if len(old_prices) == 0:
                 new_log.msg("No existing or additional data")
                 return 0
@@ -221,7 +229,7 @@ class futuresContractPriceData(baseData):
 
         # We have guaranteed no duplication
         self.write_prices_for_contract_object(
-            futures_contract_object, merged_prices, ignore_duplication=True
+            contract_object, merged_prices, ignore_duplication=True
         )
 
         new_log.msg("Added %d additional rows of data" % rows_added)

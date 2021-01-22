@@ -1,5 +1,5 @@
 from sysdata.production.historic_positions import strategyPositionData
-from sysdata.mongodb.mongo_generic_timed_storage import mongoListOfEntriesData
+from sysdata.mongodb.mongo_timed_storage import mongoListOfEntriesData
 
 POSITION_STRATEGY_COLLECTION = "futures_position_by_strategy"
 
@@ -13,6 +13,7 @@ class mongoStrategyPositionData(
 
     """
 
+    @property
     def _collection_name(self):
         return POSITION_STRATEGY_COLLECTION
 

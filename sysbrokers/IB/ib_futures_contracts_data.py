@@ -4,7 +4,7 @@ from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData
 from syscore.objects import missing_contract, missing_instrument
 
 from sysdata.futures.contracts import futuresContractData
-from syscore.dateutils import manyTradingStartAndEnd
+from syscore.dateutils import manyTradingStartAndEndDateTimes
 
 from sysobjects.contract_dates_and_expiries import expiryDate
 from sysobjects.contracts import  contract_from_code_and_id, futuresContract
@@ -101,7 +101,9 @@ class ibFuturesContractData(futuresContractData):
         return expiry_date
 
 
-    def _get_actual_expiry_date_given_single_contract_with_ib_metadata(self, futures_contract_with_ib_data: futuresContract) -> expiryDate:
+    def _get_actual_expiry_date_given_single_contract_with_ib_metadata(self,
+                                                futures_contract_with_ib_data: futuresContract
+                                                                       ) -> expiryDate:
         log = futures_contract_with_ib_data.specific_log(self.log)
         if futures_contract_with_ib_data.is_spread_contract():
             log.warn("Can't find expiry for multiple leg contract here")
@@ -112,8 +114,6 @@ class ibFuturesContractData(futuresContractData):
         )
 
         if expiry_date is missing_contract:
-            log = futures_contract_with_ib_data.log(self.log)
-            log.msg("No IB expiry date found")
             return missing_contract
         else:
             expiry_date = expiryDate.from_str(
@@ -164,7 +164,7 @@ class ibFuturesContractData(futuresContractData):
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
         trading_hours = self.get_trading_hours_for_contract(futures_contract)
-        trading_hours_checker = manyTradingStartAndEnd(trading_hours)
+        trading_hours_checker = manyTradingStartAndEndDateTimes(trading_hours)
 
         return trading_hours_checker.okay_to_trade_now()
 
@@ -172,7 +172,7 @@ class ibFuturesContractData(futuresContractData):
 
     def less_than_one_hour_of_trading_leg_for_contract(self, contract_object: futuresContract) -> bool:
         trading_hours = self.get_trading_hours_for_contract(contract_object)
-        trading_hours_checker = manyTradingStartAndEnd(trading_hours)
+        trading_hours_checker = manyTradingStartAndEndDateTimes(trading_hours)
 
         return trading_hours_checker.less_than_one_hour_left()
 

@@ -9,10 +9,10 @@ this:
 
 """
 
-from syscore.objects import success, missing_data
+from syscore.objects import success, missing_data, arg_not_supplied
 
 from sysdata.configdata import Config
-from sysdata.production.optimal_positions import bufferedOptimalPositions
+from sysobjects.production.optimal_positions import bufferedOptimalPositions
 
 from sysproduction.data.currency_data import dataCurrency
 from sysproduction.data.capital import dataCapital
@@ -32,13 +32,16 @@ class runSystemClassic(object):
         self,
         data,
         strategy_name,
-        backtest_config_filename="systems.provided.futures_chapter15.futuresconfig.yaml",
+        backtest_config_filename=arg_not_supplied,
     ):
         self.data = data
         self.strategy_name = strategy_name
         self.backtest_config_filename = backtest_config_filename
 
-    def run_system_classic(self):
+        if backtest_config_filename is arg_not_supplied:
+            raise Exception("Need to supply config")
+
+    def run_backtest(self):
         strategy_name = self.strategy_name
         data = self.data
 
