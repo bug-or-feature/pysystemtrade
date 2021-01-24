@@ -16,33 +16,35 @@ services:
 
   ib-gateway:
     image: "mvberg/ib-gateway-docker"
-    container_name: tws
+    container_name: ib-gateway
     ports:
-      - "4002:4002"
+      - "4003:4003"
       - "5901:5900"
+    restart: always
     volumes:
       - ./ib/IBController.ini:/root/IBController/IBController.ini
       - ./ib/jts.ini:/root/Jts/jts.ini
     environment:
-      - TZ=Europe/London
       # Variables pulled from /IBController/IBControllerGatewayStart.sh
-      - VNC_PASSWORD=1234 # CHANGEME
       - TWS_MAJOR_VRSN=974
-      - IBC_INI=/root/IBController/IBController.ini
-      - IBC_PATH=/opt/IBController
       - TWS_PATH=/root/Jts
       - TWS_CONFIG_PATH=/root/Jts
+      - IBC_INI=/root/IBController/IBController.ini
+      - IBC_PATH=/opt/IBController
       - LOG_PATH=/opt/IBController/Logs
       - JAVA_PATH=/opt/i4j_jres/1.8.0_152/bin # JRE is bundled starting with TWS 952
-      - TRADING_MODE=live # either paper or live
-      - TWSUSERID=geachy189 # IB account
-      - TWSPASSWORD=WwfcYZRAL3ETwsV6Wr # IB account password
+      - APP=GATEWAY
       - FIXUSERID=
       - FIXPASSWORD=
-      - APP=GATEWAY
+      - TRADING_MODE=${TWS_TRADING_MODE}
+      - TWSUSERID=${TWS_USER_ID}
+      - TWSPASSWORD=${TWS_PASSWORD}
+      - VNC_PASSWORD=${VNC_PASSWORD}
+      - TZ=${TWS_TIMEZONE}
 
   pysystemtrade:
     build: .
+    image: pysystemtrade/pysystemtrade:latest
     container_name: pysystemtrade
     command: tail -F /dev/null
     stop_signal: SIGINT
