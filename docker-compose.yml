@@ -1,5 +1,9 @@
 version: "3.8"
 
+networks:
+  default:
+    name: pysysnetwork
+
 services:
 
   mongo:
@@ -12,7 +16,7 @@ services:
     container_name: mongo-express
     restart: always
     ports:
-      - 8081:8081
+      - 8082:8081
 
   ib-gateway:
     image: "mvberg/ib-gateway-docker"
