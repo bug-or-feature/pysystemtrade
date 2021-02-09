@@ -26,8 +26,8 @@ services:
       - "5901:5900"
     restart: always
     volumes:
-      - ./ib/IBController.ini:/root/IBController/IBController.ini
-      - ./ib/jts.ini:/root/Jts/jts.ini
+      - ./examples/docker/IBController.ini:/root/IBController/IBController.ini
+      - ./examples/docker/jts.ini:/root/Jts/jts.ini
     environment:
       # Variables pulled from /IBController/IBControllerGatewayStart.sh
       - TWS_MAJOR_VRSN=974
