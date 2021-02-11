@@ -3,10 +3,14 @@ How to run a complete *pysystemtrade* system as a suite of docker containers
 #### run a complete system
 
 * install docker
-* copy the example environment file (/examples/docker/.env.example) to the top level
-of the project, and rename it '.env'
-* insert your IB credentials, and comment/uncomment appropriately depending
-on whether you want to connect to IB in 'live' or 'paper' mode
+* copy the example environment file (```/examples/docker/.env.example```)
+to the top level of the project, and rename it ```/.env```
+* update ```/.env``` with your IB credentials, and comment/uncomment appropriately depending
+on whether you want to connect to IB in *live* or *paper* mode
+* copy the example docker private config file
+(```/examples/docker/private_docker_config_example.yaml```) to your private directory,
+and rename it ```/private/private_docker_config.yaml```.
+* update ```/private/private_docker_config.yaml``` with your IB broker account name
 * define a VNC password. The text can be anything you like
 * on the commandline at the top level directory, run
 
@@ -36,7 +40,7 @@ environment configured
 
 ```docker-compose up -d --build```
 
-* to stop containers, networks, images, volumes
+* to stop containers, networks, volumes
 
 ```docker-compose down```
 
