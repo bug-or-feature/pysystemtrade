@@ -32,16 +32,12 @@ def strip_file_names(pathname):
 
     return None
 
-market_map = dict( AE="AEX", A6="AUD", HR="BOBL", II = "BTP",MX = "CAC", GG="BUND",HG = "COPPER", ZC="CORN",
-                   CL="CRUDE_W",GE = "EDOLLAR", E6="EUR",  NG = "GAS_US",
-                     B6="GBP",                    GC="GOLD",J6 = "JPY", HE = "LEANHOG",LE ="LIVECOW",
-                    M6="MXP",NQ = "NASDAQ",N6 = "NZD",                    FN="OAT",
-                   PA="PALLAD",                   HF="SHATZ", PL="PLAT",ZS = "SOYBEAN",
-                   ES="SP500",ZT = "US2",   ZF = "US5",ZN = "US10",
-                   ZB="US20",VI = "VIX",ZW="WHEAT",
-                   DV="V2X",
-                    UD = "US30"
-                   )
+market_map = dict(
+    AE="AEX",     A6="AUD",     HR="BOBL",    II="BTP",     MX="CAC",    GG="BUND", HG="COPPER", ZC="CORN",
+    CL="CRUDE_W", GE="EDOLLAR", E6="EUR",     FX="EUROSTX", NG="GAS_US", B6="GBP",  GC="GOLD",   J6="JPY",
+    HE="LEANHOG", LE="LIVECOW", M6="MXP",     NQ="NASDAQ",  N6="NZD",    FN="OAT",  PA="PALLAD", HF="SHATZ",
+    PL="PLAT",    SZ="SMI",     ZS="SOYBEAN", ES="SP500",   ZT="US2",    ZF="US5",  ZN="US10",   ZB="US20",
+    VI="VIX",     ZW="WHEAT",   DV="V2X",     UD="US30")
 
 
 barchart_csv_config = ConfigCsvFuturesPrices(input_date_index_name="Date Time",
