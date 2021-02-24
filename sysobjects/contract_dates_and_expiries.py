@@ -40,11 +40,11 @@ class expiryDate(datetime.datetime):
         return (self.year, self.month, self.day)
 
     @classmethod
-    def from_str(expiryDate, date_as_str: str):
+    def from_str(expiryDate, date_as_str: str, format=EXPIRY_DATE_FORMAT):
         try:
-            as_date = datetime.datetime.strptime(date_as_str, EXPIRY_DATE_FORMAT)
+            as_date = datetime.datetime.strptime(date_as_str, format)
         except:
-            raise Exception("Expiry date %s not in format %s" % date_as_str, EXPIRY_DATE_FORMAT)
+            raise Exception("Expiry date %s not in format %s" % date_as_str, format)
 
         return expiryDate(as_date.year, as_date.month, as_date.day)
 

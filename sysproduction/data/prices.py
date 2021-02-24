@@ -156,6 +156,13 @@ class updatePrices(object):
             instrument_code, updated_adjusted_prices, ignore_duplication=True
         )
 
+    def get_prices_at_frequency_for_contract_object(
+                self, contract_object: futuresContract,
+                frequency: str) -> futuresContractPrices:
+
+        return self.data.db_futures_contract_price.get_prices_at_frequency_for_contract_object(
+            contract_object, frequency)
+
 
 def get_valid_instrument_code_from_user(
         data: dataBlob=arg_not_supplied, allow_all: bool=False, all_code = "ALL",
