@@ -1,18 +1,19 @@
 """
-Update historical data per contract from Barchart data, dump into mongodb
+Update historical data per contract from Barchart, dump into mongodb
 """
 
-from syscore.objects import success, failure
+from syscore.objects import success, failure, arg_not_supplied
 from syscore.merge_data import spike_in_data
+
+from syscore.dateutils import DAILY_PRICE_FREQ, Frequency
 
 from sysobjects.contracts import futuresContract
 
 from sysdata.data_blob import dataBlob
 from sysproduction.data.prices import diagPrices, updatePrices
 from sysproduction.data.alt_data_source import altDataSource
-from sysproduction.data.contracts import diagContracts
+from sysproduction.data.contracts import dataContracts
 from syslogdiag.email_via_db_interface import send_production_mail_msg
-from syscore.objects import arg_not_supplied
 
 from sysdata.barchart.barchart_futures_contract_price_data import barchartFuturesContractPriceData
 
@@ -55,7 +56,7 @@ def update_historical_prices_for_instrument(instrument_code: str, data: dataBlob
     :param data: dataBlob
     :return: None
     """
-    diag_contracts = diagContracts(data)
+    diag_contracts = dataContracts(data)
     all_contracts_list = diag_contracts.get_all_contract_objects_for_instrument_code(
         instrument_code)
     contract_list = all_contracts_list.currently_sampling()
@@ -99,7 +100,7 @@ def update_historical_prices_for_instrument_and_contract(
 
 
 def get_and_add_prices_for_frequency(
-        data: dataBlob, contract_object: futuresContract, frequency: str = "D"):
+        data: dataBlob, contract_object: futuresContract, frequency: Frequency = DAILY_PRICE_FREQ):
 
     read_data = dataBlob(log_name="Source-Historical-Prices-Barchart",
                          ib_conn=arg_not_supplied,

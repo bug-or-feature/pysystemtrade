@@ -3,14 +3,13 @@ Update spot FX prices using Alpha Vantage data, dump into mongodb
 https://www.alphavantage.co/
 """
 
+from syscore.objects import success, failure, arg_not_supplied
 from syscore.merge_data import spike_in_data
-from syscore.objects import arg_not_supplied
-from syscore.objects import success, failure
-from sysdata.alphavantage.alphavantage_spot_FX_data import avFxPricesData
-from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
 from sysdata.data_blob import dataBlob
-from syslogdiag.email_via_db_interface import send_production_mail_msg
 from sysproduction.data.currency_data import dataCurrency
+from syslogdiag.email_via_db_interface import send_production_mail_msg
+from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
+from sysdata.alphavantage.alphavantage_spot_FX_data import avFxPricesData
 from sysproduction.data.alt_data_source import altDataSource
 
 
@@ -64,7 +63,7 @@ def update_fx_prices_for_code(fx_code: str, data: dataBlob):
 
     new_fx_prices = fx_source.get_fx_prices(
         fx_code)  # returns fxPrices object
-    rows_added = db_fx_data.update_fx_prices(
+    rows_added = db_fx_data.update_fx_prices_and_return_rows_added(
         fx_code, new_fx_prices, check_for_spike=True
     )
 

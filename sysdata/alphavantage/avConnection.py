@@ -6,7 +6,7 @@ from ratelimit import limits, sleep_and_retry
 
 from syscore.objects import missing_data
 from syslogdiag.log import logtoscreen
-from sysdata.config.private_config import get_private_then_default_key_value
+from sysdata.config.production_config import get_production_config
 
 # TODO shorten names
 # TODO comments
@@ -19,7 +19,9 @@ class avConnection(object):
         self._log = log
         self._session = requests.Session()
         self._session.headers.update({'User-Agent': 'Mozilla/5.0'})
-        self._api_key = get_private_then_default_key_value('alpha_vantage_api_key')
+        production_config = get_production_config()
+        self._api_key = production_config.get_element_or_missing_data(
+            'alpha_vantage_api_key')
 
     def __repr__(self):
         return "Alpha Vantage endpoint: %s" % self.ALPHA_VANTAGE_URL

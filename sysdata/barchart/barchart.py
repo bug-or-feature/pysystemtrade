@@ -7,7 +7,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup as scraper
 
-from syscore.dateutils import contract_month_from_number
+from syscore.dateutils import Frequency, DAILY_PRICE_FREQ, contract_month_from_number
 from sysdata.barchart.barchart_instruments_data import barchartFuturesInstrumentData
 from syslogdiag.log import logger, logtoscreen
 from sysobjects.contracts import futuresContract
@@ -21,6 +21,7 @@ freq_mapping = {
     '5M': '5',
     'M': '1'
 }
+
 
 # TODO function comments
 class barchartConnection(object):
@@ -71,7 +72,7 @@ class barchartConnection(object):
             return None
 
     def get_historical_futures_data_for_contract(
-            self, contract_object: futuresContract, bar_freq="D") -> pd.DataFrame:
+            self, contract_object: futuresContract, bar_freq: Frequency=DAILY_PRICE_FREQ) -> pd.DataFrame:
 
         """
         Get historical daily data
@@ -83,7 +84,7 @@ class barchartConnection(object):
 
         # TODO try catch
 
-        if bar_freq == "S" or bar_freq == "10S":
+        if bar_freq == Frequency.Second or bar_freq == Frequency.Seconds_10:
             raise NotImplementedError("Barchart supported data frequencies: 'D','H','15M','5M','M'")
 
         instr_symbol = self.get_barchart_id(contract_object)
@@ -115,7 +116,7 @@ class barchartConnection(object):
             'contractroll': 'combined'
         }
 
-        if bar_freq == "D":
+        if bar_freq == Frequency.Day:
             data_url = BARCHART_URL + 'proxies/timeseries/queryeod.ashx'
             payload['data'] = 'daily'
         else:
