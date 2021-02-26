@@ -9,3 +9,4 @@ ib-insync>=0.9.64
 psutil>=0.5.8
 dataclasses>=0.7; python_version < '3.7'
 requests>=2.25
+ratelimit>=2.2
