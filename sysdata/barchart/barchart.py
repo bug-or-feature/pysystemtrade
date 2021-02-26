@@ -129,14 +129,13 @@ class barchartConnection(object):
         # get prices for instrument from BC internal API
         prices_resp = self._session.get(data_url, headers=headers, params=payload)
         print('GET %s %s, %s' % (data_url, instr_symbol, prices_resp.status_code))
-        #print('resp_data: %s' % prices_resp.text)
+
+        # read response into dataframe
         iostr = io.StringIO(prices_resp.text)
-
         df = pd.read_csv(iostr, header=None)
-        #print(df)
 
-        return df
-        #return self._raw_barchart_data_to_df(df, self.log)
+        # convert to expected format
+        return self._raw_barchart_data_to_df(df, self.log)
 
     def _raw_barchart_data_to_df(self, price_data_raw: pd.DataFrame, log:logger, bar_freq="D") -> pd.DataFrame:
 
