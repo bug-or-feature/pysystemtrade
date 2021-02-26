@@ -1,13 +1,14 @@
 import pandas as pd
 
 from syscore.merge_data import merge_data_series_with_label_column
+from sysobjects.contract_dates_and_expiries import listOfContractDateStr
 
 ## CHECK IF ALL THESE ARE NEEDED...
 
 price_name = "PRICE"
 carry_name = "CARRY"
 forward_name = "FORWARD"
-price_column_names = dict(PRICE=price_name, CARRY=carry_name, FORWARD=forward_name)
+price_column_names = dict(CARRY=carry_name, PRICE=price_name, FORWARD=forward_name)
 list_of_price_column_names = list(price_column_names.values())
 list_of_price_column_names.sort()
 contract_suffix = "_CONTRACT"
@@ -210,6 +211,13 @@ class setOfNamedContracts(dict):
 
     def __repr__(self):
         return "setOfContracts %s" % str([(key,value) for key,value in self.items()])
+
+    @property
+    def list_of_date_str(self) -> listOfContractDateStr:
+        list_of_date_str = self.values()
+        list_of_date_str = listOfContractDateStr(list_of_date_str)
+
+        return list_of_date_str
 
     @property
     def price(self):

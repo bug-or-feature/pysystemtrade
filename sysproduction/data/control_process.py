@@ -3,105 +3,117 @@ import socket
 
 from syscore.dateutils import SECONDS_PER_HOUR
 from syscore.genutils import str2Bool
+from syscore.objects import  missing_data, named_object
+
+from sysdata.config.control_config import get_control_config
 from sysdata.data_blob import dataBlob
 from sysdata.mongodb.mongo_process_control import mongoControlProcessData
+from sysdata.production.process_control_data import controlProcessData
 
-import yaml
-from syscore.fileutils import get_filename_for_package
-from syscore.objects import missing_data, arg_not_supplied
+from sysproduction.data.generic_production_data import productionDataLayerGeneric
 
-PRIVATE_CONTROL_CONFIG_FILE = get_filename_for_package("private.private_control_config.yaml")
-PUBLIC_CONTROL_CONFIG_FILE = get_filename_for_package("syscontrol.control_config.yaml")
+DEFAULT_METHOD_FREQUENCY = 60
+DEFAULT_MAX_EXECUTIONS = 1
+DEFAULT_START_TIME_STRING = "00:01"
+DEFAULT_STOP_TIME_STRING = "23:50"
+NAME_OF_TRADING_PROCESS = "run_stack_handler"
 
-
-
-
-class dataControlProcess(object):
-    def __init__(self, data=arg_not_supplied):
-        # Check data has the right elements to do this
-        if data is arg_not_supplied:
-            data = dataBlob()
-
+class dataControlProcess(productionDataLayerGeneric):
+    def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_object(mongoControlProcessData)
-        self.data = data
+
+        return data
+
+    @property
+    def db_control_process_data(self) -> controlProcessData:
+        return self.data.db_control_process
 
     def get_dict_of_control_processes(self):
-        return self.data.db_control_process.get_dict_of_control_processes()
+        return self.db_control_process_data.get_dict_of_control_processes()
 
 
-    def check_if_okay_to_start_process(self, process_name):
+    def check_if_okay_to_start_process(self, process_name: str) -> named_object:
         """
 
         :param process_name: str
         :return:  success, or if not okay: process_no_run, process_stop, process_running
         """
-        return self.data.db_control_process.check_if_okay_to_start_process(
+
+        is_it_okay = self.db_control_process_data.check_if_okay_to_start_process(
             process_name)
 
-    def start_process(self, process_name):
+        return is_it_okay
+
+    def start_process(self, process_name: str) -> named_object:
         """
 
         :param process_name: str
         :return:  success, or if not okay: process_no_run, process_stop, process_running
         """
-        return self.data.db_control_process.start_process(process_name)
+        result = self.db_control_process_data.start_process(process_name)
 
-    def finish_process(self, process_name):
+        return result
+
+    def finish_process(self, process_name: str) -> named_object:
         """
 
         :param process_name: str
         :return: sucess or failure if can't finish process (maybe already running?)
         """
 
-        return self.data.db_control_process.finish_process(process_name)
+        return self.db_control_process_data.finish_process(process_name)
 
-    def finish_all_processes(self):
-
-        return self.data.db_control_process.finish_all_processes()
+    def finish_all_processes(self) -> list:
+        list_of_status =self.db_control_process_data.finish_all_processes()
+        return list_of_status
 
     def check_if_pid_running_and_if_not_finish_all_processes(self) -> list:
-        return self.data.db_control_process.check_if_pid_running_and_if_not_finish_all_processes()
+        list_of_status =self.db_control_process_data.check_if_pid_running_and_if_not_finish_all_processes()
 
-    def check_if_process_status_stopped(self, process_name):
+        return list_of_status
+
+    def check_if_process_status_stopped(self, process_name: str) ->bool:
         """
 
         :param process_name: str
         :return: bool
         """
-        return self.data.db_control_process.check_if_process_status_stopped(
+        has_it_stopped = self.db_control_process_data.check_if_process_status_stopped(
             process_name
         )
+        return has_it_stopped
 
-    def change_status_to_stop(self, process_name):
-        self.data.db_control_process.change_status_to_stop(process_name)
+    def change_status_to_stop(self, process_name: str):
+        self.db_control_process_data.change_status_to_stop(process_name)
 
-    def change_status_to_go(self, process_name):
-        self.data.db_control_process.change_status_to_go(process_name)
+    def change_status_to_go(self, process_name: str):
+        self.db_control_process_data.change_status_to_go(process_name)
 
-    def change_status_to_no_run(self, process_name):
-        self.data.db_control_process.change_status_to_no_run(process_name)
+    def change_status_to_no_run(self, process_name: str):
+        self.db_control_process_data.change_status_to_no_run(process_name)
 
-    def has_process_finished_in_last_day(self, process_name):
-        result = self.data.db_control_process.has_process_finished_in_last_day(
+    def has_process_finished_in_last_day(self, process_name: str) -> bool:
+        has_it_finished_in_last_day = self.db_control_process_data.has_process_finished_in_last_day(
             process_name
         )
-        return result
+        return has_it_finished_in_last_day
 
     def log_start_run_for_method(self, process_name: str, method_name: str):
-       self.data.db_control_process.log_start_run_for_method(process_name, method_name)
+       self.db_control_process_data.log_start_run_for_method(process_name, method_name)
 
     def log_end_run_for_method(self, process_name: str, method_name: str):
-       self.data.db_control_process.log_end_run_for_method(process_name, method_name)
+       self.db_control_process_data.log_end_run_for_method(process_name, method_name)
 
 
-class diagControlProcess:
-    def __init__(self, data=arg_not_supplied):
-        # Check data has the right elements to do this
-        if data is arg_not_supplied:
-            data = dataBlob()
+class diagControlProcess(productionDataLayerGeneric):
+    def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_object(mongoControlProcessData)
 
-        self.data = data
+        return data
+
+    @property
+    def db_control_process_data(self) -> controlProcessData:
+        return self.data.db_control_process
 
     def get_config_dict(self, process_name: str) -> dict:
         previous_process = self.previous_process_name(process_name)
@@ -133,9 +145,10 @@ class diagControlProcess:
 
         return result_dict
 
-    def has_previous_process_finished_in_last_day(self, process_name):
+    def has_previous_process_finished_in_last_day(self, process_name: str) -> bool:
         previous_process = self.previous_process_name(process_name)
         if previous_process is None:
+            ## no previous process, so return True
             return True
         control_process = dataControlProcess(self.data)
         result = control_process.has_process_finished_in_last_day(
@@ -143,7 +156,7 @@ class diagControlProcess:
 
         return result
 
-    def is_it_time_to_run(self, process_name):
+    def is_it_time_to_run(self, process_name: str) -> bool:
         start_time = self.get_start_time(process_name)
         stop_time = self.get_stop_time(process_name)
         now_time = datetime.datetime.now().time()
@@ -153,7 +166,7 @@ class diagControlProcess:
         else:
             return False
 
-    def is_this_correct_machine(self, process_name):
+    def is_this_correct_machine(self, process_name: str) ->bool:
         required_host = self.required_machine_name(process_name)
         if required_host is None:
             return True
@@ -165,7 +178,7 @@ class diagControlProcess:
         else:
             return False
 
-    def is_it_time_to_stop(self, process_name):
+    def is_it_time_to_stop(self, process_name:str) -> bool:
         stop_time = self.get_stop_time(process_name)
         now_time = datetime.datetime.now().time()
 
@@ -174,8 +187,8 @@ class diagControlProcess:
         else:
             return False
 
-    def run_on_completion_only(self, process_name, method_name):
-        this_method_dict = self.get_method_configuration_for_process_name(
+    def does_method_run_on_completion_only(self, process_name: str, method_name: str) -> bool:
+        this_method_dict = self._get_method_configuration_for_process_name(
             process_name, method_name
         )
         run_on_completion_only = this_method_dict.get(
@@ -185,99 +198,72 @@ class diagControlProcess:
         return run_on_completion_only
 
     def frequency_for_process_and_method(
-        self, process_name, method_name
-    ):
-        frequency, _ = self.frequency_and_max_executions_for_process_and_method(
-            process_name, method_name)
+        self, process_name: str, method_name: str
+    ) -> int:
+        this_method_dict = self._get_method_configuration_for_process_name(
+            process_name, method_name
+        )
+
+        frequency = this_method_dict.get("frequency", DEFAULT_METHOD_FREQUENCY)
+
         return frequency
 
     def max_executions_for_process_and_method(
-        self, process_name, method_name
-    ):
-        _, max_executions = self.frequency_and_max_executions_for_process_and_method(
-            process_name, method_name)
-        return max_executions
-
-    def frequency_and_max_executions_for_process_and_method(
-        self, process_name, method_name
-    ):
-        """
-
-        :param process_name:  str
-        :param method_name:  str
-        :return: tuple of int: frequency (minutes), max executions
-        """
-
-        (
-            frequency,
-            max_executions,
-        ) = self.frequency_and_max_executions_for_process_and_method_process_dict(
-            process_name,
-            method_name)
-
-        return frequency, max_executions
-
-
-
-    def frequency_and_max_executions_for_process_and_method_process_dict(
-        self, process_name, method_name
-    ):
-
-        this_method_dict = self.get_method_configuration_for_process_name(
+        self, process_name: str, method_name: str
+    ) -> int:
+        this_method_dict = self._get_method_configuration_for_process_name(
             process_name, method_name
         )
-        frequency = this_method_dict.get("frequency", 60)
-        max_executions = this_method_dict.get("max_executions", 1)
+        max_executions = this_method_dict.get("max_executions", DEFAULT_MAX_EXECUTIONS)
 
-        return frequency, max_executions
+        return max_executions
 
-    def get_method_configuration_for_process_name(
-            self, process_name, method_name):
+
+    def _get_method_configuration_for_process_name(
+            self, process_name: str, method_name: str) -> dict:
         all_method_dict = self.get_all_method_dict_for_process_name(
             process_name)
         this_method_dict = all_method_dict.get(method_name, {})
 
         return this_method_dict
 
-    def get_list_of_methods_for_process_name(self, process_name: str):
+    def get_list_of_methods_for_process_name(self, process_name: str) -> list:
         all_method_dict = self.get_all_method_dict_for_process_name(
             process_name)
 
-        return all_method_dict.keys()
+        return list(all_method_dict.keys())
 
-    def get_all_method_dict_for_process_name(self, process_name):
-        all_method_dict = self.get_configuration_item_for_process_name(
+    def get_all_method_dict_for_process_name(self, process_name: str)-> dict:
+        all_method_dict = self._get_configuration_item_for_process_name(
             process_name, "methods", default={}, use_config_default=False
         )
 
         return all_method_dict
 
-    def previous_process_name(self, process_name):
+    def previous_process_name(self, process_name: str) -> str:
         """
 
         :param process_name:
         :return: str or None
         """
-        return self.get_configuration_item_for_process_name(
+        return self._get_configuration_item_for_process_name(
             process_name, "previous_process", default=None, use_config_default=False)
 
-    def get_start_time(self, process_name):
+    def get_start_time(self, process_name: str) -> datetime.time:
         """
         Return time object, or 00:01 if none available
         :param process_name:
         :return:
         """
-        result = self.get_configuration_item_for_process_name(
-            process_name, "start_time", default=None, use_config_default=True
+        result = self._get_configuration_item_for_process_name(
+            process_name, "start_time", default=DEFAULT_START_TIME_STRING, use_config_default=True
         )
-        if result is None:
-            result = "00:01"
 
         result = datetime.datetime.strptime(result, "%H:%M").time()
 
         return result
 
-    def how_long_in_hours_before_trading_process_finishes(self):
+    def how_long_in_hours_before_trading_process_finishes(self) -> float:
 
         now_datetime = datetime.datetime.now()
 
@@ -291,39 +277,37 @@ class diagControlProcess:
 
         return time_hours
 
-    def get_stop_time_of_trading_process(self):
-        return self.get_stop_time("run_stack_handler")
+    def get_stop_time_of_trading_process(self) -> datetime.time:
+        return self.get_stop_time(NAME_OF_TRADING_PROCESS)
 
-    def get_stop_time(self, process_name):
+    def get_stop_time(self, process_name: str):
         """
         Return time object, or 00:01 if none available
         :param process_name:
         :return:
         """
-        result = self.get_configuration_item_for_process_name(
-            process_name, "stop_time", default=None, use_config_default=True
+        result = self._get_configuration_item_for_process_name(
+            process_name, "stop_time", default=DEFAULT_STOP_TIME_STRING, use_config_default=True
         )
-        if result is None:
-            result = "23:50"
 
         result = datetime.datetime.strptime(result, "%H:%M").time()
 
         return result
 
-    def required_machine_name(self, process_name):
+    def required_machine_name(self, process_name: str)-> str:
         """
 
         :param process_name:
         :return: str or None
         """
-        result = self.get_configuration_item_for_process_name(
+        result = self._get_configuration_item_for_process_name(
             process_name, "host_name", default=None, use_config_default=False
         )
 
         return result
 
-    def get_configuration_item_for_process_name(
-        self, process_name, item_name, default=None, use_config_default=False
+    def _get_configuration_item_for_process_name(
+        self, process_name: str, item_name: str, default=None, use_config_default: bool=False
     ):
         process_config_for_item = self.get_process_configuration_for_item_name(
             item_name
@@ -334,10 +318,10 @@ class diagControlProcess:
 
         return config_item
 
-    def get_process_configuration_for_item_name(self, item_name):
-        config = getattr(self, "_process_config_%s" % item_name, None)
-        if config is None:
-            config = get_key_value_from_dict(
+    def get_process_configuration_for_item_name(self, item_name: str) -> dict:
+        config = getattr(self, "_process_config_%s" % item_name, {})
+        if config == {}:
+            config = get_key_value_from_control_config(
                 "process_configuration_%s" % item_name
             )
             if config is missing_data:
@@ -349,63 +333,33 @@ class diagControlProcess:
 
 
     def when_method_last_started(self, process_name: str, method_name: str) -> datetime.datetime:
-        result = self.data.db_control_process.when_method_last_started(process_name, method_name)
+        result = self.db_control_process_data.when_method_last_started(process_name, method_name)
         return result
 
     def when_method_last_ended(self, process_name: str, method_name: str) -> datetime.datetime:
-        result = self.data.db_control_process.when_method_last_ended(process_name, method_name)
+        result = self.db_control_process_data.when_method_last_ended(process_name, method_name)
         return result
 
     def method_currently_running(self, process_name: str, method_name: str) -> bool:
-        result = self.data.db_control_process.method_currently_running(process_name, method_name)
+        result = self.db_control_process_data.method_currently_running(process_name, method_name)
         return  result
 
     def get_control_for_process_name(self, process_name: str):
-        result = self.data.db_control_process.get_control_for_process_name(process_name)
+        result = self.db_control_process_data.get_control_for_process_name(process_name)
 
         return result
 
     def get_list_of_process_names(self) -> list:
-        result = self.data.db_control_process.get_list_of_process_names()
+        result = self.db_control_process_data.get_list_of_process_names()
         return result
 
 
-def get_key_value_from_dict(item_name):
-    config_dict = get_config_dict()
+def get_key_value_from_control_config(item_name: str):
+    config = get_control_config()
+    item = config.get_element_or_missing_data(item_name)
 
-    return config_dict.get(item_name, missing_data)
+    return item
 
-
-def get_config_dict() -> dict:
-    private_dict = get_private_control_config()
-    if private_dict is not missing_data:
-        return private_dict
-    public_dict = get_public_control_config()
-    if public_dict is missing_data:
-        raise Exception("Need to have either %s or %s present:" % (
-        str(PUBLIC_CONTROL_CONFIG_FILE), str(PRIVATE_CONTROL_CONFIG_FILE)))
-
-    return public_dict
-
-
-
-def get_public_control_config():
-    try:
-        with open(PUBLIC_CONTROL_CONFIG_FILE) as file_to_parse:
-            config_dict = yaml.load(file_to_parse, Loader=yaml.FullLoader)
-    except BaseException:
-        config_dict = missing_data
-
-    return config_dict
-
-def get_private_control_config():
-    try:
-        with open(PRIVATE_CONTROL_CONFIG_FILE) as file_to_parse:
-            config_dict = yaml.load(file_to_parse, Loader=yaml.FullLoader)
-    except BaseException:
-        config_dict = missing_data
-
-    return config_dict
 
 
 def get_list_of_strategies_for_process(data: dataBlob, process_name: str) -> list:
@@ -415,7 +369,7 @@ def get_list_of_strategies_for_process(data: dataBlob, process_name: str) -> lis
     return list_of_strategies
 
 
-def get_strategy_class_object_config(data: dataBlob, process_name: str, strategy_name: str):
+def get_strategy_class_object_config(data: dataBlob, process_name: str, strategy_name: str) -> dict:
     """
     returns dict with
           object: sysproduction.strategy_code.run_system_classic.runSystemClassic
@@ -424,6 +378,6 @@ def get_strategy_class_object_config(data: dataBlob, process_name: str, strategy
 
     """
     diag_config = diagControlProcess(data)
-    config_this_process = diag_config.get_method_configuration_for_process_name(process_name, strategy_name)
+    config_this_process = diag_config._get_method_configuration_for_process_name(process_name, strategy_name)
 
     return config_this_process

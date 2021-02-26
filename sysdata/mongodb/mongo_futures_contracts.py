@@ -1,11 +1,12 @@
 
 CONTRACT_COLLECTION = "futures_contracts"
 
-from syscore.objects import arg_not_supplied
+from syscore.objects import arg_not_supplied, missing_data
 from sysdata.futures.contracts import futuresContractData
 from sysobjects.contracts import  contract_key_from_code_and_id, futuresContract, get_code_and_id_from_contract_key, key_contains_instrument_code, listOfFuturesContracts
 from syslogdiag.log import logtoscreen
-from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey, missing_data
+from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey
+
 
 class mongoFuturesContractData(futuresContractData):
     """
@@ -30,8 +31,8 @@ class mongoFuturesContractData(futuresContractData):
     def mongo_data(self):
         return self._mongo_data
 
-    def is_contract_in_data(self, instrument_code:str, contract_id:str) -> bool:
-        key = contract_key_from_code_and_id(instrument_code, contract_id)
+    def is_contract_in_data(self, instrument_code:str, contract_date_str:str) -> bool:
+        key = contract_key_from_code_and_id(instrument_code, contract_date_str)
         return self.mongo_data.key_is_in_data(key)
 
     def get_list_of_all_contract_keys(self) -> list:

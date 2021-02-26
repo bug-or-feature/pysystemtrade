@@ -1,6 +1,8 @@
 """
 Various routines to do with dates
 """
+from enum import Enum
+
 import datetime
 import time
 import calendar
@@ -39,6 +41,22 @@ UNIXTIME_IN_YEAR = UNIXTIME_CONVERTER * SECONDS_IN_YEAR
 
 MONTH_LIST = ["F", "G", "H", "J", "K", "M", "N", "Q", "U", "V", "X", "Z"]
 
+
+Frequency = Enum('Frequency', 'Day Hour Minutes_15 Minutes_5 Minute Seconds_10 Second')
+DAILY_PRICE_FREQ = Frequency.Day
+
+def from_config_frequency_to_frequency(freq_as_str:str)-> Frequency:
+    LOOKUP_TABLE = {'D':Frequency.Day,
+                        'H':Frequency.Hour,
+                        '15M': Frequency.Minutes_15,
+                        '5M': Frequency.Minutes_5,
+                        'M': Frequency.Minute,
+                        '10S': Frequency.Seconds_10,
+                        'S': Frequency.Second}
+
+    frequency = LOOKUP_TABLE.get(freq_as_str, missing_data)
+
+    return frequency
 
 def month_from_contract_letter(contract_letter: str) -> int:
     """
@@ -415,9 +433,9 @@ class tradingStartAndEndDateTimes(object):
         return hours_left
 
 
-    def less_than_one_hour_left(self) -> bool:
+    def less_than_N_hours_left(self, N_hours: float = 1.0) -> bool:
         hours_left = self.hours_left_before_market_close()
-        if hours_left<1.0:
+        if hours_left<N_hours:
             return True
         else:
             return False
@@ -444,11 +462,11 @@ class manyTradingStartAndEndDateTimes(list):
                 return True
         return False
 
-    def less_than_one_hour_left(self):
+    def less_than_N_hours_left(self, N_hours: float = 1.0):
         for check_period in self:
             if check_period.okay_to_trade_now():
                 # market is open, but for how long?
-                if check_period.less_than_one_hour_left():
+                if check_period.less_than_N_hours_left(N_hours=N_hours):
                     return True
                 else:
                     return False
@@ -472,3 +490,18 @@ def last_run_or_heartbeat_from_date_or_none(last_run_or_heartbeat: datetime.date
             SHORT_DATE_PATTERN)
 
     return last_run_or_heartbeat
+
+
+date_formatting = "%Y%m%d_%H%M%S"
+
+
+def create_datetime_string(datetime_to_use):
+    datetime_marker = datetime_to_use.strftime(date_formatting)
+
+    return datetime_marker
+
+
+def from_marker_to_datetime(datetime_marker):
+    return datetime.datetime.strptime(datetime_marker, date_formatting)
+
+

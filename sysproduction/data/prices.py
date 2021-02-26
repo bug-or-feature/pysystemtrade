@@ -2,10 +2,10 @@ import  datetime
 import numpy as np
 
 from syscore.objects import missing_contract, arg_not_supplied, missing_data
+from syscore.dateutils import Frequency, from_config_frequency_to_frequency
 
 from sysobjects.contracts import futuresContract
 from sysobjects.dict_of_futures_per_contract_prices import dictFuturesContractPrices
-from sysdata.config.private_config import get_private_then_default_key_value
 from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData, futuresContractPrices
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData, futuresMultiplePrices
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData, futuresAdjustedPrices
@@ -30,9 +30,16 @@ class diagPrices(object):
         )
         self.data = data
 
-    def get_intraday_frequency_for_historical_download(self) -> str:
-        intraday_frequency = get_private_then_default_key_value(
-            "intraday_frequency")
+    def get_intraday_frequency_for_historical_download(self) -> Frequency:
+        config = self.data.config
+        intraday_frequency_as_str = config.intraday_frequency
+        intraday_frequency = from_config_frequency_to_frequency(intraday_frequency_as_str)
+
+        if intraday_frequency is missing_data:
+            error_msg = "Intraday frequency of %s is not recognised as a valid frequency %" % intraday_frequency
+            self.log.critical(error_msg)
+            raise Exception(error_msg)
+
         return intraday_frequency
 
     def get_adjusted_prices(self, instrument_code: str) -> futuresAdjustedPrices:
