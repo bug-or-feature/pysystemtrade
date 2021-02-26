@@ -5,14 +5,14 @@ Update historical data per contract from interactive brokers data, dump into mon
 from syscore.objects import success, failure
 from syscore.merge_data import spike_in_data
 
-from sysdata.futures.futures_per_contract_prices import DAILY_PRICE_FREQ
+from syscore.dateutils import DAILY_PRICE_FREQ, Frequency
 
 from sysobjects.contracts import futuresContract
 
 from sysdata.data_blob import dataBlob
 from sysproduction.data.prices import diagPrices, updatePrices
 from sysproduction.data.broker import dataBroker
-from sysproduction.data.contracts import diagContracts
+from sysproduction.data.contracts import dataContracts
 from syslogdiag.email_via_db_interface import send_production_mail_msg
 
 
@@ -53,7 +53,7 @@ def update_historical_prices_for_instrument(instrument_code: str, data: dataBlob
     :param data: dataBlob
     :return: None
     """
-    diag_contracts = diagContracts(data)
+    diag_contracts = dataContracts(data)
     all_contracts_list = diag_contracts.get_all_contract_objects_for_instrument_code(
         instrument_code)
     contract_list = all_contracts_list.currently_sampling()
@@ -95,7 +95,7 @@ def update_historical_prices_for_instrument_and_contract(
 
 
 def get_and_add_prices_for_frequency(
-        data: dataBlob, contract_object: futuresContract, frequency: str="D"):
+        data: dataBlob, contract_object: futuresContract, frequency: Frequency = DAILY_PRICE_FREQ):
     broker_data_source = dataBroker(data)
     db_futures_prices = updatePrices(data)
 

@@ -1,14 +1,26 @@
-
+from copy import copy
 from sysbrokers.IB.ib_capital_data import ibCapitalData
-from sysbrokers.IB.ib_spot_FX_data import ibFxPricesData
+from sysbrokers.IB.ib_Fx_prices_data import ibFxPricesData
 from sysbrokers.IB.ib_futures_contract_price_data import ibFuturesContractPriceData
 from sysbrokers.IB.ib_futures_contracts_data import ibFuturesContractData
 from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData
-from sysbrokers.IB.ib_position_data import ibContractPositionData
-from sysbrokers.IB.ib_orders_data import ibOrdersData
-from sysbrokers.IB.ib_misc_data import ibMiscData
+from sysbrokers.IB.ib_contract_position_data import ibContractPositionData
+from sysbrokers.IB.ib_orders import ibExecutionStackData
+from sysbrokers.IB.ib_static_data import ibStaticData
+from sysbrokers.IB.ib_fx_handling import ibFxHandlingData
 
-from syscore.objects import missing_data, arg_not_supplied, missing_order, missing_contract
+from sysbrokers.broker_fx_handling import brokerFxHandlingData
+from sysbrokers.broker_static_data import brokerStaticData
+from sysbrokers.broker_execution_stack import brokerExecutionStackData
+from sysbrokers.broker_futures_contract_price_data import brokerFuturesContractPriceData
+from sysbrokers.broker_futures_contract_data import brokerFuturesContractData
+from sysbrokers.broker_capital_data import brokerCapitalData
+from sysbrokers.broker_contract_position_data import brokerContractPositionData
+from sysbrokers.broker_fx_prices_data import brokerFxPricesData
+from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
+
+from syscore.objects import arg_not_supplied, missing_order, missing_contract, missing_data
+from syscore.dateutils import Frequency
 
 from sysdata.data_blob import dataBlob
 
@@ -28,34 +40,67 @@ from sysobjects.futures_per_contract_prices import futuresContractPrices
 from sysproduction.data.positions import diagPositions
 from sysproduction.data.currency_data import dataCurrency
 from sysproduction.data.control_process import diagControlProcess
+from sysproduction.data.generic_production_data import productionDataLayerGeneric
 
+class dataBroker(productionDataLayerGeneric):
 
-class dataBroker(object):
-    def __init__(self, data: dataBlob=arg_not_supplied):
-        # Check data has the right elements to do this
-        if data is arg_not_supplied:
-            data = dataBlob()
-
+    def _add_required_classes_to_data(self, data) -> dataBlob:
+        ## Modify these to use another broker
+        ## These will be aliased as self.data.broker_fx_prices, self.data.broker_futures_contract_price ... and so on
         data.add_class_list([
             ibFxPricesData, ibFuturesContractPriceData, ibFuturesContractData,
-        ibContractPositionData, ibOrdersData, ibMiscData, ibCapitalData,
-        ibFuturesInstrumentData]
+        ibContractPositionData, ibExecutionStackData, ibStaticData, ibCapitalData,
+        ibFuturesInstrumentData, ibFxHandlingData]
         )
 
-        self._data = data
+        return data
 
     @property
-    def data(self) -> dataBlob:
-        return self._data
+    def broker_fx_price_data(self) -> brokerFxPricesData:
+        return self.data.broker_fx_prices
+
+    @property
+    def broker_futures_contract_price_data(self) -> brokerFuturesContractPriceData:
+        return self.data.broker_futures_contract_price
+
+    @property
+    def broker_futures_contract_data(self) -> brokerFuturesContractData:
+        return self.data.broker_futures_contract
+
+    @property
+    def broker_futures_instrument_data(self) -> brokerFuturesInstrumentData:
+        return self.data.broker_futures_instrument
+
+    @property
+    def broker_contract_position_data(self) -> brokerContractPositionData:
+        return self.data.broker_contract_position
+
+    @property
+    def broker_execution_stack_data(self) -> brokerExecutionStackData:
+        return self.data.broker_execution_stack
+
+    @property
+    def broker_capital_data(self) -> brokerCapitalData:
+        return self.data.broker_capital
+
+    @property
+    def broker_fx_handling_data(self) -> brokerFxHandlingData :
+        return self.data.broker_fx_handling
+
+    @property
+    def broker_static_data(self) -> brokerStaticData:
+        return self.data.broker_static
+
+    ## Methods
 
     def broker_fx_balances(self) -> dict:
-        return self.data.broker_misc.broker_fx_balances()
+        return self.broker_fx_handling_data.broker_fx_balances()
 
     def get_fx_prices(self, fx_code: str) -> fxPrices:
-        return self.data.broker_fx_prices.get_fx_prices(fx_code)
+        return self.broker_fx_price_data.get_fx_prices(fx_code)
 
     def get_list_of_fxcodes(self) -> list:
-        return self.data.broker_fx_prices.get_list_of_fxcodes()
+        return self.broker_fx_price_data.get_list_of_fxcodes()
 
     def broker_fx_market_order(
             self,
@@ -66,7 +111,7 @@ class dataBroker(object):
         if account is arg_not_supplied:
             account = self.get_broker_account()
 
-        result = self.data.broker_misc.broker_fx_market_order(
+        result = self.broker_fx_handling_data.broker_fx_market_order(
             trade, ccy1, ccy2="USD", account=account
         )
         if result is missing_order:
@@ -77,63 +122,61 @@ class dataBroker(object):
 
     def get_prices_at_frequency_for_contract_object(
             self, contract_object: futuresContract,
-            frequency: str) -> futuresContractPrices:
+            frequency: Frequency) -> futuresContractPrices:
 
-        return self.data.broker_futures_contract_price.get_prices_at_frequency_for_contract_object(
+        return self.broker_futures_contract_price_data.get_prices_at_frequency_for_contract_object(
             contract_object, frequency)
 
 
     def get_recent_bid_ask_tick_data_for_contract_object(
         self, contract: futuresContract
     ) -> dataFrameOfRecentTicks:
-        return self.data.broker_futures_contract_price.get_recent_bid_ask_tick_data_for_contract_object(contract)
+        return self.broker_futures_contract_price_data.get_recent_bid_ask_tick_data_for_contract_object(contract)
 
 
     def get_actual_expiry_date_for_single_contract(self, contract_object: futuresContract) -> expiryDate:
-        return self.data.broker_futures_contract.get_actual_expiry_date_for_single_contract(
+        return self.broker_futures_contract_data.get_actual_expiry_date_for_single_contract(
             contract_object)
 
     def get_brokers_instrument_code(self, instrument_code: str) -> str:
-        return self.data.broker_futures_instrument.get_brokers_instrument_code(
+        return self.broker_futures_instrument_data.get_brokers_instrument_code(
             instrument_code
         )
 
-
-    def less_than_one_hour_of_trading_leg_for_contract(
-            self, contract: futuresContract) -> bool:
+    def less_than_N_hours_of_trading_left_for_contract(
+            self,
+            contract: futuresContract,
+            N_hours: float = 1.0) -> bool:
 
         diag_controls = diagControlProcess()
         hours_left_before_process_finishes = diag_controls.how_long_in_hours_before_trading_process_finishes()
 
-        if hours_left_before_process_finishes<1:
+        if hours_left_before_process_finishes<N_hours:
             ## irespective of instrument traded
             return True
 
-        result = self.data.broker_futures_contract.less_than_one_hour_of_trading_leg_for_contract(contract)
+        result = self.broker_futures_contract_data.less_than_N_hours_of_trading_left_for_contract(contract,
+                                                                                                  N_hours = N_hours)
 
         return result
 
     def is_contract_okay_to_trade(self, contract: futuresContract) -> bool:
-        check_open = self.data.broker_futures_contract.is_contract_okay_to_trade(contract)
+        check_open = self.broker_futures_contract_data.is_contract_okay_to_trade(contract)
         return check_open
 
     def get_min_tick_size_for_contract(self, contract: futuresContract) -> float:
-        result = self.data.broker_futures_contract.get_min_tick_size_for_contract(contract)
+        result = self.broker_futures_contract_data.get_min_tick_size_for_contract(contract)
         return result
-
 
     def get_trading_hours_for_contract(
         self, contract: futuresContract
     ) -> list:
-        result = self.data.broker_futures_contract.get_trading_hours_for_contract(contract)
+        result = self.broker_futures_contract_data.get_trading_hours_for_contract(contract)
         return result
 
-    def get_all_current_contract_positions(self, account_id =arg_not_supplied) -> listOfContractPositions:
-        if account_id is arg_not_supplied:
-            account_id = self.get_broker_account()
+    def get_all_current_contract_positions(self) -> listOfContractPositions:
 
-        list_of_positions = self.data.broker_contract_position.get_all_current_positions_as_list_with_contract_objects(
-            account_id=account_id)
+        list_of_positions = self.broker_contract_position_data.get_all_current_positions_as_list_with_contract_objects()
 
         return list_of_positions
 
@@ -141,27 +184,38 @@ class dataBroker(object):
         self, original_position_list: listOfContractPositions
     ) -> listOfContractPositions:
 
-        for idx, position_entry in enumerate(original_position_list):
-            position_entry = original_position_list[idx]
-            original_contract = position_entry.contract
-            actual_expiry = self.get_actual_expiry_date_for_single_contract(
-                original_contract
-            )
-            if actual_expiry is missing_contract:
-                log = original_contract.specific_log(self.data.log)
-                log.warn("Contract %s is missing from IB probably expired - need to manually close on DB" % str(original_contract))
-                contract = original_contract
-            else:
-                expiry_date_as_str = actual_expiry.as_str()
-                instrument_code = position_entry.instrument_code
-                contract = futuresContract(instrument_code, expiry_date_as_str)
+        new_position_list = listOfContractPositions()
+        for position_entry in original_position_list:
+            new_position_entry = self.update_expiry_for_single_position(position_entry)
+            new_position_list.append(new_position_entry)
 
-            position = position_entry.position
-            new_entry = contractPosition(
-                position,contract)
-            original_position_list[idx] = new_entry
+        return new_position_list
 
-        return original_position_list
+    def update_expiry_for_single_position(self, position_entry: contractPosition) -> contractPosition:
+        original_contract = position_entry.contract
+        new_contract = self.update_expiry_for_single_contract(original_contract)
+
+        position = position_entry.position
+        new_position_entry = contractPosition(
+            position, new_contract)
+
+        return new_position_entry
+
+    def update_expiry_for_single_contract(self, original_contract: futuresContract) -> futuresContract:
+        actual_expiry = self.get_actual_expiry_date_for_single_contract(
+            original_contract
+        )
+        if actual_expiry is missing_contract:
+            log = original_contract.specific_log(self.data.log)
+            log.warn("Contract %s is missing from IB probably expired - need to manually close on DB" % str(
+                original_contract))
+            new_contract = copy(original_contract)
+        else:
+            expiry_date_as_str = actual_expiry.as_str()
+            instrument_code = original_contract.instrument_code
+            new_contract = futuresContract(instrument_code, expiry_date_as_str)
+
+        return new_contract
 
     def get_list_of_breaks_between_broker_and_db_contract_positions(self) -> list:
         db_contract_positions = self.get_db_contract_positions_with_IB_expiries()
@@ -183,23 +237,21 @@ class dataBroker(object):
 
     def get_ticker_object_for_order(self, order: contractOrder) -> tickerObject:
         ticker_object = (
-            self.data.broker_futures_contract_price.get_ticker_object_for_order(order))
+            self.broker_futures_contract_price_data.get_ticker_object_for_order(order))
         return ticker_object
 
     def cancel_market_data_for_order(self, order: brokerOrder):
-        self.data.broker_futures_contract_price.cancel_market_data_for_order(
+        self.broker_futures_contract_price_data.cancel_market_data_for_order(
             order)
 
-
     def get_broker_account(self) -> str:
-        return self.data.broker_misc.get_broker_account()
+        return self.broker_static_data.get_broker_account()
 
-    def get_broker_clientid(self) -> str:
-        return self.data.broker_misc.get_broker_clientid()
+    def get_broker_clientid(self) -> int:
+        return self.broker_static_data.get_broker_clientid()
 
     def get_broker_name(self) -> str:
-        return self.data.broker_misc.get_broker_name()
-
+        return self.broker_static_data.get_broker_name()
 
     def get_largest_offside_liquid_size_for_contract_order_by_leg(
             self, contract_order: contractOrder) -> tradeQuantity:
@@ -233,7 +285,7 @@ class dataBroker(object):
         for contract, qty in zip(
             list_of_contracts, list_of_trade_qty
         ):
-            pass
+
             market_conditions_this_contract = (
                 self.check_market_conditions_for_single_legged_contract_and_qty(contract, qty)
             )
@@ -243,8 +295,6 @@ class dataBroker(object):
             market_conditions.append(market_conditions_this_contract)
 
         return market_conditions
-
-
 
 
     def check_market_conditions_for_single_legged_contract_and_qty(
@@ -270,21 +320,20 @@ class dataBroker(object):
         return analysis_of_tick_data
 
 
-
     def submit_broker_order(self, broker_order: brokerOrder) -> orderWithControls:
         """
 
         :param broker_order: a broker_order
         :return: broker order id with information added, or missing_order if couldn't submit
         """
-        placed_broker_order_with_controls = self.data.broker_orders.put_order_on_stack(
+        placed_broker_order_with_controls = self.broker_execution_stack_data.put_order_on_stack(
             broker_order)
 
         return placed_broker_order_with_controls
 
     def get_list_of_orders(self) -> listOfOrders:
         account_id = self.get_broker_account()
-        list_of_orders = self.data.broker_orders.get_list_of_broker_orders(
+        list_of_orders = self.broker_execution_stack_data.get_list_of_broker_orders_with_account_id(
             account_id=account_id
         )
         list_of_orders_with_commission = self.add_commissions_to_list_of_orders(
@@ -293,7 +342,7 @@ class dataBroker(object):
         return list_of_orders_with_commission
 
     def get_list_of_stored_orders(self) -> listOfOrders:
-        list_of_orders = self.data.broker_orders.get_list_of_orders_from_storage()
+        list_of_orders = self.broker_execution_stack_data.get_list_of_orders_from_storage()
         list_of_orders_with_commission = self.add_commissions_to_list_of_orders(
             list_of_orders)
 
@@ -342,7 +391,7 @@ class dataBroker(object):
         :return: brokerOrder coming from broker
         """
         matched_order = (
-            self.data.broker_orders.match_db_broker_order_to_order_from_brokers(
+            self.broker_execution_stack_data.match_db_broker_order_to_order_from_brokers(
                 broker_order_to_match
             )
         )
@@ -353,23 +402,23 @@ class dataBroker(object):
         return matched_order
 
     def cancel_order_given_control_object(self, broker_order_with_controls: orderWithControls):
-        self.data.broker_orders._cancel_order_given_control_object(
+        self.broker_execution_stack_data.cancel_order_given_control_object(
             broker_order_with_controls
         )
 
     def cancel_order_on_stack(self, broker_order: brokerOrder):
-        result = self.data.broker_orders.cancel_order_on_stack(broker_order)
+        result = self.broker_execution_stack_data.cancel_order_on_stack(broker_order)
 
         return result
 
     def check_order_is_cancelled(self, broker_order: brokerOrder) -> bool:
-        result = self.data.broker_orders.check_order_is_cancelled(broker_order)
+        result = self.broker_execution_stack_data.check_order_is_cancelled(broker_order)
 
         return result
 
     def check_order_is_cancelled_given_control_object(
             self, broker_order_with_controls: orderWithControls) -> bool:
-        result = self.data.broker_orders.check_order_is_cancelled_given_control_object(
+        result = self.broker_execution_stack_data.check_order_is_cancelled_given_control_object(
             broker_order_with_controls)
 
         return result
@@ -377,14 +426,14 @@ class dataBroker(object):
     def check_order_can_be_modified_given_control_object(
         self, broker_order_with_controls: orderWithControls
     ) -> bool:
-        return self.data.broker_orders.check_order_can_be_modified_given_control_object(
+        return self.broker_execution_stack_data.check_order_can_be_modified_given_control_object(
             broker_order_with_controls)
 
     def modify_limit_price_given_control_object(
         self, broker_order_with_controls: orderWithControls, new_limit_price: float
     ) -> orderWithControls:
         new_order_with_controls = (
-            self.data.broker_orders.modify_limit_price_given_control_object(
+            self.broker_execution_stack_data.modify_limit_price_given_control_object(
                 broker_order_with_controls, new_limit_price
             )
         )
@@ -392,7 +441,7 @@ class dataBroker(object):
 
     def get_total_capital_value_in_base_currency(self) ->float:
         currency_data = dataCurrency(self.data)
-        values_across_accounts = self.data.broker_capital.get_account_value_across_currency_across_accounts()
+        values_across_accounts = self.broker_capital_data.get_account_value_across_currency_across_accounts()
 
         # This assumes that each account only reports either in one currency or
         # for each currency, i.e. no double counting

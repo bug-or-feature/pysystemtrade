@@ -1,12 +1,23 @@
 import psutil
 import subprocess
-from sysdata.config.private_config import get_private_config_key_value
+from sysdata.config.production_config import get_production_config
 from syscore.objects import missing_data
 
 ## IF THIS FILE IS MOVED, NEED TO UPDATE THE NEXT LINE
 ## WARNING ONLY WORKS ON LINUX??
 PID_CODE_HOME = "/home/$USER/pysystemtrade/syscontrol/list_running_pids.py"
 DECODE_STR = 'utf-8'
+
+def describe_trading_server_login_data() -> str:
+    login_data = get_trading_server_login_data()
+    if login_data is missing_data:
+        return "localhost"
+    trading_server_username, trading_server_ip, trading_server_ssh_port = login_data
+    host_description = "%s@%s port %s" % (str(trading_server_username),
+                                          str(trading_server_ip),
+                                          str(trading_server_ssh_port))
+
+    return host_description
 
 def list_of_all_running_pids():
     trading_server_login_data = get_trading_server_login_data()
@@ -18,13 +29,13 @@ def list_of_all_running_pids():
     return pid_list
 
 def get_trading_server_login_data():
-
-    trading_server_ip = get_private_config_key_value('trading_server_ip')
+    production_config = get_production_config()
+    trading_server_ip = production_config.get_element_or_missing_data("trading_server_ip")
     if trading_server_ip is missing_data:
         return missing_data
 
-    trading_server_username = get_private_config_key_value('trading_server_username')
-    trading_server_ssh_port = get_private_config_key_value('trading_server_ssh_port')
+    trading_server_username = production_config.trading_server_username
+    trading_server_ssh_port = production_config.trading_server_ssh_port
 
     return trading_server_username, trading_server_ip, trading_server_ssh_port
 
