@@ -11,6 +11,7 @@ from syscore.dateutils import contract_month_from_number
 from sysdata.barchart.barchart_instruments_data import barchartFuturesInstrumentData
 from syslogdiag.log import logger, logtoscreen
 from sysobjects.contracts import futuresContract
+from syscore.objects import missing_data
 
 BARCHART_URL = 'https://www.barchart.com/'
 
@@ -21,9 +22,8 @@ freq_mapping = {
     'M': '1'
 }
 
-
+# TODO function comments
 class barchartConnection(object):
-
 
     def __init__(self, log=logtoscreen("Barchart")):
         self._log = log
@@ -42,12 +42,10 @@ class barchartConnection(object):
     def barchart_futures_instrument_data(self) -> barchartFuturesInstrumentData:
         return barchartFuturesInstrumentData(log = self.log)
 
-
     def has_data_for_contract(self, futures_contract: futuresContract) -> bool:
 
         try:
             contract_id = self.get_barchart_id(futures_contract)
-            #print(contract_id)
             resp = self._get_overview(contract_id)
             return resp.status_code == 200
 
@@ -58,7 +56,6 @@ class barchartConnection(object):
     def get_expiry_date(self, futures_contract: futuresContract):
         try:
             contract_id = self.get_barchart_id(futures_contract)
-            #print(contract_id)
             resp = self._get_overview(contract_id)
             if resp.status_code == 200:
                 overview_soup = scraper(resp.text, 'html.parser')
@@ -73,7 +70,6 @@ class barchartConnection(object):
             self._log.error('Error: %s' % e)
             return None
 
-
     def get_historical_futures_data_for_contract(
             self, contract_object: futuresContract, bar_freq="D") -> pd.DataFrame:
 
@@ -81,25 +77,25 @@ class barchartConnection(object):
         Get historical daily data
 
         :param contract_object: contract (where instrument has barchart metadata)
-        :param freq: str; one of D, H, 5M, M, 10S, S
+        :param bar_freq: str; one of D, H, 5M, M, 10S, S
         :return: futuresContractPriceData
         """
+
+        # TODO try catch
 
         if bar_freq == "S" or bar_freq == "10S":
             raise NotImplementedError("Barchart supported data frequencies: 'D','H','15M','5M','M'")
 
         instr_symbol = self.get_barchart_id(contract_object)
         if instr_symbol is None:
-            log.warn("Can't convert contract ID %s" % str(contract_object))
+            self._log.warn("Can't convert contract ID %s" % str(contract_object))
             return missing_data
 
         # GET the futures quote chart page, scrape to get XSRF token
         # https://www.barchart.com/futures/quotes/GCM21/interactive-chart
         chart_url = BARCHART_URL + f"futures/quotes/{instr_symbol}/interactive-chart"
         chart_resp = self._session.get(chart_url)
-        soup = scraper(chart_resp.text, 'html.parser')
         xsrf = urllib.parse.unquote(chart_resp.cookies['XSRF-TOKEN'])
-        #print('xsrf: %s' % xsrf)
 
         headers = {
             'content-type': 'text/plain; charset=UTF-8',
@@ -128,7 +124,7 @@ class barchartConnection(object):
 
         # get prices for instrument from BC internal API
         prices_resp = self._session.get(data_url, headers=headers, params=payload)
-        print('GET %s %s, %s' % (data_url, instr_symbol, prices_resp.status_code))
+        self._log.msg('GET %s %s, %s' % (data_url, instr_symbol, prices_resp.status_code))
 
         # read response into dataframe
         iostr = io.StringIO(prices_resp.text)
@@ -161,8 +157,6 @@ class barchartConnection(object):
         ]
         price_data_as_df.index = date_index
         price_data_as_df.index.name='index'
-
-        print(price_data_as_df)
 
         return price_data_as_df
 
