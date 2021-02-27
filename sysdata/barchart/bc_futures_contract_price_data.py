@@ -1,8 +1,8 @@
 from syscore.merge_data import spike_in_data
 from syscore.objects import missing_data, missing_contract
 from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData
-from sysdata.barchart.barchart import barchartConnection
-from sysdata.barchart.barchart_futures_contracts_data import barchartFuturesContractData
+from sysdata.barchart.bc_connection import bcConnection
+from sysdata.barchart.bc_futures_contracts_data import barchartFuturesContractData
 from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
 from syslogdiag.log import logtoscreen
 from sysobjects.contracts import futuresContract, listOfFuturesContracts
@@ -20,7 +20,7 @@ class barchartFuturesContractPriceData(futuresContractPriceData):
 
     def __init__(self, log=logtoscreen("barchartFuturesContractPriceData")):
         super().__init__(log=log)
-        self._barchart = barchartConnection()
+        self._barchart = bcConnection()
         self._arctic = arcticFuturesContractPriceData()
 
     def __repr__(self):
@@ -49,7 +49,7 @@ class barchartFuturesContractPriceData(futuresContractPriceData):
 
     def contracts_with_price_data_for_instrument_code(self, instrument_code: str) -> listOfFuturesContracts:
         futures_instrument_with_ib_data = self.futures_instrument_data.get_futures_instrument_object_with_IB_data(instrument_code)
-        list_of_date_str = self.ib_client.broker_get_futures_contract_list(futures_instrument_with_ib_data)
+        list_of_date_str = self.ib_client.broker_get_futures_contract_list(futures_instrument_with_ib_data) # TODO
 
         list_of_contracts = [futuresContract(instrument_code, date_str) for date_str in list_of_date_str]
 
@@ -65,12 +65,17 @@ class barchartFuturesContractPriceData(futuresContractPriceData):
         self,
         contract_object: futuresContract,
         new_futures_per_contract_prices: futuresContractPrices,
-        check_for_spike: bool=True,
+        check_for_spike: bool = True,
     ) -> int:
         """
         Reads existing data, merges with new_futures_prices, writes merged data
 
-        :param new_futures_prices:
+        :param check_for_spike:
+        :type check_for_spike:
+        :param contract_object:
+        :type contract_object:
+        :param new_futures_per_contract_prices:
+        :type new_futures_per_contract_prices:
         :return: int, number of rows
         """
         new_log = contract_object.log(self.log)
@@ -121,7 +126,7 @@ class barchartFuturesContractPriceData(futuresContractPriceData):
     def _get_prices_at_frequency_for_contract_object_no_checking(
             self, contract_object: futuresContract, freq: str) -> futuresContractPrices:
 
-        #raise NotImplementedError("TODO")
+
 
         """
         Get historical prices at a particular frequency
@@ -134,7 +139,6 @@ class barchartFuturesContractPriceData(futuresContractPriceData):
         :return: data
         """
 
-
         contract_object_plus = self.futures_contract_data.get_contract_object_plus(
                 contract_object)
 
@@ -146,7 +150,7 @@ class barchartFuturesContractPriceData(futuresContractPriceData):
             contract_object_plus, bar_freq=freq)
 
         if price_data is missing_data:
-            log.warn("Something went wrong getting Barchart price data for %s" %
+            self.log.warn("Something went wrong getting Barchart price data for %s" %
                 str(contract_object))
             price_data = futuresContractPrices.create_empty()
 
@@ -158,10 +162,10 @@ class barchartFuturesContractPriceData(futuresContractPriceData):
         else:
             price_data = futuresContractPrices(price_data)
 
-        ## It's important that the data is in local time zone so that this works
+        # It's important that the data is in local time zone so that this works
         price_data = price_data.remove_future_data()
 
-        ## Some contract data is marked to model, don't want this
+        # Some contract data is marked to model, don't want this
         price_data = price_data.remove_zero_volumes()
 
         return price_data

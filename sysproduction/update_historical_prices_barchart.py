@@ -15,7 +15,7 @@ from sysproduction.data.alt_data_source import altDataSource
 from sysproduction.data.contracts import dataContracts
 from syslogdiag.email_via_db_interface import send_production_mail_msg
 
-from sysdata.barchart.barchart_futures_contract_price_data import barchartFuturesContractPriceData
+from sysdata.barchart.bc_futures_contract_price_data import barchartFuturesContractPriceData
 
 
 def update_historical_prices_barchart():
@@ -32,6 +32,7 @@ def update_historical_prices_barchart():
 
 
 class updateBarchartHistoricalPrices(object):
+
     def __init__(self, data):
         self.data = data
 

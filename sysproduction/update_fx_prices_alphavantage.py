@@ -9,7 +9,7 @@ from sysdata.data_blob import dataBlob
 from sysproduction.data.currency_data import dataCurrency
 from syslogdiag.email_via_db_interface import send_production_mail_msg
 from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
-from sysdata.alphavantage.alphavantage_spot_FX_data import avFxPricesData
+from sysdata.alphavantage.av_spot_FX_data import avFxPricesData
 from sysproduction.data.alt_data_source import altDataSource
 
 
@@ -43,7 +43,7 @@ def update_fx_prices_with_data(data: dataBlob):
     fx_source = dataCurrency(data)
     list_of_codes_all = (
         fx_source.get_list_of_fxcodes()
-    )  # codes must be in .csv file /sysdata/alphavantage/alphavantageConfigSpotFx.csv TODO shorten names?
+    )  # codes must be in .csv file /sysdata/alphavantage/av_spot_FX_data.csv
     data.log.msg("FX Codes: %s" % str(list_of_codes_all))
 
     for fx_code in list_of_codes_all:

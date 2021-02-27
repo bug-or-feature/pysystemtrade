@@ -8,18 +8,21 @@ from sysdata.futures.instruments import futuresInstrumentData
 from syslogdiag.log import logtoscreen
 from syscore.objects import  missing_instrument, missing_file
 
-from sysdata.barchart.barchart_instruments import barchartInstrumentConfigData, futuresInstrumentWithBarchartConfigData
+from sysdata.barchart.bc_instruments import barchartInstrumentConfigData, futuresInstrumentWithBarchartConfigData
 
 
 BARCHART_FUTURES_CONFIG_FILE = get_filename_for_package(
-    "sysdata.barchart.barchart_config_futures.csv")
+    "sysdata.barchart.bc_config_futures.csv")
+
 
 class BarchartConfig(pd.DataFrame):
     pass
 
+
 def read_barchart_config_from_file() -> BarchartConfig:
     df = pd.read_csv(BARCHART_FUTURES_CONFIG_FILE)
     return BarchartConfig(df)
+
 
 class barchartFuturesInstrumentData(futuresInstrumentData):
 

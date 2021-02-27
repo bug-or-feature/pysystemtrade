@@ -1,6 +1,6 @@
 from syscore.objects import missing_contract, missing_instrument
-from sysdata.barchart.barchart_instruments_data import barchartFuturesInstrumentData
-from sysdata.barchart.barchart import barchartConnection
+from sysdata.barchart.bc_instruments_data import barchartFuturesInstrumentData
+from sysdata.barchart.bc_connection import bcConnection
 from sysdata.futures.contracts import futuresContractData
 from syslogdiag.log import logtoscreen
 from sysobjects.contract_dates_and_expiries import expiryDate
@@ -9,7 +9,7 @@ from sysobjects.contracts import futuresContract
 
 class barchartFuturesContractData(futuresContractData):
 
-    def __init__(self, barchart: barchartConnection, log=logtoscreen("barchartFuturesContractData")):
+    def __init__(self, barchart: bcConnection, log=logtoscreen("barchartFuturesContractData")):
         super().__init__(log=log)
         self._barchart = barchart
 
@@ -26,9 +26,9 @@ class barchartFuturesContractData(futuresContractData):
 
     def get_contract_object_plus(self, futures_contract: futuresContract) -> futuresContract:
         """
-        Return contract_object with <extra bits> and correct expiry date added
+        Return contract_object with <extra bits> and correct expiry date added # TODO
 
-        :param contract_object:
+        :param futures_contract:
         :return: modified contract_object
         """
 
@@ -40,7 +40,6 @@ class barchartFuturesContractData(futuresContractData):
             self._get_actual_expiry_date_given_single_contract_plus)
 
         return futures_contract_plus
-
 
     def _get_contract_object_plus(self, contract_object: futuresContract) -> futuresContract:
 
@@ -61,18 +60,18 @@ class barchartFuturesContractData(futuresContractData):
     def _get_actual_expiry_date_given_single_contract_plus(
             self, futures_contract_plus: futuresContract) -> expiryDate:
 
-         if futures_contract_plus.is_spread_contract():
-             log.warn("Can't find expiry for multiple leg contract here")
-             return missing_contract
+        if futures_contract_plus.is_spread_contract():
+            self.log.warn("Can't find expiry for multiple leg contract here")
+            return missing_contract
 
-         expiry_date = self._barchart.get_expiry_date(futures_contract_plus)
+        expiry_date = self._barchart.get_expiry_date(futures_contract_plus)
 
-         if expiry_date is missing_contract:
-             return missing_contract
-         else:
-             expiry_date = expiryDate.from_str(expiry_date, format="%m/%d/%y")
+        if expiry_date is missing_contract:
+            return missing_contract
+        else:
+            expiry_date = expiryDate.from_str(expiry_date, format="%m/%d/%y")
 
-         return expiry_date
+        return expiry_date
 
     def get_list_of_contract_dates_for_instrument_code(self, instrument_code: str):
         raise NotImplementedError(

@@ -8,14 +8,22 @@ from syscore.objects import missing_data
 from syslogdiag.log import logtoscreen
 from sysdata.config.production_config import get_production_config
 
-# TODO shorten names
-# TODO comments
-# TODO need for API key
+
 class avConnection(object):
+
+    """
+
+    Simple web connection to the Alpha Vantage API for free financial data
+    Needs an API key, reques one here: https://www.alphavantage.co/support/#api-key
+    set the API key in your /private/private_config.yaml file, eg
+
+    alpha_vantage_api_key: 'abc123'
+
+    """
 
     ALPHA_VANTAGE_URL = 'https://www.alphavantage.co/'
 
-    def __init__(self, log=logtoscreen("AlphaVantage")):
+    def __init__(self, log=logtoscreen("Alpha Vantage")):
         self._log = log
         self._session = requests.Session()
         self._session.headers.update({'User-Agent': 'Mozilla/5.0'})
@@ -24,11 +32,19 @@ class avConnection(object):
             'alpha_vantage_api_key')
 
     def __repr__(self):
-        return "Alpha Vantage endpoint: %s" % self.ALPHA_VANTAGE_URL
+        return "Alpha Vantage API %s" % self.ALPHA_VANTAGE_URL
 
     @sleep_and_retry # this blocks until safe to execute - should be fine as we only run once a day
     @limits(calls=1, period=12) # Alpha Vantage free API limit is max 5 requests per minute
-    def broker_get_daily_fx_data(self, ccy1, ccy2="USD", bar_freq="D") -> pd.Series:
+    def broker_get_daily_fx_data(self, ccy1, ccy2="USD") -> pd.Series:
+
+        """
+        Get daily FX prices
+
+        :param ccy1: first currency symbol
+        :param ccy2: second currency symbol, defaults to USD
+        :return: df: DataFrame
+        """
 
         try:
             payload = {
@@ -48,7 +64,7 @@ class avConnection(object):
             df = pd.read_csv(iostr)
 
             # convert first column to proper date time, and set as index
-            df['timestamp'] =  pd.to_datetime(df['timestamp'], format='%Y-%m-%d') # , format='%d%b%Y:%H:%M:%S.%f'
+            df['timestamp'] =  pd.to_datetime(df['timestamp'], format='%Y-%m-%d')
             df = df.set_index('timestamp')
 
             return df

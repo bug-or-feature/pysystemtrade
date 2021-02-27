@@ -8,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup as scraper
 
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ, contract_month_from_number
-from sysdata.barchart.barchart_instruments_data import barchartFuturesInstrumentData
+from sysdata.barchart.bc_instruments_data import barchartFuturesInstrumentData
 from syslogdiag.log import logger, logtoscreen
 from sysobjects.contracts import futuresContract
 from syscore.objects import missing_data
@@ -24,7 +24,7 @@ freq_mapping = {
 
 
 # TODO function comments
-class barchartConnection(object):
+class bcConnection(object):
 
     def __init__(self, log=logtoscreen("Barchart")):
         self._log = log

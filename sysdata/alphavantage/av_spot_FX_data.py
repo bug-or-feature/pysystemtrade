@@ -1,19 +1,18 @@
 from collections import  namedtuple
 import pandas as pd
 
-from sysbrokers.IB.client.ib_fx_client import ibFxClient
-
-from sysdata.fx.spotfx import fxPricesData
-from sysobjects.spot_fx_prices import fxPrices
-from syslogdiag.log import logtoscreen
 from syscore.fileutils import get_filename_for_package
 from syscore.objects import missing_file, missing_instrument, missing_data
-from sysdata.alphavantage.avConnection import avConnection
+from sysdata.alphavantage.av_connection import avConnection
+from sysdata.fx.spotfx import fxPricesData
+from syslogdiag.log import logtoscreen
+from sysobjects.spot_fx_prices import fxPrices
 
 CCY_CONFIG_FILE = get_filename_for_package(
-    "sysdata.alphavantage.alphavantage_config_spot_FX.csv")
+    "sysdata.alphavantage.av_config_spot_FX.csv")
 
-fxConfig = namedtuple("alphavantageFXConfig", ["ccy1", "ccy2", "invert"])
+fxConfig = namedtuple("avFXConfig", ["ccy1", "ccy2", "invert"])
+
 
 class avFxPricesData(fxPricesData):
 
@@ -67,7 +66,7 @@ class avFxPricesData(fxPricesData):
         # turn into a fxPrices
         fx_prices = fxPrices(raw_fx_prices)
 
-        self.log.msg("Downloaded %d prices" % len(fx_prices), fx_code = currency_code)
+        self.log.msg("Downloaded %d prices" % len(fx_prices), fx_code=currency_code)
 
         return fx_prices
 
@@ -80,7 +79,6 @@ class avFxPricesData(fxPricesData):
         raw_fx_prices_as_series = raw_fx_prices["close"]
 
         return raw_fx_prices_as_series
-
 
     def _get_config_info_for_code(self, currency_code: str) -> fxConfig:
         new_log = self.log.setup(currency_code=currency_code)
