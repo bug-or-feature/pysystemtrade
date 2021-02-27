@@ -38,7 +38,7 @@ class updateFxPrices(object):
         broker_fx_source = dataBroker(data)
         list_of_codes_all = (
             broker_fx_source.get_list_of_fxcodes()
-        )  # codes must be in .csv file /sysbrokers/IB/ibConfigSpotFx.csv
+        )  # codes must be in .csv file /sysbrokers/IB/ib_config_spot_fx.csv
         data.log.msg("FX Codes: %s" % str(list_of_codes_all))
 
         for fx_code in list_of_codes_all:
