@@ -7,10 +7,10 @@ from syscore.objects import success, failure, arg_not_supplied
 from syscore.merge_data import spike_in_data
 from sysdata.data_blob import dataBlob
 from sysproduction.data.currency_data import dataCurrency
-from syslogdiag.email_via_db_interface import send_production_mail_msg
 from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
 from sysdata.alphavantage.av_spot_FX_data import avFxPricesData
 from sysproduction.data.alt_data_source import altDataSource
+from sysproduction.update_fx_prices import updateFxPrices
 
 
 def update_fx_prices_alphavantage():
@@ -20,7 +20,7 @@ def update_fx_prices_alphavantage():
     :return: success
     """
 
-    ## Called as standalone
+    # Called as standalone
     with dataBlob(log_name="Update-FX-Prices-AV",
             ib_conn=arg_not_supplied,
             class_list=[arcticFxPricesData]) as data:
@@ -30,58 +30,40 @@ def update_fx_prices_alphavantage():
     return success
 
 
-class updateFxPricesAlphaVantage(object):
-    ## Called by run_daily_price_updates
+class updateFxPricesAlphaVantage(updateFxPrices):
+
     def __init__(self, data):
+        super().__init__(data)
         self.data = data
 
-    def update_fx_prices(self):
-        data = self.data
-        update_fx_prices_with_data(data)
+    def update_fx_prices_with_data(self, data: dataBlob):
+        fx_source = dataCurrency(data)
+        list_of_codes_all = (
+            fx_source.get_list_of_fxcodes()
+        )
+        data.log.msg("FX Codes: %s" % str(list_of_codes_all))
 
-def update_fx_prices_with_data(data: dataBlob):
-    fx_source = dataCurrency(data)
-    list_of_codes_all = (
-        fx_source.get_list_of_fxcodes()
-    )  # codes must be in .csv file /sysdata/alphavantage/av_spot_FX_data.csv
-    data.log.msg("FX Codes: %s" % str(list_of_codes_all))
+        for fx_code in list_of_codes_all:
+            data.log.label(fx_code=fx_code)
+            self.update_fx_prices_for_code(fx_code, data)
 
-    for fx_code in list_of_codes_all:
-        data.log.label(fx_code=fx_code)
-        update_fx_prices_for_code(fx_code, data)
+    def update_fx_prices_for_code(self, fx_code: str, data: dataBlob):
 
+        read_data = dataBlob(log_name="Source-FX-Prices-AV",
+                    ib_conn=arg_not_supplied,
+                    class_list=[avFxPricesData])
 
+        fx_source = altDataSource(read_data)
+        db_fx_data = dataCurrency(data)
 
-def update_fx_prices_for_code(fx_code: str, data: dataBlob):
+        new_fx_prices = fx_source.get_fx_prices(
+            fx_code)  # returns fxPrices object
+        rows_added = db_fx_data.update_fx_prices_and_return_rows_added(
+            fx_code, new_fx_prices, check_for_spike=True
+        )
 
-    read_data = dataBlob(log_name="Source-FX-Prices-AV",
-                ib_conn=arg_not_supplied,
-                class_list=[avFxPricesData])
+        if rows_added is spike_in_data:
+            self.report_fx_data_spike(data, fx_code)
+            return failure
 
-    fx_source = altDataSource(read_data)
-    db_fx_data = dataCurrency(data)
-
-    new_fx_prices = fx_source.get_fx_prices(
-        fx_code)  # returns fxPrices object
-    rows_added = db_fx_data.update_fx_prices_and_return_rows_added(
-        fx_code, new_fx_prices, check_for_spike=True
-    )
-
-    if rows_added is spike_in_data:
-        report_fx_data_spike(data, fx_code)
-        return failure
-
-    return success
-
-def report_fx_data_spike(data: dataBlob, fx_code: str):
-    msg = (
-            "Spike found in prices for %s: need to manually check by running interactive_manual_check_fx_prices" %
-            str(fx_code))
-    data.log.warn(msg)
-    try:
-        send_production_mail_msg(
-            data, msg, "FX Price Spike %s" %
-                       str(fx_code))
-    except BaseException:
-        data.log.warn("Couldn't send email about price spike")
-
+        return success
