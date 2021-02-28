@@ -9,9 +9,6 @@ from syslogdiag.log import logtoscreen
 from syscore.fileutils import get_filename_for_package
 from syscore.objects import missing_instrument, missing_file, missing_data
 
-IB_CCY_CONFIG_FILE = get_filename_for_package(
-    "sysbrokers.IB.ib_config_spot_FX.csv")
-
 ibFXConfig = namedtuple("ibFXConfig", ["ccy1", "ccy2", "invert"])
 
 class ibFxPricesData(brokerFxPricesData):
@@ -37,10 +34,10 @@ class ibFxPricesData(brokerFxPricesData):
 
 
     def get_list_of_fxcodes(self) -> list:
-        config_data = self._get_ib_fx_config()
+        config_data = self._get_fx_config()
         if config_data is missing_file:
             self.log.warn(
-                "Can't get list of fxcodes for IB as config file missing")
+                "Can't get list of fxcodes as config file missing")
             return []
 
         list_of_codes = list(config_data.CODE)
@@ -48,18 +45,18 @@ class ibFxPricesData(brokerFxPricesData):
         return list_of_codes
 
     def _get_fx_prices_without_checking(self, currency_code: str) -> fxPrices:
-        ib_config_for_code = self._get_config_info_for_code(currency_code)
-        if ib_config_for_code is missing_instrument:
+        config_for_code = self._get_config_info_for_code(currency_code)
+        if config_for_code is missing_instrument:
             self.log.warn(
-                "Can't get prices as missing IB config for %s" %
+                "Can't get prices as missing config for %s" %
                 currency_code, fx_code=currency_code)
             return fxPrices.create_empty()
 
-        data = self._get_fx_prices_with_ib_config(currency_code, ib_config_for_code)
+        data = self._get_fx_prices_with_config(currency_code, config_for_code)
 
         return data
 
-    def _get_fx_prices_with_ib_config(self, currency_code: str, ib_config_for_code: ibFXConfig) ->fxPrices:
+    def _get_fx_prices_with_config(self, currency_code: str, ib_config_for_code: ibFXConfig) ->fxPrices:
         raw_fx_prices_as_series = self._get_raw_fx_prices(ib_config_for_code)
 
         if len(raw_fx_prices_as_series) == 0:
@@ -93,7 +90,7 @@ class ibFxPricesData(brokerFxPricesData):
     def _get_config_info_for_code(self, currency_code: str) -> ibFXConfig:
         new_log = self.log.setup(currency_code=currency_code)
 
-        config_data = self._get_ib_fx_config()
+        config_data = self._get_fx_config()
         if config_data is missing_file:
             new_log.warn(
                 "Can't get IB FX config for %s as config file missing" %
@@ -111,22 +108,26 @@ class ibFxPricesData(brokerFxPricesData):
         return ib_config_for_code
 
     # Configuration read in and cache
-    def _get_ib_fx_config(self) ->pd.DataFrame:
+    def _get_fx_config(self) ->pd.DataFrame:
         config = getattr(self, "_config", None)
         if config is None:
-            config = self._get_and_set_ib_config_from_file()
+            config = self._get_and_set_config_from_file()
 
         return config
 
-    def _get_and_set_ib_config_from_file(self) ->pd.DataFrame:
+    def _get_and_set_config_from_file(self) ->pd.DataFrame:
 
         try:
-            config_data = pd.read_csv(IB_CCY_CONFIG_FILE)
+            config_data = pd.read_csv(self._get_fx_config_filename())
         except BaseException:
-            self.log.warn("Can't read file %s" % IB_CCY_CONFIG_FILE)
+            self.log.warn("Can't read file %s" % self._get_fx_config_filename())
             config_data = missing_file
 
         self._config = config_data
 
         return config_data
+
+    def _get_fx_config_filename(self):
+        return get_filename_for_package(
+            "sysbrokers.IB.ib_config_spot_FX.csv")
 
