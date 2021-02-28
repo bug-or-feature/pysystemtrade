@@ -1,18 +1,15 @@
 from collections import  namedtuple
 import pandas as pd
 
-from syscore.fileutils import get_filename_for_package
-from syscore.objects import missing_file, missing_instrument, missing_data
 from sysdata.alphavantage.av_connection import avConnection
 from sysdata.fx.spotfx import fxPricesData
-from syslogdiag.log import logtoscreen
-from sysobjects.spot_fx_prices import fxPrices
 
-CCY_CONFIG_FILE = get_filename_for_package(
-    "sysdata.alphavantage.av_config_spot_FX.csv")
+from sysobjects.spot_fx_prices import fxPrices
+from syslogdiag.log import logtoscreen
+from syscore.fileutils import get_filename_for_package
+from syscore.objects import missing_instrument, missing_file, missing_data
 
 fxConfig = namedtuple("avFXConfig", ["ccy1", "ccy2", "invert"])
-
 
 class avFxPricesData(fxPricesData):
 
@@ -46,11 +43,11 @@ class avFxPricesData(fxPricesData):
                 currency_code, fx_code=currency_code)
             return fxPrices.create_empty()
 
-        data = self._get_fx_prices_with_alphavantage_config(currency_code, config_for_code)
+        data = self._get_fx_prices_with_config(currency_code, config_for_code)
 
         return data
 
-    def _get_fx_prices_with_alphavantage_config(self, currency_code: str, config_for_code: fxConfig) ->fxPrices:
+    def _get_fx_prices_with_config(self, currency_code: str, config_for_code: fxConfig) ->fxPrices:
         raw_fx_prices_as_series = self._get_raw_fx_prices(config_for_code)
 
         if len(raw_fx_prices_as_series) == 0:
@@ -104,16 +101,16 @@ class avFxPricesData(fxPricesData):
     def _get_fx_config(self) ->pd.DataFrame:
         config = getattr(self, "_config", None)
         if config is None:
-            config = self._get_and_set_av_config_from_file()
+            config = self._get_and_set_config_from_file()
 
         return config
 
-    def _get_and_set_av_config_from_file(self) ->pd.DataFrame:
+    def _get_and_set_config_from_file(self) ->pd.DataFrame:
 
         try:
-            config_data = pd.read_csv(CCY_CONFIG_FILE)
+            config_data = pd.read_csv(self._get_fx_config_filename())
         except BaseException:
-            self.log.warn("Can't read file %s" % CCY_CONFIG_FILE)
+            self.log.warn("Can't read file %s" % self._get_fx_config_filename())
             config_data = missing_file
 
         self._config = config_data
@@ -134,3 +131,6 @@ class avFxPricesData(fxPricesData):
             self, *args, **kwargs):
         raise NotImplementedError("Alpha Vantage is a read only source of prices")
 
+    def _get_fx_config_filename(self):
+        return get_filename_for_package(
+            "sysdata.alphavantage.av_config_spot_FX.csv")
