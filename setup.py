@@ -35,6 +35,9 @@ private_yaml_files = package_files(private_dir, "yaml")
 provided_dir = os.path.join(dir_this_file(), "systems", "provided")
 provided_yaml_files = package_files(provided_dir, "yaml")
 
+control_dir = os.path.join(dir_this_file(), "syscontrol")
+control_yaml_files = package_files(control_dir, "yaml")
+
 data_csv_path = os.path.join(dir_this_file(), "data")
 data_csv_files = package_files(data_csv_path, "csv")
 
@@ -43,6 +46,9 @@ init_csv_files = package_files(init_csv_path, "csv")
 
 test_data_csv_path = os.path.join(dir_this_file(), "sysdata")
 test_data_csv_files = package_files(test_data_csv_path, "csv")
+
+default_config_path = os.path.join(dir_this_file(), "sysdata", "config")
+default_config_yaml_files = package_files(default_config_path, "yaml")
 
 brokers_csv_path = os.path.join(dir_this_file(), "sysbrokers")
 brokers_csv_files = package_files(brokers_csv_path, "csv")
@@ -53,6 +59,8 @@ package_data = {
     + data_csv_files
     + test_data_csv_files
     + brokers_csv_files
+    + control_yaml_files
+    + default_config_yaml_files
 }
 
 print(package_data)
@@ -72,13 +80,13 @@ setup(
     long_description=read("README.md"),
     install_requires=[
         "pandas==0.25.2",
-        "matplotlib>=1.4.3",
-        "PyYAML>=5.3.1",
-        "numpy>=1.13.3",
+        "matplotlib>=3.0.0",
+        "PyYAML==5.3.1",
+        "numpy==1.19.4",
         "scipy>=1.0.0",
-        "pymongo>=3.6.0",
-        "arctic>=1.79.2",
-        "ib-insync>=0.9.64"
+        "pymongo==3.9.0",
+        "arctic==1.79.2",
+        "ib-insync==0.9.64"
     ],
     tests_require=[
         "nose",

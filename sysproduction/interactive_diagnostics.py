@@ -7,15 +7,15 @@ from syscore.genutils import (
 )
 from syscore.pdutils import set_pd_print_options
 from syscore.objects import user_exit, arg_not_supplied
-from sysexecution.base_orders import listOfOrders
+from sysexecution.orders.list_of_orders import listOfOrders
 
 from sysdata.data_blob import dataBlob
 
-from sysproduction.data.backtest import dataBacktest
+from sysproduction.data.backtest import user_choose_backtest, interactively_choose_timestamp
 from sysproduction.data.capital import dataCapital
 from sysproduction.data.contracts import (
     get_valid_instrument_code_and_contractid_from_user,
-    diagContracts, get_valid_contract_object_from_user
+    dataContracts, get_valid_contract_object_from_user
 )
 from sysproduction.data.currency_data import dataCurrency, get_valid_fx_code_from_user
 from sysproduction.data.instruments import diagInstruments
@@ -25,10 +25,11 @@ from sysproduction.data.positions import diagPositions, dataOptimalPositions
 from sysproduction.data.prices import get_valid_instrument_code_from_user, diagPrices
 from sysproduction.data.strategies import get_valid_strategy_name_from_user
 
-from sysproduction.diagnostic.emailing import retrieve_and_delete_stored_messages
+from syslogdiag.email_via_db_interface import retrieve_and_delete_stored_messages
 from sysproduction.diagnostic.reporting import run_report
 from sysproduction.diagnostic.rolls import ALL_ROLL_INSTRUMENTS
 from sysproduction.diagnostic.strategies import ALL_STRATEGIES
+from sysproduction.diagnostic.trading_hours import get_trading_hours_for_all_instruments
 from sysproduction.diagnostic.report_configs import (
     roll_report_config,
     daily_pandl_report_config,
@@ -94,10 +95,7 @@ nested_menu_of_options = {0: {1: "Interactive python",
                               33: "FX prices",
                               },
                           4: {40: "Capital for an individual strategy",
-                              41: "Total capital: current capital",
-                              42: "Total capital: broker account valuation",
-                              43: "Total capital: maximum capital",
-                              44: "Total capital: accumulated returns",
+                              41: "Capital for global account, all strategies",
                               },
                           5: {50: "Optimal position history (instruments for strategy)",
                               51: "Actual position history (instruments for strategy)",
@@ -109,6 +107,7 @@ nested_menu_of_options = {0: {1: "Interactive python",
                               },
                           6: {60: "View instrument configuration data",
                               61: "View contract configuration data",
+                              62: "View trading hours for all instruments"
                               },
                           }
 
@@ -118,27 +117,28 @@ def not_defined(data):
 
 
 def backtest_plot(data):
-    data_backtests = dataBacktest(data)
+    data_backtests = user_choose_backtest(data)
     data_backtests.plot_data_loop()
     return None
 
 
 def backtest_python(data):
-    data_backtests = dataBacktest(data)
+    data_backtests = user_choose_backtest(data)
     data_backtests.eval_loop()
     return None
 
 
 def backtest_print(data):
-    data_backtests = dataBacktest(data)
+    data_backtests = user_choose_backtest(data)
     data_backtests.print_data_loop()
     return None
 
 
 def backtest_html(data):
-    data_backtests = dataBacktest(data)
+    data_backtests = user_choose_backtest(data)
     data_backtests.html_data_loop()
     return None
+
 
 
 # reports
@@ -185,9 +185,8 @@ def strategy_report(data):
         data=data, allow_all=True, all_code = ALL_STRATEGIES
     )
     if strategy_name != ALL_STRATEGIES:
-        data_backtests = dataBacktest(data)
-        timestamp = data_backtests.interactively_choose_timestamp(
-            strategy_name)
+        timestamp = interactively_choose_timestamp(strategy_name=strategy_name,
+            data=data)
     else:
         timestamp = arg_not_supplied
 
@@ -242,13 +241,7 @@ def get_report_dates(data):
 
 # logs emails errors
 def retrieve_emails(data):
-    subject = get_and_convert(
-        "Subject of emails (copy from emails)?",
-        type_expected=str,
-        allow_default=True,
-        default_value=None,
-    )
-    messages = retrieve_and_delete_stored_messages(data, subject=subject)
+    messages = retrieve_and_delete_stored_messages(data)
     for msg in messages:
         print(msg)
 
@@ -297,7 +290,7 @@ def build_attribute_dict(diag_logs, lookback_days):
         print("Which attribute to filter by?")
         attribute_name = print_menu_of_values_and_get_response(
             list_of_attributes)
-        list_of_attribute_values = diag_logs.get_list_of_values_for_log_attribute(
+        list_of_attribute_values = diag_logs.get_unique_list_of_values_for_log_attribute(
             attribute_name, attribute_dict=attribute_dict, lookback_days=lookback_days)
         print("Which value for %s ?" % attribute_name)
         attribute_value = print_menu_of_values_and_get_response(
@@ -314,7 +307,7 @@ def build_attribute_dict(diag_logs, lookback_days):
 
 # prices
 def individual_prices(data):
-    contract = get_valid_contract_object_from_user(data, include_priced_contracts=True)
+    contract = get_valid_contract_object_from_user(data, only_include_priced_contracts=True)
     diag_prices = diagPrices(data)
     prices = diag_prices.get_prices_for_contract_object(contract)
 
@@ -364,34 +357,14 @@ def capital_strategy(data):
 
 def total_current_capital(data):
     data_capital = dataCapital(data)
-    capital_series = data_capital.get_series_of_total_capital()
+    capital_series = data_capital.get_series_of_all_global_capital()
     print(capital_series)
     return None
 
-
-def total_broker_capital(data):
-    data_capital = dataCapital(data)
-    capital_series = data_capital.get_series_of_broker_capital()
-    print(capital_series)
-    return None
-
-
-def total_max_capital(data):
-    data_capital = dataCapital(data)
-    capital_series = data_capital.get_series_of_maximum_capital()
-    print(capital_series)
-    return None
-
-
-def total_acc_capital(data):
-    data_capital = dataCapital(data)
-    capital_series = data_capital.get_series_of_accumulated_capital()
-    print(capital_series)
-    return None
 
 
 def optimal_positions(data):
-    strategy_name = get_valid_strategy_name_from_user(data=data)
+    strategy_name = get_valid_strategy_name_from_user(data=data, source="optimal_positions")
     optimal_data = dataOptimalPositions(data)
 
     instrument_code_list = (
@@ -429,7 +402,7 @@ def actual_instrument_position(data):
         return None
 
     instrument_code_list = (
-        diag_positions.get_list_of_instruments_for_strategy_with_position(strategy_name))
+        diag_positions.get_list_of_instruments_for_strategy_with_position(strategy_name, ignore_zero_positions=False))
     instrument_code = get_valid_code_from_list(instrument_code_list)
     if instrument_code is user_exit:
         return None
@@ -539,8 +512,11 @@ def view_individual_order(data):
         order = data_orders.get_historic_contract_order_from_order_id(order_id)
     elif order_type == list_of_order_types[2]:
         order = data_orders.get_historic_broker_order_from_order_id(order_id)
+    else:
+        print("Don't know what to do")
+        return None
 
-    print(order)
+    print(order.full_repr())
 
     return None
 
@@ -557,8 +533,8 @@ def view_instrument_config(data):
 def view_contract_config(data):
     instrument_code, contract_id = get_valid_instrument_code_and_contractid_from_user(
         data)
-    diag_contracts = diagContracts(data)
-    contract_object = diag_contracts.get_contract_object(
+    diag_contracts = dataContracts(data)
+    contract_object = diag_contracts.get_contract_from_db_given_code_and_id(
         instrument_code, contract_id)
     contract_date = diag_contracts.get_contract_date_object_with_roll_parameters(
         instrument_code, contract_id)
@@ -567,6 +543,12 @@ def view_contract_config(data):
 
     return None
 
+
+
+def print_trading_hours_for_all_instruments(data=arg_not_supplied):
+    all_trading_hours = get_trading_hours_for_all_instruments(data)
+    for key, value in sorted(all_trading_hours.items(), key=lambda x: x[0]):
+        print("{} : {}".format(key, value))
 
 dict_of_functions = {
     1: backtest_python,
@@ -580,7 +562,7 @@ dict_of_functions = {
     14: reconcile_report,
     15: strategy_report,
     16: risk_report,
-    20: retrieve_and_delete_stored_messages,
+    20: retrieve_emails,
     21: view_errors,
     22: view_logs,
     30: individual_prices,
@@ -589,9 +571,6 @@ dict_of_functions = {
     33: fx_prices,
     40: capital_strategy,
     41: total_current_capital,
-    42: total_broker_capital,
-    43: total_max_capital,
-    44: total_acc_capital,
     50: optimal_positions,
     51: actual_instrument_position,
     52: actual_contract_position,
@@ -601,4 +580,5 @@ dict_of_functions = {
     56: view_individual_order,
     60: view_instrument_config,
     61: view_contract_config,
+    62: print_trading_hours_for_all_instruments
 }

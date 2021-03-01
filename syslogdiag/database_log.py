@@ -1,9 +1,10 @@
 import itertools
 
-from syscore.objects import missing_data
-from syslogdiag.log import logger, logEntry, LEVEL_ID, INVERSE_MAP
+from syscore.objects import missing_data, arg_not_supplied
+from sysdata.base_data import baseData
+from syslogdiag.log import logger, logEntry, LEVEL_ID, INVERSE_MAP, logtoscreen
 
-from sysproduction.diagnostic.emailing import send_production_mail_msg
+from syslogdiag.email_via_db_interface import send_production_mail_msg
 
 LOG_COLLECTION_NAME = "Logs"
 EMAIL_ON_LOG_LEVEL = [4]
@@ -46,33 +47,36 @@ class logToDb(logger):
 
     def email_user(self, log_entry):
         data = self.data
-        try:
-            send_production_mail_msg(data, str(log_entry), "*CRITICAL ERROR*")
-        except BaseException:
-            self.error("Couldn't email user")
+        send_production_mail_msg(data, str(log_entry), "*CRITICAL ERROR*")
 
 
-class logData(object):
-    def __init__(self):
-        pass
+class logData(baseData):
+    def __init__(self, log = logger("logData")):
+        super().__init__(log=log)
 
     def get_log_items_with_level(
-        self, log_level, attribute_dict=dict(), lookback_days=1
+        self, log_level, attribute_dict=arg_not_supplied, lookback_days=1
     ):
+        if attribute_dict is arg_not_supplied:
+            attribute_dict = {}
+
         attribute_dict[LEVEL_ID] = log_level
 
-        ans = self.get_log_items(
+        list_of_log_items = self.get_log_items(
             attribute_dict=attribute_dict, lookback_days=lookback_days
         )
 
-        return ans
+        return list_of_log_items
 
     def get_possible_log_level_mapping(self):
         return INVERSE_MAP
 
-    def get_list_of_values_for_log_attribute(
-        self, attribute_name, attribute_dict={}, lookback_days=7
+    def get_unique_list_of_values_for_log_attribute(
+        self, attribute_name, attribute_dict=arg_not_supplied, lookback_days=7
     ):
+        if attribute_dict is arg_not_supplied:
+            attribute_dict = {}
+
         list_of_log_attributes = self.get_list_of_log_attributes(
             attribute_dict=attribute_dict, lookback_days=lookback_days
         )
@@ -87,7 +91,10 @@ class logData(object):
         return unique_list_of_values
 
     def get_list_of_unique_log_attribute_keys(
-            self, attribute_dict={}, lookback_days=1):
+            self, attribute_dict=arg_not_supplied, lookback_days=1):
+        if attribute_dict is arg_not_supplied:
+            attribute_dict = {}
+
         list_of_log_attributes = self.get_list_of_log_attributes(
             attribute_dict=attribute_dict, lookback_days=lookback_days
         )
@@ -102,7 +109,10 @@ class logData(object):
 
         return unique_list_of_log_attribute_keys
 
-    def get_list_of_log_attributes(self, attribute_dict={}, lookback_days=1):
+    def get_list_of_log_attributes(self, attribute_dict=arg_not_supplied, lookback_days=1):
+        if attribute_dict is arg_not_supplied:
+            attribute_dict = {}
+
         list_of_log_items = self.get_log_items(
             attribute_dict=attribute_dict, lookback_days=lookback_days
         )
@@ -111,27 +121,31 @@ class logData(object):
 
         return list_of_log_attributes
 
-    def get_log_items(self, attribute_dict=dict(), lookback_days=1):
+    def get_log_items(self, attribute_dict=arg_not_supplied, lookback_days=1):
         """
         Return log items as list of text
 
         :param attribute_dict: dictionary of attributes to return logs for
         :return: list of str
         """
+        if attribute_dict is arg_not_supplied:
+            attribute_dict = {}
 
-        results = self.get_log_items_as_entries(
+        list_of_log_items = self.get_log_items_as_entries(
             attribute_dict, lookback_days=lookback_days
         )
 
-        return results
+        return list_of_log_items
 
-    def print_log_items(self, attribute_dict=dict(), lookback_days=1):
+    def print_log_items(self, attribute_dict=arg_not_supplied, lookback_days=1):
         """
         Print log items as list of text
 
         :param attribute_dict: dictionary of attributes to return logs for
         :return: list of str
         """
+        if attribute_dict is arg_not_supplied:
+            attribute_dict = {}
 
         results = self.get_log_items(
             attribute_dict=attribute_dict, lookback_days=lookback_days
@@ -141,16 +155,21 @@ class logData(object):
 
         print("\n".join(results_as_text))
 
-    def find_last_entry_date(self, attribute_dict=dict(), lookback_days=30):
+    def find_last_entry_date(self, attribute_dict=arg_not_supplied, lookback_days=30):
+        if attribute_dict is arg_not_supplied:
+            attribute_dict = {}
+
         results = self.get_log_items_as_entries(
             attribute_dict=attribute_dict, lookback_days=lookback_days
         )
         time_stamps = [entry.timestamp for entry in results]
         if len(time_stamps) == 0:
             return missing_data
-        return max(time_stamps)
 
-    def get_log_items_as_entries(self, attribute_dict=dict(), lookback_days=1):
+        last_entry_date= max(time_stamps)
+        return last_entry_date
+
+    def get_log_items_as_entries(self, attribute_dict=arg_not_supplied, lookback_days=1):
         """
         Return log items not as text, good for diagnostics
 

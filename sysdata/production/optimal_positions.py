@@ -9,79 +9,17 @@ A mean reversion style class would include price buffers
 
 """
 
-import pandas as pd
-
-from syscore.objects import arg_not_supplied, failure, success, missing_data
-from sysdata.base_data import baseData
-from syslogdiag.log import logtoscreen
-from sysdata.production.generic_timed_storage import (
-    timedEntry,
-    listOfEntries,
+from syscore.objects import failure
+from sysdata.production.timed_storage import (
     listOfEntriesData,
 )
-from sysdata.production.current_positions import (
-    instrumentStrategy,
-    instrumentStrategyPosition,
-)
+from sysobjects.production.optimal_positions import simpleOptimalPosition, bufferedOptimalPositions, \
+    instrumentStrategyAndOptimalPosition, listOfOptimalPositionsAcrossInstrumentStrategies
+from sysobjects.production.timed_storage import listOfEntries
+from sysobjects.production.tradeable_object import listOfInstrumentStrategies, instrumentStrategy
 
 
-class simpleOptimalPosition(timedEntry):
-    """
-    This is the simplest possible optimal positions object
-
-    """
-
-    def _setup_args_data(self):
-        self._star_args = ["position"]  # compulsory args
-
-    def _name_(self):
-        return "simpleOptimalPosition"
-
-    def _containing_data_class_name(self):
-        return "sysdata.production.optimal_positions.simpleOptimalPositionForInstrument"
-
-    def check_position_break(self, position):
-        return self.position == position
-
-
-class bufferedOptimalPositions(timedEntry):
-    """
-    Here is one with buffers
-
-    """
-
-    def _setup_args_data(self):
-        self._star_args = [
-            "lower_position",
-            "upper_position",
-            "reference_price",
-            "reference_contract",
-        ]  # compulsory args
-
-    def _name_(self):
-        return "bufferedOptimalPosition"
-
-    def _containing_data_class_name(self):
-        return (
-            "sysdata.production.optimal_positions.bufferedOptimalPositionForInstrument"
-        )
-
-    def _kwargs_checks(self, kwargs):
-        try:
-            assert kwargs["upper_position"] >= kwargs["lower_position"]
-        except BaseException:
-            raise Exception(
-                "Upper position has to be higher than lower position")
-
-    def check_position_break(self, position):
-        return position < round(self.lower_position) or position > round(
-            self.upper_position
-        )
-
-    def __repr__(self):
-        return "%.3f/%.3f" % (self.lower_position, self.upper_position)
-
-
+## THIS HAS TO STAY HERE OR OLD DATA WILL BREAK - DO NOT MOVE
 class simpleOptimalPositionForInstrument(listOfEntries):
     """
     A list of positions
@@ -91,6 +29,7 @@ class simpleOptimalPositionForInstrument(listOfEntries):
         return simpleOptimalPosition
 
 
+## THIS HAS TO STAY HERE OR OLD DATA WILL BREAK - DO NOT MOVE
 class bufferedOptimalPositionForInstrument(listOfEntries):
     """
     A list of positions over time
@@ -99,113 +38,6 @@ class bufferedOptimalPositionForInstrument(listOfEntries):
     def _entry_class(self):
         return bufferedOptimalPositions
 
-
-class tradeableObjectAndOptimalPosition(object):
-    def __init__(self, tradeable_object, optimal_position_object):
-        self.tradeable_object = tradeable_object
-        self.optimal_position = optimal_position_object
-
-    def check_tradeable_objects_match(self, tradeable_object_and_position):
-        return self.tradeable_object == tradeable_object_and_position.tradeable_object
-
-
-class tradeableObjectAndOptimalAndCurrentPosition(object):
-    def __init__(
-            self,
-            tradeable_object_and_optimal_position,
-            tradeable_object_and_position):
-        # this is contains a instrumentStrategyPosition type thing, and a tradeableObjectAndOptimalPosition
-        # type thing
-
-        # same tradeable object, so that is stored plus Position, and
-        # OptimalPosition
-        assert (
-            tradeable_object_and_optimal_position.check_tradeable_objects_match(
-                tradeable_object_and_position
-            )
-            is True
-        )
-        self.tradeable_object = tradeable_object_and_optimal_position.tradeable_object
-        self.position = tradeable_object_and_position.position
-        self.optimal_position = tradeable_object_and_optimal_position.optimal_position
-
-    def check_break(self):
-        return self.optimal_position.check_position_break(self.position)
-
-
-class listOfOptimalPositionsAcrossTradeableObjects(list):
-    # list of tradeableObjectAndOptimalPosition
-    # need to set up so sysproduction.positions.optimal position data reports this eg
-    # optimal_position_data.get_current_optimal_positions_across_strategies_and_instruments()
-    def as_pd(self):
-        list_of_keys = [pos.tradeable_object for pos in self]
-        list_of_optimal = [pos.optimal_position for pos in self]
-
-        return pd.DataFrame(dict(key=list_of_keys, optimal=list_of_optimal))
-
-    def add_positions(self, position_list):
-        # returns listOfBufferedAndCurrentPositionsAcrossTradeableObjects
-        # takes as input
-        # diag_positions.get_all_current_strategy_instrument_positions() type
-        # thing
-        list_of_optimal_and_current = []
-        list_of_tradeable_objects_position_list = [
-            pos.tradeable_object for pos in position_list
-        ]
-        for opt_pos_object in self:
-            tradeable_object = opt_pos_object.tradeable_object
-            try:
-                idx = list_of_tradeable_objects_position_list.index(
-                    tradeable_object)
-                relevant_position_item = position_list[idx]
-            except ValueError:
-                strategy_name = tradeable_object.strategy_name
-                instrument_code = tradeable_object.instrument_code
-                relevant_position_item = instrumentStrategyPosition(
-                    0, strategy_name, instrument_code
-                )
-
-            new_object = tradeableObjectAndOptimalAndCurrentPosition(
-                opt_pos_object, relevant_position_item
-            )
-            list_of_optimal_and_current.append(new_object)
-
-        list_of_optimal_and_current = (
-            listOfOptimalAndCurrentPositionsAcrossTradeableObjects(
-                list_of_optimal_and_current
-            )
-        )
-        return list_of_optimal_and_current
-
-
-class listOfOptimalAndCurrentPositionsAcrossTradeableObjects(list):
-    # list of tradeableObjectAndOptimalAndCurrentPosition
-    #
-    # needs to be gettable by sysproduction.data.diagPositions
-
-    def check_breaks(self):
-        # return a list of bool
-        list_of_breaks = [pos.check_break() for pos in self]
-
-        return list_of_breaks
-
-    def as_pd_with_breaks(self):
-        tradeable_objects = [pos.tradeable_object for pos in self]
-        optimal_positions = [pos.optimal_position for pos in self]
-        current_positions = [pos.position for pos in self]
-        breaks = self.check_breaks()
-
-        ans = pd.DataFrame(
-            dict(
-                current=current_positions,
-                optimal=optimal_positions,
-                breaks=breaks),
-            index=tradeable_objects,
-        )
-
-        return ans
-
-
 class optimalPositionData(listOfEntriesData):
     """
     Store and retrieve the optimal positions assigned to a particular strategy
@@ -213,123 +45,132 @@ class optimalPositionData(listOfEntriesData):
     We store the type of list in the data
     """
 
-    def _name(self):
-        return "optimalPositionData"
-
     def _data_class_name(self):
         # This is the default, may be overriden
         return "sysdata.production.optimal_positions.simpleOptimalPositionForInstrument"
 
-    def get_list_of_optimal_positions_for_strategy(self, strategy_name):
-        list_of_instrument_codes = (
-            self.get_list_of_instruments_for_strategy_with_optimal_position(
-                strategy_name
-            )
+    def get_list_of_optimal_positions_for_strategy(self, strategy_name: str) -> listOfOptimalPositionsAcrossInstrumentStrategies:
+        list_of_instrument_strategies = \
+            self.get_list_of_instrument_strategies_for_strategy_with_optimal_position(strategy_name)
+
+        list_of_instrument_strategies_with_positions = \
+            self.get_list_of_optimal_positions_given_list_of_instrument_strategies(
+                list_of_instrument_strategies)
+
+        return list_of_instrument_strategies_with_positions
+
+    def get_list_of_optimal_positions(self) -> listOfOptimalPositionsAcrossInstrumentStrategies:
+        list_of_instrument_strategies = (
+            self.get_list_of_instrument_strategies_with_optimal_position()
         )
-        list_of_optimal_positions_and_tradeable_objects = [
-            self.get_tradeable_object_and_optimal_position(
-                strategy_name, instrument_code
+
+        list_of_optimal_positions_and_instrument_strategies = \
+            self.get_list_of_optimal_positions_given_list_of_instrument_strategies(
+                list_of_instrument_strategies)
+
+        return list_of_optimal_positions_and_instrument_strategies
+
+    def get_list_of_optimal_positions_given_list_of_instrument_strategies(self,
+                                                                          list_of_instrument_strategies: listOfInstrumentStrategies)\
+            -> listOfOptimalPositionsAcrossInstrumentStrategies:
+
+        list_of_optimal_positions_and_instrument_strategies = [
+            self.get_instrument_strategy_and_optimal_position(instrument_strategy
             )
-            for instrument_code in list_of_instrument_codes
+            for instrument_strategy in list_of_instrument_strategies
         ]
-        output = listOfOptimalPositionsAcrossTradeableObjects(
-            list_of_optimal_positions_and_tradeable_objects
+
+        list_of_optimal_positions_and_instrument_strategies = listOfOptimalPositionsAcrossInstrumentStrategies(
+            list_of_optimal_positions_and_instrument_strategies
         )
 
-        return output
+        return list_of_optimal_positions_and_instrument_strategies
 
-    def get_list_of_optimal_positions(self):
-        list_of_strategies_and_instruments = (
-            self.get_list_of_strategies_and_instruments_with_optimal_position()
-        )
-        list_of_optimal_positions_and_tradeable_objects = [
-            self.get_tradeable_object_and_optimal_position(
-                strategy_name, instrument_code
-            )
-            for strategy_name, instrument_code in list_of_strategies_and_instruments
-        ]
-        output = listOfOptimalPositionsAcrossTradeableObjects(
-            list_of_optimal_positions_and_tradeable_objects
-        )
-
-        return output
-
-    def get_tradeable_object_and_optimal_position(
-            self, strategy_name, instrument_code):
+    def get_instrument_strategy_and_optimal_position(
+            self, instrument_strategy: instrumentStrategy)\
+            -> instrumentStrategyAndOptimalPosition:
+        
         optimal_position = (
-            self.get_current_optimal_position_for_strategy_and_instrument(
-                strategy_name, instrument_code
+            self.get_current_optimal_position_for_instrument_strategy(
+                instrument_strategy
             )
         )
-        tradeable_object = instrumentStrategy(strategy_name, instrument_code)
-        tradeable_object_and_optimal_position = tradeableObjectAndOptimalPosition(
-            tradeable_object, optimal_position)
+        instrument_strategy_and_optimal_position = instrumentStrategyAndOptimalPosition(
+            instrument_strategy, optimal_position)
 
-        return tradeable_object_and_optimal_position
+        return instrument_strategy_and_optimal_position
 
-    def get_optimal_position_as_df_for_strategy_and_instrument(
-        self, strategy_name, instrument_code
+    def get_optimal_position_as_df_for_instrument_strategy(
+        self, instrument_strategy: instrumentStrategy
     ):
         position_series = self._get_series_for_args_dict(
-            dict(strategy_name=strategy_name, instrument_code=instrument_code)
+            instrument_strategy.as_dict()
         )
         df_object = position_series.as_pd_df()
         return df_object
 
-    def get_current_optimal_position_for_strategy_and_instrument(
-        self, strategy_name, instrument_code
+
+    def get_current_optimal_position_for_instrument_strategy(
+            self, instrument_strategy: instrumentStrategy
     ):
         current_optimal_position_entry = self._get_current_entry_for_args_dict(
-            dict(strategy_name=strategy_name, instrument_code=instrument_code)
+            instrument_strategy.as_dict()
         )
 
         return current_optimal_position_entry
 
-    def update_optimal_position_for_strategy_and_instrument(
-        self, strategy_name, instrument_code, position_entry
-    ):
-
+    def update_optimal_position_for_instrument_strategy(self,
+                                                        instrument_strategy: instrumentStrategy,
+                                                        position_entry: simpleOptimalPosition):
         try:
             self._update_entry_for_args_dict(
                 position_entry,
-                dict(
-                    strategy_name=strategy_name,
-                    instrument_code=instrument_code),
+                instrument_strategy.as_dict(),
             )
         except Exception as e:
             self.log.warn(
-                "Error %s when updating position for %s/%s with %s"
-                % (str(e), strategy_name, instrument_code, str(position_entry))
+                "Error %s when updating position for %s with %s"
+                % (str(e), str(instrument_strategy), str(position_entry))
             )
             return failure
 
-    def get_list_of_strategies_and_instruments_with_optimal_position(self):
-        list_of_args_dict = self._get_list_of_args_dict()
-        strat_instr_tuples = []
-        for arg_entry in list_of_args_dict:
-            strat_instr_tuples.append(
-                (arg_entry["strategy_name"], arg_entry["instrument_code"])
-            )
 
-        return strat_instr_tuples
+    def get_list_of_instruments_for_strategy_with_optimal_position(self, strategy_name:str) -> list:
 
-    def get_list_of_instruments_for_strategy_with_optimal_position(
-            self, strategy_name):
-        list_of_all_positions = (
-            self.get_list_of_strategies_and_instruments_with_optimal_position()
-        )
-        list_of_instruments = [
-            position[1]
-            for position in list_of_all_positions
-            if position[0] == strategy_name
-        ]
+        list_of_instrument_strategies = \
+            self.get_list_of_instrument_strategies_with_optimal_position()
+
+        list_of_instruments = list_of_instrument_strategies.get_list_of_instruments_for_strategy(strategy_name)
 
         return list_of_instruments
 
-    def delete_last_position_for_strategy_and_instrument(
-        self, strategy_name, instrument_code, are_you_sure=False
-    ):
-        self._delete_last_entry_for_args_dict(
-            dict(strategy_name=strategy_name, instrument_code=instrument_code),
-            are_you_sure=are_you_sure,
+    def list_of_strategies_with_optimal_position(self) -> list:
+        list_of_instrument_strategies = \
+            self.get_list_of_instrument_strategies_with_optimal_position()
+
+        list_of_strategies = list_of_instrument_strategies.get_list_of_strategies()
+
+        return list_of_strategies
+
+    def get_list_of_instrument_strategies_for_strategy_with_optimal_position(
+            self, strategy_name: str) -> listOfInstrumentStrategies:
+
+        list_of_instrument_strategies = (
+            self.get_list_of_instrument_strategies_with_optimal_position()
         )
+        list_of_instrument_strategies_for_strategy = \
+            list_of_instrument_strategies.get_list_of_instrument_strategies_for_strategy(strategy_name)
+
+        return list_of_instrument_strategies_for_strategy
+
+    def get_list_of_instrument_strategies_with_optimal_position(self) -> listOfInstrumentStrategies:
+
+        list_of_args_dict = self._get_list_of_args_dict()
+        list_of_instrument_strategies = []
+        for arg_entry in list_of_args_dict:
+            list_of_instrument_strategies.append(
+                instrumentStrategy.from_dict(arg_entry)
+            )
+        list_of_instrument_strategies = listOfInstrumentStrategies(list_of_instrument_strategies)
+
+        return list_of_instrument_strategies

@@ -589,7 +589,7 @@ class Portfolios(_PortfoliosCalculateIDM, _PortfoliosCalculateWeights):
 
         buffer_size = self.parent.config.buffer_size
 
-        position = self.get_notional_position(instrument_code)
+        position = abs(self.get_notional_position(instrument_code))
 
         buffer = position * buffer_size
 
@@ -639,7 +639,7 @@ class Portfolios(_PortfoliosCalculateIDM, _PortfoliosCalculateWeights):
         idm = idm.reindex(position.index).ffill()
         vol_scalar = vol_scalar.reindex(position.index).ffill()
 
-        average_position = vol_scalar * inst_weight_this_code * idm
+        average_position = abs(vol_scalar * inst_weight_this_code * idm)
 
         buffer = average_position * buffer_size
 

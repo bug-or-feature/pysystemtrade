@@ -8,6 +8,7 @@ from collections import namedtuple
 from syscore.objects import header, table, body_text, arg_not_supplied, missing_data
 
 from sysobjects.contracts import futuresContract
+from sysobjects.production.tradeable_object import instrumentStrategy
 
 from sysproduction.data.capital import dataCapital
 
@@ -129,15 +130,18 @@ def temp_pandl_read(self, instrument_code):
 def get_total_capital_series(data):
     data_capital_object = dataCapital(data)
 
-    return data_capital_object.get_series_of_maximum_capital()
+
+    return df_to_series(data_capital_object.get_series_of_maximum_capital())
 
 
 def get_strategy_capital_series(data, strategy_name):
     data_capital_object = dataCapital(data)
 
-    return data_capital_object.get_capital_pd_series_for_strategy(
-        strategy_name)
+    return df_to_series(data_capital_object.get_capital_pd_series_for_strategy(
+        strategy_name))
 
+def df_to_series(x):
+    return x._series[x.keys()[0]]
 
 def get_daily_perc_pandl(data):
     data_capital_object = dataCapital(data)
@@ -145,6 +149,7 @@ def get_daily_perc_pandl(data):
     # This is for 'non compounding' p&l
     total_pandl_series = data_capital_object.get_series_of_accumulated_capital()
     daily_pandl_series = total_pandl_series.ffill().diff()
+    daily_pandl_series = df_to_series(daily_pandl_series)
 
     all_capital = get_total_capital_series(data)
 
@@ -517,6 +522,8 @@ def get_pandl_series_in_local_ccy_for_strategy_instrument(
 
 def get_pandl_series_in_points_for_contract(
         data, instrument_code, contract_id):
+    print(instrument_code)
+    print(contract_id)
     pos_series = get_position_series_for_contract(
         data, instrument_code, contract_id)
     price_series = get_price_series_for_contract(
@@ -628,8 +635,8 @@ def get_position_series_for_instrument_strategy(
 
 def get_trade_df_for_contract(data, instrument_code, contract_id):
     data_orders = dataOrders(data)
-    list_of_trades = data_orders.get_fills_history_for_instrument_and_contract_id(
-        instrument_code, contract_id)
+    contract  = futuresContract(instrument_code, contract_id)
+    list_of_trades = data_orders.get_fills_history_for_contract(contract)
     list_of_trades_as_pd_df = list_of_trades.as_pd_df()
 
     return list_of_trades_as_pd_df
@@ -637,9 +644,9 @@ def get_trade_df_for_contract(data, instrument_code, contract_id):
 
 def get_trade_df_for_instrument(data, instrument_code, strategy_name):
     data_orders = dataOrders(data)
-    list_of_trades = data_orders.get_fills_history_for_strategy_and_instrument(
-        strategy_name, instrument_code
-    )
+    instrument_strategy = instrumentStrategy(instrument_code=instrument_code, strategy_name=strategy_name)
+
+    list_of_trades = data_orders.get_fills_history_for_instrument_strategy(instrument_strategy)
     list_of_trades_as_pd_df = list_of_trades.as_pd_df()
 
     return list_of_trades_as_pd_df

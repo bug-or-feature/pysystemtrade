@@ -1,14 +1,12 @@
-from sysdata.production.process_control import controlProcessData, controlProcess
-from syscore.objects import success, missing_data
-from sysdata.mongodb.mongo_connection import (
-    mongoConnection,
-    MONGO_ID_KEY,
-    mongo_clean_ints,
-)
+from sysobjects.production.process_control import controlProcess
+from sysdata.production.process_control_data import controlProcessData
+from syscore.objects import arg_not_supplied, missing_data
+
+from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey
 from syslogdiag.log import logtoscreen
 
 PROCESS_CONTROL_COLLECTION = "process_control"
-
+PROCESS_CONTROL_KEY = "process_name"
 
 class mongoControlProcessData(controlProcessData):
     """
@@ -19,40 +17,27 @@ class mongoControlProcessData(controlProcessData):
 
     def __init__(
             self,
-            mongo_db=None,
+            mongo_db=arg_not_supplied,
             log=logtoscreen("mongoControlProcessData")):
 
         super().__init__(log=log)
 
-        self._mongo = mongoConnection(
-            PROCESS_CONTROL_COLLECTION, mongo_db=mongo_db)
+        self._mongo_data = mongoDataWithSingleKey(PROCESS_CONTROL_COLLECTION, PROCESS_CONTROL_KEY, mongo_db=mongo_db)
 
-        # this won't create the index if it already exists
-        self._mongo.create_index("process_name")
-
-        self.name = "Data connection for process control, mongodb %s/%s @ %s -p %s " % (
-            self._mongo.database_name,
-            self._mongo.collection_name,
-            self._mongo.host,
-            self._mongo.port,
-        )
+    @property
+    def mongo_data(self):
+        return self._mongo_data
 
     def __repr__(self):
-        return self.name
+        return "Data connection for process control, mongodb %s" % str(self.mongo_data)
 
     def get_list_of_process_names(self):
-        cursor = self._mongo.collection.find()
-        codes = [db_entry["process_name"] for db_entry in cursor]
-
-        return codes
+        return self.mongo_data.get_list_of_keys()
 
     def _get_control_for_process_name_without_default(self, process_name):
-        result_dict = self._mongo.collection.find_one(
-            dict(process_name=process_name))
-        if result_dict is None:
+        result_dict = self.mongo_data.get_result_dict_for_key_without_key_value(process_name)
+        if result_dict is missing_data:
             return missing_data
-        result_dict.pop(MONGO_ID_KEY)
-        result_dict.pop("process_name")
 
         control_object = controlProcess.from_dict(result_dict)
 
@@ -61,13 +46,7 @@ class mongoControlProcessData(controlProcessData):
     def _modify_existing_control_for_process_name(
         self, process_name, new_control_object
     ):
-        find_object_dict = dict(process_name=process_name)
-        new_values_dict = {"$set": new_control_object.as_dict()}
-        self._mongo.collection.update_one(
-            find_object_dict, new_values_dict, upsert=True
-        )
+        self.mongo_data.add_data(process_name, new_control_object.as_dict(), allow_overwrite=True)
 
     def _add_control_for_process_name(self, process_name, new_control_object):
-        object_dict = new_control_object.as_dict()
-        object_dict["process_name"] = process_name
-        self._mongo.collection.insert_one(object_dict)
+        self.mongo_data.add_data(process_name, new_control_object.as_dict(), allow_overwrite=False)

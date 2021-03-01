@@ -2,17 +2,18 @@
 Update historical data per contract from interactive brokers data, dump into mongodb
 """
 
-from syscore.objects import success, failure, data_error
+from syscore.objects import success, failure
+from syscore.merge_data import spike_in_data
 
-from sysdata.futures.futures_per_contract_prices import DAILY_PRICE_FREQ
+from syscore.dateutils import DAILY_PRICE_FREQ, Frequency
 
 from sysobjects.contracts import futuresContract
 
 from sysdata.data_blob import dataBlob
 from sysproduction.data.prices import diagPrices, updatePrices
 from sysproduction.data.broker import dataBroker
-from sysproduction.data.contracts import diagContracts
-from sysproduction.diagnostic.emailing import send_production_mail_msg
+from sysproduction.data.contracts import dataContracts
+from syslogdiag.email_via_db_interface import send_production_mail_msg
 
 
 def update_historical_prices():
@@ -52,7 +53,7 @@ def update_historical_prices_for_instrument(instrument_code: str, data: dataBlob
     :param data: dataBlob
     :return: None
     """
-    diag_contracts = diagContracts(data)
+    diag_contracts = dataContracts(data)
     all_contracts_list = diag_contracts.get_all_contract_objects_for_instrument_code(
         instrument_code)
     contract_list = all_contracts_list.currently_sampling()
@@ -94,12 +95,13 @@ def update_historical_prices_for_instrument_and_contract(
 
 
 def get_and_add_prices_for_frequency(
-        data: dataBlob, contract_object: futuresContract, frequency: str="D"):
+        data: dataBlob, contract_object: futuresContract, frequency: Frequency = DAILY_PRICE_FREQ):
     broker_data_source = dataBroker(data)
     db_futures_prices = updatePrices(data)
 
     broker_prices = broker_data_source.get_prices_at_frequency_for_contract_object(
         contract_object, frequency)
+
     if len(broker_prices)==0:
         data.log.msg("No prices from broker for %s" % str(contract_object))
         return failure
@@ -107,7 +109,8 @@ def get_and_add_prices_for_frequency(
     error_or_rows_added = db_futures_prices.update_prices_for_contract(
         contract_object, broker_prices, check_for_spike=True
     )
-    if error_or_rows_added is data_error:
+
+    if error_or_rows_added is spike_in_data:
         report_price_spike(data, contract_object)
         return failure
 

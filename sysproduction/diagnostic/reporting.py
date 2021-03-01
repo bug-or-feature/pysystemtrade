@@ -4,7 +4,7 @@ from syscore.objects import resolve_function, success, failure, arg_not_supplied
 from syscore.objects import header, table, body_text
 
 from sysdata.data_blob import dataBlob
-from sysproduction.diagnostic.emailing import send_production_mail_msg
+from syslogdiag.email_via_db_interface import send_production_mail_msg
 
 pd.set_option("display.width", 1000)
 pd.set_option("display.max_columns", 1000)
@@ -20,9 +20,7 @@ def run_report(report_config, data=arg_not_supplied):
     if data is arg_not_supplied:
         data = dataBlob(log_name="Reporting %s" % report_config.title)
 
-    report_result = run_report_with_data_blob(report_config, data)
-
-    return report_result
+    run_report_with_data_blob(report_config, data)
 
 
 def run_report_with_data_blob(report_config, data):
@@ -36,33 +34,34 @@ def run_report_with_data_blob(report_config, data):
     report_function = resolve_function(report_config.function)
     report_kwargs = report_config.kwargs
 
-    try:
-        report_results = report_function(data, **report_kwargs)
-        report_result = success
+    report_results = report_function(data, **report_kwargs)
+    """
     except Exception as e:
         report_results = [
             header(
                 "Report %s failed to process with error %s" %
                 (report_config.title, e))]
         report_result = failure
-    try:
-        parsed_report = parse_report_results(report_results)
+    """
+    parsed_report = parse_report_results(report_results)
+
+    """
     except Exception as e:
         parsed_report = "Report failed to parse %s with error %s\n" % (
             report_config.title,
             str(e),
         )
         report_result = failure
-
+    """
     # We either print or email
     if report_config.output is "console":
         print(parsed_report)
     elif report_config.output is "email":
         send_production_mail_msg(
-            data, parsed_report, subject=report_config.title, report=True
+            data, parsed_report, subject=report_config.title, email_is_report=True
         )
 
-    return report_result
+
 
 
 def parse_report_results(report_results):

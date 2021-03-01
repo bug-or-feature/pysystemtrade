@@ -1,7 +1,7 @@
 import pandas as pd
-from syscore.objects import missing_data
 from syscore.pdutils import check_df_equals, check_ts_equals
-from sysdata.private_config import get_private_then_default_key_value
+
+from sysobjects.production.tradeable_object import instrumentStrategy
 
 from sysdata.data_blob import dataBlob
 from sysproduction.data.strategies import get_list_of_strategies
@@ -35,6 +35,9 @@ from sysdata.mongodb.mongo_optimal_position import mongoOptimalPositionData
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysdata.mongodb.mongo_roll_state_storage import mongoRollStateData
 
+from sysproduction.data.directories import get_csv_backup_directory, get_csv_dump_dir
+from syscore.objects import missing_data
+
 
 def backup_arctic_to_csv():
     data = dataBlob(log_name="backup_arctic_to_csv")
@@ -49,28 +52,30 @@ class backupArcticToCsv:
         self.data = data
 
     def backup_arctic_to_csv(self):
-        data = get_data_and_create_csv_directories(self.data.log_name)
-        backup_fx_to_csv(data)
-        backup_futures_contract_prices_to_csv(data)
-        backup_multiple_to_csv(data)
-        backup_adj_to_csv(data)
-        backup_strategy_position_data(data)
-        backup_contract_position_data(data)
-        backup_historical_orders(data)
-        backup_capital(data)
-        backup_contract_data(data)
-        backup_instrument_data(data)
-        backup_optimal_positions(data)
-        backup_roll_state_data(data)
+        backup_data = get_data_and_create_csv_directories(self.data.log_name)
+        log = self.data.log
 
+        log.msg("Dumping from arctic, mongo to .csv files")
+        backup_fx_to_csv(backup_data)
+        backup_futures_contract_prices_to_csv(backup_data)
+        backup_multiple_to_csv(backup_data)
+        backup_adj_to_csv(backup_data)
+        backup_strategy_position_data(backup_data)
+        backup_contract_position_data(backup_data)
+        backup_historical_orders(backup_data)
+        backup_capital(backup_data)
+        backup_contract_data(backup_data)
+        backup_instrument_data(backup_data)
+        backup_optimal_positions(backup_data)
+        backup_roll_state_data(backup_data)
+        log.msg("Copying to backup directory")
+        backup_csv_dump(self.data)
 
-def get_backup_dir():
-    return get_private_then_default_key_value("csv_backup_directory")
 
 
 def get_data_and_create_csv_directories(logname):
 
-    backup_dir = get_backup_dir()
+    csv_dump_dir = get_csv_dump_dir()
 
     class_paths = dict(
         csvFuturesContractPriceData="contract_prices",
@@ -91,7 +96,7 @@ def get_data_and_create_csv_directories(logname):
     )
 
     for class_name, path in class_paths.items():
-        dir_name = "%s/%s/" % (backup_dir, path)
+        dir_name = "%s/%s/" % (csv_dump_dir, path)
         class_paths[class_name] = dir_name
         if not os.path.exists(dir_name):
             os.mkdir(dir_name)
@@ -244,13 +249,13 @@ def backup_contract_position_data(data):
     instrument_list = (
         data.mongo_contract_position.get_list_of_instruments_with_any_position())
     for instrument_code in instrument_list:
-        contract_list = data.mongo_contract_position.get_list_of_contracts_with_any_position_for_instrument(
+        contract_list = data.mongo_contract_position.get_list_of_contracts_for_instrument_code(
             instrument_code)
         for contract in contract_list:
-            mongo_data = data.mongo_contract_position.get_position_as_df_for_instrument_and_contract_date(
-                instrument_code, contract)
-            data.csv_contract_position.write_position_df_for_instrument_and_contract_date(
-                instrument_code, contract, mongo_data)
+            mongo_data = data.mongo_contract_position.get_position_as_df_for_contract_object(
+                contract)
+            data.csv_contract_position.write_position_df_for_contract(
+                 contract, mongo_data)
             data.log.msg(
                 "Backed up %s %s contract position data" %
                 (instrument_code, contract))
@@ -262,12 +267,12 @@ def backup_strategy_position_data(data):
         data.mongo_contract_position.get_list_of_instruments_with_any_position())
     for strategy_name in strategy_list:
         for instrument_code in instrument_list:
-            mongo_data = data.mongo_strategy_position.get_position_as_df_for_strategy_and_instrument(
-                strategy_name, instrument_code)
+            instrument_strategy = instrumentStrategy(strategy_name=strategy_name, instrument_code=instrument_code)
+            mongo_data = data.mongo_strategy_position.get_position_as_df_for_instrument_strategy_object(instrument_strategy)
             if mongo_data is missing_data:
                 continue
             data.csv_strategy_position.write_position_df_for_instrument_strategy(
-                strategy_name, instrument_code, mongo_data)
+                instrument_strategy, mongo_data)
             data.log.msg(
                 "Backed up %s %s strategy position data"
                 % (instrument_code, strategy_name)
@@ -285,16 +290,16 @@ def backup_historical_orders(data):
 
     data.log.msg("Backing up contract orders...")
     list_of_orders = [
-        data.mongo_contract_historic_orders.get_order_with_orderid(id)
-        for id in data.mongo_contract_historic_orders.get_list_of_order_ids()
+        data.mongo_contract_historic_orders.get_order_with_orderid(order_id)
+        for order_id in data.mongo_contract_historic_orders.get_list_of_order_ids()
     ]
     data.csv_contract_historic_orders.write_orders(list_of_orders)
     data.log.msg("Done")
 
     data.log.msg("Backing up broker orders...")
     list_of_orders = [
-        data.mongo_broker_historic_orders.get_order_with_orderid(id)
-        for id in data.mongo_broker_historic_orders.get_list_of_order_ids()
+        data.mongo_broker_historic_orders.get_order_with_orderid(order_id)
+        for order_id in data.mongo_broker_historic_orders.get_list_of_order_ids()
     ]
     data.csv_broker_historic_orders.write_orders(list_of_orders)
     data.log.msg("Done")
@@ -306,16 +311,16 @@ def backup_capital(data):
     for strategy_name in strategy_list:
         capital_data[
             strategy_name
-        ] = data.mongo_capital.get_capital_pd_series_for_strategy(strategy_name)
+        ] = data.mongo_capital.get_capital_pd_df_for_strategy(strategy_name)
 
-    capital_data["TOTAL_total"] = data.mongo_capital.get_total_capital_pd_series()
+    capital_data["TOTAL_total"] = data.mongo_capital.get_total_capital_pd_df()
     capital_data[
         "TOTAL_broker"
-    ] = data.mongo_capital.get_broker_account_value_pd_series()
-    capital_data["TOTAL_max"] = data.mongo_capital.get_maximum_account_value_pd_series()
+    ] = data.mongo_capital.get_broker_account_value_pd_df()
+    capital_data["TOTAL_max"] = data.mongo_capital.get_maximum_account_value_pd_df()
     capital_data[
         "TOTAL_pandl"
-    ] = data.mongo_capital.get_profit_and_loss_account_pd_series()
+    ] = data.mongo_capital.get_profit_and_loss_account_pd_df()
 
     capital_data = pd.concat(capital_data, axis=1)
     capital_data.columns = strategy_list + [
@@ -331,21 +336,19 @@ def backup_capital(data):
 
 
 def backup_optimal_positions(data):
-    strategy_list = get_list_of_strategies(data)
-    for strategy_name in strategy_list:
-        instrument_list = data.mongo_optimal_position.get_list_of_instruments_for_strategy_with_optimal_position(
-            strategy_name)
-        for instrument_code in instrument_list:
-            mongo_data = data.mongo_optimal_position.get_optimal_position_as_df_for_strategy_and_instrument(
-                strategy_name, instrument_code)
-            if mongo_data is missing_data:
-                continue
-            data.csv_optimal_position.write_position_df_for_instrument_strategy(
-                strategy_name, instrument_code, mongo_data)
-            data.log.msg(
-                "Backed up %s %s optimal position data"
-                % (instrument_code, strategy_name)
-            )
+
+    strategy_instrument_list = data.mongo_optimal_position.get_list_of_instrument_strategies_with_optimal_position()
+
+    for instrument_strategy in strategy_instrument_list:
+        mongo_data = data.mongo_optimal_position.get_optimal_position_as_df_for_instrument_strategy(instrument_strategy)
+        if mongo_data is missing_data:
+            continue
+        data.csv_optimal_position.write_position_df_for_instrument_strategy(
+            instrument_strategy, mongo_data)
+        data.log.msg(
+            "Backed up %s  optimal position data"
+            % str(instrument_strategy)
+        )
 
 
 def backup_instrument_data(data):
@@ -358,7 +361,7 @@ def backup_roll_state_data(data):
     instrument_list = data.mongo_roll_state.get_list_of_instruments()
     roll_state_list = []
     for instrument_code in instrument_list:
-        roll_state = data.mongo_roll_state.get_roll_state(instrument_code)
+        roll_state = data.mongo_roll_state.get_name_of_roll_state(instrument_code)
         roll_state_list.append(roll_state)
 
     roll_state_df = pd.DataFrame(roll_state_list, index=instrument_list)
@@ -379,3 +382,11 @@ def backup_contract_data(data):
             instrument_code, contract_list
         )
         data.log.msg("Backed up contract data for %s" % instrument_code)
+
+
+def backup_csv_dump(data):
+    source_path = get_csv_dump_dir()
+    destination_path = get_csv_backup_directory()
+    data.log.msg("Copy from %s to %s" % (source_path, destination_path))
+    os.system("rsync -av %s %s" % (source_path, destination_path))
+

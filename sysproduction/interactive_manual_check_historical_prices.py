@@ -6,7 +6,8 @@ Apply a check to each price series
 
 from syscore.objects import success, failure
 
-from sysdata.futures.futures_per_contract_prices import DAILY_PRICE_FREQ
+
+from syscore.dateutils import DAILY_PRICE_FREQ, Frequency
 from sysdata.data_blob import dataBlob
 from sysproduction.data.prices import (
     diagPrices,
@@ -14,7 +15,7 @@ from sysproduction.data.prices import (
     get_valid_instrument_code_from_user,
 )
 from sysproduction.data.broker import dataBroker
-from sysproduction.data.contracts import diagContracts
+from sysproduction.data.contracts import dataContracts
 from sysdata.futures.manual_price_checker import manual_price_checker
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 from sysobjects.contracts import futuresContract
@@ -28,7 +29,7 @@ def interactive_manual_check_historical_prices():
     :return: Nothing
     """
     with dataBlob(log_name="Update-Historical-prices-manually") as data:
-        instrument_code = get_valid_instrument_code_from_user(data)
+        instrument_code = get_valid_instrument_code_from_user(data, source='single')
         check_instrument_ok_for_broker(data, instrument_code)
         data.log.label(instrument_code = instrument_code)
         update_historical_prices_with_checks_for_instrument(
@@ -57,7 +58,7 @@ def update_historical_prices_with_checks_for_instrument(
     :param data: dataBlob
     :return: None
     """
-    diag_contracts = diagContracts(data)
+    diag_contracts = dataContracts(data)
     all_contracts_list = diag_contracts.get_all_contract_objects_for_instrument_code(
         instrument_code)
     contract_list = all_contracts_list.currently_sampling()
@@ -85,6 +86,7 @@ def update_historical_prices_with_checks_for_instrument_and_contract(
     :return: None
     """
     diag_prices = diagPrices(data)
+
     intraday_frequency = diag_prices.get_intraday_frequency_for_historical_download()
     daily_frequency = DAILY_PRICE_FREQ
 
@@ -98,7 +100,7 @@ def update_historical_prices_with_checks_for_instrument_and_contract(
 
 
 def get_and_check_prices_for_frequency(
-        data: dataBlob, contract_object: futuresContract, frequency="D"):
+        data: dataBlob, contract_object: futuresContract, frequency: Frequency=DAILY_PRICE_FREQ):
 
     broker_data = dataBroker(data)
     price_data = diagPrices(data)

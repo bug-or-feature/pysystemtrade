@@ -1,10 +1,11 @@
+import  datetime
 import numpy as np
 
 from syscore.objects import missing_contract, arg_not_supplied, missing_data
+from syscore.dateutils import Frequency, from_config_frequency_to_frequency
 
 from sysobjects.contracts import futuresContract
 from sysobjects.dict_of_futures_per_contract_prices import dictFuturesContractPrices
-from sysdata.private_config import get_private_then_default_key_value
 from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData, futuresContractPrices
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData, futuresMultiplePrices
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData, futuresAdjustedPrices
@@ -29,9 +30,16 @@ class diagPrices(object):
         )
         self.data = data
 
-    def get_intraday_frequency_for_historical_download(self) -> str:
-        intraday_frequency = get_private_then_default_key_value(
-            "intraday_frequency")
+    def get_intraday_frequency_for_historical_download(self) -> Frequency:
+        config = self.data.config
+        intraday_frequency_as_str = config.intraday_frequency
+        intraday_frequency = from_config_frequency_to_frequency(intraday_frequency_as_str)
+
+        if intraday_frequency is missing_data:
+            error_msg = "Intraday frequency of %s is not recognised as a valid frequency %" % intraday_frequency
+            self.log.critical(error_msg)
+            raise Exception(error_msg)
+
         return intraday_frequency
 
     def get_adjusted_prices(self, instrument_code: str) -> futuresAdjustedPrices:
@@ -59,11 +67,11 @@ class diagPrices(object):
     def contract_dates_with_price_data_for_instrument_code(self, instrument_code: str) -> list:
         return self.data.db_futures_contract_price.contract_dates_with_price_data_for_instrument_code(instrument_code)
 
-    def get_last_matched_prices_for_contract_list(
+    def get_last_matched_date_and_prices_for_contract_list(
             self,
             instrument_code: str,
             contract_list: list,
-            contracts_to_match=arg_not_supplied) -> list:
+            contracts_to_match=arg_not_supplied) -> (datetime.datetime, list):
         """
         Get a list of matched prices; i.e. from a date when we had both forward and current prices
         If we don't have all the prices, will do the best it can
@@ -80,9 +88,9 @@ class diagPrices(object):
             instrument_code, contract_list
         )
 
-        last_matched_prices = _price_matching(dict_of_prices, contracts_to_match, contract_list)
+        last_matched_date, last_matched_prices = _price_matching(dict_of_prices, contracts_to_match, contract_list)
 
-        return last_matched_prices
+        return last_matched_date, last_matched_prices
 
     def get_dict_of_prices_for_contract_list(
             self, instrument_code: str, contract_list: list) -> dictFuturesContractPrices:
@@ -99,7 +107,7 @@ class diagPrices(object):
 
         return dict_of_prices
 
-def _price_matching(dict_of_prices: dictFuturesContractPrices, contracts_to_match: list, contract_list: list):
+def _price_matching(dict_of_prices: dictFuturesContractPrices, contracts_to_match: list, contract_list: list) -> (datetime.datetime, list):
     dict_of_final_prices = dict_of_prices.final_prices()
     matched_final_prices = dict_of_final_prices.matched_prices(
         contracts_to_match=contracts_to_match
@@ -111,13 +119,14 @@ def _price_matching(dict_of_prices: dictFuturesContractPrices, contracts_to_matc
         matched_final_prices = dict_of_final_prices.joint_data()
 
     last_matched_prices = list(matched_final_prices.iloc[-1].values)
+    last_matched_date = matched_final_prices.index[-1]
 
     # pad with extra nan values
     last_matched_prices = last_matched_prices + [np.nan] * (
         len(contract_list) - len(last_matched_prices)
     )
 
-    return last_matched_prices
+    return last_matched_date, last_matched_prices
 
 
 class updatePrices(object):
@@ -175,7 +184,7 @@ def get_valid_instrument_code_from_user(
         if instrument_code in all_instruments:
             break
 
-        print("%s is not in list %s" % (instrument_code, all_instruments))
+        print("%s is not in list %s derived from source: %s" % (instrument_code, all_instruments, source))
 
     return instrument_code
 

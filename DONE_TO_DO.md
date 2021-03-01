@@ -1,5 +1,25 @@
 # Release notes
 
+## Version 0.75
+
+Moved defaults.yaml to /sysdata/config directory
+Removed 'example' strategy from config files - strategies need to be explicit in private yaml config
+Cleaned up configuration code. Production config now accessed through data blob where possible.
+Messed up order database by changing formats; let me know if you have any issues reading your old orders
+
+## Version 0.70
+
+Massive refactoring mainly of order code but also IB client structure. Should be backwardly compatible with old saved orders except 'split' orders which are ignored. Read 'journey of an order' in production code for granular detail. 
+
+added remote monitoring
+
+## Version 0.60.0
+
+Split out control configuration from other YAML files (**YOU WILL NEED TO CHANGE PRIVATE CONFIG** look at the production docs!)
+Refactoring of run and control processes mostly into new syscontrol module
+Added simple monitoring tool
+Added email 'to' option (**YOU WILL NEED TO CHANGE PRIVATE CONFIG TO INCLUDE email_to parameter**)
+
 ## Version 0.52.0
 
 Mostly refactoring and documenting the creation and storage of data

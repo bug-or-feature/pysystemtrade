@@ -1,4 +1,4 @@
-from sysdata.configdata import Config
+from sysdata.config.configdata import Config
 from syslogdiag.log import logtoscreen
 from systems.system_cache import systemCache, base_system_cache
 
@@ -51,7 +51,7 @@ class System(object):
 
         >>> from systems.stage import SystemStage
         >>> stage=SystemStage()
-        >>> from sysdata.csv.csv_sim_futures_data import csvFuturesSimData
+        >>> from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
         >>> data=csvFuturesSimData()
         >>> System([stage], data)
         System base_system with .config, .data, and .stages: unnamed
@@ -66,7 +66,7 @@ class System(object):
         setattr(self, "config", config)
         self._log = log
 
-        self.config._system_init(self)
+        self.config.system_init(self)
         self.data._system_init(self)
 
         stage_names = []

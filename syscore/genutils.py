@@ -71,11 +71,6 @@ def str2Bool(x):
     return x.lower() in ("t", "true")
 
 
-def TorF(x):
-    if x:
-        return "T"
-    else:
-        return "F"
 
 
 def str_of_int(x):
@@ -165,13 +160,6 @@ def value_or_npnan(x, return_value=None):
     # Either wrong type, or not a nan
     return x
 
-
-def get_safe_from_dict(some_dict, some_arg_name, some_default):
-    arg_from_dict = some_dict.get(some_arg_name, None)
-    if arg_from_dict is None:
-        return some_default
-    else:
-        return arg_from_dict
 
 
 def are_dicts_equal(d1, d2):
@@ -479,20 +467,71 @@ def transfer_object_attributes(named_tuple_object, original_object):
     return new_object
 
 
-def highest_common_factor_for_list(list_of_ints):
+def highest_common_factor_for_list(list_of_ints: list) -> int:
+    """
+
+    :param list_of_ints:
+    :return: int
+
+    >>> highest_common_factor_for_list([2,3,4])
+    1
+    >>> highest_common_factor_for_list([2,6,4])
+    2
+    """
     return functools.reduce(gcd, list_of_ints)
 
 
-def divide_list_of_ints_by_highest_common_factor(list_of_ints):
+def divide_list_of_ints_by_highest_common_factor(list_of_ints: list) -> list:
+    """
+
+    :param list_of_ints:
+    :return: list
+
+    >>> divide_list_of_ints_by_highest_common_factor([1,2])
+    [1, 2]
+    >>> divide_list_of_ints_by_highest_common_factor([2,4])
+    [1, 2]
+    >>> divide_list_of_ints_by_highest_common_factor([1,2,3])
+    [1, 2, 3]
+    >>> divide_list_of_ints_by_highest_common_factor([1])
+    [1]
+    """
+
     gcd_value = highest_common_factor_for_list(list_of_ints)
     new_list = [int(float(x) / gcd_value) for x in list_of_ints]
     return new_list
 
 
-def list_of_ints_with_highest_common_factor_positive_first(list_of_ints):
+def list_of_ints_with_highest_common_factor_positive_first(list_of_ints: list) -> list:
+    """
+    Used to identify the unique version of a spread or fly contract
+
+    :param list_of_ints:
+    :return: list
+
+    >>> list_of_ints_with_highest_common_factor_positive_first([1])
+    [1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([-1])
+    [1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([1,-1])
+    [1, -1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([-1,1])
+    [1, -1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([-1,2])
+    [1, -2]
+    >>> list_of_ints_with_highest_common_factor_positive_first([-2,2])
+    [1, -1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([2,-2])
+    [1, -1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([2,-4,2])
+    [1, -2, 1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([-2,4,-2])
+    [1, -2, 1]
+
+    """
     new_list = divide_list_of_ints_by_highest_common_factor(list_of_ints)
     multiply_sign = sign(new_list[0])
-    new_list = [x * multiply_sign for x in new_list]
+    new_list = [int(x * multiply_sign) for x in new_list]
     return new_list
 
 

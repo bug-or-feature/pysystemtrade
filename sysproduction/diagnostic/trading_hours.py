@@ -1,15 +1,10 @@
 from syscore.objects import arg_not_supplied
 from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
-from sysproduction.data.contracts import diagContracts
+from sysproduction.data.contracts import dataContracts
 from sysproduction.data.prices import diagPrices
 
-## MOVE SOME CODE FROM OUT OF IB CONTRACTS WHICH IS QUITE GENERIC
-
-def print_trading_hours_for_all_instruments(data=arg_not_supplied):
-    all_trading_hours = get_trading_hours_for_all_instruments(data)
-    for key, value in sorted(all_trading_hours.items(), key=lambda x: x[0]):
-        print("{} : {}".format(key, value))
+from sysobjects.contracts import futuresContract
 
 
 def get_trading_hours_for_all_instruments(data=arg_not_supplied):
@@ -29,11 +24,12 @@ def get_trading_hours_for_all_instruments(data=arg_not_supplied):
 
 def get_trading_hours_for_instrument(data, instrument_code):
 
-    diag_contracts = diagContracts(data)
+    diag_contracts = dataContracts(data)
     contract_id = diag_contracts.get_priced_contract_id(instrument_code)
 
+    contract = futuresContract(instrument_code, contract_id)
+
     data_broker = dataBroker(data)
-    trading_hours = data_broker.get_trading_hours_for_instrument_code_and_contract_date(
-        instrument_code, contract_id)
+    trading_hours = data_broker.get_trading_hours_for_contract(contract)
 
     return trading_hours

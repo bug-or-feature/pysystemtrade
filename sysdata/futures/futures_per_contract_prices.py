@@ -1,5 +1,7 @@
+from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
+from syscore.merge_data import spike_in_data
+
 from sysdata.base_data import baseData
-from syscore.objects import data_error
 
 from sysobjects.contracts import futuresContract, listOfFuturesContracts
 from sysobjects.contract_dates_and_expiries import listOfContractDateStr
@@ -10,8 +12,6 @@ from syslogdiag.log import logtoscreen
 
 BASE_CLASS_ERROR = "You have used a base class for futures price data; you need to use a class that inherits with a specific data source"
 
-PRICE_FREQ =  ['D', 'H', '5M', 'M', '10S', 'S']
-DAILY_PRICE_FREQ = 'D'
 
 class futuresContractPriceData(baseData):
     """
@@ -75,7 +75,7 @@ class futuresContractPriceData(baseData):
 
         list_of_contracts_with_price_data = self.get_contracts_with_price_data()
         list_of_contracts_for_instrument = \
-            list_of_contracts_with_price_data.contracts_with_price_data_for_instrument_code(instrument_code)
+            list_of_contracts_with_price_data.contracts_in_list_for_instrument_code(instrument_code)
 
         return list_of_contracts_for_instrument
 
@@ -123,7 +123,7 @@ class futuresContractPriceData(baseData):
 
     def get_prices_for_contract_object(self, contract_object: futuresContract):
         """
-        get some prices
+        get all prices without worrying about frequency
 
         :param contract_object:  futuresContract
         :return: data
@@ -137,15 +137,14 @@ class futuresContractPriceData(baseData):
 
 
     def get_prices_at_frequency_for_contract_object(
-            self, contract_object: futuresContract, freq: str="D"):
+            self, contract_object: futuresContract, freq: Frequency = DAILY_PRICE_FREQ):
         """
-        get some prices
+        get some prices at a given frequency
 
         :param contract_object:  futuresContract
         :param freq: str; one of D, H, 5M, M, 10S, S
         :return: data
         """
-        assert freq in PRICE_FREQ
 
         if self.has_data_for_contract(contract_object):
             return self._get_prices_at_frequency_for_contract_object_no_checking(
@@ -185,7 +184,7 @@ class futuresContractPriceData(baseData):
 
     def update_prices_for_contract(
         self,
-        futures_contract_object: futuresContract,
+        contract_object: futuresContract,
         new_futures_per_contract_prices: futuresContractPrices,
         check_for_spike: bool=True,
     ) -> int:
@@ -195,22 +194,30 @@ class futuresContractPriceData(baseData):
         :param new_futures_prices:
         :return: int, number of rows
         """
-        new_log = futures_contract_object.log(self.log)
+        new_log = contract_object.log(self.log)
+
+        if len(new_futures_per_contract_prices) == 0:
+            new_log.msg("No new data")
+            return 0
 
         old_prices = self.get_prices_for_contract_object(
-            futures_contract_object)
+            contract_object)
         merged_prices = old_prices.add_rows_to_existing_data(
             new_futures_per_contract_prices, check_for_spike=check_for_spike
         )
 
-        if merged_prices is data_error:
+        if merged_prices is spike_in_data:
             new_log.msg(
                 "Price has moved too much - will need to manually check - no price updated done")
-            return data_error
+            return spike_in_data
 
         rows_added = len(merged_prices) - len(old_prices)
 
-        if rows_added == 0:
+        if rows_added<0:
+            new_log.critical("Can't remove prices something gone wrong!")
+            return 0
+
+        elif rows_added == 0:
             if len(old_prices) == 0:
                 new_log.msg("No existing or additional data")
                 return 0
@@ -221,7 +228,7 @@ class futuresContractPriceData(baseData):
 
         # We have guaranteed no duplication
         self.write_prices_for_contract_object(
-            futures_contract_object, merged_prices, ignore_duplication=True
+            contract_object, merged_prices, ignore_duplication=True
         )
 
         new_log.msg("Added %d additional rows of data" % rows_added)
@@ -285,7 +292,7 @@ class futuresContractPriceData(baseData):
         raise NotImplementedError(BASE_CLASS_ERROR)
 
     def _get_prices_at_frequency_for_contract_object_no_checking(
-        self, contract_object: futuresContract, freq: str
+        self, contract_object: futuresContract, freq: Frequency
     ) -> futuresContractPrices:
 
         raise NotImplementedError(BASE_CLASS_ERROR)
