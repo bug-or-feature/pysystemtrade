@@ -107,14 +107,14 @@ class listOfPositions(list):
             position.tradeable_object for position in other_list_of_positions]
         joint_list_of_tradeable_objects = get_unique_list(
             list_of_my_tradeable_objects + list_of_other_tradeable_objects)
-        breaks = []
+        list_of_breaks = []
         for tradeable_object in joint_list_of_tradeable_objects:
             break_here = self.is_break_for_tradeable_object(
                 other_list_of_positions, tradeable_object)
             if break_here:
-                breaks.append(tradeable_object)
+                list_of_breaks.append(tradeable_object)
 
-        return breaks
+        return list_of_breaks
 
     def is_break_for_tradeable_object(self, other_list_of_positions, tradeable_object):
         """
@@ -223,8 +223,23 @@ class listOfInstrumentPositions(listOfPositions):
 
 KEY_STRATEGY_NAME= 'strategy_name'
 
+class listOfPositionsWithInstruments(listOfPositions):
+    def sum_for_instrument(self):
+        return sum_for_instrument(self)
 
-class listOfInstrumentStrategyPositions(listOfPositions):
+    def unique_list_of_instruments(self):
+        list_of_instruments = self.instrument_code_list()
+        unique_list_of_instruments = list(set(list_of_instruments))
+        return unique_list_of_instruments
+
+    def instrument_code_list(self) -> list:
+        instrument_code_list = [str(position.instrument_code)
+                                for position in self]
+
+        return instrument_code_list
+
+
+class listOfInstrumentStrategyPositions(listOfPositionsWithInstruments):
     @classmethod
     def from_pd_df(listOfInstrumentStrategyPositions, pd_df: pd.DataFrame):
         def _element_object_from_row(dfrow):
@@ -250,8 +265,6 @@ class listOfInstrumentStrategyPositions(listOfPositions):
 
         return id_column_dict
 
-    def sum_for_instrument(self):
-        return sum_for_instrument(self)
 
     def position_object_for_instrument_strategy(self, instrument_strategy: instrumentStrategy):
 
@@ -266,7 +279,8 @@ class listOfInstrumentStrategyPositions(listOfPositions):
             raise Exception("Multiple instances of %s found in list of positions!" % str(instrument_strategy))
 
 
-class listOfContractPositions(listOfPositions):
+
+class listOfContractPositions(listOfPositionsWithInstruments):
     @classmethod
     def from_pd_df(listOfInstrumentContractPositions, pd_df):
         def _element_object_from_row(dfrow):
@@ -286,8 +300,7 @@ class listOfContractPositions(listOfPositions):
         return contractPosition
 
     def _id_column_dict(self):
-        instrument_code_list = [str(position.instrument_code)
-                                for position in self]
+        instrument_code_list = self.instrument_code_list()
         contract_id_list = [str(position.date_str) for position in self]
         expiry_date_list = [str(position.expiry_date) for position in self]
         id_column_dict = dict(
@@ -297,14 +310,6 @@ class listOfContractPositions(listOfPositions):
 
         return id_column_dict
 
-    def sum_for_instrument(self):
-        """
-        Sum up positions for same instrument
-
-        :return: listOfInstrumentPositions
-        """
-
-        return sum_for_instrument(self)
 
 
 def sum_for_instrument(list_of_positions) -> listOfInstrumentPositions:
@@ -314,9 +319,7 @@ def sum_for_instrument(list_of_positions) -> listOfInstrumentPositions:
     :return: listOfInstrumentPositions
     """
 
-    unique_list_of_instruments = list(
-        set([position.instrument_code for position in list_of_positions])
-    )
+    unique_list_of_instruments = list_of_positions.unique_list_of_instruments()
     summed_positions = []
     for instrument_code in unique_list_of_instruments:
         position_object = _position_for_code_in_list(list_of_positions, instrument_code)
