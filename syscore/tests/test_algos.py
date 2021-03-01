@@ -7,15 +7,16 @@ import unittest as ut
 
 import numpy as np
 
-from syscore.pdutils import pd_readcsv_frompackage
+from syscore.pdutils import pd_readcsv
 from syscore.algos import robust_vol_calc
+from syscore.fileutils import get_filename_for_package
 
 
 def get_data(path):
     """
     returns: DataFrame or Series if 1 col
     """
-    df = pd_readcsv_frompackage(path)
+    df = pd_readcsv(get_filename_for_package(path))
     if len(df.columns) == 1:
         return df[df.columns[0]]
     return df
