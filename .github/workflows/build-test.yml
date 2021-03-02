@@ -37,4 +37,7 @@ jobs:
         #flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest --ignore=systems/provided/moretradingrules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+        coverage run -m pytest --ignore=systems/provided/moretradingrules --junit-xml=tests.xml
+    - name: Coverage report
+      run: |
+        coverage html
