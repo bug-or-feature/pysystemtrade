@@ -12,6 +12,12 @@ from systems.account import Account
 from systems.positionsizing import PositionSizing
 from systems.portfolio import Portfolios
 import pytest
+from systems.provided.example.simplesystem import simplesystem
+from systems.provided.futures_chapter15.basesystem import futures_system as base_futures_system
+from systems.provided.futures_chapter15.estimatedsystem import futures_system as est_futures_system
+
+
+
 
 class TestExamples:
 
@@ -256,6 +262,50 @@ class TestExamples:
         print(my_system.positionSize.get_subsystem_position("EDOLLAR").tail(5))
 
         print(my_system.portfolio.get_notional_position("EDOLLAR").tail(5))
+
+    @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
+    def test_prebaked_simple_system(self):
+        """
+        This is the simple system from 'examples.introduction.prebakedsimplesystems'
+        """
+        my_system = simplesystem(log_level="on")
+        print(my_system)
+        print(my_system.portfolio.get_notional_position("EDOLLAR").tail(5))
+
+    @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
+    def test_prebaked_from_confg(self):
+        """
+        This is the config system from 'examples.introduction.prebakedsimplesystems'
+        """
+        my_config = Config("systems.provided.example.simplesystemconfig.yaml")
+        my_data = csvFuturesSimData()
+        my_system = simplesystem(config=my_config, data=my_data)
+        print(my_system.portfolio.get_notional_position("EDOLLAR").tail(5))
+
+    @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
+    def test_prebaked_chapter15(self):
+        """
+        This is (mostly) the chapter 15 system from 'examples.introduction.prebakedsimplesystems'
+        but without graph plotting
+        """
+        system = base_futures_system(log_level="on")
+        print(system.accounts.portfolio().sharpe())
+
+    @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
+    def test_prebaked_chapter15_with_pickle(self):
+        """
+        This is (mostly) the picked chapter 15 system from 'examples.introduction.prebakedsimplesystems'
+        but without graph plotting
+        """
+        system = est_futures_system(log_level="on")
+        print(system.accounts.portfolio().sharpe())
+        system.cache.pickle("private.this_system_name.pck")
+
+        del system  # just to make sure
+        system = est_futures_system(log_level="on")
+        system.cache.unpickle("private.this_system_name.pck")
+        # this will run much faster and reuse previous calculations
+        system.accounts.portfolio().sharpe()
 
     @staticmethod
     def calc_ewmac_forecast(price, Lfast, Lslow=None):
