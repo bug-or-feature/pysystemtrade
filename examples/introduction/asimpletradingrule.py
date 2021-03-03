@@ -1,5 +1,7 @@
-import matplotlib
-matplotlib.use("TkAgg")
+import platform
+if platform.system() == 'Linux':
+    import matplotlib
+    matplotlib.use("TkAgg")
 """
 
 Work up a minimum example of a trend following system
