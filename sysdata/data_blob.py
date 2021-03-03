@@ -93,11 +93,14 @@ class dataBlob(object):
 
         return resolved_instance
 
-
     def _get_class_adding_method(self, class_object):
         prefix = self._get_class_prefix(class_object)
-        class_dict = dict(ib = self._add_ib_class, csv = self._add_csv_class, arctic = self._add_arctic_class,
-                          mongo = self._add_mongo_class)
+        class_dict = dict(ib=self._add_ib_class,
+                          csv=self._add_csv_class,
+                          arctic=self._add_arctic_class,
+                          mongo=self._add_mongo_class,
+                          barchart=self._add_alt_data_source_class,
+                          av=self._add_alt_data_source_class)
 
         method_to_add_with = class_dict.get(prefix, None)
         if method_to_add_with is None:
@@ -151,6 +154,20 @@ class dataBlob(object):
                         This might be because import is missing\
                          or arguments don't follow pattern" % (str(e), class_name, class_name))
                 self._raise_and_log_error(msg)
+
+        return resolved_instance
+
+    def _add_alt_data_source_class(self, class_object):
+        log = self._get_specific_logger(class_object)
+        try:
+            resolved_instance = class_object(log = log)
+        except Exception as e:
+            class_name = get_class_name(class_object)
+            msg = (
+                    "Error %s couldn't evaluate %s(log = self.log.setup(component = %s)) \
+                    This might be because import is missing\
+                     or arguments don't follow pattern" % (str(e), class_name, class_name))
+            self._raise_and_log_error(msg)
 
         return resolved_instance
 
@@ -313,7 +330,7 @@ class dataBlob(object):
         return log_name
 
 
-source_dict = dict(arctic="db", mongo="db", csv="db", ib="broker")
+source_dict = dict(arctic="db", barchart="db", mongo="db", csv="db", av="db", ib="broker")
 
 
 def identifying_name(split_up_name: list, keep_original_prefix=False)-> str:

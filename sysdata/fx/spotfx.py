@@ -231,3 +231,5 @@ class fxPricesData(baseData):
     def _get_fx_prices_without_checking(self, code):
         raise NotImplementedError(USE_CHILD_CLASS_ERROR)
 
+    def _get_fx_config_filename(self):
+        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
