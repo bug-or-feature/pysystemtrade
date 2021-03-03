@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: [ 3.6, 3.7, 3.8, 3.9 ]
+        python-version: [ 3.9, 3.8, 3.7, 3.6 ]
 
     steps:
 
@@ -37,6 +37,6 @@ jobs:
       run: |
         coverage run -m pytest --junit-xml=tests.xml
 
-    - name: Coverage report
-      run: |
-        coverage html
+    #- name: Coverage report
+    #  run: |
+    #    coverage html
