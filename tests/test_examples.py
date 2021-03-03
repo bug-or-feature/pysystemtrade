@@ -11,13 +11,14 @@ from systems.forecast_combine import ForecastCombine
 from systems.account import Account
 from systems.positionsizing import PositionSizing
 from systems.portfolio import Portfolios
+import pytest
 
 class TestExamples:
 
     def test_simple_trading_rule(self):
         """
         This is (mostly) the code from 'examples.introduction.asimpletradingrule',
-        but without the calls to plot() which fall over in CI env
+        but without graph plotting
         """
         # Get some data
         data = csvFuturesSimData()
@@ -47,9 +48,11 @@ class TestExamples:
         print(account.percent().stats())
         print(account2.percent().stats())
 
+    @pytest.mark.slow # will be skipped unless run with 'pytest --runslow'
     def test_simple_system(self):
         """
-        This is the 'Simple System' code sample given in docs/introduction.md
+        This is (mostly) the code from 'examples.introduction.simplesystem',
+        but without graph plotting
         """
         data = csvFuturesSimData()
         my_rules = Rules(ewmac)
