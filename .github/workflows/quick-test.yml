@@ -35,4 +35,4 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest  --junit-xml=tests.xml
+        pytest --junit-xml=tests.xml

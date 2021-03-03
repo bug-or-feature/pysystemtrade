@@ -35,7 +35,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        coverage run -m pytest --junit-xml=tests.xml
+        pytest --runslow --junit-xml=tests.xml
 
     #- name: Coverage report
     #  run: |
