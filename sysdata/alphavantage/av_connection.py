@@ -14,7 +14,7 @@ class avConnection(object):
     """
 
     Simple web connection to the Alpha Vantage API for free financial data
-    Needs an API key, reques one here: https://www.alphavantage.co/support/#api-key
+    Needs an API key, request one here: https://www.alphavantage.co/support/#api-key
     set the API key in your /private/private_config.yaml file, eg
 
     alpha_vantage_api_key: 'abc123'
