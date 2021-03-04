@@ -21,6 +21,10 @@ import  syslog
 import  sysobjects
 import sysproduction
 
+def does_file_exist(filename:str):
+    resolved_filename = get_filename_for_package(filename)
+    file_exists = os.path.isfile(resolved_filename)
+    return file_exists
 
 def get_filename_for_package(pathname:str, filename=None):
     """

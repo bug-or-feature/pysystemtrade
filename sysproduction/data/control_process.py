@@ -4,6 +4,7 @@ import socket
 from syscore.dateutils import SECONDS_PER_HOUR
 from syscore.genutils import str2Bool
 from syscore.objects import  missing_data, named_object
+from syscontrol.timer_parameters import timerClassParameters
 
 from sysdata.config.control_config import get_control_config
 from sysdata.data_blob import dataBlob
@@ -54,6 +55,11 @@ class dataControlProcess(productionDataLayerGeneric):
 
         return result
 
+    def check_if_should_pause_process(self, process_name: str)-> bool:
+        result = self.db_control_process_data.check_if_should_pause_process(process_name)
+
+        return result
+
     def finish_process(self, process_name: str) -> named_object:
         """
 
@@ -92,6 +98,10 @@ class dataControlProcess(productionDataLayerGeneric):
     def change_status_to_no_run(self, process_name: str):
         self.db_control_process_data.change_status_to_no_run(process_name)
 
+    def change_status_to_pause(self, process_name: str):
+        self.db_control_process_data.change_status_to_pause(process_name)
+
+
     def has_process_finished_in_last_day(self, process_name: str) -> bool:
         has_it_finished_in_last_day = self.db_control_process_data.has_process_finished_in_last_day(
             process_name
@@ -119,13 +129,11 @@ class diagControlProcess(productionDataLayerGeneric):
         previous_process = self.previous_process_name(process_name)
         start_time = self.get_start_time(process_name)
         end_time = self.get_stop_time(process_name)
-        machine_name = self.required_machine_name(process_name)
 
         result_dict = dict(
             previous_process=previous_process,
             start_time=start_time,
-            end_time=end_time,
-            machine_name=machine_name
+            end_time=end_time
         )
 
         return result_dict
@@ -134,13 +142,11 @@ class diagControlProcess(productionDataLayerGeneric):
         time_to_stop = self.is_it_time_to_stop(process_name)
         time_to_start = self.is_it_time_to_run(process_name)
         prev_process = self.has_previous_process_finished_in_last_day(process_name)
-        right_machine = self.is_this_correct_machine(process_name)
 
         result_dict = dict(
             time_to_start = time_to_start,
             time_to_stop = time_to_stop,
-            prev_process = prev_process,
-            right_machine = right_machine
+            prev_process = prev_process
         )
 
         return result_dict
@@ -166,17 +172,6 @@ class diagControlProcess(productionDataLayerGeneric):
         else:
             return False
 
-    def is_this_correct_machine(self, process_name: str) ->bool:
-        required_host = self.required_machine_name(process_name)
-        if required_host is None:
-            return True
-
-        hostname = socket.gethostname()
-
-        if hostname == required_host:
-            return True
-        else:
-            return False
 
     def is_it_time_to_stop(self, process_name:str) -> bool:
         stop_time = self.get_stop_time(process_name)
@@ -187,8 +182,28 @@ class diagControlProcess(productionDataLayerGeneric):
         else:
             return False
 
+    def get_method_timer_parameters(self, process_name: str, method_name: str) -> timerClassParameters:
+        run_on_completion_only = self.does_method_run_on_completion_only(
+            process_name, method_name
+        )
+
+        frequency_minutes = self.frequency_for_process_and_method(
+            process_name, method_name
+        )
+        max_executions = self.max_executions_for_process_and_method(
+            process_name, method_name
+        )
+
+        timer_parameters = timerClassParameters(method_name=method_name,
+                                                process_name=process_name,
+                                                frequency_minutes=frequency_minutes,
+                                                max_executions=max_executions,
+                                                run_on_completion_only=run_on_completion_only)
+
+        return timer_parameters
+
     def does_method_run_on_completion_only(self, process_name: str, method_name: str) -> bool:
-        this_method_dict = self._get_method_configuration_for_process_name(
+        this_method_dict = self.get_method_configuration_for_process_name(
             process_name, method_name
         )
         run_on_completion_only = this_method_dict.get(
@@ -200,7 +215,7 @@ class diagControlProcess(productionDataLayerGeneric):
     def frequency_for_process_and_method(
         self, process_name: str, method_name: str
     ) -> int:
-        this_method_dict = self._get_method_configuration_for_process_name(
+        this_method_dict = self.get_method_configuration_for_process_name(
             process_name, method_name
         )
 
@@ -211,7 +226,7 @@ class diagControlProcess(productionDataLayerGeneric):
     def max_executions_for_process_and_method(
         self, process_name: str, method_name: str
     ) -> int:
-        this_method_dict = self._get_method_configuration_for_process_name(
+        this_method_dict = self.get_method_configuration_for_process_name(
             process_name, method_name
         )
         max_executions = this_method_dict.get("max_executions", DEFAULT_MAX_EXECUTIONS)
@@ -219,7 +234,7 @@ class diagControlProcess(productionDataLayerGeneric):
         return max_executions
 
 
-    def _get_method_configuration_for_process_name(
+    def get_method_configuration_for_process_name(
             self, process_name: str, method_name: str) -> dict:
         all_method_dict = self.get_all_method_dict_for_process_name(
             process_name)
@@ -294,17 +309,6 @@ class diagControlProcess(productionDataLayerGeneric):
 
         return result
 
-    def required_machine_name(self, process_name: str)-> str:
-        """
-
-        :param process_name:
-        :return: str or None
-        """
-        result = self._get_configuration_item_for_process_name(
-            process_name, "host_name", default=None, use_config_default=False
-        )
-
-        return result
 
     def _get_configuration_item_for_process_name(
         self, process_name: str, item_name: str, default=None, use_config_default: bool=False
@@ -378,6 +382,6 @@ def get_strategy_class_object_config(data: dataBlob, process_name: str, strategy
 
     """
     diag_config = diagControlProcess(data)
-    config_this_process = diag_config._get_method_configuration_for_process_name(process_name, strategy_name)
+    config_this_process = diag_config.get_method_configuration_for_process_name(process_name, strategy_name)
 
     return config_this_process

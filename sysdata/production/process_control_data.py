@@ -80,6 +80,12 @@ class controlProcessData(baseData):
 
         return result
 
+    def check_if_should_pause_process(self, process_name: str) -> bool:
+        original_process = self.get_control_for_process_name(process_name)
+        result = original_process.check_if_should_pause()
+
+        return result
+
     def check_if_pid_running_and_if_not_finish_all_processes(self):
 
         list_of_names = self.get_list_of_process_names()
@@ -154,6 +160,11 @@ class controlProcessData(baseData):
     def change_status_to_no_run(self, process_name: str):
         original_process = self.get_control_for_process_name(process_name)
         original_process.change_status_to_no_run()
+        self._update_control_for_process_name(process_name, original_process)
+
+    def change_status_to_pause(self, process_name: str):
+        original_process = self.get_control_for_process_name(process_name)
+        original_process.change_status_to_pause()
         self._update_control_for_process_name(process_name, original_process)
 
     def log_start_run_for_method(self, process_name: str, method_name: str):

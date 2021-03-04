@@ -1,5 +1,18 @@
 # Release notes
 
+Added 'Pause' process status
+Refactored and tidied control code
+Control process now sleep when not needed to save energy
+Removed option to specify machine to run process on
+
+## Version 0.80
+
+Finished refactoring of production code (or at least, for now!)
+sysproduction/diagnostics now renamed reporting
+sysproduction/data code now uses generic handler and property methods to access data
+broker API now has proper base classes
+Tinkered with requirements to get running on new machine
+
 ## Version 0.75
 
 Moved defaults.yaml to /sysdata/config directory

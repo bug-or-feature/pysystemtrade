@@ -17,7 +17,7 @@ def update_fx_prices():
     :return: Nothing
     """
 
-    # Called as standalone
+    ## Called as standalone
     with dataBlob(log_name="Update-FX-Prices") as data:
         update_fx_prices_object = updateFxPrices(data)
         update_fx_prices_object.update_fx_prices()
@@ -26,8 +26,8 @@ def update_fx_prices():
 
 
 class updateFxPrices(object):
-    # Called by run_daily_price_updates
-    def __init__(self, data):
+    ## Called by run_daily_price_updates
+    def __init__(self, data: dataBlob):
         self.data = data
 
     def update_fx_prices(self):
