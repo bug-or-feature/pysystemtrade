@@ -32,44 +32,45 @@ class updateFxPrices(object):
 
     def update_fx_prices(self):
         data = self.data
-        self.update_fx_prices_with_data(data)
+        update_fx_prices_with_data(data)
 
-    def update_fx_prices_with_data(self, data: dataBlob):
-        broker_fx_source = dataBroker(data)
-        list_of_codes_all = (
-            broker_fx_source.get_list_of_fxcodes()
-        )  # codes must be in .csv file /sysbrokers/IB/ib_config_spot_fx.csv
-        data.log.msg("FX Codes: %s" % str(list_of_codes_all))
+def update_fx_prices_with_data(data: dataBlob):
+    broker_fx_source = dataBroker(data)
+    list_of_codes_all = (
+        broker_fx_source.get_list_of_fxcodes()
+    )  # codes must be in .csv file /sysbrokers/IB/ibConfigSpotFx.csv
+    data.log.msg("FX Codes: %s" % str(list_of_codes_all))
 
-        for fx_code in list_of_codes_all:
-            data.log.label(fx_code=fx_code)
-            self.update_fx_prices_for_code(fx_code, data)
+    for fx_code in list_of_codes_all:
+        data.log.label(fx_code=fx_code)
+        update_fx_prices_for_code(fx_code, data)
 
-    def update_fx_prices_for_code(self, fx_code: str, data: dataBlob):
-        broker_fx_source = dataBroker(data)
-        db_fx_data = dataCurrency(data)
 
-        new_fx_prices = broker_fx_source.get_fx_prices(
-            fx_code)  # returns fxPrices object
-        rows_added = db_fx_data.update_fx_prices_and_return_rows_added(
-            fx_code, new_fx_prices, check_for_spike=True
-        )
+def update_fx_prices_for_code(fx_code: str, data: dataBlob):
+    broker_fx_data = dataBroker(data)
+    db_fx_data = dataCurrency(data)
 
-        if rows_added is spike_in_data:
-            self.report_fx_data_spike(data, fx_code)
-            return failure
+    new_fx_prices = broker_fx_data.get_fx_prices(
+        fx_code)  # returns fxPrices object
+    rows_added = db_fx_data.update_fx_prices_and_return_rows_added(
+        fx_code, new_fx_prices, check_for_spike=True
+    )
 
-        return success
+    if rows_added is spike_in_data:
+        report_fx_data_spike(data, fx_code)
+        return failure
 
-    @staticmethod
-    def report_fx_data_spike(data: dataBlob, fx_code: str):
-        msg = (
-                "Spike found in prices for %s: need to manually check by running interactive_manual_check_fx_prices" %
-                str(fx_code))
-        data.log.warn(msg)
-        try:
-            send_production_mail_msg(
-                data, msg, "FX Price Spike %s" %
-                           str(fx_code))
-        except BaseException:
-            data.log.warn("Couldn't send email about price spike")
+    return success
+
+def report_fx_data_spike(data: dataBlob, fx_code: str):
+    msg = (
+            "Spike found in prices for %s: need to manually check by running interactive_manual_check_fx_prices" %
+            str(fx_code))
+    data.log.warn(msg)
+    try:
+        send_production_mail_msg(
+            data, msg, "FX Price Spike %s" %
+                       str(fx_code))
+    except BaseException:
+        data.log.warn("Couldn't send email about price spike")
+
