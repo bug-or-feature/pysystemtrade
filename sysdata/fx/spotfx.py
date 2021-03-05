@@ -185,7 +185,7 @@ class fxPricesData(baseData):
         :param new_fx_prices: fxPrices object
         :return: int, number of rows added
         """
-        new_log = self.log.setup(fx_code=code)
+        new_log = self.log.setup(fx_code=code, currency_code=code)
 
         old_fx_prices = self.get_fx_prices(code)
         merged_fx_prices = old_fx_prices.add_rows_to_existing_data(
@@ -231,5 +231,3 @@ class fxPricesData(baseData):
     def _get_fx_prices_without_checking(self, code):
         raise NotImplementedError(USE_CHILD_CLASS_ERROR)
 
-    def _get_fx_config_filename(self):
-        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
