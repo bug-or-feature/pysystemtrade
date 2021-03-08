@@ -1,20 +1,22 @@
 from dataclasses import dataclass
 from sysobjects.instruments import futuresInstrument
 
+
 @dataclass
-class barchartInstrumentConfigData:
+class BcInstrumentConfigData:
     symbol: str
     currency: str = ""
 
+
 @dataclass
-class futuresInstrumentWithBarchartConfigData(object):
+class BcFuturesInstrument(object):
     instrument: futuresInstrument
-    barchart_data: barchartInstrumentConfigData
+    bc_data: BcInstrumentConfigData
 
     @property
     def instrument_code(self):
         return self.instrument.instrument_code
 
     @property
-    def barchart_symbol(self):
-        return self.barchart_data.symbol
+    def bc_symbol(self):
+        return self.bc_data.symbol

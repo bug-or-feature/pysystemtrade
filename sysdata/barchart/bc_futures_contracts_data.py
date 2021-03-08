@@ -1,32 +1,59 @@
 from syscore.objects import missing_contract, missing_instrument
-from sysdata.barchart.bc_instruments_data import barchartFuturesInstrumentData
+from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from sysdata.barchart.bc_connection import bcConnection
 from sysdata.futures.contracts import futuresContractData
 from syslogdiag.log import logtoscreen
 from sysobjects.contract_dates_and_expiries import expiryDate
 from sysobjects.contracts import futuresContract
+from syscore.dateutils import get_datetime_from_datestring
+import datetime
 
 
-class barchartFuturesContractData(futuresContractData):
+class BarchartFuturesContractData(futuresContractData):
 
     def __init__(self, barchart: bcConnection, log=logtoscreen("barchartFuturesContractData")):
         super().__init__(log=log)
         self._barchart = barchart
 
     def __repr__(self):
-        return "Barchart Futures per contract data '%s'" % "TBD"
+        return f"Barchart Futures per contract data: {self._barchart}"
 
     @property
     def barchart(self):
         return self._barchart
 
     @property
-    def barchart_futures_instrument_data(self) -> barchartFuturesInstrumentData:
-        return barchartFuturesInstrumentData(log = self.log)
+    def barchart_futures_instrument_data(self) -> BarchartFuturesInstrumentData:
+        return BarchartFuturesInstrumentData(log=self.log)
 
-    def get_contract_object_plus(self, futures_contract: futuresContract) -> futuresContract:
+    def get_actual_expiry_date_for_single_contract(self, futures_contract: futuresContract) -> expiryDate:
         """
-        Return contract_object with <extra bits> and correct expiry date added # TODO
+        Get the actual expiry date of a contract from Barchart
+
+        :param futures_contract: type futuresContract
+        :return: YYYYMMDD or None
+        """
+
+        rough_expiry = get_datetime_from_datestring(futures_contract.date_str)
+        if rough_expiry < datetime.datetime(2000, 1, 1):
+            raise Exception("Cannot get expiry dates for older expired contracts from Barchart")
+
+        log = futures_contract.specific_log(self.log)
+        if futures_contract.is_spread_contract():
+            log.warn("Can't find expiry for multiple leg contract here")
+            return missing_contract
+
+        contract_object_with_bc_data = self.get_contract_object_with_bc_data(futures_contract)
+        if contract_object_with_bc_data is missing_contract:
+            return missing_contract
+
+        expiry_date = contract_object_with_bc_data.expiry_date
+
+        return expiry_date
+
+    def get_contract_object_with_bc_data(self, futures_contract: futuresContract) -> futuresContract:
+        """
+        Return contract_object with BC config and correct expiry date added
 
         :param futures_contract:
         :return: modified contract_object
@@ -43,7 +70,7 @@ class barchartFuturesContractData(futuresContractData):
 
     def _get_contract_object_plus(self, contract_object: futuresContract) -> futuresContract:
 
-        futures_contract_plus = self.barchart_futures_instrument_data.get_futures_instrument_object_plus(
+        futures_contract_plus = self.barchart_futures_instrument_data.get_bc_futures_instrument(
             contract_object.instrument_code
         )
         if futures_contract_plus is missing_instrument:
@@ -90,8 +117,8 @@ class barchartFuturesContractData(futuresContractData):
         raise NotImplementedError(
             "Consider implementing for consistent interface")
 
-    def _delete_contract_data_without_any_warning_be_careful(self,
-            instrument_code: str, contract_date: str):
+    def _delete_contract_data_without_any_warning_be_careful(self, instrument_code: str,
+                                                             contract_date: str):
         raise NotImplementedError("Barchart is read only")
 
     def _add_contract_object_without_checking_for_existing_entry(
