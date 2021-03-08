@@ -114,7 +114,7 @@ class dataBlob(object):
         split_up_name = camel_case_split(class_name)
         prefix = split_up_name[0]
 
-        return prefix
+        return prefix.lower()
 
     def _add_ib_class(self, class_object):
         log = self._get_specific_logger(class_object)
