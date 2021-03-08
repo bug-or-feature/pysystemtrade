@@ -17,8 +17,6 @@ from systems.provided.futures_chapter15.basesystem import futures_system as base
 from systems.provided.futures_chapter15.estimatedsystem import futures_system as est_futures_system
 
 
-
-
 class TestExamples:
 
     def test_simple_trading_rule(self):
@@ -54,7 +52,7 @@ class TestExamples:
         print(account.percent().stats())
         print(account2.percent().stats())
 
-    @pytest.mark.slow # will be skipped unless run with 'pytest --runslow'
+    @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
     def test_simple_system(self):
         """
         This is (mostly) the code from 'examples.introduction.simplesystem',
@@ -217,7 +215,7 @@ class TestExamples:
                 forecast_div_multiplier=1.1,
                 percentage_vol_target=25.00,
                 notional_trading_capital=500000,
-                base_currency="GBP",
+                base_currency="GBP"
             )
         )
         print(my_config)
@@ -228,7 +226,7 @@ class TestExamples:
                 PositionSizing(),
                 ForecastCombine(),
                 ForecastScaleCap(),
-                Rules(),
+                Rules()
             ],
             data,
             my_config,
@@ -244,7 +242,7 @@ class TestExamples:
                 PositionSizing(),
                 ForecastCombine(),
                 ForecastScaleCap(),
-                Rules(),
+                Rules()
             ],
             data,
             my_config,
@@ -294,7 +292,7 @@ class TestExamples:
     @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
     def test_prebaked_chapter15_with_pickle(self):
         """
-        This is (mostly) the picked chapter 15 system from 'examples.introduction.prebakedsimplesystems'
+        This is (mostly) the pickled chapter 15 system from 'examples.introduction.prebakedsimplesystems'
         but without graph plotting
         """
         system = est_futures_system(log_level="on")
