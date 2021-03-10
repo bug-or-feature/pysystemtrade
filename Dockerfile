@@ -1,10 +1,11 @@
 # base image
 FROM python:3.8.6
 
-# update installer, install vi, less
+# update installer, install vi, less, cron
 RUN apt-get update && \
     apt-get install -y vim && \
-    apt-get install -y less
+    apt-get install -y less && \
+    apt-get install -y cron
 
 # update pip
 RUN python -m pip install --upgrade pip
@@ -25,7 +26,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # copy docker specific config
-COPY private/private_docker_config.yaml ./private/private_config.yaml
+COPY private/private_docker_config_syno.yaml ./private/private_config.yaml
+
+# setup cron
+COPY examples/docker/crontab /etc/cron.d/sysjobs
+RUN chmod 0644 /etc/cron.d/sysjobs
+ENV PYTHONUNBUFFERED 1
 
 # install project
 RUN python setup.py develop
@@ -38,3 +44,7 @@ ENV ECHO_PATH=/usr/src/echos
 # set up PATH
 RUN echo 'export PATH="$SCRIPT_PATH:$PATH"' >> ~/.bashrc
 RUN echo 'export PYTHONPATH="$SCRIPT_PATH:$PYTHONPATH"' >> ~/.bashrc
+
+# keep the container running
+CMD cron -f
+#CMD tail -F /dev/null
