@@ -11,3 +11,4 @@ dataclasses==0.7; python_version < '3.7'
 requests>=2.25
 beautifulsoup4>4.9
 ratelimit>=2.2
+pytest>6.2

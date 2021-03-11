@@ -22,11 +22,12 @@ class RawData(SystemStage):
     Name: rawdata
     """
 
-    def _name(self):
+    @property
+    def name(self):
         return "rawdata"
 
     @input
-    def get_daily_prices(self, instrument_code):
+    def get_daily_prices(self, instrument_code) -> pd.Series:
         """
         Gets daily prices
 

@@ -12,8 +12,12 @@ from sysdata.config.configdata import Config
 
 class Test(unittest.TestCase):
     def setUp(self):
-        stage = SystemStage()
-        stage.name = "test"
+        class testStage(SystemStage):
+            @property
+            def name(self):
+                return "test"
+
+        stage = testStage()
         data = simData()
         config = Config(dict(instruments=["another_code", "code"]))
         system = System([stage], data=data, config=config)
@@ -29,7 +33,7 @@ class Test(unittest.TestCase):
         self.assertEqual(system, system.test.parent)
 
         system.set_logging_level("on")
-        self.assertEqual(system.test.log.logging_level(), "on")
+        self.assertEqual(system.test.log.logging_level, "on")
 
 
 if __name__ == "__main__":
