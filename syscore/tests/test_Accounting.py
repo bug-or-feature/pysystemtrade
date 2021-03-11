@@ -4,14 +4,14 @@ Created on 3 Dec 2015
 @author: rob
 """
 import unittest
-
+import datetime
 import pandas as pd
 import numpy as np
 
 from syscore.accounting import get_positions_from_forecasts
 
-dt_range1 = pd.date_range(start=pd.datetime(2014, 12, 30), periods=10)
-dt_range2 = pd.date_range(start=pd.datetime(2015, 1, 1), periods=11)
+dt_range1 = pd.date_range(start=datetime.datetime(2014, 12, 30), periods=10)
+dt_range2 = pd.date_range(start=datetime.datetime(2015, 1, 1), periods=11)
 
 
 class Test(unittest.TestCase):
