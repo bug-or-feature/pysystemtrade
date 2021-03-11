@@ -1,13 +1,8 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
 name: Quick test
 
 on:
-  #push:
-  #  branches: [ ci ]
-  #pull_request:
-  #  branches: [ develop ]
+  [push, pull_request]
+
   workflow_dispatch:
 
 jobs:
