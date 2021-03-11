@@ -110,6 +110,7 @@ class TestBarchart:
         with pytest.raises(Exception):
             data.get_actual_expiry_date_for_single_contract(fc('EUR', '19900300'))
 
+    @pytest.mark.skip
     def test_price_data(self):
         prices = BarchartFuturesContractPriceData()
         assert prices.has_data_for_contract(fc('GOLD', '20210600'))
