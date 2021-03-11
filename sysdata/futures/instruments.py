@@ -2,56 +2,13 @@
 Read / write and represent instrument data
 """
 
-from sysdata.data import baseData
-
-class futuresInstrument(object):
-    """
-    Define a generic instrument
-    """
-
-    def __init__(self, instrument_code,  **kwargs):
-
-        assert type(instrument_code) is str
-
-        self.instrument_code = instrument_code
-
-        ## any remaining data we dump into a meta data dict
-        self.meta_data = kwargs
-
-        self._isempty = False
-
-    def __repr__(self):
-        return self.instrument_code
-
-    def as_dict(self):
-
-        if self.empty():
-            raise Exception("Can't create dict from empty object")
-
-        dict_of_values = self.meta_data
-        dict_of_values['instrument_code'] = self.instrument_code
-        return dict_of_values
-
-
-    @classmethod
-    def create_from_dict(futuresInstrument, dict_of_values):
-
-        instrument_code = dict_of_values.pop('instrument_code')
-
-        return futuresInstrument(instrument_code, **dict_of_values)
-
-    @classmethod
-    def create_empty(futuresInstrument):
-        futures_instrument = futuresInstrument("")
-        futures_instrument._isempty = True
-
-        return futures_instrument
-
-    def empty(self):
-        return self._isempty
-
+import pandas as pd
+from sysdata.base_data import baseData
+from sysobjects.instruments import futuresInstrumentWithMetaData, listOffuturesInstrumentWithMetaData
+from syslogdiag.log_to_screen import logtoscreen
 
 USE_CHILD_CLASS_ERROR = "You need to use a child class of futuresInstrumentData"
+
 
 class futuresInstrumentData(baseData):
     """
@@ -64,52 +21,75 @@ class futuresInstrumentData(baseData):
     def __repr__(self):
         return "futuresInstrumentData base class - DO NOT USE"
 
-    def keys(self):
+    def __init__(self, log=logtoscreen("futuresInstrumentData")):
+        super().__init__(log=log)
+
+    def keys(self) -> list:
         return self.get_list_of_instruments()
 
-    def get_all_instrument_data(self):
-        # returns all instrument data as a pd.DataFrame
-        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+    def __getitem__(self, instrument_code: str):
+        return self.get_instrument_data(instrument_code)
 
-    def get_list_of_instruments(self):
-        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+    def get_all_instrument_data_as_list_of_instrument_objects(self) -> listOffuturesInstrumentWithMetaData:
+        all_instrument_codes = self.get_list_of_instruments()
+        all_instrument_objects = [
+            self.get_instrument_data(instrument_code)
+            for instrument_code in all_instrument_codes
+        ]
+        list_of_instrument_objects = listOffuturesInstrumentWithMetaData(all_instrument_objects)
 
-    def get_instrument_data(self, instrument_code):
+        return list_of_instrument_objects
+
+    def get_all_instrument_data_as_df(self) -> pd.DataFrame:
+        """
+        Gets information about all instruments
+
+        Returns dataframe of meta data, indexed by instrument code
+
+        :return: pd.DataFrame
+        """
+
+        list_of_instrument_objects = self.get_all_instrument_data_as_list_of_instrument_objects()
+        list_as_df = list_of_instrument_objects.as_df()
+
+        return list_as_df
+
+    def get_instrument_data(self, instrument_code: str) ->futuresInstrumentWithMetaData:
         if self.is_code_in_data(instrument_code):
             return self._get_instrument_data_without_checking(instrument_code)
         else:
-            return futuresInstrument.create_empty()
+            return futuresInstrumentWithMetaData.create_empty()
 
-    def _get_instrument_data_without_checking(self, instrument_code):
-        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
 
-    def __getitem__(self, instrument_code):
-        return self.get_instrument_data(instrument_code)
-
-    def delete_instrument_data(self, instrument_code, are_you_sure=False):
+    def delete_instrument_data(self, instrument_code: str, are_you_sure: bool=False):
         self.log.label(instrument_code=instrument_code)
 
         if are_you_sure:
             if self.is_code_in_data(instrument_code):
-                self._delete_instrument_data_without_any_warning_be_careful(instrument_code)
-                self.log.terse("Deleted instrument object %s" % instrument_code)
+                self._delete_instrument_data_without_any_warning_be_careful(
+                    instrument_code
+                )
+                self.log.terse(
+                    "Deleted instrument object %s" %
+                    instrument_code)
 
             else:
-                ## doesn't exist anyway
+                # doesn't exist anyway
                 self.log.warn("Tried to delete non existent instrument")
         else:
-            self.log.error("You need to call delete_instrument_data with a flag to be sure")
+            self.log.error(
+                "You need to call delete_instrument_data with a flag to be sure"
+            )
 
-    def _delete_instrument_data_without_any_warning_be_careful(instrument_code):
-        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
-
-    def is_code_in_data(self, instrument_code):
+    def is_code_in_data(self, instrument_code: str) -> bool:
         if instrument_code in self.get_list_of_instruments():
             return True
         else:
             return False
 
-    def add_instrument_data(self, instrument_object, ignore_duplication=False):
+
+    def add_instrument_data(self, instrument_object: futuresInstrumentWithMetaData,
+                            ignore_duplication:bool=False):
         instrument_code = instrument_object.instrument_code
 
         self.log.label(instrument_code=instrument_code)
@@ -118,12 +98,31 @@ class futuresInstrumentData(baseData):
             if ignore_duplication:
                 pass
             else:
-                self.log.error("There is already %s in the data, you have to delete it first" % instrument_code)
+                self.log.error(
+                    "There is already %s in the data, you have to delete it first" %
+                    instrument_code)
 
-        self._add_instrument_data_without_checking_for_existing_entry(instrument_object)
+        self._add_instrument_data_without_checking_for_existing_entry(
+            instrument_object)
 
-        self.log.terse("Added instrument object %s" % instrument_object.instrument_code)
+        self.log.terse(
+            "Added instrument object %s" %
+            instrument_object.instrument_code)
 
-    def _add_instrument_data_without_checking_for_existing_entry(self, instrument_object):
+    def get_list_of_instruments(self):
         raise NotImplementedError(USE_CHILD_CLASS_ERROR)
 
+
+    def _get_instrument_data_without_checking(self, instrument_code: str):
+        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+
+
+    def _delete_instrument_data_without_any_warning_be_careful(self,
+            instrument_code: str):
+        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+
+
+    def _add_instrument_data_without_checking_for_existing_entry(
+        self, instrument_object: futuresInstrumentWithMetaData
+    ):
+        raise NotImplementedError(USE_CHILD_CLASS_ERROR)

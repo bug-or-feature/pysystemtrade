@@ -3,10 +3,11 @@ Read and write data from mongodb for individual futures contracts
 
 """
 
-from sysdata.arctic.arctic_connection import articConnection
-from sysdata.futures.futures_per_contract_prices import futuresContractPriceData, futuresContractPrices
-from sysdata.futures.contracts import futuresContract
-from syslogdiag.log import logtoscreen
+from sysdata.arctic.arctic_connection import arcticData
+from sysdata.futures.futures_per_contract_prices import futuresContractPriceData, listOfFuturesContracts
+from sysobjects.futures_per_contract_prices import futuresContractPrices
+from sysobjects.contracts import futuresContract, get_code_and_id_from_contract_key
+from syslogdiag.log_to_screen import logtoscreen
 
 import pandas as pd
 
@@ -18,44 +19,25 @@ class arcticFuturesContractPriceData(futuresContractPriceData):
     Class to read / write futures price data to and from arctic
     """
 
-    def __init__(self,  mongo_db=None, log=logtoscreen("arcticFuturesContractPriceData")):
+    def __init__(self,
+                 mongo_db=None,
+                 log=logtoscreen("arcticFuturesContractPriceData")):
 
         super().__init__(log=log)
 
-        self._arctic = articConnection(CONTRACT_COLLECTION, mongo_db=mongo_db)
-
-        self.name = "simData connection for individual futures contracts prices, arctic %s/%s @ %s " % (
-            self._arctic.database_name, self._arctic.collection_name, self._arctic.host)
+        self._arctic_connection = arcticData(CONTRACT_COLLECTION, mongo_db=mongo_db)
 
     def __repr__(self):
-        return self.name
+        return "simData connection for individual futures contracts prices, arctic %s/%s @ %s " % (
+            self._arctic_connection.database_name, self._arctic_connection.collection_name, self._arctic_connection.host)
 
-    def _keyname_given_contract_object(self, futures_contract_object):
-        """
-        We could do this using the .ident() method of instrument_object, but this way we keep control inside this class
-
-        :param futures_contract_object: futuresContract
-        :return: str
-        """
-
-        return futures_contract_object.instrument_code + "." + futures_contract_object.date
-
-    def _contract_tuple_given_keyname(self, keyname):
-        """
-        Extract the two parts of a keyname
-
-        We keep control of how we represent stuff inside the class
-
-        :param keyname: str
-        :return: tuple instrument_code, contract_date
-        """
-        keyname_as_list = keyname.split(".")
-        instrument_code, contract_date = tuple(keyname_as_list)
-
-        return instrument_code, contract_date
+    @property
+    def arctic_connection(self):
+        return self._arctic_connection
 
 
-    def _get_prices_for_contract_object_no_checking(self, futures_contract_object):
+    def _get_prices_for_contract_object_no_checking(self,
+                                                    futures_contract_object: futuresContract) -> futuresContractPrices:
         """
         Read back the prices for a given contract object
 
@@ -63,17 +45,16 @@ class arcticFuturesContractPriceData(futuresContractPriceData):
         :return: data
         """
 
-        ident = self._keyname_given_contract_object(futures_contract_object)
-        item = self._arctic.library.read(ident)
+        ident = from_contract_to_key(futures_contract_object)
 
-        ## What if not found? CHECK
-
-        ## Returns a data frame which should have the right format
-        data = pd.DataFrame(item.data)
+        # Returns a data frame which should have the right format
+        data = self.arctic_connection.read(ident)
 
         return futuresContractPrices(data)
 
-    def _write_prices_for_contract_object_no_checking(self, futures_contract_object, futures_price_data):
+    def _write_prices_for_contract_object_no_checking(self,
+                                                      futures_contract_object: futuresContract,
+                                                      futures_price_data: futuresContractPrices):
         """
         Write prices
         CHECK prices are overriden on second write
@@ -83,18 +64,51 @@ class arcticFuturesContractPriceData(futuresContractPriceData):
         :return: None
         """
 
-        self.log.label(instrument_code = futures_contract_object.instrument_code,
-                       contract_date = futures_contract_object.date)
-        ident = self._keyname_given_contract_object(futures_contract_object)
-        futures_price_data_aspd = pd.DataFrame(futures_price_data)
-        self._arctic.library.write(ident, futures_price_data_aspd)
-        self.log.msg("Wrote %s lines of prices for %s to %s" % (len(futures_price_data), str(futures_contract_object.ident()), self.name))
+        log = futures_contract_object.log(self.log)
+        ident = from_contract_to_key(futures_contract_object)
+        futures_price_data_as_pd = pd.DataFrame(futures_price_data)
 
+        self.arctic_connection.write(ident, futures_price_data_as_pd)
 
-    def _all_keynames_in_library(self):
-        return self._arctic.library.list_symbols()
+        log.msg("Wrote %s lines of prices for %s to %s" %
+                     (len(futures_price_data),
+                      str(futures_contract_object.key), str(self)))
 
-    def _delete_prices_for_contract_object_with_no_checks_be_careful(self, futures_contract_object):
+    def get_contracts_with_price_data(self) -> listOfFuturesContracts:
+        """
+
+        :return: list of contracts
+        """
+
+        list_of_contract_tuples = self._get_contract_tuples_with_price_data()
+        list_of_contracts = [
+            futuresContract(contract_tuple[0], contract_tuple[1])
+            for contract_tuple in list_of_contract_tuples
+        ]
+
+        list_of_contracts = listOfFuturesContracts(list_of_contracts)
+
+        return list_of_contracts
+
+    def _get_contract_tuples_with_price_data(self) -> list:
+        """
+
+        :return: list of futures contracts as tuples
+        """
+
+        all_keynames = self._all_keynames_in_library()
+        list_of_contract_tuples = [
+            from_key_to_tuple(keyname)
+            for keyname in all_keynames
+        ]
+
+        return list_of_contract_tuples
+
+    def _all_keynames_in_library(self) -> list:
+        return self.arctic_connection.get_keynames()
+
+    def _delete_prices_for_contract_object_with_no_checks_be_careful(
+            self, futures_contract_object: futuresContract):
         """
         Delete prices for a given contract object without performing any checks
 
@@ -102,32 +116,19 @@ class arcticFuturesContractPriceData(futuresContractPriceData):
         :param futures_contract_object:
         :return: None
         """
-        self.log.label(instrument_code = futures_contract_object.instrument_code,
-                       contract_date = futures_contract_object.date)
+        log = futures_contract_object.log(self.log)
 
-        ident = self._keyname_given_contract_object(futures_contract_object)
-        self._arctic.library.delete(ident)
-        self.log.msg("Deleted all prices for %s from %s" % (futures_contract_object.ident(), self.name))
+        ident = from_contract_to_key(futures_contract_object)
+        self.arctic_connection.delete(ident)
+        log.msg("Deleted all prices for %s from %s" %
+                     (futures_contract_object.key, str(self)))
 
-    def _get_contract_tuples_with_price_data(self):
-        """
 
-        :return: list of futures contracts as tuples
-        """
+def from_key_to_tuple(keyname):
+    return keyname.split(".")
 
-        all_keynames = self._all_keynames_in_library()
-        list_of_contract_tuples = [self._contract_tuple_given_keyname(keyname) for keyname in all_keynames]
+def from_contract_to_key(contract: futuresContract):
+    return from_tuple_to_key([contract.instrument_code, contract.date_str])
 
-        return list_of_contract_tuples
-
-    def get_contracts_with_price_data(self):
-        """
-
-        :return: list of contracts
-        """
-
-        list_of_contract_tuples = self._get_contract_tuples_with_price_data()
-        list_of_contracts = [futuresContract(contract_tuple[0], contract_tuple[1]) for contract_tuple in list_of_contract_tuples]
-
-        return list_of_contracts
-
+def from_tuple_to_key(keytuple):
+    return keytuple[0]+"."+keytuple[1]

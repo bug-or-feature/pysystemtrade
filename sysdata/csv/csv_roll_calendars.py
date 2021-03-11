@@ -1,7 +1,9 @@
-from sysdata.futures.roll_calendars import rollCalendarData, rollCalendar
+from sysobjects.roll_calendars import rollCalendar
+from sysdata.futures.roll_calendars import rollCalendarData
 from syscore.fileutils import get_filename_for_package, files_with_extension_in_pathname
 from syscore.pdutils import pd_readcsv
-
+from syscore.objects import arg_not_supplied
+from syslogdiag.log_to_screen import logtoscreen
 
 CSV_ROLL_CALENDAR_DIRECTORY = "data.futures.roll_calendars_csv"
 DATE_INDEX_NAME = "DATE_TIME"
@@ -9,44 +11,56 @@ DATE_INDEX_NAME = "DATE_TIME"
 # NOTE: can't change calendars here - do we need init?
 # common with all other csv objects?
 
+
 class csvRollCalendarData(rollCalendarData):
     """
 
     Class for roll calendars write / to from csv
     """
-    def __init__(self, datapath=None):
 
-        super().__init__()
+    def __init__(self, datapath=arg_not_supplied, log=logtoscreen("csvRollCalendarData")):
 
-        if datapath is None:
+        super().__init__(log=log)
+
+        if datapath is arg_not_supplied:
             datapath = CSV_ROLL_CALENDAR_DIRECTORY
 
         self._datapath = datapath
 
     def __repr__(self):
-        return "csvRollCalendarData accessing %s" % self._datapath
+        return "csvRollCalendarData accessing %s" % self.datapath
 
-    def get_list_of_instruments(self):
+    @property
+    def datapath(self):
+        return self._datapath
 
-        return files_with_extension_in_pathname(self._datapath, ".csv")
+    def get_list_of_instruments(self) -> list:
+        return files_with_extension_in_pathname(self.datapath, ".csv")
 
-    def _get_roll_calendar_without_checking(self, instrument_code):
-
+    def _get_roll_calendar_without_checking(self, instrument_code: str) -> rollCalendar:
+        filename = self._filename_given_instrument_code(instrument_code)
         try:
-            filename = self._filename_given_instrument_code(instrument_code)
-            roll_calendar = pd_readcsv(filename, date_index_name=DATE_INDEX_NAME)
+
+            roll_calendar = pd_readcsv(
+                filename, date_index_name=DATE_INDEX_NAME)
         except OSError:
             self.log.warning("Can't find roll calendar file %s" % filename)
             return rollCalendar.create_empty()
 
         return roll_calendar
 
-    def _delete_roll_calendar_data_without_any_warning_be_careful(instrument_code):
-        raise NotImplementedError("You can't delete a roll calendar stored as a csv - Add to overwrite existing or delete file manually")
+    def _delete_roll_calendar_data_without_any_warning_be_careful(self,
+            instrument_code:str):
+        raise NotImplementedError(
+            "You can't delete a roll calendar stored as a csv - Add to overwrite existing or delete file manually"
+        )
 
-    def _add_roll_calendar_without_checking_for_existing_entry(self, roll_calendar, instrument_code):
+    def _add_roll_calendar_without_checking_for_existing_entry(self, instrument_code:str, roll_calendar: rollCalendar):
         filename = self._filename_given_instrument_code(instrument_code)
-        roll_calendar.to_csv(filename, index_label = DATE_INDEX_NAME)
+        roll_calendar.to_csv(filename, index_label=DATE_INDEX_NAME)
+        self.log.msg("Wrote calendar for %s to %s" % (instrument_code, str(filename)))
 
-    def _filename_given_instrument_code(self, instrument_code):
-        return get_filename_for_package(self._datapath, "%s.csv" %(instrument_code))
+    def _filename_given_instrument_code(self, instrument_code:str):
+        return get_filename_for_package(
+            self.datapath, "%s.csv" %
+            (instrument_code))

@@ -4,13 +4,15 @@ Systematic Trading in python
 
 Rob Carver
 
-[http://qoppac.blogspot.co.uk/p/pysystemtrade.html](http://qoppac.blogspot.co.uk/p/pysystemtrade.html)
+[https://qoppac.blogspot.com/p/pysystemtrade.html](https://qoppac.blogspot.com/p/pysystemtrade.html)
 
 
-Version 0.30.0
+Version 0.85.0
+ 
+**WARNING! FROM VERSION 0.80 TO 0.85.0 IS A MAJOR UPGRADE. SEE [pandas_upgrade](pandas_upgrade.md) BEFORE DOING ANYTHING!
 
+20210305
 
-20200513
 
 
 ## Release notes
@@ -20,15 +22,14 @@ See [DONE_TO_DO](DONE_TO_DO.md) for release notes, and future plans.
 
 ## Description
 
-**pysystem** trade is the open source version of my own backtesting engine that implements systems according to the framework outlined in my book ["Systematic Trading"](http://www.systematictrading.org), which is further developed on [my blog](http://qoppac.blogspot.com).
+**pysystemtrade** is the open source version of my own backtesting engine that implements systems according to the framework outlined in my book ["Systematic Trading"](https://www.systematicmoney.org/systematic-trading), which is further developed on [my blog](https://qoppac.blogspot.com).
 
-For a longer explanation of the motivation and point of this project see my [blog post.](http://qoppac.blogspot.co.uk/2015/12/pysystemtrade.html)
+For a longer explanation of the motivation and point of this project see my [blog post.](https://qoppac.blogspot.com/2015/12/pysystemtrade.html)
 
-Currently pysystemtrade can do the following:
-- Backtesting enviroment that will work "out of the box" for chapter 15 of my book ["Systematic Trading"](systematicmoney.org/systematic-trading)
-- Implement all the optimisation and system design principles in the book and on my website.
-
-*Eventually* pysystemtrade will also be a complete implementation of a fully automated system for futures trading (for interactive brokers only), including regularly updated data
+Pysystemtrade is a....:
+- Backtesting environment that will work "out of the box" for chapter 15 of my book ["Systematic Trading"](https://www.systematicmoney.org/systematic-trading)
+- Which implements all the optimisation and system design principles in the book and on my website.
+- And is a complete implementation of a fully automated system for futures trading (for interactive brokers)
 
 pysystemtrade uses the [IB insync library](https://ib-insync.readthedocs.io/api.html) to connect to interactive brokers.
 
@@ -36,9 +37,11 @@ pysystemtrade uses the [IB insync library](https://ib-insync.readthedocs.io/api.
 
 [Introduction (start here)](docs/introduction.md)
 
-[Backtesting user guide](docs/userguide.md)
+[Backtesting user guide](docs/backtesting.md)
 
-[Working with futures data](/docs/futures.md)
+[Working with futures data](/docs/data.md)
+
+[Production system](/docs/) Documentation incomplete and in progress!
 
 ## Dependencies
 
@@ -58,13 +61,16 @@ This package isn't hosted on pip. So to get the code the easiest way is to use g
 
 ```
 git clone https://github.com/robcarver17/pysystemtrade.git
-python3 setup.py develop
+python3 setup.py install # normal
+python3 setup.py develop # required if using ipython so sessions can see files inside subdirectories which would otherwise be inaccessible.
+
 ```
-Notice that develop mode is required so that ipython sessions can see files inside subdirectories which would otherwise be inaccessible.
+
+
 
 ### A note on support
 
-This is an open source project, designed for people who are already comfortable using and writing python code, are capable of installing the dependencies, and who want a head start on implementing a system of their own. I do not have the time to provide support. Of course I am very happy if you get in touch with me on any of the following topics:
+This is an open source project, designed for people who are already comfortable using and writing python code, are capable of installing the dependencies, and who want a head start on implementing a system of their own. I do not have the time to provide support. Primarily, this is my trading system which you are welcome to use or steal code from, I'm open sourcing it out of the goodness of my heart not so I can become an unpaid technical support helper to hundreds of strangers. Of course I am very happy if you get in touch with me on any of the following topics:
 
 - Confusing error messages
 - Missing or misleading documentation

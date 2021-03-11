@@ -1,5 +1,5 @@
-from sysdata.csv.csv_sim_futures_data import csvFuturesSimData
-from sysdata.configdata import Config
+from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
+from sysdata.config.configdata import Config
 
 from systems.forecasting import Rules
 from systems.basesystem import System
@@ -19,10 +19,18 @@ def simplesystem(data=None, config=None, log_level="on"):
     if data is None:
         data = csvFuturesSimData()
 
-    my_system = System([
-        Account(), Portfolios(), PositionSizing(), ForecastCombine(),
-        ForecastScaleCap(), Rules()
-    ], data, config)
+    my_system = System(
+        [
+            Account(),
+            Portfolios(),
+            PositionSizing(),
+            ForecastCombine(),
+            ForecastScaleCap(),
+            Rules(),
+        ],
+        data,
+        config,
+    )
 
     my_system.set_logging_level(log_level)
 

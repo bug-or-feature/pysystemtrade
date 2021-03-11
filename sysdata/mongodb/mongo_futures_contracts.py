@@ -1,10 +1,12 @@
-from sysdata.mongodb.mongo_connection import mongoConnection, MONGO_ID_KEY, create_update_dict
 
-CONTRACT_COLLECTION = 'futures_contracts'
-DEFAULT_DB = 'production'
+CONTRACT_COLLECTION = "futures_contracts"
 
-from sysdata.futures.contracts import futuresContractData, futuresContract
-from syslogdiag.log import logtoscreen
+from syscore.objects import arg_not_supplied, missing_data
+from sysdata.futures.contracts import futuresContractData
+from sysobjects.contracts import  contract_key_from_code_and_id, futuresContract, get_code_and_id_from_contract_key, key_contains_instrument_code, listOfFuturesContracts
+from syslogdiag.log_to_screen import logtoscreen
+from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey
+
 
 class mongoFuturesContractData(futuresContractData):
     """
@@ -12,102 +14,82 @@ class mongoFuturesContractData(futuresContractData):
 
     We store instrument code, and contract date data (date, expiry, roll cycle)
 
-    The keys used are a tuple CHECK instrument_code, contract_date
-
     If you want more information about a given instrument you have to read it in using mongoFuturesInstrumentData
     """
-
-    def __init__(self, mongo_db = None, log=logtoscreen("mongoFuturesContractData")):
+    def __init__(self, mongo_db=arg_not_supplied, log=logtoscreen(
+            "mongoFuturesContractData")):
 
         super().__init__(log=log)
+        mongo_data = mongoDataWithSingleKey(CONTRACT_COLLECTION, "contract_key", mongo_db = mongo_db)
+        self._mongo_data = mongo_data
 
-        self._mongo = mongoConnection(CONTRACT_COLLECTION, mongo_db=mongo_db)
-
-        # this won't create the index if it already exists
-        self._mongo.create_multikey_index("instrument_code", "contract_date")
-
-        self.name = "simData connection for futures contracts, %s" % repr(self._mongo)
 
     def __repr__(self):
-        return self.name
+        return "mongoFuturesInstrumentData %s" % str(self.mongo_data)
 
-    def get_list_of_contract_dates_for_instrument_code(self, instrument_code):
+    @property
+    def mongo_data(self):
+        return self._mongo_data
 
-        filter_by_code = {'instrument_code' : instrument_code}
-        cursor = self._mongo.collection.find(filter_by_code)
-        contract_dates = [db_entry['contract_date'] for db_entry in cursor]
+    def is_contract_in_data(self, instrument_code:str, contract_date_str:str) -> bool:
+        key = contract_key_from_code_and_id(instrument_code, contract_date_str)
+        return self.mongo_data.key_is_in_data(key)
 
-        return contract_dates
+    def get_list_of_all_contract_keys(self) -> list:
+        return self.mongo_data.get_list_of_keys()
 
-    def _get_contract_data_without_checking(self, instrument_code, contract_date):
+    def get_all_contract_objects_for_instrument_code(self, instrument_code: str) -> listOfFuturesContracts:
 
-        result_dict = self._mongo.collection.find_one(dict(instrument_code=instrument_code, contract_date = contract_date))
-        result_dict.pop(MONGO_ID_KEY)
+        list_of_keys = self._get_all_contract_keys_for_instrument_code(instrument_code)
+        list_of_objects = [self._get_contract_data_from_key_without_checking(key) for key in list_of_keys]
+        list_of_futures_contracts = listOfFuturesContracts(list_of_objects)
 
-        contract_object = from_mongo_record_to_contract_dict(result_dict)
+        return list_of_futures_contracts
+
+    def _get_all_contract_keys_for_instrument_code(self, instrument_code:str) -> list:
+        list_of_all_contract_keys = self.get_list_of_all_contract_keys()
+        list_of_relevant_keys = [contract_key
+                                 for contract_key in list_of_all_contract_keys
+                                 if key_contains_instrument_code(contract_key, instrument_code)]
+
+        return list_of_relevant_keys
+
+    def get_list_of_contract_dates_for_instrument_code(self, instrument_code:str) -> list:
+        list_of_keys = self._get_all_contract_keys_for_instrument_code(instrument_code)
+        list_of_split_keys = [get_code_and_id_from_contract_key(key) for key in list_of_keys]
+        list_of_contract_id = [contract_id for _,contract_id in list_of_split_keys]
+
+        return list_of_contract_id
+
+    def _get_contract_data_without_checking(
+            self, instrument_code:str, contract_id:str) -> futuresContract:
+
+        key = contract_key_from_code_and_id(instrument_code, contract_id)
+        contract_object = self._get_contract_data_from_key_without_checking(key)
 
         return contract_object
 
+    def _get_contract_data_from_key_without_checking(
+            self, key:str) ->futuresContract:
 
-    def _delete_contract_data_without_any_warning_be_careful(self, instrument_code, contract_date):
-        self._mongo.collection.remove(dict(instrument_code=instrument_code, contract_date = contract_date))
-        self.log.terse("Deleted %s %s from %s" % (instrument_code, contract_date, self.name))
+        result_dict = self.mongo_data.get_result_dict_for_key_without_key_value(key)
+        if result_dict is missing_data:
+            # shouldn't happen...
+            raise Exception("Data for %s gone AWOL" % key)
 
-    def add_contract_data(self, contract_object, ignore_duplication=False):
+        contract_object = futuresContract.create_from_dict(result_dict)
 
-        instrument_code = contract_object.instrument_code
-        contract_date = contract_object.date
+        return contract_object
 
-        self.log.label(instrument_code=instrument_code, contract_date=contract_date)
-        mongo_record = from_futures_contract_to_mongo_record_dict(contract_object)
+    def _delete_contract_data_without_any_warning_be_careful(
+        self, instrument_code:str, contract_date:str
+    ):
 
-        if self.is_contract_in_data(instrument_code, contract_date):
-            if ignore_duplication:
-                # exists in data but it's cool
-                self.log.msg("Deleting %s/%s to write new record" % (instrument_code, contract_date))
-                self.delete_contract_data(instrument_code, contract_date, are_you_sure=True)
-            else:
-                self.log.warn("There is already %s/%s in the data, you have to delete it first" % (instrument_code, contract_date))
-                return None
+        key =  contract_key_from_code_and_id(instrument_code, contract_date)
+        self.mongo_data.delete_data_without_any_warning(key)
 
-        # isn't in date, can use insert
-        self._mongo.collection.insert_one(mongo_record)
-
-        self.log.terse("Added contract %s %s" % (instrument_code, contract_date))
-
-
-def from_mongo_record_to_contract_dict(mongo_record_dict):
-    """
-    Mongo records contain additional entries: instrument_code, contract_date
-    These are embedded within the nested dicts, so strip out
-
-    :param mongo_record_dict:
-    :return: dict to pass to futuresContract.create_from_dict
-    """
-
-    mongo_record_dict.pop("instrument_code")
-    mongo_record_dict.pop("contract_date")
-
-    contract_object = futuresContract.create_from_dict(mongo_record_dict)
-
-    return contract_object
-
-
-def from_futures_contract_to_mongo_record_dict(futures_contract):
-    """
-    Mongo records contain additional entries: instrument_code, contract_date
-    These are embedded within the nested dicts
-
-    :param futures_contract: futuresContract
-    :return: dict to write in mongo
-    """
-
-    instrument_code = futures_contract.instrument_code
-    contract_date_id = futures_contract.date
-
-    mongo_record = futures_contract.as_dict()
-    mongo_record['instrument_code'] = instrument_code
-    mongo_record['contract_date'] = contract_date_id
-
-    return mongo_record
-
+    def _add_contract_object_without_checking_for_existing_entry(
+            self, contract_object: futuresContract):
+        contract_object_as_dict = contract_object.as_dict()
+        key = contract_object.key
+        self.mongo_data.add_data(key, contract_object_as_dict, allow_overwrite=True)

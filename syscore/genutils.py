@@ -2,18 +2,21 @@
 Utilities I can't put anywhere else...
 """
 
-from math import copysign
+from math import copysign, gcd
 from copy import copy
 import sys
 import numpy as np
 import datetime
+import functools
 
 
 class not_required_flag(object):
     def __repr__(self):
         return "Not required"
 
+
 NOT_REQUIRED = not_required_flag()
+
 
 def group_dict_from_natural(dict_group):
     """
@@ -33,10 +36,8 @@ def group_dict_from_natural(dict_group):
     if len(dict_group) == 0:
         return dict()
 
-    all_names = sorted(
-        set(
-            sum([dict_group[groupname]
-                 for groupname in dict_group.keys()], [])))
+    all_names = sorted(set(sum([dict_group[groupname]
+                                for groupname in dict_group.keys()], [])))
 
     def _return_without(name, group):
         if name in group:
@@ -70,11 +71,6 @@ def str2Bool(x):
     return x.lower() in ("t", "true")
 
 
-def TorF(x):
-    if x:
-        return "T"
-    else:
-        return "F"
 
 
 def str_of_int(x):
@@ -101,7 +97,7 @@ def str_of_int(x):
         return str(x)
     try:
         return str(int(x))
-    except:
+    except BaseException:
         return ""
 
 
@@ -129,7 +125,8 @@ def sign(x):
     """
     return copysign(1, x)
 
-def value_or_npnan(x, return_value = None):
+
+def value_or_npnan(x, return_value=None):
     """
     If x is np.nan return return_value
     else return x
@@ -155,29 +152,24 @@ def value_or_npnan(x, return_value = None):
             return return_value
         else:
             pass
-            ## Not a nan will return x
-    except:
-        ## Not something that can be compared to a nan
+            # Not a nan will return x
+    except BaseException:
+        # Not something that can be compared to a nan
         pass
 
-    # Eithier wrong type, or not a nan
+    # Either wrong type, or not a nan
     return x
 
-def get_safe_from_dict(some_dict, some_arg_name, some_default):
-    arg_from_dict = some_dict.get(some_arg_name, None)
-    if arg_from_dict is None:
-        return some_default
-    else:
-        return arg_from_dict
+
 
 def are_dicts_equal(d1, d2):
     d1_keys = set(d1.keys())
     d2_keys = set(d2.keys())
     intersect_keys = d1_keys.intersection(d2_keys)
-    if len(intersect_keys)!=len(d1_keys):
+    if len(intersect_keys) != len(d1_keys):
         return False
     same = set(o for o in intersect_keys if d1[o] == d2[o])
-    if len(same)!=len(d1_keys):
+    if len(same) != len(d1_keys):
         return False
     return True
 
@@ -196,14 +188,19 @@ class progressBar(object):
 
     """
 
-    def __init__(self, range_to_iter, suffix="Progress", toolbar_width=80, show_each_time=False):
+    def __init__(
+            self,
+            range_to_iter,
+            suffix="Progress",
+            toolbar_width=80,
+            show_each_time=False):
         self.toolbar_width = toolbar_width
         self.current_iter = 0
         self.suffix = suffix
         self.range_to_iter = range_to_iter
         self.range_per_block = range_to_iter / np.float(toolbar_width)
         self.display_bar()
-        self._how_many_blocks_displayed=-1 # will always display first time
+        self._how_many_blocks_displayed = -1  # will always display first time
         self._show_each_time = show_each_time
 
     def iterate(self):
@@ -218,23 +215,30 @@ class progressBar(object):
         return int(self.current_iter / self.range_per_block)
 
     def how_many_blocks_left(self):
-        return int((self.range_to_iter - self.current_iter) / self.range_per_block)
+        return int(
+            (self.range_to_iter -
+             self.current_iter) /
+            self.range_per_block)
 
     def number_of_blocks_changed(self):
         original_blocks = self._how_many_blocks_displayed
         new_blocks = self.how_many_blocks_had()
 
-        if new_blocks>original_blocks:
+        if new_blocks > original_blocks:
             return True
         else:
             return False
 
     def display_bar(self):
-        percents = round(100.0 * self.current_iter / float(self.range_to_iter),
-                         1)
-        bar = '=' * self.how_many_blocks_had() + '-' * self.how_many_blocks_left()
-        progress_string = '\0\r [%s] %s%s %s' % (bar, percents, '%',
-                                                 self.suffix)
+        percents = round(
+            100.0 *
+            self.current_iter /
+            float(
+                self.range_to_iter),
+            1)
+        bar = "=" * self.how_many_blocks_had() + "-" * self.how_many_blocks_left()
+        progress_string = "\0\r [%s] %s%s %s" % (
+            bar, percents, "%", self.suffix)
         sys.stdout.write(progress_string)
         sys.stdout.flush()
         self._how_many_blocks_displayed = self.how_many_blocks_had()
@@ -242,42 +246,298 @@ class progressBar(object):
     def finished(self):
         sys.stdout.write("\n")
 
-class timerClass(object):
+
+class quickTimer(object):
+    def __init__(self, seconds=60):
+        self._started = datetime.datetime.now()
+        self._time_limit = seconds
+
     @property
-    def frequency_minutes(self):
-        return 60.0
+    def unfinished(self):
+        return not self.finished
 
-    def when_last_run(self):
-        when_last_run = getattr(self, "_last_run", None)
-        if when_last_run is None:
-            when_last_run = datetime.datetime(1970,1,1)
-            self._last_run = when_last_run
-
-        return when_last_run
-
-    def set_last_run(self):
-        self._last_run = datetime.datetime.now()
-
-        return None
-
-    def minutes_since_last_run(self):
-        when_last_run = self.when_last_run()
+    @property
+    def finished(self):
         time_now = datetime.datetime.now()
-        delta = time_now - when_last_run
-        delta_minutes = delta.total_seconds()/60.0
-
-        return delta_minutes
-
-    def check_if_ready_for_another_run(self):
-        time_since_run = self.minutes_since_last_run()
-        minutes_between_runs = self.frequency_minutes
-        if time_since_run > minutes_between_runs:
+        elapsed = time_now - self._started
+        if elapsed.seconds > self._time_limit:
             return True
         else:
             return False
 
 
+# avoids encoding problems with mongo
+_none = ""
 
-if __name__ == '__main__':
+
+def none_to_object(x, object):
+    if x is _none:
+        return object
+    else:
+        return x
+
+
+def object_to_none(x, object, y=_none):
+    if x is object:
+        return y
+    else:
+        return x
+
+
+def get_unique_list(somelist):
+    uniquelist = []
+
+    for letter in somelist:
+        if letter not in uniquelist:
+            uniquelist.append(letter)
+
+    return uniquelist
+
+
+MISSING_STR = -1
+
+def list_of_items_seperated_by_underscores(this_str, result = ()):
+    find_underscore = this_str.find("_")
+    if find_underscore is MISSING_STR:
+        result_as_list = list(result)
+        result_as_list.append(this_str)
+        return result_as_list
+
+    partial_str = this_str[:find_underscore]
+    result = result + tuple([partial_str])
+
+    remaining_str = this_str[find_underscore+1:]
+
+    return list_of_items_seperated_by_underscores(remaining_str, result=result)
+
+def get_and_convert(
+        prompt,
+        type_expected=int,
+        allow_default=True,
+        default_value=0,
+        default_str=None):
+    invalid = True
+    input_str = prompt + " "
+    if allow_default:
+        if default_str is None:
+            input_str = input_str + \
+                "<RETURN for default %s> " % str(default_value)
+        else:
+            input_str = input_str + "<RETURN for %s> " % default_str
+
+    while invalid:
+        ans = input(input_str)
+
+        if ans == "" and allow_default:
+            return default_value
+        try:
+            result = type_expected(ans)
+            return result
+        except BaseException:
+            print(
+                "%s is not of expected type %s" %
+                (ans, type_expected.__name__))
+            continue
+
+
+
+TOP_LEVEL = -1
+
+
+class run_interactive_menu(object):
+    def __init__(
+        self,
+        top_level_menu_of_options,
+        nested_menu_of_options,
+        exit_option=-1,
+        another_menu=-2,
+    ):
+        """
+
+        :param top_level_menu_of_options: A dict of top level options
+        :param nested_menu_of_options: A dict of nested dicts, top levels keys are keys in top_level
+        :return: object
+        """
+
+        self._top_level = top_level_menu_of_options
+        self._nested = nested_menu_of_options
+        self._location = TOP_LEVEL
+        self._exit_option = exit_option
+        self._another_menu = another_menu
+
+    def propose_options_and_get_input(self):
+        is_top_level = self._location == TOP_LEVEL
+        if is_top_level:
+            top_level_menu = self._top_level
+            result = print_menu_and_get_response(
+                top_level_menu, default_option=-1, default_str="EXIT"
+            )
+            if result == -1:
+                return self._exit_option
+            else:
+                self._location = result
+                return self._another_menu
+        else:
+            sub_menu = self._nested[self._location]
+            result = print_menu_and_get_response(
+                sub_menu, default_option=-1, default_str="Back"
+            )
+            if result == -1:
+                self._location = -1
+                return self._another_menu
+            else:
+                return result
+
+
+def print_menu_of_values_and_get_response(
+       menu_of_options_as_list, default_str=""):
+
+    copy_menu_of_options_as_list = copy(menu_of_options_as_list)
+    if default_str != "":
+        try:
+            copy_menu_of_options_as_list.index(default_str)
+        except ValueError:
+            copy_menu_of_options_as_list.append(default_str)
+
+        default_option = copy_menu_of_options_as_list.index(default_str)
+    else:
+        default_option = None
+
+    menu_of_options = dict(
+        [
+            (int_key, menu_value)
+            for int_key, menu_value in enumerate(copy_menu_of_options_as_list)
+        ]
+    )
+    ans = print_menu_and_get_response(
+        menu_of_options, default_option=default_option, default_str=default_str
+    )
+    option_chosen = copy_menu_of_options_as_list[ans]
+
+    return option_chosen
+
+
+def print_menu_and_get_response(
+        menu_of_options,
+        default_option=None,
+        default_str=""):
+    """
+
+    :param copy_menu_of_options: A dict, keys are ints, values are str
+    :param default_option: None, or one of the keys
+    :return: int menu chosen
+    """
+    copy_menu_of_options = copy(menu_of_options)
+    menu_options_list = sorted(copy_menu_of_options.keys())
+    for option in menu_options_list:
+        print("%d: %s" % (option, copy_menu_of_options[option]))
+    print("\n")
+    computer_says_no = True
+    if default_option is None:
+        allow_default = False
+    else:
+        allow_default = True
+        menu_options_list = [default_option] + menu_options_list
+
+    while computer_says_no:
+        ans = get_and_convert(
+            "Your choice?",
+            default_value=default_option,
+            type_expected=int,
+            allow_default=allow_default,
+            default_str=default_str,
+        )
+        if ans not in menu_options_list:
+            print("Not a valid option")
+            continue
+        else:
+            computer_says_no = False
+            break
+
+    return ans
+
+
+def transfer_object_attributes(named_tuple_object, original_object):
+    kwargs = dict(
+        [
+            (field_name, getattr(original_object, field_name))
+            for field_name in named_tuple_object._fields
+        ]
+    )
+    new_object = named_tuple_object(**kwargs)
+
+    return new_object
+
+
+def highest_common_factor_for_list(list_of_ints: list) -> int:
+    """
+
+    :param list_of_ints:
+    :return: int
+
+    >>> highest_common_factor_for_list([2,3,4])
+    1
+    >>> highest_common_factor_for_list([2,6,4])
+    2
+    """
+    return functools.reduce(gcd, list_of_ints)
+
+
+def divide_list_of_ints_by_highest_common_factor(list_of_ints: list) -> list:
+    """
+
+    :param list_of_ints:
+    :return: list
+
+    >>> divide_list_of_ints_by_highest_common_factor([1,2])
+    [1, 2]
+    >>> divide_list_of_ints_by_highest_common_factor([2,4])
+    [1, 2]
+    >>> divide_list_of_ints_by_highest_common_factor([1,2,3])
+    [1, 2, 3]
+    >>> divide_list_of_ints_by_highest_common_factor([1])
+    [1]
+    """
+
+    gcd_value = highest_common_factor_for_list(list_of_ints)
+    new_list = [int(float(x) / gcd_value) for x in list_of_ints]
+    return new_list
+
+
+def list_of_ints_with_highest_common_factor_positive_first(list_of_ints: list) -> list:
+    """
+    Used to identify the unique version of a spread or fly contract
+
+    :param list_of_ints:
+    :return: list
+
+    >>> list_of_ints_with_highest_common_factor_positive_first([1])
+    [1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([-1])
+    [1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([1,-1])
+    [1, -1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([-1,1])
+    [1, -1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([-1,2])
+    [1, -2]
+    >>> list_of_ints_with_highest_common_factor_positive_first([-2,2])
+    [1, -1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([2,-2])
+    [1, -1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([2,-4,2])
+    [1, -2, 1]
+    >>> list_of_ints_with_highest_common_factor_positive_first([-2,4,-2])
+    [1, -2, 1]
+
+    """
+    new_list = divide_list_of_ints_by_highest_common_factor(list_of_ints)
+    multiply_sign = sign(new_list[0])
+    new_list = [int(x * multiply_sign) for x in new_list]
+    return new_list
+
+
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

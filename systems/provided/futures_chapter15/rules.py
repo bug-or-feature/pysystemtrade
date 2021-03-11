@@ -1,9 +1,10 @@
-'''
+"""
 Trading rules for futures system
-'''
+"""
 from syscore.dateutils import ROOT_BDAYS_INYEAR
 import pandas as pd
 from syscore.algos import robust_vol_calc
+
 
 def ewmac(price, vol, Lfast, Lslow):
     """
@@ -41,7 +42,7 @@ def ewmac(price, vol, Lfast, Lslow):
     # price: This is the stitched price series
     # We can't use the price of the contract we're trading, or the volatility will be jumpy
     # And we'll miss out on the rolldown. See
-    # http://qoppac.blogspot.co.uk/2015/05/systems-building-futures-rolling.html
+    # https://qoppac.blogspot.com/2015/05/systems-building-futures-rolling.html
 
     # We don't need to calculate the decay parameter, just use the span
     # directly
@@ -51,6 +52,7 @@ def ewmac(price, vol, Lfast, Lslow):
     raw_ewmac = fast_ewma - slow_ewma
 
     return raw_ewmac / vol.ffill()
+
 
 def ewmac_calc_vol(price, Lfast, Lslow, vol_days=35):
     """
@@ -85,7 +87,7 @@ def ewmac_calc_vol(price, Lfast, Lslow, vol_days=35):
     # price: This is the stitched price series
     # We can't use the price of the contract we're trading, or the volatility will be jumpy
     # And we'll miss out on the rolldown. See
-    # http://qoppac.blogspot.co.uk/2015/05/systems-building-futures-rolling.html
+    # https://qoppac.blogspot.com/2015/05/systems-building-futures-rolling.html
 
     # We don't need to calculate the decay parameter, just use the span
     # directly
@@ -97,7 +99,6 @@ def ewmac_calc_vol(price, Lfast, Lslow, vol_days=35):
     vol = robust_vol_calc(price, vol_days)
 
     return raw_ewmac / vol.ffill()
-
 
 
 def carry(daily_ann_roll, vol, smooth_days=90):
@@ -132,6 +133,7 @@ def carry2(raw_carry, smooth_days=90):
     return smooth_carry
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

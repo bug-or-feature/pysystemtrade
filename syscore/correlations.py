@@ -1,6 +1,8 @@
-'''
+"""
 Correlations are important and used a lot
-'''
+"""
+import scipy.cluster.hierarchy as sch
+
 from copy import copy
 
 import numpy as np
@@ -10,8 +12,29 @@ from syscore.genutils import str2Bool, group_dict_from_natural, progressBar
 from syscore.dateutils import generate_fitting_dates
 from syscore.pdutils import df_from_list, must_have_item
 
-from syslogdiag.log import logtoscreen
+from syslogdiag.log_to_screen import logtoscreen
 
+
+def ordered_correlation_matrix(corr_matrix: pd.DataFrame):
+    clusters = cluster_correlation_matrix(corr_matrix.values)
+    unique_clusters = list(set(clusters))
+    starting_names = list(corr_matrix.columns)
+    ordered_names = []
+    for cluster_id  in unique_clusters:
+        relevant_names = [column_name for column_name, cluster in zip(starting_names, clusters) if cluster==cluster_id]
+        ordered_names = ordered_names + relevant_names
+
+    new_matrix = corr_matrix[ordered_names].reindex(ordered_names)
+
+    return new_matrix
+
+def cluster_correlation_matrix(corr_matrix: np.array, max_cluster_size = 3) -> list:
+    d = sch.distance.pdist(corr_matrix)
+    L = sch.linkage(d, method="complete")
+    ind = sch.fcluster(L, max_cluster_size, criterion="maxclust")
+    ind = list(ind)
+
+    return ind
 
 def get_avg_corr(sigma):
     """
@@ -104,8 +127,13 @@ def clean_correlation(corrmat, corr_with_no_data, must_haves=None):
 
     avgcorr = get_avg_corr(corrmat)
 
-    def _good_correlation(i, j, corrmat, avgcorr, must_haves,
-                          corr_with_no_data):
+    def _good_correlation(
+            i,
+            j,
+            corrmat,
+            avgcorr,
+            must_haves,
+            corr_with_no_data):
         value = corrmat[i][j]
         must_have_value = must_haves[i] and must_haves[j]
 
@@ -118,11 +146,15 @@ def clean_correlation(corrmat, corr_with_no_data, must_haves=None):
             return value
 
     corrmat = np.array(
-        [[
-            _good_correlation(i, j, corrmat, avgcorr, must_haves,
-                              corr_with_no_data) for i in size_range
-        ] for j in size_range],
-        ndmin=2)
+        [
+            [
+                _good_correlation(i, j, corrmat, avgcorr, must_haves, corr_with_no_data)
+                for i in size_range
+            ]
+            for j in size_range
+        ],
+        ndmin=2,
+    )
 
     # makes life easier
     np.fill_diagonal(corrmat, 1.0)
@@ -130,12 +162,15 @@ def clean_correlation(corrmat, corr_with_no_data, must_haves=None):
     return corrmat
 
 
-# FIXME: OLd fashioned way of doing correlation, kept so optimisation doesn't break
-def correlation_single_period(data_for_estimate,
-                              using_exponent=True,
-                              min_periods=20,
-                              ew_lookback=250,
-                              floor_at_zero=False):
+# FIXME: OLd fashioned way of doing correlation, kept so optimisation
+# doesn't break
+def correlation_single_period(
+    data_for_estimate,
+    using_exponent=True,
+    min_periods=20,
+    ew_lookback=250,
+    floor_at_zero=False,
+):
     """
     We generate a correlation from a pd.DataFrame, which could have been stacked up
     :param data_for_estimate: simData to get correlations from
@@ -159,7 +194,9 @@ def correlation_single_period(data_for_estimate,
         # This is an artifact of how we prepare the data
         # Usual use for IDM, FDM calculation when whole data set is used
         corrmat = data_for_estimate.ewm(
-            span=ew_lookback, min_periods=min_periods).corr(pairwise=True)
+            span=ew_lookback,
+            min_periods=min_periods).corr(
+            pairwise=True)
 
         # only want the final one
         corrmat = corrmat.values[-1]
@@ -173,14 +210,16 @@ def correlation_single_period(data_for_estimate,
 
 
 class correlationSinglePeriod(object):
-    def __init__(self,
-                 data_as_df,
-                 length_of_data=1,
-                 ew_lookback=250,
-                 boring_offdiag=0.99,
-                 cleaning=True,
-                 floor_at_zero=True,
-                 **kwargs):
+    def __init__(
+        self,
+        data_as_df,
+        length_of_data=1,
+        ew_lookback=250,
+        boring_offdiag=0.99,
+        cleaning=True,
+        floor_at_zero=True,
+        **kwargs
+    ):
         """
         Create an object to calculate correlations
 
@@ -199,7 +238,7 @@ class correlationSinglePeriod(object):
         self.cleaning = str2Bool(cleaning)
         self.floor_at_zero = str2Bool(floor_at_zero)
 
-        ## correct the lookback if we're jamming stuff together
+        # correct the lookback if we're jamming stuff together
         self.ew_lookback_corrected = length_of_data * ew_lookback
 
         size = data_as_df.shape[1]
@@ -234,17 +273,17 @@ class correlationSinglePeriod(object):
             corrmat = corr_with_no_data
         else:
 
-            data_for_estimate = data_as_df[fit_period.fit_start:
-                                           fit_period.fit_end]
+            data_for_estimate = data_as_df[fit_period.fit_start: fit_period.fit_end]
 
             corrmat = correlation_calculator(
-                data_for_estimate, ew_lookback=ew_lookback_corrected, **kwargs)
+                data_for_estimate, ew_lookback=ew_lookback_corrected, **kwargs
+            )
 
         if cleaning:
-            current_period_data = data_as_df[fit_period.fit_start:
-                                             fit_period.fit_end]
+            current_period_data = data_as_df[fit_period.fit_start: fit_period.fit_end]
 
-            # must_haves are items with data in this period, so we need some kind of correlation
+            # must_haves are items with data in this period, so we need some
+            # kind of correlation
             must_haves = must_have_item(current_period_data)
 
             # means we can use earlier correlations with sensible values
@@ -257,10 +296,9 @@ class correlationSinglePeriod(object):
         return corrmat
 
 
-def correlation_calculator(data_for_estimate,
-                           using_exponent=True,
-                           min_periods=20,
-                           ew_lookback=250):
+def correlation_calculator(
+    data_for_estimate, using_exponent=True, min_periods=20, ew_lookback=250
+):
     """
     We generate a correlation from a pd.DataFrame, which could have been stacked up
 
@@ -290,11 +328,15 @@ def correlation_calculator(data_for_estimate,
         # This is an artifact of how we prepare the data
         # Usual use for IDM, FDM calculation when whole data set is used
         corrmat = data_for_estimate.ewm(
-            span=ew_lookback, min_periods=min_periods).corr(pairwise=True)
+            span=ew_lookback,
+            min_periods=min_periods).corr(
+            pairwise=True)
 
-        number_of_items=data_for_estimate.shape[1]
+        number_of_items = data_for_estimate.shape[1]
         # only want the final one
-        corrmat = corrmat.iloc[-number_of_items:,].values
+        corrmat = corrmat.iloc[
+            -number_of_items:,
+        ].values
     else:
         # Use normal correlation
         # Usual use for bootstrapping when only have sub sample
@@ -327,10 +369,10 @@ def boring_corr_matrix(size, offdiag=0.99, diag=1.0):
 
 
 class CorrelationList(object):
-    '''
+    """
     A correlation list is a list of correlations, packed in with date information about them
 
-    '''
+    """
 
     def __init__(self, corr_list, column_names, fit_dates):
         """
@@ -351,24 +393,28 @@ class CorrelationList(object):
         setattr(self, "fit_dates", fit_dates)
 
     def __repr__(self):
-        return "%d correlation estimates for %s; use .corr_list, .columns, .fit_dates" % (
-            len(self.corr_list), ",".join(self.columns))
+        return (
+            "%d correlation estimates for %s; use .corr_list, .columns, .fit_dates" %
+            (len(
+                self.corr_list), ",".join(
+                self.columns)))
 
 
 class CorrelationEstimator(CorrelationList):
-    '''
+    """
 
     We generate a correlation list from either a pd.DataFrame, or a list of them if we're pooling
 
 
-    '''
+    """
 
-    def __init__(self,
-                 data,
-                 frequency="W",
-                 date_method="expanding",
-                 rollyears=20,
-                 **kwargs):
+    def __init__(
+            self,
+            data,
+            frequency="W",
+            date_method="expanding",
+            rollyears=20,
+            **kwargs):
         """
 
         We generate a correlation from either a pd.DataFrame, or a list of them if we're pooling
@@ -392,7 +438,7 @@ class CorrelationEstimator(CorrelationList):
         :returns: CorrelationList
         """
 
-        if type(data) is list:
+        if isinstance(data, list):
 
             # turn the list of data into a single dataframe. This will have a unique time series, which we manage
             #   through adding a small offset of a few microseconds
@@ -411,11 +457,13 @@ class CorrelationEstimator(CorrelationList):
 
         # Generate time periods
         fit_dates = generate_fitting_dates(
-            data_as_df, date_method=date_method, rollyears=rollyears)
+            data_as_df, date_method=date_method, rollyears=rollyears
+        )
 
         # create a single period correlation estimator
         correlation_estimator_for_one_period = correlationSinglePeriod(
-            data_as_df, length_of_data=length_of_data, **kwargs)
+            data_as_df, length_of_data=length_of_data, **kwargs
+        )
 
         # create a list of correlation matrices
         corr_list = []
@@ -434,6 +482,7 @@ class CorrelationEstimator(CorrelationList):
         setattr(self, "fit_dates", fit_dates)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

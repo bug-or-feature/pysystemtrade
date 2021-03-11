@@ -1,56 +1,72 @@
 """
 Do fun things with objects and classes
 """
-from collections import  namedtuple
+from collections import namedtuple
 import importlib
 
-class _named_object():
+
+class named_object:
     def __init__(self, name):
-        self._name= str(name)
+        self._name = str(name)
+
     def __repr__(self):
         return self._name
 
-missing_contract = _named_object("missing contract")
-missing_instrument = _named_object("missing instrument")
-missing_file = _named_object("missing file")
-missing_data = _named_object("missing data")
 
-missing_order = _named_object("missing order")
-locked_order = _named_object("locked order")
-duplicate_order = _named_object("duplicate order")
+missing_contract = named_object("missing contract")
+missing_instrument = named_object("missing instrument")
 
+missing_order = named_object("missing order")
+locked_order = named_object("locked order")
+duplicate_order = named_object("duplicate order")
+zero_order = named_object("zero order")
 
-data_error = _named_object("data error")
-not_updated = _named_object("not updated")
+fill_exceeds_trade = named_object("fill too big for trade")
 
-success = _named_object("success")
-failure = _named_object("failure")
+order_is_in_status_finished = named_object(
+    "order status is modification finished")
+order_is_in_status_modified = named_object("order status is being modified")
+order_is_in_status_not_modified = named_object(
+    "order status is not currently modified"
+)
+order_is_in_status_reject_modification = named_object(
+    "order status is modification rejected"
+)
 
+no_order_id = named_object("no order ID")
+no_children = named_object("no_children")
+no_parent = named_object("no parent")
 
+rolling_cant_trade = named_object("rolling can't trade")
+ROLL_PSEUDO_STRATEGY = "_ROLL_PSEUDO_STRATEGY"
 
-arg_not_supplied = _named_object("arg not supplied")
+not_updated = named_object("not updated")
 
-report_config = namedtuple("config", "title function output")
+class status(named_object):
+    pass
+success = status("success")
+failure = status("failure")
+
+arg_not_supplied = named_object("arg not supplied")
+user_exit = named_object("exit")
+
 table = namedtuple("table", "Heading Body")
 header = namedtuple("header", "Heading")
 body_text = namedtuple("bodytext", "Text")
 
 
-def get_methods(an_object):
-    dir_list = dir(an_object)
+def get_methods(a_stage_object) -> list:
+    dir_list = dir(a_stage_object)
 
     # remove "_"
 
     dir_list = [
-        method_name for method_name in dir_list if method_name[0] != "_"
-    ]
+        method_name for method_name in dir_list if method_name[0] != "_"]
 
     # remove special
     special_list = ["log", "name", "parent", "description"]
     dir_list = [
-        method_name for method_name in dir_list
-        if method_name not in special_list
-    ]
+        method_name for method_name in dir_list if method_name not in special_list]
 
     return dir_list
 
@@ -81,19 +97,21 @@ def resolve_function(func_or_func_name):
 
     if not isinstance(func_or_func_name, str):
         raise Exception(
-            "Called resolve_function with non string or callable object %s" %
-            str(func_or_func_name))
+            "Called resolve_function with non string or callable object %s"
+            % str(func_or_func_name)
+        )
 
     if "." in func_or_func_name:
         # it's another module, have to get it
-        mod_name, func_name = func_or_func_name.rsplit('.', 1)
+        mod_name, func_name = func_or_func_name.rsplit(".", 1)
         mod = importlib.import_module(mod_name)
         func = getattr(mod, func_name, None)
 
     else:
         raise Exception(
-            "Need full module file name string: %s isn't good enough" %
-            func_or_func_name)
+            "Need full module file name string: %s isn't good enough"
+            % func_or_func_name
+        )
 
     return func
 
@@ -192,8 +210,17 @@ def hasallattr(some_object, attrlist=[]):
     return all([hasattr(some_object, attrname) for attrname in attrlist])
 
 
+def get_class_name(class_object):
+    return class_object.__name__
 
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+class missingData(Exception):
+    pass
+
+
+class existingData(Exception):
+    pass
+
+
+missing_file = named_object("missing file")
+missing_data = named_object("missing data")

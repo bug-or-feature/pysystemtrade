@@ -1,0 +1,14 @@
+# to be ignored by Dockerfile COPY
+.DS_Store
+.coveragerc
+.dockerignore
+.env
+.flake8
+.git/
+.github
+.idea
+.python-version
+.travis.yml
+/private/private_config.yaml
+/*.egg-info
+*.iml

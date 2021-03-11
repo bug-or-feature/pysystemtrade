@@ -3,19 +3,23 @@ Populate a mongo DB collection with roll data from a csv
 """
 
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
-from sysinit.futures.csv_data_readers.rolldata_from_csv import initCsvFuturesRollData
+from sysdata.csv.csv_roll_parameters import csvRollParametersData
 
-data_out = mongoRollParametersData()
-data_in = initCsvFuturesRollData()
+if __name__ == "__main__":
+    input("Will overwrite existing data are you sure?! CTL-C to abort")
+    # modify flags as required
 
-instrument_list = data_in.get_list_of_instruments()
+    data_out = mongoRollParametersData()
+    data_in = csvRollParametersData()
 
-for instrument_code in instrument_list:
-    instrument_object = data_in.get_roll_parameters(instrument_code)
+    instrument_list = data_in.get_list_of_instruments()
 
-    data_out.delete_roll_parameters(instrument_code, are_you_sure=True)
-    data_out.add_roll_parameters(instrument_object, instrument_code)
+    for instrument_code in instrument_list:
+        instrument_object = data_in.get_roll_parameters(instrument_code)
 
-    # check
-    instrument_added = data_out.get_roll_parameters(instrument_code)
-    print("Added %s: %s to %s" % (instrument_code, instrument_added, data_out))
+        data_out.delete_roll_parameters(instrument_code, are_you_sure=True)
+        data_out.add_roll_parameters(instrument_code, instrument_object)
+
+        # check
+        instrument_added = data_out.get_roll_parameters(instrument_code)
+        print("Added %s: %s to %s" % (instrument_code, instrument_added, data_out))

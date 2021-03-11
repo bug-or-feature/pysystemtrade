@@ -1,11 +1,11 @@
-'''
+"""
 This is a futures system
 
 A system consists of a system, plus a config
 
-'''
-from sysdata.csv.csv_sim_futures_data import csvFuturesSimData
-from sysdata.configdata import Config
+"""
+from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
+from sysdata.config.configdata import Config
 
 from systems.forecasting import Rules
 from systems.basesystem import System
@@ -63,16 +63,26 @@ def futures_system(data=None, config=None, trading_rules=None, log_level="on"):
 
     rules = Rules(trading_rules)
 
-    system = System([
-        Account(), Portfolios(), PositionSizing(), FuturesRawData(),
-        ForecastCombine(), ForecastScaleCap(), rules
-    ], data, config)
+    system = System(
+        [
+            Account(),
+            Portfolios(),
+            PositionSizing(),
+            FuturesRawData(),
+            ForecastCombine(),
+            ForecastScaleCap(),
+            rules,
+        ],
+        data,
+        config,
+    )
 
     system.set_logging_level(log_level)
 
     return system
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
