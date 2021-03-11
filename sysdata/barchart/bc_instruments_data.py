@@ -3,7 +3,7 @@ from syscore.fileutils import get_filename_for_package
 from syscore.genutils import value_or_npnan
 from sysobjects.instruments import futuresInstrument
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
-from syslogdiag.log import logtoscreen
+from syslogdiag.log_to_screen import logtoscreen
 from syscore.objects import missing_instrument, missing_file
 from sysdata.barchart.bc_instruments import BcInstrumentConfigData, BcFuturesInstrument
 

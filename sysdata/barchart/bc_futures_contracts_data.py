@@ -2,7 +2,7 @@ from syscore.objects import missing_contract, missing_instrument
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from sysdata.barchart.bc_connection import bcConnection
 from sysdata.futures.contracts import futuresContractData
-from syslogdiag.log import logtoscreen
+from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contract_dates_and_expiries import expiryDate
 from sysobjects.contracts import futuresContract
 from syscore.dateutils import get_datetime_from_datestring

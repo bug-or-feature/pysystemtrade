@@ -5,7 +5,7 @@ from sysdata.barchart.bc_connection import bcConnection
 from sysdata.barchart.bc_futures_contracts_data import BarchartFuturesContractData
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
-from syslogdiag.log import logtoscreen
+from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 

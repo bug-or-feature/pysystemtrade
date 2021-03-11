@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup as Scraper
 
 from syscore.dateutils import Frequency, contract_month_from_number
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
-from syslogdiag.log import logger, logtoscreen
+from syslogdiag.log_to_screen import logger, logtoscreen
 from sysobjects.contracts import futuresContract
 from syscore.objects import missing_data
 
