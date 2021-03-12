@@ -13,7 +13,7 @@ MONGO_INDEX_ID = "_id_"
 MONGO_ID_KEY = "_id"
 
 # regular expression pattern for mongodb connection URLs
-host_pattern = re.compile('^(mongodb://)([^:]+):([^@]+)@([^:]+)')
+host_pattern = re.compile('^(mongodb://)([^:]+):([^@]+)@([^/]+)')
 
 def mongo_defaults(**kwargs):
     """
