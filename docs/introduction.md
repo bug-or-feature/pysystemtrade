@@ -74,15 +74,13 @@ data.get_instrument_raw_carry_data("EDOLLAR").tail(6)
 
 Let's create a simple trading rule.
 
-
 ```python
 
 import pandas as pd
-from syscore.algos import robust_vol_calc
+from sysquant.estimators.vol import robust_vol_calc
+
 
 def calc_ewmac_forecast(price, Lfast, Lslow=None):
-
-
     """
     Calculate the ewmac trading fule forecast, given a price and EWMA speeds Lfast, Lslow and vol_lookback
 
@@ -93,15 +91,15 @@ def calc_ewmac_forecast(price, Lfast, Lslow=None):
 
     price = price.resample("1B").last()
     if Lslow is None:
-        Lslow=4*Lfast
+        Lslow = 4 * Lfast
 
     ## We don't need to calculate the decay parameter, just use the span directly
 
-    fast_ewma=price.ewm(span=Lfast).mean()
-    slow_ewma=price.ewm(span=Lslow).mean()
-    raw_ewmac=fast_ewma - slow_ewma
+    fast_ewma = price.ewm(span=Lfast).mean()
+    slow_ewma = price.ewm(span=Lslow).mean()
+    raw_ewmac = fast_ewma - slow_ewma
 
-    vol=robust_vol_calc(price.diff())    
+    vol = robust_vol_calc(price.diff())
 
     return raw_ewmac / vol
 
@@ -259,9 +257,11 @@ We'll see this pattern of `my_system...stage name...get_something()` a lot. The 
 What about if we want more than one trading rule, say a couple of variations of the ewmac rule? To define two different flavours of ewmac we're going to need to learn a little bit more about trading rules. Remember when we had `my_rules=Rules(dict(ewmac=ewmac))`? Well this is an equivalent way of doing it:
 
 ```python
-from systems.forecasting import TradingRule
-ewmac_rule=TradingRule(ewmac)
-my_rules=Rules(dict(ewmac=ewmac_rule))
+
+from systems.trading_rules import TradingRule
+
+ewmac_rule = TradingRule(ewmac)
+my_rules = Rules(dict(ewmac=ewmac_rule))
 ewmac_rule
 ```
 
