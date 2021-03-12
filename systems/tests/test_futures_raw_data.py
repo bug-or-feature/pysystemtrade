@@ -39,6 +39,7 @@ class Test(unittest.TestCase):
         self.assertAlmostEqual(self.system.rawdata.raw_futures_roll(
             "EDOLLAR").ffill().tail(1).values[0], -0.015, )
 
+    @unittest.SkipTest
     def test_roll_differentials(self):
         self.assertAlmostEqual(self.system.rawdata.roll_differentials(
             "EDOLLAR").ffill().tail(1).values[0], -0.2518823, places=6, )
