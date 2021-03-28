@@ -5,7 +5,7 @@ from sysdata.alphavantage.av_connection import avConnection
 from sysdata.fx.spotfx import fxPricesData
 
 from sysobjects.spot_fx_prices import fxPrices
-from syslogdiag.log import logtoscreen
+from syslogdiag.log_to_screen import logtoscreen
 from syscore.fileutils import get_filename_for_package
 from syscore.objects import missing_instrument, missing_file, missing_data
 
