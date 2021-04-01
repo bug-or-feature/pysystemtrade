@@ -18,3 +18,6 @@ restats
 .idea
 .project
 .pydevproject
+
+# pyenv
+.python-version
