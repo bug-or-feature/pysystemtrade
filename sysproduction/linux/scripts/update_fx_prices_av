@@ -1,0 +1,3 @@
+#!/bin/bash
+. ~/.profile
+. p sysproduction.update_fx_prices_alphavantage.update_fx_prices_alphavantage
