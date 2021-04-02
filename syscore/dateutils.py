@@ -42,8 +42,9 @@ UNIXTIME_IN_YEAR = UNIXTIME_CONVERTER * SECONDS_IN_YEAR
 MONTH_LIST = ["F", "G", "H", "J", "K", "M", "N", "Q", "U", "V", "X", "Z"]
 
 
-Frequency = Enum('Frequency', 'Day Hour Minutes_15 Minutes_5 Minute Seconds_10 Second')
+Frequency = Enum('Frequency', 'Unknown Year Month Week BDay Day Hour Minutes_15 Minutes_5 Minute Seconds_10 Second')
 DAILY_PRICE_FREQ = Frequency.Day
+
 
 def from_config_frequency_to_frequency(freq_as_str:str)-> Frequency:
     LOOKUP_TABLE = {'D':Frequency.Day,
@@ -233,7 +234,7 @@ class fit_dates_object(object):
             )
 
 
-def generate_fitting_dates(data, date_method, rollyears=20):
+def generate_fitting_dates(data: pd.DataFrame, date_method: str, rollyears: int=20):
     """
     generate a list 4 tuples, one element for each year in the data
     each tuple contains [fit_start, fit_end, period_start, period_end] datetime objects
@@ -243,7 +244,7 @@ def generate_fitting_dates(data, date_method, rollyears=20):
 
     if 'rolling' then use rollyears variable
     """
-
+    print("*** USE METHOD IN SYSQUANT INSTEAD**")
     if date_method not in ["in_sample", "rolling", "expanding"]:
         raise Exception(
             "don't recognise date_method %s should be one of in_sample, expanding, rolling" %

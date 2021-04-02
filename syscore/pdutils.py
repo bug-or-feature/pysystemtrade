@@ -7,6 +7,7 @@ import datetime
 import numpy as np
 from copy import copy
 
+from syscore.genutils import flatten_list
 from syscore.dateutils import (
     BUSINESS_DAYS_IN_YEAR,
     time_matches,
@@ -28,7 +29,7 @@ def turnover(x, y):
     """
 
     if isinstance(y, float) or isinstance(y, int):
-        y = pd.Series([float(y)] * len(x.index), x.index)
+        y = pd.Series(np.full(x.shape[0], float(y)), x.index)
 
     norm_x = x / y.ffill()
 
@@ -45,7 +46,47 @@ def uniquets(x):
     return x
 
 
-def df_from_list(data):
+
+class listOfDataFrames(list):
+    def ffill(self):
+        ffill_data = [item.ffill() for item in self]
+        return listOfDataFrames(ffill_data)
+
+    def resample(self, frequency: str):
+        data_resampled = [
+            data_item.resample(frequency).last() for data_item in self
+        ]
+
+        return listOfDataFrames(data_resampled)
+
+    def stacked_df_with_added_time_from_list(self) -> pd.DataFrame:
+        data_as_df = stacked_df_with_added_time_from_list(self)
+
+        return data_as_df
+
+    def reindex_to_common_index(self):
+        common_index = self.common_index()
+        reindexed_data = self.reindex(common_index)
+
+        return reindexed_data
+
+    def reindex(self, new_index: list):
+        data_reindexed = [
+            data_item.reindex(new_index)
+            for data_item in self
+        ]
+        return listOfDataFrames(data_reindexed)
+
+    def common_index(self):
+        all_indices = [data_item.index for data_item in self]
+        all_indices_flattened = flatten_list(all_indices)
+        common_unique_index = list(set(all_indices_flattened))
+        common_unique_index.sort()
+
+        return common_unique_index
+
+
+def stacked_df_with_added_time_from_list(data: listOfDataFrames) -> pd.DataFrame:
     """
     Create a single data frame from list of data frames
 
@@ -55,7 +96,9 @@ def df_from_list(data):
 
     THIS WILL ALSO DESTROY ANY AUTOCORRELATION PROPERTIES
     """
-    if isinstance(data, list):
+
+
+    if isinstance(data, list) or isinstance(data, listOfDataFrames):
         column_names = sorted(
             set(sum([list(data_item.columns) for data_item in data], []))
         )
@@ -158,7 +201,8 @@ def pd_readcsv(
     return new_ans
 
 
-def fix_weights_vs_pdm(weights, pdm):
+def fix_weights_vs_position_or_forecast(weights: pd.DataFrame,
+                                        position_or_forecast: pd.DataFrame):
     """
     Take a matrix of weights and positions/forecasts (pdm)
 
@@ -169,25 +213,24 @@ def fix_weights_vs_pdm(weights, pdm):
     :param weights: Weights to
     :type weights: TxK pd.DataFrame (same columns as weights, perhaps different length)
 
-    :param pdm:
-    :type pdm: TxK pd.DataFrame (same columns as weights, perhaps different length)
+    :param position_or_forecast:
+    :type position_or_forecast: TxK pd.DataFrame (same columns as weights, perhaps different length)
 
     :returns: TxK pd.DataFrame of adjusted weights
 
     """
 
     # forward fill forecasts/positions
-    pdm_ffill = pdm.ffill()
-
-    adj_weights = uniquets(weights)
+    pdm_ffill = position_or_forecast.ffill()
 
     # resample weights
+    adj_weights = uniquets(weights)
     adj_weights = adj_weights.reindex(pdm_ffill.index, method="ffill")
 
     # ensure columns are aligned
-    adj_weights = adj_weights[pdm.columns]
+    adj_weights = adj_weights[position_or_forecast.columns]
 
-    # remove weights if nan forecast
+    # remove weights if nan forecast or position
     adj_weights[np.isnan(pdm_ffill)] = 0.0
 
     # change rows so weights add to one
@@ -217,9 +260,9 @@ def drawdown(x):
     return x - maxx
 
 
-def from_dict_of_values_to_df(data_dict, ts_index, columns=None):
+def from_dict_of_values_to_df(data_dict: dict, long_ts_index, columns: list=None):
     """
-    Turn a set of fixed values into a pd.dataframe
+    Turn a set of fixed values into a pd.dataframe that spans the long index
 
     :param data_dict: A dict of scalars
     :param ts_index: A timeseries index
@@ -232,6 +275,8 @@ def from_dict_of_values_to_df(data_dict, ts_index, columns=None):
 
     columns_as_list = list(columns)
 
+    ts_index = [long_ts_index[0], long_ts_index[-1]]
+
     numeric_values = dict(
         [(keyname, [data_dict[keyname]] * len(ts_index)) for keyname in columns_as_list]
     )
@@ -239,6 +284,25 @@ def from_dict_of_values_to_df(data_dict, ts_index, columns=None):
     pd_dataframe = pd.DataFrame(numeric_values, ts_index)
 
     return pd_dataframe
+
+
+
+def from_scalar_values_to_ts(scalar_value: float, long_ts_index) -> pd.Series:
+    """
+    Turn a set of fixed values into a pd.dataframe that spans the long index
+
+    :param data_dict: A dict of scalars
+    :param ts_index: A timeseries index
+    :param columns: (optional) A list of str to align the column names to [must have entries in data_dict keys]
+    :return: pd.dataframe, column names from data_dict, values repeated scalars
+    """
+
+    ts_index = [long_ts_index[0], long_ts_index[-1]]
+
+    pd_series = pd.Series([scalar_value]*len(ts_index), index = ts_index)
+
+    return pd_series
+
 
 
 def create_arbitrary_pdseries(
@@ -289,7 +353,7 @@ def dataframe_pad(starting_df, column_list, padwith=0.0):
         if column_name in starting_df.columns:
             return starting_df[column_name]
         else:
-            return pd.Series([0.0] * len(starting_df.index), starting_df.index)
+            return pd.Series(np.full(starting_df.shape[0], 0.0), starting_df.index)
 
     new_data = [_pad_column(column_name, starting_df, padwith)
                 for column_name in column_list]
@@ -458,3 +522,4 @@ if __name__ == "__main__":
     import doctest
 
     doctest.testmod()
+

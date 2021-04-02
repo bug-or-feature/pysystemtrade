@@ -6,6 +6,8 @@ from systems.stage import SystemStage
 from syscore.objects import resolve_function
 from systems.system_cache import input, diagnostic, output
 
+from sysdata.sim.futures_sim_data import futuresSimData
+from sysdata.config.configdata import Config
 
 class RawData(SystemStage):
     """
@@ -26,6 +28,14 @@ class RawData(SystemStage):
     def name(self):
         return "rawdata"
 
+    @property
+    def data_stage(self) -> futuresSimData:
+        return self.parent.data
+
+    @property
+    def config(self) -> Config:
+        return self.parent.config
+
     @input
     def get_daily_prices(self, instrument_code) -> pd.Series:
         """
@@ -42,7 +52,7 @@ class RawData(SystemStage):
             "Calculating daily prices for %s" % instrument_code,
             instrument_code=instrument_code,
         )
-        dailyprice = self.parent.data.daily_prices(instrument_code)
+        dailyprice = self.data_stage.daily_prices(instrument_code)
 
         return dailyprice
 
@@ -53,7 +63,7 @@ class RawData(SystemStage):
             instrument_code=instrument_code,
         )
 
-        natural_prices = self.parent.data.get_raw_price(instrument_code)
+        natural_prices = self.data_stage.get_raw_price(instrument_code)
 
         return natural_prices
 
@@ -115,6 +125,7 @@ class RawData(SystemStage):
         """
         instrdailyprice = self.get_daily_prices(instrument_code)
         dailyreturns = instrdailyprice.diff()
+
         return dailyreturns
 
     @output()
@@ -167,13 +178,13 @@ class RawData(SystemStage):
             instrument_code=instrument_code,
         )
 
-        system = self.parent
         dailyreturns = self.daily_returns(instrument_code)
-        volconfig = copy(system.config.volatility_calculation)
+        volconfig = copy(self.config.volatility_calculation)
 
         # volconfig contains 'func' and some other arguments
         # we turn func which could be a string into a function, and then
         # call it with the other ags
+
         volfunction = resolve_function(volconfig.pop("func"))
         vol = volfunction(dailyreturns, **volconfig)
 
@@ -193,6 +204,7 @@ class RawData(SystemStage):
         :returns: Tx1 pd.DataFrame
         """
 
+        # UGLY
         denom_price = self.daily_denominator_price(instrument_code)
         num_returns = self.daily_returns(instrument_code)
         perc_returns = num_returns / denom_price.ffill()
@@ -260,6 +272,7 @@ class RawData(SystemStage):
         returnvol = self.daily_returns_volatility(instrument_code).shift(1)
         dailyreturns = self.daily_returns(instrument_code)
         norm_return = dailyreturns / returnvol
+
         return norm_return
 
     @diagnostic()
@@ -291,7 +304,7 @@ class RawData(SystemStage):
         :return: pd.Series
         """
 
-        instruments_in_asset_class = self.parent.data.all_instruments_in_asset_class(
+        instruments_in_asset_class = self.data_stage.all_instruments_in_asset_class(
             asset_class)
 
         aggregate_returns_across_asset_class = [
@@ -332,7 +345,7 @@ class RawData(SystemStage):
         :return:
         """
 
-        asset_class = self.parent.data.asset_class_for_instrument(
+        asset_class = self.data_stage.asset_class_for_instrument(
             instrument_code)
         normalised_price_for_asset_class = (
             self._by_asset_class_daily_vol_normalised_price_for_asset_class(asset_class)
