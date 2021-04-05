@@ -10,7 +10,7 @@ class altDataSource(object):
     Alternative (ie not Interactive Brokers) source of financial data
     """
 
-    def __init__(self, data: dataBlob=arg_not_supplied):
+    def __init__(self, data: dataBlob = arg_not_supplied):
         if data is arg_not_supplied:
             data = dataBlob()
 
