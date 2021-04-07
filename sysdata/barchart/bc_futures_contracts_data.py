@@ -11,8 +11,10 @@ import datetime
 
 class BarchartFuturesContractData(futuresContractData):
 
-    def __init__(self, barchart: bcConnection, log=logtoscreen("barchartFuturesContractData")):
+    def __init__(self, barchart=None, log=logtoscreen("barchartFuturesContractData")):
         super().__init__(log=log)
+        if barchart is None:
+            barchart = bcConnection()
         self._barchart = barchart
 
     def __repr__(self):
