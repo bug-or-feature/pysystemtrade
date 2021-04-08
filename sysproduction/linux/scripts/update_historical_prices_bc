@@ -1,3 +1,0 @@
-#!/bin/bash
-. ~/.profile
-. p sysproduction.update_historical_prices.update_historical_prices_barchart
