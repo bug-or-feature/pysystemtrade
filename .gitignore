@@ -21,3 +21,6 @@ restats
 
 # pyenv
 .python-version
+
+# venv
+env/
