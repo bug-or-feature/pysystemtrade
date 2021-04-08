@@ -1,8 +1,8 @@
-from collections import  namedtuple
+from collections import namedtuple
 import pandas as pd
 
 from sysdata.alphavantage.av_connection import avConnection
-from sysdata.fx.spotfx import fxPricesData
+from sysbrokers.broker_fx_prices_data import brokerFxPricesData
 
 from sysobjects.spot_fx_prices import fxPrices
 from syslogdiag.log_to_screen import logtoscreen
@@ -11,7 +11,8 @@ from syscore.objects import missing_instrument, missing_file, missing_data
 
 fxConfig = namedtuple("avFXConfig", ["ccy1", "ccy2", "invert"])
 
-class avFxPricesData(fxPricesData):
+
+class avFxPricesData(brokerFxPricesData):
 
     def __init__(self, log=logtoscreen("avFxPricesData")):
         super().__init__(log=log)

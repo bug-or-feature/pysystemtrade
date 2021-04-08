@@ -4,13 +4,13 @@ from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContr
 from sysdata.barchart.bc_connection import bcConnection
 from sysdata.barchart.bc_futures_contracts_data import BarchartFuturesContractData
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
-from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
+from sysbrokers.broker_futures_contract_price_data import brokerFuturesContractPriceData
 
 
-class BarchartFuturesContractPriceData(futuresContractPriceData):
+class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
 
     """
     Extends the futuresContractPriceData object to a data source that reads in prices

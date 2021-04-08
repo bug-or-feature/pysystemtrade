@@ -330,7 +330,7 @@ class dataBlob(object):
         return log_name
 
 
-source_dict = dict(arctic="db", barchart="db", mongo="db", csv="db", av="db", ib="broker")
+source_dict = dict(arctic="db", mongo="db", csv="db", ib="broker", barchart="broker", av="broker")
 
 
 def identifying_name(split_up_name: list, keep_original_prefix=False)-> str:

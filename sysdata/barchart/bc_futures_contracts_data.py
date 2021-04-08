@@ -1,7 +1,7 @@
 from syscore.objects import missing_contract, missing_instrument
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from sysdata.barchart.bc_connection import bcConnection
-from sysdata.futures.contracts import futuresContractData
+from sysbrokers.broker_futures_contract_data import brokerFuturesContractData
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contract_dates_and_expiries import expiryDate
 from sysobjects.contracts import futuresContract
@@ -9,7 +9,7 @@ from syscore.dateutils import get_datetime_from_datestring
 import datetime
 
 
-class BarchartFuturesContractData(futuresContractData):
+class BarchartFuturesContractData(brokerFuturesContractData):
 
     def __init__(self, barchart=None, log=logtoscreen("barchartFuturesContractData")):
         super().__init__(log=log)
@@ -126,3 +126,16 @@ class BarchartFuturesContractData(futuresContractData):
     def _add_contract_object_without_checking_for_existing_entry(
             self, contract_object: futuresContract):
         raise NotImplementedError("Barchart is read only")
+
+    def get_min_tick_size_for_contract(self, contract_object: futuresContract) -> float:
+        raise NotImplementedError("Barchart is a source of data, not a broker")
+
+    def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
+        raise NotImplementedError("Barchart is a source of data, not a broker")
+
+    def less_than_N_hours_of_trading_left_for_contract(self, contract_object: futuresContract,
+            N_hours: float = 1.0) -> bool:
+        raise NotImplementedError("Barchart is a source of data, not a broker")
+
+    def get_trading_hours_for_contract(self, futures_contract: futuresContract) -> list:
+        raise NotImplementedError("Barchart is a source of data, not a broker")

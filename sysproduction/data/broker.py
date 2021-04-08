@@ -9,6 +9,11 @@ from sysbrokers.IB.ib_orders import ibExecutionStackData
 from sysbrokers.IB.ib_static_data import ibStaticData
 from sysbrokers.IB.ib_fx_handling import ibFxHandlingData
 
+from sysdata.alphavantage.av_spot_FX_data import avFxPricesData
+from sysdata.barchart.bc_futures_contract_price_data import BarchartFuturesContractPriceData
+from sysdata.barchart.bc_futures_contracts_data import BarchartFuturesContractData
+from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
+
 from sysbrokers.broker_fx_handling import brokerFxHandlingData
 from sysbrokers.broker_static_data import brokerStaticData
 from sysbrokers.broker_execution_stack import brokerExecutionStackData
@@ -47,10 +52,24 @@ class dataBroker(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
         ## Modify these to use another broker
         ## These will be aliased as self.data.broker_fx_prices, self.data.broker_futures_contract_price ... and so on
+        # data.add_class_list([
+        #     ibFxPricesData,
+        #     ibFuturesContractPriceData,
+        #     ibFuturesContractData,
+        #     ibFuturesInstrumentData,
+        #     ibContractPositionData,
+        #     ibExecutionStackData,
+        #     ibStaticData,
+        #     ibCapitalData,
+        #     ibFxHandlingData]
+        # )
+
+        # TODO define this in config not code
         data.add_class_list([
-            ibFxPricesData, ibFuturesContractPriceData, ibFuturesContractData,
-        ibContractPositionData, ibExecutionStackData, ibStaticData, ibCapitalData,
-        ibFuturesInstrumentData, ibFxHandlingData]
+            avFxPricesData,
+            BarchartFuturesContractPriceData,
+            BarchartFuturesContractData,
+            BarchartFuturesInstrumentData]
         )
 
         return data
