@@ -137,3 +137,25 @@ def get_test_object_futures_with_pos_sizing_estimates():
         rawdata,
         data,
         config)
+
+
+def get_test_object_futures_spreadbet():
+    """
+    Returns some standard test data, for futures spreadbets
+    """
+    data = csvFuturesSimData(
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_ag.csvconfig")
+    )
+    # data = csvFuturesSimData(
+    #     csv_data_paths=dict(
+    #         csvFuturesInstrumentData="data.futures_ag.csvconfig",
+    #         csvFuturesAdjustedPricesData="data.futures_ag.adjusted_prices_csv",
+    #         csvFuturesMultiplePricesData="data.futures_ag.multiple_prices_csv")
+    # )
+    rawdata = FuturesRawData()
+    config = Config("systems.provided.example.exampleconfig.yaml")
+    return rawdata, data, config
+
+
+
