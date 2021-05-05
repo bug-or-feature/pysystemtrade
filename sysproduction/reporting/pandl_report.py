@@ -1,6 +1,5 @@
 import datetime
 import pandas as pd
-import numpy as np
 import types
 
 from collections import namedtuple
@@ -17,7 +16,8 @@ from sysproduction.data.prices import diagPrices
 from sysproduction.data.orders import dataOrders
 from sysproduction.data.positions import diagPositions
 from sysproduction.data.instruments import diagInstruments
-from sysproduction.data.strategies import diagStrategiesConfig
+
+from systems.accounts.pandl_calculators.pandl_using_fills import pandlCalculationWithFills
 
 # We want a p&l (We could merge this into another kind of report)
 # We want to be able to have it emailed, or run it offline
@@ -83,16 +83,14 @@ def get_pandl_report_data(data, start_date, end_date):
     data.temp_pandl_write = types.MethodType(temp_pandl_write, data)
 
     total_capital_pandl = (
-        get_total_capital_pandl(data, start_date, end_date=end_date) * 100
+        get_total_capital_pandl(data, start_date, end_date=end_date)
     )
     pandl_for_instruments_across_strategies = (
         get_ranked_list_of_pandl_by_instrument_all_strategies_in_date_range(
             data, start_date, end_date
         )
     )
-    pandl_for_instruments_across_strategies.pandl = (
-        pandl_for_instruments_across_strategies.pandl * 100
-    )
+
     total_for_futures = pandl_for_instruments_across_strategies.pandl.sum()
     residual = total_capital_pandl - total_for_futures
     strategies = get_strategy_pandl_and_residual(data, start_date, end_date)
@@ -155,7 +153,7 @@ def get_daily_perc_pandl(data):
 
     perc_pandl_series = daily_pandl_series / all_capital
 
-    return perc_pandl_series
+    return perc_pandl_series * 100
 
 
 def get_total_capital_pandl(data, start_date, end_date=arg_not_supplied):
@@ -180,7 +178,7 @@ def get_strategy_pandl_and_residual(data, start_date, end_date):
     residual_dfrow = pd.DataFrame(
         dict(codes=["residual"], pandl=residual_pandl))
     strategies_pandl = strategies_pandl.append(residual_dfrow)
-    strategies_pandl.pandl = strategies_pandl.pandl * 100
+    strategies_pandl.pandl = strategies_pandl.pandl
 
     return strategies_pandl
 
@@ -300,7 +298,7 @@ def get_period_perc_pandl_for_sector_in_date_range(
     ]
     asset_class_pandl = sum(instrument_pandl)
 
-    return asset_class_pandl * 100
+    return asset_class_pandl
 
 
 def get_period_perc_pandl_for_instrument_all_strategies_in_date_range(
@@ -431,13 +429,26 @@ def get_list_of_instruments_held_for_a_strategy(data, strategy_name):
 
 
 def get_perc_pandl_series_for_contract(data, instrument_code, contract_id):
-    pandl_in_base = get_pandl_series_in_base_ccy_for_contract(
-        data, instrument_code, contract_id
-    )
-    capital = get_total_capital_series(data)
-    capital = capital.reindex(pandl_in_base.index, method="ffill")
 
-    perc_pandl = pandl_in_base / capital
+    capital = get_total_capital_series(data)
+    fx = get_fx_series_for_instrument(data, instrument_code)
+    diag_instruments = diagInstruments(data)
+    value_per_point = diag_instruments.get_point_size(instrument_code)
+
+    positions = get_position_series_for_contract(
+        data, instrument_code, contract_id)
+    prices = get_price_series_for_contract(
+        data, instrument_code, contract_id)
+    fills = get_fills_for_contract(data, instrument_code, contract_id)
+
+    calculator = pandlCalculationWithFills.using_positions_and_prices_merged_from_fills(prices,
+                    positions=positions,
+                    fills=fills,
+                     fx=fx,
+                     capital = capital,
+                     value_per_point=value_per_point)
+
+    perc_pandl = calculator.percentage_pandl()
 
     return perc_pandl
 
@@ -446,42 +457,33 @@ def get_perc_pandl_series_for_strategy_vs_total_capital(
     data, strategy_name, instrument_code
 ):
     print("Data for %s %s" % (strategy_name, instrument_code))
-    pandl_in_base = get_pandl_series_in_base_ccy_for_strategy_instrument(
-        data, strategy_name, instrument_code
-    )
-    capital = get_total_capital_series(data).ffill()
-    capital = capital.reindex(pandl_in_base.index, method="ffill")
 
-    perc_pandl = pandl_in_base / capital
+    capital = get_total_capital_series(data)
+    fx = get_fx_series_for_instrument(data, instrument_code)
+
+    diag_instruments = diagInstruments(data)
+    value_per_point = diag_instruments.get_point_size(instrument_code)
+
+    positions = get_position_series_for_instrument_strategy(data,
+                                                            instrument_code=instrument_code,
+                                                            strategy_name=strategy_name)
+    prices = get_current_contract_price_series_for_instrument(data,
+                                                              instrument_code=instrument_code)
+    fills = get_fills_for_instrument(data, instrument_code=instrument_code,
+                                     strategy_name=strategy_name)
+
+    calculator = pandlCalculationWithFills.using_positions_and_prices_merged_from_fills(prices,
+                    positions=positions,
+                    fills=fills,
+                     fx=fx,
+                     capital = capital,
+                     value_per_point=value_per_point)
+
+
+    perc_pandl = calculator.percentage_pandl()
 
     return perc_pandl
 
-
-def get_pandl_series_in_base_ccy_for_contract(
-        data, instrument_code, contract_id):
-    pandl_in_local = get_pandl_series_in_local_ccy_for_contract(
-        data, instrument_code, contract_id
-    )
-    fx_series = get_fx_series_for_instrument(data, instrument_code)
-    fx_series = fx_series.reindex(pandl_in_local.index).ffill()
-
-    pandl_in_base = fx_series * pandl_in_local
-
-    return pandl_in_base
-
-
-def get_pandl_series_in_base_ccy_for_strategy_instrument(
-    data, strategy_name, instrument_code
-):
-    pandl_in_local = get_pandl_series_in_local_ccy_for_strategy_instrument(
-        data, strategy_name, instrument_code
-    )
-    fx_series = get_fx_series_for_instrument(data, instrument_code)
-    fx_series = fx_series.reindex(pandl_in_local.index).ffill()
-
-    pandl_in_base = fx_series * pandl_in_local
-
-    return pandl_in_base
 
 
 def get_fx_series_for_instrument(data, instrument_code):
@@ -493,116 +495,10 @@ def get_fx_series_for_instrument(data, instrument_code):
     return fx_series
 
 
-def get_pandl_series_in_local_ccy_for_contract(
-        data, instrument_code, contract_id):
-    diag_instruments = diagInstruments(data)
-
-    pandl_in_points = get_pandl_series_in_points_for_contract(
-        data, instrument_code, contract_id
-    )
-    point_size = diag_instruments.get_point_size(instrument_code)
-    pandl_in_local = point_size * pandl_in_points
-
-    return pandl_in_local
 
 
-def get_pandl_series_in_local_ccy_for_strategy_instrument(
-    data, strategy_name, instrument_code
-):
-    diag_instruments = diagInstruments(data)
-
-    pandl_in_points = get_pandl_series_in_points_for_instrument_strategy(
-        data, instrument_code, strategy_name
-    )
-    point_size = diag_instruments.get_point_size(instrument_code)
-    pandl_in_local = point_size * pandl_in_points
-
-    return pandl_in_local
 
 
-def get_pandl_series_in_points_for_contract(
-        data, instrument_code, contract_id):
-    print(instrument_code)
-    print(contract_id)
-    pos_series = get_position_series_for_contract(
-        data, instrument_code, contract_id)
-    price_series = get_price_series_for_contract(
-        data, instrument_code, contract_id)
-    trade_df = get_trade_df_for_contract(data, instrument_code, contract_id)
-
-    trade_df = unique_trades_df(trade_df)
-
-    returns = pandl_points(price_series, trade_df, pos_series)
-
-    return returns
-
-
-def get_pandl_series_in_points_for_instrument_strategy(
-    data, instrument_code, strategy_name
-):
-    pos_series = get_position_series_for_instrument_strategy(
-        data, instrument_code, strategy_name
-    )
-    price_series = get_current_contract_price_series_for_instrument(data, instrument_code)
-    trade_df = get_trade_df_for_instrument(
-        data, instrument_code, strategy_name)
-
-    trade_df = unique_trades_df(trade_df)
-
-    returns = pandl_points(price_series, trade_df, pos_series)
-
-    return returns
-
-
-def unique_trades_df(trade_df):
-    cash_flow = trade_df.qty * trade_df.price
-    trade_df["cash_flow"] = cash_flow
-    new_df = trade_df.groupby(trade_df.index).sum()
-    # qty and cash_flow will be correct, price won't be
-    new_price = new_df.cash_flow / new_df.qty
-    new_df["price"] = new_price
-    new_df = new_df.drop("cash_flow", axis=1)
-
-    return new_df
-
-
-def pandl_points(price_series, trade_df, pos_series):
-    """
-    Calculate pandl for an individual position
-
-
-    :param price: price series
-    :type price: Tx1 pd.Series
-
-    :param trade_series: set of trades done  NOT always aligned to price can be length 0
-    :type trade_series: Tx2 pd.DataFrame columns ['qty', 'price']
-
-    :param pos_series: series of positions NOT ALWAYS aligned to price
-    :type pos_series: Tx1 pd.Series
-
-    :returns: pd.Series
-
-    """
-
-    # want to have both kinds of price
-    prices_to_use = pd.concat(
-        [price_series, trade_df.price], axis=1, join="outer")
-
-    # Where no fill price available, use price
-    prices_to_use = prices_to_use.fillna(axis=1, method="ffill")
-
-    prices_to_use = prices_to_use.price
-
-    prices_to_use = prices_to_use.replace([np.inf, -np.inf], np.nan)
-    prices_to_use = prices_to_use.dropna()
-
-    price_returns = prices_to_use.ffill().diff()
-    pos_series = pos_series.groupby(pos_series.index).last()
-    pos_series = pos_series.reindex(price_returns.index, method="ffill")
-
-    returns = pos_series.shift(1) * price_returns
-
-    return returns
 
 
 def get_price_series_for_contract(data, instrument_code, contract_id):
@@ -633,23 +529,21 @@ def get_position_series_for_instrument_strategy(
     return pd.Series(pos_series.position)
 
 
-def get_trade_df_for_contract(data, instrument_code, contract_id):
+def get_fills_for_contract(data, instrument_code, contract_id):
     data_orders = dataOrders(data)
     contract  = futuresContract(instrument_code, contract_id)
-    list_of_trades = data_orders.get_fills_history_for_contract(contract)
-    list_of_trades_as_pd_df = list_of_trades.as_pd_df()
+    list_of_fills = data_orders.get_fills_history_for_contract(contract)
 
-    return list_of_trades_as_pd_df
+    return list_of_fills
 
 
-def get_trade_df_for_instrument(data, instrument_code, strategy_name):
+def get_fills_for_instrument(data, instrument_code, strategy_name):
     data_orders = dataOrders(data)
     instrument_strategy = instrumentStrategy(instrument_code=instrument_code, strategy_name=strategy_name)
 
-    list_of_trades = data_orders.get_fills_history_for_instrument_strategy(instrument_strategy)
-    list_of_trades_as_pd_df = list_of_trades.as_pd_df()
+    list_of_fills = data_orders.get_fills_history_for_instrument_strategy(instrument_strategy)
 
-    return list_of_trades_as_pd_df
+    return list_of_fills
 
 
 def get_position_series_for_contract(data, instrument_code:str, contract_id:str):

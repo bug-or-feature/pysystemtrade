@@ -3,6 +3,7 @@ Utilities to help with pandas
 """
 import pandas as pd
 import datetime
+import random
 
 import numpy as np
 from copy import copy
@@ -12,11 +13,37 @@ from syscore.dateutils import (
     BUSINESS_DAYS_IN_YEAR,
     time_matches,
     CALENDAR_DAYS_IN_YEAR,
-    NOTIONAL_CLOSING_TIME_AS_PD_OFFSET
+SECONDS_IN_YEAR,
+    NOTIONAL_CLOSING_TIME_AS_PD_OFFSET,
+WEEKS_IN_YEAR,
+MONTHS_IN_YEAR
 
 )
 
 DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+def how_many_times_a_year_is_pd_frequency(frequency: str) -> float:
+    DICT_OF_FREQ = {'B': BUSINESS_DAYS_IN_YEAR,
+                    'W': WEEKS_IN_YEAR,
+                    'M': MONTHS_IN_YEAR,
+                    'D': CALENDAR_DAYS_IN_YEAR}
+
+    times_a_year = DICT_OF_FREQ.get(frequency, None)
+
+    if times_a_year is None:
+        raise Exception("Frequency %s is no good I only know about %s" %
+                        (frequency, str(list(DICT_OF_FREQ.keys()))))
+
+    return float(times_a_year)
+
+def sum_series(list_of_series: list, ffill = True)-> pd.Series:
+    list_of_series_as_df = pd.concat(list_of_series, axis=1)
+    if ffill:
+        list_of_series_as_df = list_of_series_as_df.ffill()
+
+    sum_of_series = list_of_series_as_df.sum(axis=1)
+
+    return sum_of_series
 
 
 def turnover(x, y):
@@ -25,15 +52,17 @@ def turnover(x, y):
 
     Returned in annualised terms
 
-    Assumes both x and y are daily business days
     """
 
+    daily_x = x.resample("1B").last()
     if isinstance(y, float) or isinstance(y, int):
-        y = pd.Series(np.full(x.shape[0], float(y)), x.index)
+        daily_y = pd.Series(np.full(daily_x.shape[0], float(y)), daily_x.index)
+    else:
+        daily_y = y.resample("1B").last()
 
-    norm_x = x / y.ffill()
+    norm_x = daily_x / daily_y.ffill()
 
-    avg_daily = float(norm_x.diff().abs().resample("1B").sum().mean())
+    avg_daily = float(norm_x.diff().abs().mean())
 
     return avg_daily * BUSINESS_DAYS_IN_YEAR
 
@@ -151,6 +180,12 @@ def must_have_item(slice_data):
 
     return some_data_flags
 
+def get_bootstrap_series(data: pd.DataFrame):
+    length_of_series = len(data.index)
+    random_indices = [int(random.uniform(0,length_of_series)) for _unused in range(length_of_series)]
+    bootstrap_data = data.iloc[random_indices]
+
+    return bootstrap_data
 
 
 def pd_readcsv(
@@ -297,9 +332,7 @@ def from_scalar_values_to_ts(scalar_value: float, long_ts_index) -> pd.Series:
     :return: pd.dataframe, column names from data_dict, values repeated scalars
     """
 
-    ts_index = [long_ts_index[0], long_ts_index[-1]]
-
-    pd_series = pd.Series([scalar_value]*len(ts_index), index = ts_index)
+    pd_series = pd.Series([scalar_value]*len(long_ts_index), index = long_ts_index)
 
     return pd_series
 
@@ -412,43 +445,7 @@ def strip_out_intraday(
     return data[daily_matches]
 
 
-def minimum_many_years_of_data_in_dataframe(data):
-    years_of_data_dict = how_many_years_of_data_in_dataframe(data)
-    years_of_data_values = years_of_data_dict.values()
-    min_years_of_data = min(years_of_data_values)
 
-    return min_years_of_data
-
-
-def how_many_years_of_data_in_dataframe(data):
-    """
-    How many years of non NA data do we have?
-    Assumes daily timestamp
-
-    :param data: pd.DataFrame with labelled columns
-    :return: dict of floats,
-    """
-    result_dict = dict(data.apply(how_many_years_of_data_in_pd_series, axis=0))
-
-    return result_dict
-
-
-def how_many_years_of_data_in_pd_series(data_series):
-    """
-    How many years of actual data do we have
-    Assume daily timestamp which is fairly regular
-
-    :param data_series:
-    :return: float
-    """
-    first_valid_date = data_series.first_valid_index()
-    last_valid_date = data_series.last_valid_index()
-
-    date_difference = last_valid_date - first_valid_date
-    date_difference_days = date_difference.days
-    date_difference_years = float(date_difference_days) / CALENDAR_DAYS_IN_YEAR
-
-    return date_difference_years
 
 
 def check_df_equals(x, y):
@@ -517,6 +514,14 @@ def replace_all_zeros_with_nan(result: pd.Series) -> pd.Series:
         result[:] = np.nan
 
     return result
+
+
+def spread_out_annualised_return_over_periods(data_as_annual):
+    period_intervals_in_seconds = data_as_annual.index.to_series().diff().dt.total_seconds()
+    period_intervals_in_year_fractions = period_intervals_in_seconds / SECONDS_IN_YEAR
+    data_per_period = data_as_annual * period_intervals_in_year_fractions
+
+    return data_per_period
 
 if __name__ == "__main__":
     import doctest

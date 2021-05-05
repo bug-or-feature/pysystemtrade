@@ -35,6 +35,7 @@ SECONDS_PER_HOUR = 60
 SECONDS_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_HOUR
 
 SECONDS_IN_YEAR = CALENDAR_DAYS_IN_YEAR * SECONDS_PER_DAY
+MINUTES_PER_YEAR = CALENDAR_DAYS_IN_YEAR * HOURS_PER_DAY * MINUTES_PER_HOUR
 UNIXTIME_CONVERTER = 1e9
 
 UNIXTIME_IN_YEAR = UNIXTIME_CONVERTER * SECONDS_IN_YEAR
@@ -44,10 +45,43 @@ MONTH_LIST = ["F", "G", "H", "J", "K", "M", "N", "Q", "U", "V", "X", "Z"]
 
 Frequency = Enum('Frequency', 'Unknown Year Month Week BDay Day Hour Minutes_15 Minutes_5 Minute Seconds_10 Second')
 DAILY_PRICE_FREQ = Frequency.Day
+BUSINESS_DAY_FREQ = Frequency.BDay
 
+def from_config_frequency_pandas_resample(freq: Frequency) -> str:
+    LOOKUP_TABLE = {Frequency.BDay: 'B',
+                    Frequency.Week: 'W',
+                    Frequency.Month: 'M',
+                    Frequency.Hour: 'H',
+                    Frequency.Year: 'A',
+                    Frequency.Day: 'D',
+                    Frequency.Minutes_15: '15T',
+                    Frequency.Minutes_5: '5T',
+                    Frequency.Seconds_10: '10S',
+                    Frequency.Second: 'S'}
+    resample_string = LOOKUP_TABLE.get(freq, missing_data)
+
+    return resample_string
+
+def from_frequency_to_times_per_year(freq: Frequency) -> float:
+    LOOKUP_TABLE = {Frequency.BDay: BUSINESS_DAYS_IN_YEAR,
+                    Frequency.Week: WEEKS_IN_YEAR,
+                    Frequency.Month: MONTHS_IN_YEAR,
+                    Frequency.Hour: HOURS_PER_DAY * BUSINESS_DAYS_IN_YEAR,
+                    Frequency.Year: 1,
+                    Frequency.Day: CALENDAR_DAYS_IN_YEAR,
+                    Frequency.Minutes_15: (MINUTES_PER_YEAR/15),
+                    Frequency.Minutes_5: (MINUTES_PER_YEAR/5),
+                    Frequency.Seconds_10: SECONDS_IN_YEAR/10,
+                    Frequency.Second: SECONDS_IN_YEAR}
+    times_per_year = LOOKUP_TABLE.get(freq, missing_data)
+
+    return float(times_per_year)
 
 def from_config_frequency_to_frequency(freq_as_str:str)-> Frequency:
-    LOOKUP_TABLE = {'D':Frequency.Day,
+    LOOKUP_TABLE = {'Y': Frequency.Year,
+                    'm': Frequency.Month,
+        'W': Frequency.Week,
+        'D':Frequency.Day,
                         'H':Frequency.Hour,
                         '15M': Frequency.Minutes_15,
                         '5M': Frequency.Minutes_5,

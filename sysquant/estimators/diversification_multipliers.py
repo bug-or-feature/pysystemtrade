@@ -2,7 +2,7 @@ import numpy as np
 
 import pandas as pd
 
-from sysquant.estimators.correlations import CorrelationList, Correlation
+from sysquant.estimators.correlations import CorrelationList, correlationEstimate
 
 def diversification_multiplier_from_list(
     correlation_list: CorrelationList,
@@ -31,7 +31,7 @@ def diversification_multiplier_from_list(
     :returns: Tx1 pd.Series
 
     """
-    # align weights to corr list
+    # align weights to corr list columns
     weight_df = weight_df[correlation_list.column_names]
 
     ref_periods = [
@@ -58,16 +58,19 @@ def diversification_multiplier_from_list(
 
         div_mult_vector.append(div_multiplier)
 
+    # In same space as correlations probably annually
     div_mult_df = pd.Series(div_mult_vector, index=ref_periods)
-    div_mult_df = div_mult_df.reindex(weight_df.index, method="ffill")
+
+    # Change to business days, so moving average will make sense
+    div_mult_df_daily = div_mult_df.resample("1B").ffill()
 
     # take a moving average to smooth the jumps
-    div_mult_df = div_mult_df.ewm(span=ewma_span).mean()
+    div_mult_df_smoothed = div_mult_df_daily.ewm(span=ewma_span).mean()
 
-    return div_mult_df
+    return div_mult_df_smoothed
 
 
-def diversification_mult_single_period(corrmatrix: Correlation,
+def diversification_mult_single_period(corrmatrix: correlationEstimate,
                                        weights: list,
                                        dm_max: float=2.5) -> float:
     """
