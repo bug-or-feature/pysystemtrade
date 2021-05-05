@@ -12,15 +12,15 @@ class mongoFuturesInstrumentData(futuresInstrumentData):
     """
     Read and write data class to get instrument data
 
-    We'd inherit from this class for a specific implementation
+    We'd inherit from this class for a specific implementation # TODO fix this comment
 
     """
 
     def __init__(self, mongo_db=arg_not_supplied, log=logtoscreen(
-            "mongoFuturesInstrumentData")):
+            "mongoFuturesInstrumentData"), collection_name=INSTRUMENT_COLLECTION):
 
         super().__init__(log=log)
-        self._mongo_data = mongoDataWithSingleKey(INSTRUMENT_COLLECTION, "instrument_code", mongo_db = mongo_db)
+        self._mongo_data = mongoDataWithSingleKey(collection_name, "instrument_code", mongo_db = mongo_db)
 
     def __repr__(self):
         return "mongoFuturesInstrumentData %s" % str(self.mongo_data)

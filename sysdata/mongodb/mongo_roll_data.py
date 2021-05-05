@@ -17,9 +17,9 @@ class mongoRollParametersData(rollParametersData):
 
 
     def __init__(self, mongo_db=arg_not_supplied, log=logtoscreen(
-        "mongoRollParametersData")):
+        "mongoRollParametersData"), collection_name=ROLL_COLLECTION):
         super().__init__(log=log)
-        self._mongo_data = mongoDataWithSingleKey(ROLL_COLLECTION, "instrument_code", mongo_db=mongo_db)
+        self._mongo_data = mongoDataWithSingleKey(collection_name, "instrument_code", mongo_db=mongo_db)
 
     def __repr__(self):
         return "mongoRollParametersData %s" % str(self.mongo_data)

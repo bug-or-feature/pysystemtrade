@@ -21,11 +21,12 @@ class arcticFuturesContractPriceData(futuresContractPriceData):
 
     def __init__(self,
                  mongo_db=None,
-                 log=logtoscreen("arcticFuturesContractPriceData")):
+                 log=logtoscreen("arcticFuturesContractPriceData"),
+                 collection_name=CONTRACT_COLLECTION):
 
         super().__init__(log=log)
 
-        self._arctic_connection = arcticData(CONTRACT_COLLECTION, mongo_db=mongo_db)
+        self._arctic_connection = arcticData(collection_name, mongo_db=mongo_db)
 
     def __repr__(self):
         return repr(self._arctic_connection)
