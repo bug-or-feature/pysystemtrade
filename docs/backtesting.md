@@ -729,8 +729,7 @@ from systems.provided.futures_chapter15.basesystem import futures_system
 data=csvFuturesSimData(csv_data_paths=dict(csvFuturesAdjustedPricesData = "private.system_name.adjusted_price_data"))
 system=futures_system(data=data)
 ```
-Notice that we use python style "." internal references within a project, we don't give actual path names. 
-See [here](#filenames) for how to specify filenames in pysystemtrade.
+Notice that we use python style "." internal references within a project, we don't give actual path names. See [here](#filenames) for how to specify filenames in pysystemtrade.
 
 The full list of keys that you can use in the `csv_data_paths` are:
 * `csvFuturesInstrumentData` (configuration and costs)
