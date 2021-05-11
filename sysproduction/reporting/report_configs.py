@@ -78,10 +78,10 @@ risk_report_config = reportConfig(
 ## The reports will be run in this order
 all_configs = dict(
     roll_report=roll_report_config,
-    daily_pandl_report=daily_pandl_report_config,
-    reconcile_report=reconcile_report_config,
-    trade_report=trade_report_config,
-    strategy_report=strategy_report_config,
-    risk_report = risk_report_config,
-    status_report = status_report_config
+    #daily_pandl_report=daily_pandl_report_config,
+    #reconcile_report=reconcile_report_config,
+    #trade_report=trade_report_config,
+    #strategy_report=strategy_report_config,
+    #risk_report = risk_report_config,
+    #status_report = status_report_config
 )
