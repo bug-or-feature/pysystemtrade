@@ -164,23 +164,17 @@ class bcConnection(object):
             return missing_data
 
         date_format = "%Y-%m-%d"
-        date_col = 1
 
         if bar_freq == Frequency.Day:
-            price_data_as_df = price_data_raw.iloc[:, [2, 3, 4, 5, 7]]
+            price_data_as_df = price_data_raw.iloc[:, [1, 2, 3, 4, 5, 7]].copy()
         else:
-            price_data_as_df = price_data_raw.iloc[:, [2, 3, 4, 5, 6]]
+            price_data_as_df = price_data_raw.iloc[:, [0, 2, 3, 4, 5, 6]].copy()
             date_format = "%Y-%m-%d %H:%M"
-            date_col = 0
 
-        price_data_as_df.columns = ["OPEN", "HIGH", "LOW", "FINAL", "VOLUME"]
-
-        date_index = [
-            pd.to_datetime(price_row, format=date_format)
-            for price_row in price_data_raw[price_data_raw.columns[date_col]]
-        ]
-        price_data_as_df.index = date_index
-        price_data_as_df.index.name = 'index'
+        price_data_as_df.columns = ["index", "OPEN", "HIGH", "LOW", "FINAL", "VOLUME"]
+        price_data_as_df['index'] = pd.to_datetime(price_data_as_df['index'], format=date_format)
+        price_data_as_df.set_index('index', inplace=True)
+        price_data_as_df.index = price_data_as_df.index.tz_localize(tz='US/Central').tz_convert('UTC')
 
         return price_data_as_df
 
