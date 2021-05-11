@@ -1,6 +1,9 @@
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysinit.futures.contract_prices_from_csv_to_arctic import init_arctic_with_csv_futures_contract_prices
-from sysinit.futures.contract_prices_from_csv_to_arctic import init_arctic_with_csv_futures_contract_prices_for_code
+from sysinit.futures_ag.contract_prices_from_csv_to_arctic import (
+    init_arctic_with_csv_futures_contract_prices_for_code,
+    init_arctic_with_csv_futures_contract_prices_for_contract
+)
 
 market_map = dict(AE='AEX',
                   A6='AUD',
@@ -40,7 +43,7 @@ market_map = dict(AE='AEX',
 
 barchart_csv_config = ConfigCsvFuturesPrices(input_date_index_name="Time",
                                 input_skiprows=0, input_skipfooter=0,
-                                input_date_format='%Y-%m-%dT%M:%H:%S%z',
+                                input_date_format='%Y-%m-%dT%H:%M:%S%z',
                                 input_column_mapping=dict(OPEN='Open',
                                                           HIGH='High',
                                                           LOW='Low',
@@ -54,8 +57,13 @@ def transfer_barchart_prices_to_arctic(datapath):
 def transfer_barchart_prices_to_arctic_single(instr, datapath):
     init_arctic_with_csv_futures_contract_prices_for_code(instr, datapath, csv_config= barchart_csv_config)
 
+def transfer_barchart_prices_to_arctic_single_contract(instr, contract, datapath):
+    init_arctic_with_csv_futures_contract_prices_for_contract(instr, contract, datapath, csv_config=barchart_csv_config)
+
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    datapath = "/Users/ageach/Dev/work/pyhistprice/data/barchart_tz_anal"
-    transfer_barchart_prices_to_arctic(datapath)
-    #transfer_barchart_prices_to_arctic_single('GOLD', datapath)
+    datapath = "/Users/ageach/Dev/work/pyhistprice/data/barchart_tz"
+    #transfer_barchart_prices_to_arctic(datapath)
+    transfer_barchart_prices_to_arctic_single('GOLD', datapath)
+    #transfer_barchart_prices_to_arctic_single_contract('SP500', '20210600', datapath)
+
