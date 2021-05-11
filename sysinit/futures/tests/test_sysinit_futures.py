@@ -29,7 +29,6 @@ class TestFuturesInit:
         build_and_write_roll_calendar('AUD', output_datapath=output_dir, input_prices=sample_prices,
             input_config=csvRollParametersData())
 
-    @pytest.mark.xfail
     def test_check_saved_roll_calendar(self):
         """
         Tests the function that checks a roll calendar generated from individual contract prices
