@@ -15,7 +15,8 @@ Generate a 'best guess' roll calendar based on some price data for individual co
 
 
 def build_and_write_roll_calendar(
-    instrument_code, output_datapath=arg_not_supplied, check_before_writing=True
+    instrument_code, output_datapath=arg_not_supplied, check_before_writing=True,
+        input_prices=arg_not_supplied, input_config=arg_not_supplied
 ):
 
     if output_datapath is arg_not_supplied:
@@ -23,15 +24,23 @@ def build_and_write_roll_calendar(
     else:
         print("Writing to %s" % output_datapath)
 
-    arctic_prices = arcticFuturesContractPriceData()
-    mongo_rollparameters = mongoRollParametersData()
+    if input_prices is arg_not_supplied:
+        prices = arcticFuturesContractPriceData()
+    else:
+        prices = input_prices
+
+    if input_config is arg_not_supplied:
+        rollparameters = mongoRollParametersData()
+    else:
+        rollparameters = input_config
+
     csv_roll_calendars = csvRollCalendarData(output_datapath)
 
-    dict_of_all_futures_contract_prices = arctic_prices.get_all_prices_for_instrument(
+    dict_of_all_futures_contract_prices = prices.get_all_prices_for_instrument(
         instrument_code)
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
 
-    roll_parameters_object = mongo_rollparameters.get_roll_parameters(
+    roll_parameters_object = rollparameters.get_roll_parameters(
         instrument_code)
 
     # might take a few seconds
@@ -70,7 +79,7 @@ def build_and_write_roll_calendar(
 
 
 def check_saved_roll_calendar(
-    instrument_code, input_datapath=None, input_prices=None
+    instrument_code, input_datapath=arg_not_supplied, input_prices=arg_not_supplied
 ):
 
     if input_datapath is None:
@@ -79,10 +88,9 @@ def check_saved_roll_calendar(
 
     csv_roll_calendars = csvRollCalendarData(input_datapath)
 
-    roll_cal = csv_roll_calendars.get_roll_calendar(instrument_code)
-    #print(type(roll_calendar))
+    roll_calendar = csv_roll_calendars.get_roll_calendar(instrument_code)
 
-    if input_prices is None:
+    if input_prices is arg_not_supplied:
         prices = arcticFuturesContractPriceData()
     else:
         prices = input_prices
@@ -91,23 +99,18 @@ def check_saved_roll_calendar(
         instrument_code)
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
 
-    #print(type(roll_calendar))
-    #print(roll_calendar)
-    #print(type(roll_calendar))
-
-    roll_cal.__class__ = rollCalendar
-
+    print(roll_calendar)
 
     # checks - this might fail
-    roll_cal.check_if_date_index_monotonic()
+    roll_calendar.check_if_date_index_monotonic()
 
     # this should never fail
-    roll_cal.check_dates_are_valid_for_prices(
+    roll_calendar.check_dates_are_valid_for_prices(
         dict_of_futures_contract_prices
     )
 
 
-    return roll_cal
+    return roll_calendar
 
 
 if __name__ == "__main__":
