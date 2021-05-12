@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+import pytz
 
 from syscore.merge_data import spike_in_data
 from syscore.pdutils import sumup_business_days_over_pd_series_without_double_counting_of_closing_data
@@ -107,7 +108,7 @@ class futuresContractPrices(pd.DataFrame):
 
     def remove_future_data(self):
         new_data = futuresContractPrices(
-            self[self.index < datetime.datetime.now()])
+            self[self.index < datetime.datetime.now().astimezone(tz=pytz.utc)])
 
         return  new_data
 
