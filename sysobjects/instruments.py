@@ -17,9 +17,9 @@ class futuresInstrument(object):
         return self.instrument_code == EMPTY_INSTRUMENT
 
     @classmethod
-    def create_from_dict(cls, input_dict):
+    def create_from_dict(futuresInstrument, input_dict):
         # Might seem pointless, but (a) is used in original code, (b) gives a nice consistent feel
-        return cls(input_dict['instrument_code'])
+        return futuresInstrument(input_dict['instrument_code'])
 
     def as_dict(self):
         # Might seem pointless, but (a) is used in original code, (b) gives a nice consistent feel
@@ -38,40 +38,13 @@ class futuresInstrument(object):
 @dataclass
 class instrumentMetaData:
     Description: str = ""
-
-    # Futures multiplier (value of a 1 point move in price)
-    # used by futures
     Pointsize: float = 0.0
-    Currency: str = ""
+    Currency: str =  ""
     AssetClass: str = ""
     Slippage:  float = 0.0
     PerBlock:  float = 0.0
     Percentage: float = 0.0
     PerTrade:  float = 0.0
-
-    # spread bet prices are often given as a multiple of the
-    # underlying instrument, this is the value of that multiplier, if used
-    SpreadBetMultiplier: float = 1.0
-
-    # Point size - fraction of a price unit that we bet on
-    # used by spread bets and CFDs (per point)
-    BetPointSize: float = 0.0
-
-    # minimum bet per point
-    # used by spread bets and CFDs (per point)
-    MinBetPerPoint: float = 0.0
-
-    RollsPerYear: int = 4
-
-    # size of contract (value of a 1 point move in price)
-    # used by CFDs (contracts)
-    #ContractSize: float = 0.0
-
-    # minimum number of contracts
-    # used by CFDs (contracts)
-    #MinContracts: float = 0.0
-
-
 
     def as_dict(self) -> dict:
         keys = self.__dataclass_fields__.keys()
@@ -80,11 +53,11 @@ class instrumentMetaData:
         return self_as_dict
 
     @classmethod
-    def from_dict(cls, input_dict):
-        keys = cls.__dataclass_fields__.keys()
+    def from_dict(instrumentMetaData, input_dict):
+        keys = instrumentMetaData.__dataclass_fields__.keys()
         args_list = [input_dict[key] for key in keys]
 
-        return cls(*args_list)
+        return instrumentMetaData(*args_list)
 
 @dataclass
 class futuresInstrumentWithMetaData:

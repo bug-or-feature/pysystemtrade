@@ -5,11 +5,8 @@ from sysobjects.instruments import futuresInstrument, futuresInstrumentWithMetaD
 from syslogdiag.log_to_screen import logtoscreen
 import pandas as pd
 
-#INSTRUMENT_CONFIG_PATH = "data.futures.csvconfig"
-INSTRUMENT_CONFIG_PATH = "data.futures_spreadbet.csvconfig"
+INSTRUMENT_CONFIG_PATH = "data.futures.csvconfig"
 CONFIG_FILE_NAME = "instrumentconfig.csv"
-#CONFIG_FILE_NAME = "instrumentconfig_test.csv"
-#CONFIG_FILE_NAME = "instrumentconfig_gold.csv"
 
 
 class csvFuturesInstrumentData(futuresInstrumentData):
