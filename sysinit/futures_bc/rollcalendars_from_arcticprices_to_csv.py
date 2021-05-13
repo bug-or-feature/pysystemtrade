@@ -120,10 +120,10 @@ if __name__ == "__main__":
 
     build_and_write_roll_calendar(
         instrument_code,
-        output_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_ag/roll_calendars_csv')
+        output_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_bc/roll_calendars_csv')
 
     # check_saved_roll_calendar("AUD",
-    #     #input_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_ag/roll_calendars_csv',
+    #     #input_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_bc/roll_calendars_csv',
     #     input_datapath='sysinit.futures.tests.data.aud',
     #     input_prices=csvFuturesContractPriceData())
 

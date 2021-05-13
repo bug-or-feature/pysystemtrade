@@ -145,13 +145,13 @@ def get_test_object_futures_spreadbet():
     """
     data = csvFuturesSimData(
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_ag.csvconfig")
+            csvFuturesInstrumentData="data.futures_bc.csvconfig")
     )
     # data = csvFuturesSimData(
     #     csv_data_paths=dict(
-    #         csvFuturesInstrumentData="data.futures_ag.csvconfig",
-    #         csvFuturesAdjustedPricesData="data.futures_ag.adjusted_prices_csv",
-    #         csvFuturesMultiplePricesData="data.futures_ag.multiple_prices_csv")
+    #         csvFuturesInstrumentData="data.futures_bc.csvconfig",
+    #         csvFuturesAdjustedPricesData="data.futures_bc.adjusted_prices_csv",
+    #         csvFuturesMultiplePricesData="data.futures_bc.multiple_prices_csv")
     # )
     rawdata = FuturesRawData()
     config = Config("systems.provided.example.exampleconfig.yaml")

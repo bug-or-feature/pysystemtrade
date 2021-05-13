@@ -1,6 +1,6 @@
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysinit.futures.contract_prices_from_csv_to_arctic import init_arctic_with_csv_futures_contract_prices
-from sysinit.futures_ag.contract_prices_from_csv_to_arctic import (
+from sysinit.futures_bc.contract_prices_from_csv_to_arctic import (
     init_arctic_with_csv_futures_contract_prices_for_code,
     init_arctic_with_csv_futures_contract_prices_for_contract
 )
