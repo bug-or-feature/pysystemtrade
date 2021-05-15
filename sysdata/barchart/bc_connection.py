@@ -175,6 +175,7 @@ class bcConnection(object):
         price_data_as_df['index'] = pd.to_datetime(price_data_as_df['index'], format=date_format)
         price_data_as_df.set_index('index', inplace=True)
         price_data_as_df.index = price_data_as_df.index.tz_localize(tz='US/Central').tz_convert('UTC')
+        price_data_as_df.index = price_data_as_df.index.tz_localize(tz=None)
 
         return price_data_as_df
 
