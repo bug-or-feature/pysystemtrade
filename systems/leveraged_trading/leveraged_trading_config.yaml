@@ -1,0 +1,25 @@
+#YAML
+percentage_vol_target: 12
+notional_trading_capital: 20000
+base_currency: "GBP"
+trading_rules:
+  ewmac16_64:
+     function: systems.provided.example.rules.ewmac_forecast_with_defaults
+     data: data.daily_prices
+     other_args: 
+         Lfast: 16
+         Lslow: 64
+
+instrument_weights:
+    CORN: 1.0
+
+volatility_calculation:
+  func: "sysquant.estimators.sb_vol.robust_sb_vol_calc"
+  days: 35
+  min_periods: 10
+  vol_abs_min: 0.0000000001
+  vol_floor: True
+  floor_min_quant: 0.05
+  floor_min_periods: 100
+  floor_days: 500
+  multiplier: 10
