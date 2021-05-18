@@ -1,0 +1,34 @@
+Instrument,Pointsize,AssetClass,Currency,Slippage,PerBlock,Percentage,PerTrade,Description,SpreadBetMultiplier,BetPointSize,MinBetPerPoint
+AEX,200,Equity,GBP,0.1,2,0,0,Netherlands equity index AEX,1,1,5.0
+AUD,100000,FX,GBP,5.3,2.46,0,0,AUDUSD currency,10000,1,1.0
+BOBL,1000,Bond,GBP,1.5,2,0,0,German 5 year bond Bobl,100,1,0.5
+BTP,1000,Bond,GBP,2.5,2,0,0,Italian 10 year bond BTP,100,1,0.5
+BUND,1000,Bond,GBP,1.5,2,0,0,German 10 year bond Bund,100,1,0.5
+CAC,10,Equity,GBP,2,2,0,0,French equity index CAC40,1,1,1.0
+COPPER,25000,Metals,GBP,20,2.31,0,0,Copper,10000,1,0.1
+CORN,50,Ags,GBP,0.5,2.9,0,0,Corn,1,1,10.0
+CRUDE_W,1000,OilGas,GBP,3,2.31,0,0,Light sweet crude Winter,100,1,1.0
+EDOLLAR,2500,Bond,GBP,0.8,2.11,0,0,US STIR Eurodollar,100,1,0.5
+EUR,125000,FX,GBP,5.3,2.46,0,0,EURUSD currency,10000,1,0.5
+EUROSTX,10,Equity,GBP,1,2,0,0,European equity index EUROSTOXX50,1,1,1.0
+GAS_US,10000,OilGas,GBP,10,2.31,0,0,Natural gas US,1000,1,1.0
+GBP,62500,FX,GBP,5.25,2.46,0,0,GBPUSD currency,10000,1,1.0
+GOLD,100,Metals,GBP,0.3,2.31,0,0,Gold,1,1,1.0
+JPY,12500000,FX,GBP,10,2.46,0,0,JPYUSD currency,10000,1,1.0
+LEANHOG,400,Ags,GBP,7.5,2.9,0,0,Lean hogs,100,1,0.1
+LIVECOW,400,Ags,GBP,10,2.9,0,0,Live cattle,100,1,0.5
+NASDAQ,20,Equity,GBP,1.5,2.05,0,0,US equity index Nasdaq,1,1,0.5
+NZD,100000,FX,GBP,2.9,2.46,0,0,NZDUSD currency,10000,1,1.0
+OAT,1000,Bond,GBP,2.5,2,0,0,French 10 year bond OAT,100,1,0.5
+PALLAD,100,Metals,GBP,5,2.31,0,0,Palladium,1,1,2.0
+PLAT,50,Metals,GBP,1.25,2.31,0,0,Platinum,1,1,3.0
+SHATZ,1000,Bond,GBP,0.75,2,0,0,German 2 year bond Schatz,100,1,0.5
+SMI,10,Equity,GBP,3,4,0,0,Swiss equity index SMI,1,1,0.5
+SOYBEAN,50,Ags,GBP,1,2.9,0,0,Soybean,1,1,5.0
+SP500,50,Equity,GBP,0.5,2.05,0,0,US equity index S&P500,1,1,1.0
+US10,1000,Bond,GBP,2,1.51,0,0,US 10 year bond note,100,1,0.5
+US2,2000,Bond,GBP,1,1.51,0,0,US 2 year bond note,100,1,0.5
+US5,1000,Bond,GBP,1,1.51,0,0,US 5 year bond note,100,1,0.5
+V2X,100,Vol,GBP,0.1,2,0,0,Vol European equity V2X,1,1,100.0
+VIX,1000,Vol,GBP,0.1,2.2,0,0,Vol US equity VIX,1,1,100.0
+WHEAT,50,Ags,GBP,0.5,2.9,0,0,Wheat,1,1,15.0
