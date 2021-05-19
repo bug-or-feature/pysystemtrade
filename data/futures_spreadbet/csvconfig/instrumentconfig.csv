@@ -1,34 +1,34 @@
-Instrument,AssetClass,Currency,Pointsize,Spread,MinBetPerPoint,Description
-AEX,Equity,GBP,1,0.2,5.0,Netherlands equity index AEX
-AUD,FX,GBP,0.0001,10.6,1.0,AUDUSD currency
-BOBL,Bond,GBP,0.01,3.0,0.5,German 5 year bond Bobl
-BTP,Bond,GBP,0.01,5.0,0.5,Italian 10 year bond BTP
-BUND,Bond,GBP,0.01,3.0,0.5,German 10 year bond Bund
-CAC,Equity,GBP,1,4.0,1.0,French equity index CAC40
-COPPER,Metals,GBP,0.0001,40.0,0.1,Copper
-CORN,Ags,GBP,1,1.0,10.0,Corn
-CRUDE_W,OilGas,GBP,0.01,6.0,1.0,Light sweet crude Winter
-EDOLLAR,Bond,GBP,0.01,1.6,0.5,US STIR Eurodollar
-EUR,FX,GBP,0.0001,10.6,0.5,EURUSD currency
-EUROSTX,Equity,GBP,1,2.0,1.0,European equity index EUROSTOXX50
-GAS_US,OilGas,GBP,0.001,20.0,1.0,Natural gas US
-GBP,FX,GBP,0.0001,10.5,1.0,GBPUSD currency
-GOLD,Metals,GBP,1,0.6,1.0,Gold
-JPY,FX,GBP,0.000001,20.0,1.0,JPYUSD currency
-LEANHOG,Ags,GBP,0.01,15.0,0.1,Lean hogs
-LIVECOW,Ags,GBP,0.01,20.0,0.5,Live cattle
-NASDAQ,Equity,GBP,1,3.0,0.5,US equity index Nasdaq
-NZD,FX,GBP,0.0001,5.8,1.0,NZDUSD currency
-OAT,Bond,GBP,0.01,5.0,0.5,French 10 year bond OAT
-PALLAD,Metals,GBP,1,10.0,2.0,Palladium
-PLAT,Metals,GBP,1,2.5,3.0,Platinum
-SHATZ,Bond,GBP,0.01,1.5,0.5,German 2 year bond Schatz
-SMI,Equity,GBP,1,6.0,0.5,Swiss equity index SMI
-SOYBEAN,Ags,GBP,1,2.0,5.0,Soybean
-SP500,Equity,GBP,1,1.0,1.0,US equity index S&P500
-US10,Bond,GBP,0.01,4.0,0.5,US 10 year bond note
-US2,Bond,GBP,0.01,2.0,0.5,US 2 year bond note
-US5,Bond,GBP,0.01,2.0,0.5,US 5 year bond note
-V2X,Vol,GBP,1,0.2,100.0,Vol European equity V2X
-VIX,Vol,GBP,1,0.2,100.0,Vol US equity VIX
-WHEAT,Ags,GBP,1,1.0,15.0,Wheat
+Instrument,AssetClass,Currency,Pointsize,Spread,MinBetPerPoint,Multiplier,Description
+AEX,Equity,GBP,1.0,0.2,5.0,1.0,Netherlands equity index AEX
+AUD,FX,GBP,1.0,10.6,1.0,10000.0,AUDUSD currency
+BOBL,Bond,GBP,1.0,3.0,0.5,100.0,German 5 year bond Bobl
+BTP,Bond,GBP,1.0,5.0,0.5,100.0,Italian 10 year bond BTP
+BUND,Bond,GBP,1.0,3.0,0.5,100.0,German 10 year bond Bund
+CAC,Equity,GBP,1.0,4.0,1.0,1.0,French equity index CAC40
+COPPER,Metals,GBP,1.0,40.0,0.1,10000.0,Copper
+CORN,Ags,GBP,1.0,1.0,10.0,1.0,Corn
+CRUDE_W,OilGas,GBP,1.0,6.0,1.0,100.0,Light sweet crude Winter
+EDOLLAR,Bond,GBP,1.0,1.6,0.5,100.0,US STIR Eurodollar
+EUR,FX,GBP,1.0,10.6,0.5,10000.0,EURUSD currency
+EUROSTX,Equity,GBP,1.0,2.0,1.0,1.0,European equity index EUROSTOXX50
+GAS_US,OilGas,GBP,1.0,20.0,1.0,1000.0,Natural gas US
+GBP,FX,GBP,1.0,10.5,1.0,10000.0,GBPUSD currency
+GOLD,Metals,GBP,1.0,0.6,1.0,1.0,Gold
+JPY,FX,GBP,1.0,20.0,1.0,1000000.0,JPYUSD currency
+LEANHOG,Ags,GBP,1.0,15.0,0.1,100.0,Lean hogs
+LIVECOW,Ags,GBP,1.0,20.0,0.5,100.0,Live cattle
+NASDAQ,Equity,GBP,1.0,3.0,0.5,1.0,US equity index Nasdaq
+NZD,FX,GBP,1.0,5.8,1.0,10000.0,NZDUSD currency
+OAT,Bond,GBP,1.0,5.0,0.5,100.0,French 10 year bond OAT
+PALLAD,Metals,GBP,1.0,10.0,2.0,1.0,Palladium
+PLAT,Metals,GBP,1.0,2.5,3.0,1.0,Platinum
+SHATZ,Bond,GBP,1.0,1.5,0.5,100.0,German 2 year bond Schatz
+SMI,Equity,GBP,1.0,6.0,0.5,1.0,Swiss equity index SMI
+SOYBEAN,Ags,GBP,1.0,2.0,5.0,1.0,Soybean
+SP500,Equity,GBP,1.0,1.0,1.0,1.0,US equity index S&P500
+US10,Bond,GBP,1.0,4.0,0.5,100.0,US 10 year bond note
+US2,Bond,GBP,1.0,2.0,0.5,100.0,US 2 year bond note
+US5,Bond,GBP,1.0,2.0,0.5,100.0,US 5 year bond note
+V2X,Vol,GBP,1.0,0.2,100.0,1.0,Vol European equity V2X
+VIX,Vol,GBP,1.0,0.2,100.0,1.0,Vol US equity VIX
+WHEAT,Ags,GBP,1.0,1.0,15.0,1.0,Wheat
