@@ -107,8 +107,13 @@ class TestBarchart:
         expiry = data.get_actual_expiry_date_for_single_contract(fc('AUD', '20100900'))
         assert expiry == datetime.datetime(2010, 9, 12)
 
+        # too old
         with pytest.raises(Exception):
             data.get_actual_expiry_date_for_single_contract(fc('EUR', '19900300'))
+
+        # too new
+        expiry = data.get_actual_expiry_date_for_single_contract(fc('PLAT', '21000300'))
+        assert expiry == datetime.datetime(2100, 3, 1)
 
     @pytest.mark.skip
     def test_price_data(self):
