@@ -183,43 +183,7 @@ class RawData(SystemStage):
 
         # volconfig contains 'func' and some other arguments
         # we turn func which could be a string into a function, and then
-        # call it with the other args
-
-        volfunction = resolve_function(volconfig.pop("func"))
-        vol = volfunction(dailyreturns, **volconfig)
-
-        return vol
-
-    @output()
-    def daily_returns_volatility_mult(self, instrument_code: str, mult: int) -> pd.Series:
-        """
-        Gets volatility of daily returns (not % returns)
-
-        This is done using a user defined function
-
-        We get this from:
-          the configuration object
-          or if not found, system.defaults.py
-
-        The dict must contain func key; anything else is optional
-
-        :param instrument_code: Instrument to get prices for
-        :type trading_rules: str
-
-        :returns: Tx1 pd.DataFrame
-        """
-        self.log.msg(
-            "Calculating daily volatility for %s" % instrument_code,
-            instrument_code=instrument_code,
-        )
-
-        dailyreturns = self.daily_returns(instrument_code)
-        volconfig = copy(self.config.volatility_calculation)
-        volconfig['multiplier'] = mult
-
-        # volconfig contains 'func' and some other arguments
-        # we turn func which could be a string into a function, and then
-        # call it with the other args
+        # call it with the other ags
 
         volfunction = resolve_function(volconfig.pop("func"))
         vol = volfunction(dailyreturns, **volconfig)
