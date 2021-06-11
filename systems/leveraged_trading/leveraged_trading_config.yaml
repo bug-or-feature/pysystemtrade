@@ -14,7 +14,7 @@ instrument_weights:
     CORN: 1.0
 
 volatility_calculation:
-  func: "sysquant.estimators.sb_vol.robust_sb_vol_calc"
+  func: "sysquant.estimators.vol.robust_vol_calc"
   days: 35
   min_periods: 10
   vol_abs_min: 0.0000000001
@@ -22,4 +22,3 @@ volatility_calculation:
   floor_min_quant: 0.05
   floor_min_periods: 100
   floor_days: 500
-  multiplier: 10
