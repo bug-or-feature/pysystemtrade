@@ -31,16 +31,27 @@ INSTR_TARGET_RISK = 0.265 # 4 instruments
 #INSTR_TARGET_RISK = 0.323 # 5 instruments
 #INSTR_TARGET_RISK = 0.568 # 8-14 instruments
 
+CAPITAL_PER_INSTR = 8000.00
+
 # trading capital, PER INSTRUMENT
-TRADING_CAPITAL = 8000.00
+TRADING_CAPITAL = {
+    'BUND': 7700.00,
+    'GOLD': 8370.00,
+    'SP500': 7935.00,
+    'NZD': 7995.00
+}
+
+current_positions = {
+    'BUND': -3.58,
+    'GOLD': 19.26,
+    'SP500': 3.42,
+    'NZD': 1.13
+}
 
 # stop loss fraction
 STOP_LOSS_FRACTION = 0.5
 
 MAV_SCALING_FACTOR = 57.12
-
-
-
 
 def get_spreadbet_costs(source='db'):
 
@@ -48,8 +59,6 @@ def get_spreadbet_costs(source='db'):
     calculates spreadbet costs using formulas from Leveraged Trading
     """
 
-    #rawdata = FuturesRawData()
-    rawdata = FuturesSpreadbetRawData()
     config = Config("systems.leveraged_trading.leveraged_trading_config.yaml")
 
     if source == 'db':
@@ -63,7 +72,7 @@ def get_spreadbet_costs(source='db'):
         [
             Account(),
             Rules(),
-            rawdata
+            FuturesSpreadbetRawData()
         ], sim, config)
     roll_config = mongoRollParametersData()
 
@@ -88,16 +97,16 @@ def get_spreadbet_costs(source='db'):
         roll_count = len(params.hold_rollcycle._as_list())
 
         # prices
-        prices = rawdata.get_daily_prices(instr)
+        prices = system.rawdata.get_daily_prices(instr)
         date_last_price = prices.index[-1]
         sb_price = prices.iloc[-1]
 
         # risk (annual volatility of returns)
         #   - calculated as per 'Leveraged Trading' Appendix C, p.313,
         #   - and using code from systems.accounts.account_costs, except using 25 days, not 1 year
-        start_date = date_last_price - pd.DateOffset(days=25)
+        start_date = date_last_price - pd.DateOffset(days=25) # TODO warning if not updated
         average_price = float(prices[start_date:].mean())
-        daily_vol = rawdata.daily_returns_volatility(instr)
+        daily_vol = system.rawdata.daily_returns_volatility(instr)
         average_vol = float(daily_vol[start_date:].mean())
         avg_annual_vol = average_vol * ROOT_BDAYS_INYEAR
         avg_annual_vol_perc = avg_annual_vol / average_price
@@ -129,10 +138,17 @@ def get_spreadbet_costs(source='db'):
         min_exposure = (min_bet_per_point * average_price) / point_size
         orig_min_capital = (min_exposure * avg_annual_vol_perc) / ORIG_TARGET_RISK
         new_min_capital = orig_min_capital * (ORIG_TARGET_RISK / NEW_TARGET_RISK)
-        notional_exposure = (INSTR_TARGET_RISK * TRADING_CAPITAL) / avg_annual_vol_perc
-        pos_size = (notional_exposure * 1 * point_size) / average_price
-        new_notional_exposure = ((rescaledForecast /10) * INSTR_TARGET_RISK * TRADING_CAPITAL) / avg_annual_vol_perc
-        new_pos_size = (new_notional_exposure * 1 * point_size) / average_price
+
+        trading_capital = TRADING_CAPITAL[instr]
+        ideal_notional_exposure = ((rescaledForecast / 10) * INSTR_TARGET_RISK * trading_capital) / avg_annual_vol_perc
+        current_pos = current_positions[instr]
+        current_notional_exposure = (current_pos * sb_price) / (point_size)
+
+        average_notional_exposure = (INSTR_TARGET_RISK * trading_capital) / avg_annual_vol_perc
+        deviation = (ideal_notional_exposure - current_notional_exposure) / average_notional_exposure
+        adjustment_required = 'Y' if abs(deviation) > 0.1 else 'N'
+        pos_size = (ideal_notional_exposure * 1 * point_size) / average_price
+        adjustment_required = pos_size - current_pos if abs(deviation) > 0.1 else 0.0
 
 
         cost_rows.append(
@@ -141,16 +157,16 @@ def get_spreadbet_costs(source='db'):
                 #'Commission': 0,
                 'Class': instr_class,
                 #'Subclass': instr_subclass,
-                'Date': date_last_price,
                 #'PriceF': round(f_price, 2),
-                'PriceSB': round(sb_price, 2),
+                'Price': round(sb_price, 2),
+                'Date': date_last_price,
                 #'mult': multiplier,
                 'Spread': spread_in_points,
                 'MinBet': min_bet_per_point,
                 #'Xpoint': point_size,
                 #'Risk': f"{round(avg_annual_vol_perc, 3)}",
                 'Risk%': "{:.2%}".format(avg_annual_vol_perc),
-                'riskPU': round(risk_in_price_units, 2),
+                #'riskPU': round(risk_in_price_units, 2),
                 #'TCccy': f"£{round(tc_ccy, 2)}",
                 #'TCratio': "{:.2%}".format(tc_ratio),
                 #'TCrisk': round(tc_risk, 4),
@@ -158,16 +174,20 @@ def get_spreadbet_costs(source='db'):
                 #'HCrisk': round(hc_risk, 3),
                 'Ctotal': round(costs_total, 3),
                 'minExp': round(min_exposure, 0),
-                'OMinCap': round(orig_min_capital, 0),
-                'NMinCap': round(new_min_capital, 0),
+                #'OMinCap': round(orig_min_capital, 0),
+                'MinCap': round(new_min_capital, 0),
                 'MAC': round(smac_today, 2),
                 'raMAC': round(riskAdjMAC, 3),
                 'scFC': round(rescaledForecast, 1),
                 'Dir': direction,
                 #'notExp': round(notional_exposure, 0),
                 #'PosSize': round(pos_size, 2),
-                'notExp': round(new_notional_exposure, 0),
-                'PosSize': round(new_pos_size, 2),
+                'IdealExp': round(ideal_notional_exposure, 0),
+                'CurrExp': round(current_notional_exposure, 0),
+                'AvgExp': round(average_notional_exposure, 0),
+                'Dev%': "{:.2%}".format(deviation),
+                'PosSize': round(pos_size, 2),
+                'AdjReq': round(adjustment_required, 2),
 
                 #'StopGap': round(stop_loss_gap, 0)
             }
@@ -182,9 +202,9 @@ def get_spreadbet_costs(source='db'):
     #cost_results = cost_results[cost_results["minCapital"] < ()] # costs
 
     # group, sort
-    #cost_results = cost_results.sort_values(by='NMinCap') # Ctotal, NMinCap
-    cost_results = cost_results.groupby('Class').apply(lambda x: x.sort_values(by='NMinCap'))
-    write_file(cost_results, 'costs', data_source, write=True)
+    cost_results = cost_results.sort_values(by='MinCap') # Ctotal, NMinCap
+    #cost_results = cost_results.groupby('Class').apply(lambda x: x.sort_values(by='MinCap'))
+    write_file(cost_results, 'costs', data_source, write=False)
 
 
 def write_file(df, calc_type, source, write=True):
@@ -199,7 +219,7 @@ def write_file(df, calc_type, source, write=True):
         except Exception as ex:
             logging.warning(f"Problem with {full_path}: {ex}")
 
-    print(f"Printing {calc_type}:\n")
+    #print(f"Printing {calc_type}:\n")
     print(f"\n{print_full(df)}\n")
 
 
