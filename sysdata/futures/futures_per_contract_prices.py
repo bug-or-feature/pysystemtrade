@@ -223,7 +223,7 @@ class futuresContractPriceData(baseData):
                 new_log.msg("No existing or additional data")
                 return 0
             else:
-                new_log.msg("No additional data since %s " %
+                new_log.msg("No additional futures data since %s " %
                         str(old_prices.index[-1]))
             return 0
 
