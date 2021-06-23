@@ -96,7 +96,7 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
                 new_log.msg("No existing or additional data")
                 return 0
             else:
-                new_log.msg(f"No additional data since {str(old_prices.index[-1])}")
+                new_log.msg(f"No additional Barchart data since {str(old_prices.index[-1])}")
             return 0
 
         # We have guaranteed no duplication
