@@ -4,7 +4,9 @@ from syscore.objects import missing_instrument
 from sysdata.sim.sim_data import simData
 
 from sysobjects.adjusted_prices import futuresAdjustedPrices
-from sysobjects.instruments import assetClassesAndInstruments, instrumentCosts, futuresInstrumentWithMetaData
+from sysobjects.instruments import assetClassesAndInstruments, instrumentCosts, futuresInstrumentCosts, \
+    futuresInstrumentWithMetaData
+#from sysobjects.instruments import assetClassesAndInstruments, instrumentCosts, futuresInstrumentWithMetaData
 from sysobjects.multiple_prices import futuresMultiplePrices
 from sysobjects.dict_of_named_futures_per_contract_prices import price_name, carry_name, forward_name, contract_name_from_column_name
 
@@ -130,7 +132,8 @@ class futuresSimData(simData):
             self.log.warn("Cost data missing for %s will use zero costs" % instrument_code)
             return instrumentCosts()
 
-        instrument_costs = instrumentCosts(
+        #instrument_costs = instrumentCosts(
+        instrument_costs = futuresInstrumentCosts(
             price_slippage=cost_data_object.meta_data.Slippage,
             value_of_block_commission=cost_data_object.meta_data.PerBlock,
             percentage_cost=cost_data_object.meta_data.Percentage,

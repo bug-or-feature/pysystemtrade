@@ -1,6 +1,7 @@
 from syscore.objects import arg_not_supplied
 from syscore.genutils import flatten_list
-from dataclasses import  dataclass
+from dataclasses import dataclass
+from abc import ABC, abstractmethod
 import pandas as pd
 
 EMPTY_INSTRUMENT = ""
@@ -171,7 +172,18 @@ class assetClassesAndInstruments(dict):
 
         return filtered_asset_class_instrument_list
 
-class instrumentCosts(object):
+
+class instrumentCosts(ABC):
+
+
+    @abstractmethod
+    #def calculate_cost_instrument_currency(self, blocks_traded: float, block_price_multiplier: float, price: float):
+    def calculate_cost_instrument_currency(self, **kwargs):
+        pass
+
+
+#class instrumentCosts(object):
+class futuresInstrumentCosts(instrumentCosts):
     def __init__(self,
             price_slippage: float=0.0,
             value_of_block_commission: float=0.0,
@@ -239,4 +251,3 @@ class instrumentCosts(object):
 
     def calculate_trade_value(self, blocks_traded, value_per_block):
         return blocks_traded * value_per_block
-
