@@ -4,7 +4,8 @@ from syscore.objects import (
     fill_exceeds_trade,
     no_children,
     no_parent,
-    missing_order
+    missing_order,
+    no_order_id
 
 )
 
@@ -62,11 +63,11 @@ class stackHandlerForFills(stackHandlerForCompletions):
                 db_broker_order)
             return None
 
-        self.apply_broker_order_fills_to_database(matched_broker_order)
+        self.apply_broker_order_fills_to_database(broker_order_id = broker_order_id,
+                broker_order = matched_broker_order)
 
-    def apply_broker_order_fills_to_database(self, broker_order: brokerOrder):
-
-        broker_order_id = broker_order.order_id
+    def apply_broker_order_fills_to_database(self, broker_order_id: int,
+                                             broker_order: brokerOrder):
 
         # Turn commissions into floats
         data_broker = dataBroker(self.data)

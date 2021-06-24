@@ -168,12 +168,12 @@ def fix_matrix(some_matrix, replace_with = FLAG_BAD_SIGMA):
 
     return new_matrix
 
-def neg_SR(weights: list,
+def neg_SR(weights: np.array,
            sigma: np.array,
            mus: np.array):
     # Returns minus the Sharpe Ratio (as we're minimising)
-    weights = np.matrix(weights)
-    estreturn = (weights * mus)[0, 0]
+
+    estreturn = float(weights.dot(mus))
     std_dev = variance(weights, sigma) ** 0.5
 
     return -estreturn / std_dev
@@ -181,7 +181,7 @@ def neg_SR(weights: list,
 
 def variance(weights: np.matrix, sigma: np.array):
     # returns the variance (NOT standard deviation) given weights and sigma
-    return (weights * sigma * weights.transpose())[0, 0]
+    return weights.dot(sigma).dot(weights.transpose())
 
 
 

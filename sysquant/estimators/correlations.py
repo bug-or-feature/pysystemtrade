@@ -1,4 +1,5 @@
-from random import random
+import datetime
+
 from copy import copy
 import pandas as pd
 import numpy as np
@@ -6,7 +7,7 @@ from dataclasses import dataclass
 from syscore.objects import arg_not_supplied
 from syscore.pdutils import must_have_item
 
-from sysquant.fitting_dates import fitDates
+from sysquant.fitting_dates import fitDates, listOfFittingDates
 from sysquant.estimators.generic_estimator import Estimate
 
 class correlationEstimate(Estimate):
@@ -86,7 +87,8 @@ class correlationEstimate(Estimate):
 
     def clean_corr_matrix_given_data(self,
                                      fit_period: fitDates,
-                                     data_for_correlation: pd.DataFrame):
+                                     data_for_correlation: pd.DataFrame,
+                                     offdiag = 0.99):
         if fit_period.no_data:
             return self
 
@@ -96,7 +98,7 @@ class correlationEstimate(Estimate):
         # kind of correlation
         must_haves = must_have_item(current_period_data)
 
-        clean_correlation = self.clean_correlations(must_haves)
+        clean_correlation = self.clean_correlations(must_haves, offdiag=offdiag)
 
         return clean_correlation
 
@@ -113,9 +115,26 @@ class correlationEstimate(Estimate):
 
         return create_boring_corr_matrix(self.size, offdiag=offdiag, diag = diag, columns=self.columns)
 
+    def clip_correlation_matrix(self,  clip=arg_not_supplied):
+        if clip is arg_not_supplied:
+            return self
+        clip = abs(clip)
+        corr_matrix = self.floor_correlation_matrix(floor = -clip)
+        corr_matrix = corr_matrix.ceil_correlation_matrix(ceil = clip)
+
+        return corr_matrix
+
     def floor_correlation_matrix(self,  floor=0.0):
         corr_matrix_values = copy(self.values)
         corr_matrix_values[corr_matrix_values < floor] = floor
+        np.fill_diagonal(corr_matrix_values, 1.0)
+        corr_matrix = correlationEstimate(corr_matrix_values, self.columns)
+        return corr_matrix
+
+    def ceil_correlation_matrix(self,  ceil=0.9):
+        corr_matrix_values = copy(self.values)
+        corr_matrix_values[corr_matrix_values > ceil] = ceil
+        np.fill_diagonal(corr_matrix_values, 1.0)
         corr_matrix = correlationEstimate(corr_matrix_values, self.columns)
         return corr_matrix
 
@@ -142,6 +161,14 @@ class correlationEstimate(Estimate):
     def assets_with_missing_data(self) -> list:
         na_row_count = self.as_pd().isna().any(axis=1)
         return [keyname for keyname in na_row_count.keys() if na_row_count[keyname]]
+
+    def assets_with_data(self) -> list:
+        missing = self.assets_with_missing_data()
+        return [keyname for keyname in self.columns if keyname not in missing]
+
+    def without_missing_data(self):
+        assets_with_data = self.assets_with_data()
+        return self.subset(assets_with_data)
 
 def create_boring_corr_matrix(size: int,
                        offdiag: float=0.99,
@@ -308,11 +335,20 @@ def _get_cleaned_matrix_values(raw_corr_matrix: correlationEstimate,
 class CorrelationList:
     corr_list: list
     column_names: list
-    fit_dates: list
+    fit_dates: listOfFittingDates
 
     def __repr__(self):
         return (
-            "%d correlation estimates for %s; use .corr_list, .columns, .fit_dates" %
+            "%d correlation estimates for %s; use .corr_list, .column_names, .fit_dates" %
             (len(
                 self.corr_list), ",".join(
                 self.column_names)))
+
+    def most_recent_correlation_before_date(self,
+                                            relevant_date: datetime.datetime= arg_not_supplied) -> correlationEstimate:
+        if relevant_date is arg_not_supplied:
+            index_of_date = -1
+        else:
+            index_of_date = self.fit_dates.index_of_most_recent_period_before_relevant_date(relevant_date)
+
+        return self.corr_list[index_of_date]

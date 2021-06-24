@@ -53,15 +53,17 @@ class futuresSimData(simData):
         return asset_class
 
 
-    def get_raw_price(self, instrument_code) -> pd.Series:
+    def get_raw_price_from_start_date(self, instrument_code: str,
+                                      start_date) -> pd.Series:
         """
         For  futures the price is the backadjusted price
 
         :param instrument_code:
         :return: price
         """
+        price = self.get_backadjusted_futures_price(instrument_code)
 
-        return self.get_backadjusted_futures_price(instrument_code)
+        return price[start_date:]
 
 
     def get_instrument_raw_carry_data(self, instrument_code:str) -> pd.DataFrame:
@@ -196,8 +198,14 @@ class futuresSimData(simData):
 
 
     def get_multiple_prices(self, instrument_code: str) -> futuresMultiplePrices:
-        raise NotImplementedError()
+        start_date = self.start_date_for_data()
 
+        return self.get_multiple_prices_from_start_date(instrument_code,
+                                                        start_date=start_date)
+
+    def get_multiple_prices_from_start_date(self, instrument_code: str,
+                                            start_date) -> futuresMultiplePrices:
+        raise NotImplementedError()
 
 
     def _get_instrument_object_with_cost_data(self, instrument_code) -> futuresInstrumentWithMetaData:

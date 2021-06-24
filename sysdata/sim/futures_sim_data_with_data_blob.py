@@ -44,11 +44,14 @@ class genericBlobUsingFuturesSimData(futuresSimData):
     def get_instrument_list(self):
         return self.db_futures_adjusted_prices_data.get_list_of_instruments()
 
-    def _get_fx_data(self, currency1: str, currency2: str) -> fxPrices:
+    def  _get_fx_data_from_start_date(self, currency1: str, currency2: str,
+                                      start_date) -> fxPrices:
         fx_code = currency1+currency2
         data = self.db_fx_prices_data.get_fx_prices(fx_code)
 
-        return data
+        data_after_start =data[start_date:]
+
+        return data_after_start
 
     def get_instrument_asset_classes(self) -> assetClassesAndInstruments:
         all_instrument_data = self.db_futures_instrument_data.get_all_instrument_data_as_df()
@@ -62,10 +65,11 @@ class genericBlobUsingFuturesSimData(futuresSimData):
 
         return data
 
-    def get_multiple_prices(self, instrument_code: str) -> futuresMultiplePrices:
+    def get_multiple_prices_from_start_date(self, instrument_code: str,
+                                            start_date) -> futuresMultiplePrices:
         data = self.db_futures_multiple_prices_data.get_multiple_prices(instrument_code)
 
-        return data
+        return data[start_date:]
 
     def _get_instrument_object_with_cost_data(self, instrument_code: str) -> futuresInstrumentWithMetaData:
         ## cost and other meta data stored in the same place

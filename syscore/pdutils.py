@@ -19,6 +19,7 @@ WEEKS_IN_YEAR,
 MONTHS_IN_YEAR
 
 )
+from syscore.objects import arg_not_supplied
 
 DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -67,6 +68,7 @@ def turnover(x, y):
     return avg_daily * BUSINESS_DAYS_IN_YEAR
 
 
+
 def uniquets(x):
     """
     Makes x unique
@@ -84,6 +86,13 @@ class listOfDataFrames(list):
     def resample(self, frequency: str):
         data_resampled = [
             data_item.resample(frequency).last() for data_item in self
+        ]
+
+        return listOfDataFrames(data_resampled)
+
+    def resample_sum(self, frequency: str):
+        data_resampled = [
+            data_item.resample(frequency).sum() for data_item in self
         ]
 
         return listOfDataFrames(data_resampled)
@@ -113,6 +122,38 @@ class listOfDataFrames(list):
         common_unique_index.sort()
 
         return common_unique_index
+
+    def common_columns(self):
+        all_columns = [data_item.columns for data_item in self]
+        all_columns_flattened = flatten_list(all_columns)
+        common_unique_columns = list(set(all_columns_flattened))
+        common_unique_columns.sort()
+
+        return listOfDataFrames(common_unique_columns)
+
+    def reindex_to_common_columns(self, padwith=0.0):
+        common_columns = self.common_columns()
+        data_reindexed = [
+            dataframe_pad(data_item, common_columns, padwith=padwith)
+            for data_item in self
+        ]
+        return listOfDataFrames(data_reindexed)
+
+    def aligned(self):
+        list_of_df_reindexed = self.reindex_to_common_index()
+        list_of_df_common = list_of_df_reindexed.reindex_to_common_columns()
+
+        return list_of_df_common
+
+    def fill_and_multipy(self):
+        list_of_df_common = self.aligned()
+        list_of_df_common = list_of_df_common.ffill()
+        result = list_of_df_common[0]
+        for other in list_of_df_common[1:]:
+            result = result * other
+
+        return result
+
 
 
 def stacked_df_with_added_time_from_list(data: listOfDataFrames) -> pd.DataFrame:
@@ -170,15 +211,7 @@ def must_have_item(slice_data):
     >>>
     """
 
-    def _any_data(xseries):
-        data_present = [not np.isnan(x) for x in xseries]
-
-        return any(data_present)
-
-    some_data = slice_data.apply(_any_data, axis=0)
-    some_data_flags = list(some_data.values)
-
-    return some_data_flags
+    return list(~slice_data.isna().all().values)
 
 def get_bootstrap_series(data: pd.DataFrame):
     length_of_series = len(data.index)
@@ -274,16 +307,23 @@ def fix_weights_vs_position_or_forecast(weights: pd.DataFrame,
     adj_weights[np.isnan(pdm_ffill)] = 0.0
 
     # change rows so weights add to one
-    def _sum_row_fix(weight_row):
-        swr = sum(weight_row)
-        if swr == 0.0:
-            return weight_row
-        new_weights = weight_row / swr
-        return new_weights
+    normalised_weights = weights_sum_to_one(adj_weights)
 
-    adj_weights = adj_weights.apply(_sum_row_fix, 1)
+    return normalised_weights
 
-    return adj_weights
+def weights_sum_to_one(weights: pd.DataFrame):
+    sum_weights = weights.sum(axis=1)
+    sum_weights[sum_weights==0.0] = 0.0001
+    weight_multiplier = 1.0 / sum_weights
+    weight_multiplier_array = np.array([weight_multiplier]*len(weights.columns))
+    weight_values = weights.values
+
+    normalised_weights_np = weight_multiplier_array.transpose() * weight_values
+    normalised_weights = pd.DataFrame(normalised_weights_np,
+                                      columns = weights.columns,
+                                      index = weights.index)
+
+    return normalised_weights
 
 
 def drawdown(x):
@@ -401,54 +441,11 @@ def dataframe_pad(starting_df, column_list, padwith=0.0):
 
     return new_df
 
+def apply_abs_min(x: pd.Series, min_value=0.1):
+    x[(x<min_value) & (x>0)] = min_value
+    x[(x > min_value) & (x < 0)] = -min_value
 
-def proportion_pd_object_intraday(
-    data, closing_time=NOTIONAL_CLOSING_TIME_AS_PD_OFFSET
-):
-    """
-    Return the proportion of intraday data in a pd.Series or DataFrame
-
-    :param data: the underlying data
-    :param closing_time: the time which we are using as a closing time
-    :return: float, the proportion of the data.index that matches an intraday timestamp
-
-    So 0 = All daily data, 1= All intraday data
-    """
-
-    data_index = data.index
-    length_index = len(data_index)
-
-    count_matches = [
-        time_matches(index_entry, closing_time) for index_entry in data_index
-    ]
-    total_matches = sum(count_matches)
-    proportion_matching_close = float(total_matches) / float(length_index)
-    proportion_intraday = 1 - proportion_matching_close
-
-    return proportion_intraday
-
-
-def strip_out_intraday(
-    data, closing_time=pd.DateOffset(hours=23, minutes=0, seconds=0)
-):
-    """
-    Return a pd.Series or DataFrame with only the times matching closing_time
-    Used when we have a mix of daily and intraday data, where the daily data has been given a nominal timestamp
-
-    :param data: pd object
-    :param closing_time: pdDateOffset with
-    :return: pd object
-    """
-
-    data_index = data.index
-    length_index = len(data_index)
-
-    daily_matches = [
-        time_matches(index_entry, closing_time) for index_entry in data_index
-    ]
-
-    return data[daily_matches]
-
+    return x
 
 
 
@@ -528,6 +525,22 @@ def spread_out_annualised_return_over_periods(data_as_annual):
 
     return data_per_period
 
+def from_series_to_matching_df_frame(pd_series: pd.Series,
+                                     pd_df_to_match: pd.DataFrame,
+                                     method="ffill") -> pd.DataFrame:
+    list_of_columns = list(pd_df_to_match.columns)
+    new_df = from_series_to_df_with_column_names(pd_series, list_of_columns)
+    new_df = new_df.reindex(pd_df_to_match.index, method=method)
+
+    return new_df
+
+def from_series_to_df_with_column_names(pd_series: pd.Series,
+                                        list_of_columns: list) -> pd.DataFrame:
+
+    new_df = pd.concat([pd_series]*len(list_of_columns), axis=1)
+    new_df.columns = list_of_columns
+
+    return new_df
 
 def print_full(x):
     """
@@ -547,9 +560,22 @@ def print_full(x):
     pd.reset_option('display.float_format')
     pd.reset_option('display.max_colwidth')
 
-
 if __name__ == "__main__":
     import doctest
 
     doctest.testmod()
 
+
+def get_row_of_df_aligned_to_weights_as_dict(df: pd.DataFrame,
+                                             relevant_date: datetime.datetime = arg_not_supplied) \
+    -> dict:
+
+    if relevant_date is arg_not_supplied:
+        data_at_date = df.iloc[-1]
+    else:
+        try:
+            data_at_date = df.loc[relevant_date]
+        except KeyError:
+            raise Exception("Date %s not found in portfolio weights" % str(relevant_date))
+
+    return data_at_date.to_dict()

@@ -329,7 +329,7 @@ You should then create a new system which points to the new config file:
 from sysdata.config.configdata import Config
 from systems.provided.futures_chapter15.basesystem import futures_system
 
-my_config=Config("private.this_system_name.config.yaml"))
+my_config=Config("private.this_system_name.config.yaml")
 system=futures_system(config=my_config)
 ```
 
@@ -471,7 +471,7 @@ rule_variations:
 You should then create a new system which points to the new config file:
 
 ```python
-from sysdata.configdata import Config
+from sysdata.config.configdata import Config
 
 my_config=Config("private.this_system_name.config.yaml")
 
@@ -480,6 +480,8 @@ system=futures_system(config=my_config)
 ```
 
 See [here](#filenames) for how to specify filenames in pysystemtrade.
+
+
 
 ### Change instruments: Change the configuration object
 
@@ -519,6 +521,39 @@ new_config.rule_variations=dict(SP500=['ewmac16_64','carry'], KR10=['ewmac32_128
 system=futures_system(config=new_config)
 
 ```
+
+## How do I.... run the backtest only on more recent data
+
+You need to set the start_date in the .yaml backtest configuration file:
+
+```
+## Note you must use this format
+start_date: 2000-01-19
+```
+
+
+
+
+## How do I....Run a backtest on all available instruments
+
+If there are is no `instrument_weights` or `instruments element` in the config, then the backtest will be run over all available instruments in the data. 
+
+## How do I.... Exclude some instruments from the backtest
+
+If you want to run the backtest without certain instruments (but without individually specifying which ones you want) then you can add a config element `ignore_instruments`. This will be a list containing instrument codes.
+
+As an example, to exclude the 'full sized' contracts in the data and only use the mini/micro versions:
+
+```
+ignore_instruments:
+  - CRUDE_W
+  - GAS_US
+  - GOLD
+  - KOSPI
+  - NASDAQ
+  - SP500
+```
+
 
 
 <a name="how_do_i_write_rules"> </a>
@@ -861,6 +896,22 @@ system.data.get_instrument_currency(instrument_code) # and so on
 (Note that when specifying a data item within a trading [rule](#rules) you
 should omit the system eg `data.get_raw_price`)
 
+If you set the start_date configuration option, then only a subset of the data will be shown:
+
+
+```python
+## using with a system
+from systems.provided.futures_chapter15.basesystem import futures_system
+system=futures_system(data=data)
+
+# We could also do this in the .yaml file. Note the formatting used must be the same
+system.config.start_date = '2000-01-19'
+
+## or as a datetime (won't work in yaml obviously)
+import datetime
+system.config.start_date = datetime.datetime(2000,1,19)
+```
+
 
 
 <a name="csvdata"> </a>
@@ -969,8 +1020,7 @@ from sysdata.sim.db_futures_sim_data import dbFuturesSimData
 data = dbFuturesSimData()
 
 # using with a system
-
-system = futures_system(, log_level="on")
+system = futures_system(log_level="on")
 print(system.accounts.portfolio().sharpe())
 ```
 
@@ -1047,7 +1097,7 @@ There are three main ways to create a configuration object:
 #### 1) Creating a configuration object with a dictionary
 
 ```python
-from sysdata.configdata import Config
+from sysdata.config.configdata import Config
 
 my_config_dict=dict(optionone=1, optiontwo=dict(a=3.0, b="beta", c=["a", "b"]), optionthree=[1.0, 2.0])
 my_config=Config(my_config_dict)
@@ -1081,7 +1131,7 @@ nested. If you want to learn more about yaml check [this
 out](https://pyyaml.org/wiki/PyYAMLDocumentation#YAMLsyntax).
 
 ```python
-from sysdata.configdata import Config
+from sysdata.config.configdata import Config
 my_config=Config("private.filename.yaml") ## assuming the file is in "pysystemtrade/private/filename.yaml"
 ```
 
@@ -1123,7 +1173,7 @@ dict or filename. For example we could do this with the simple filename example
 above:
 
 ```python
-from sysdata.configdata import Config
+from sysdata.config.configdata import Config
 
 my_config_dict=dict(optionfour=1, optionfive=dict(one=1, two=2.0))
 my_config=Config(["filename.yaml", my_config_dict])
@@ -1200,7 +1250,7 @@ Note this means that the config before, and after, it goes into a system object
 will probably be different; the latter will be populated with defaults.
 
 ```python
-from sysdata.configdata import Config
+from sysdata.config.configdata import Config
 my_config=Config()
 print(my_config) ## empty config
 ```
@@ -1986,7 +2036,7 @@ Then it's a case of creating the python function. Here is an extract from the
 ## We probably need these to get our data
 
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
-from sysdata.configdata import Config
+from sysdata.config.configdata import Config
 
 ## We now import all the stages we need
 from systems.forecasting import Rules
@@ -2298,7 +2348,7 @@ following configurable attributes:
 YAML:
 ```
 volatility_calculation:
-  func: "syscore.algos.robust_vol_calc"
+  func: "sysquant.estimators.vol.robust_vol_calc"
   days: 35
   min_periods: 10
   vol_abs_min: 0.0000000001
@@ -2536,7 +2586,7 @@ a look at an incomplete version of the pre-baked chapter 15 futures system.
 ## We probably need these to get our data
 
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
-from sysdata.configdata import Config
+from sysdata.config.configdata import Config
 from systems.basesystem import System
 
 ## We now import all the stages we need
@@ -2958,6 +3008,10 @@ system](#futures_system). We switch to it by setting
 See [optimisation](#optimisation) for more information.
 
 
+##### Removing expensive trading rules
+
+
+
 ##### Estimating the forecast diversification multiplier
 
 See [estimating diversification multipliers](#divmult).
@@ -3189,7 +3243,7 @@ The final stage is the all important accounting stage, which calculates p&l.
 
 The standard accounting class includes several useful methods:
 
-- `portfolio`: works out the p&l for the whole system (returns accountCurve)
+- `portfolio`: works out the p&l for the whole system (returns accountCurveGroup)
 - `pandl_for_instrument`: the contribution of a particular instrument to the
   p&l (returns accountCurve)
 - `pandl_for_subsystem`: work out how an instrument has done in isolation
@@ -3268,7 +3322,7 @@ system.accounts.portfolio().stats()
   ('t_stat', '2.852'),
   ('p_value', '0.004349')],
  ('You can also plot / print:',
-  ['rolling_ann_std', 'drawdown', 'curve', 'as_percent', 'as_cumulative'])]
+  ['rolling_ann_std', 'drawdown', 'curve', 'percent'])]
 ```
 
 The `stats` method lists three kinds of output:
@@ -3335,13 +3389,6 @@ acc_curve.rolling_ann_std() ## rolling annual standard deviation of daily (net) 
 acc_curve.gross.curve() ## cumulated returns = account curve of gross daily returns
 acc_curve.net.monthly.drawdown() ## drawdown of monthly net returns
 acc_curve.costs.weekly.curve() ## cumulated weekly costs
-```
-
-You probably won't need it but acc_curve.calc_data() returns a dict of all the
-information used to calculate a particular account curve. For example:
-
-```python
-acc_curve.calc_data()['trades_to_use'] ## simulated trades
 ```
 
 Personally I prefer looking at statistics in percentage terms. This is easy.
@@ -3411,7 +3458,6 @@ acc_curve_group['US10'].monthly.sharpe() ## Sharpe ratio based on annual
 acc_curve_group['US10'].gross.weekly.std() ## standard deviation of weekly returns
 acc_curve_group['US10'].daily.ann_std() ## annualised std. deviation of daily (net) returns
 acc_curve_group['US10'].costs.annual.median() ## median of annual costs
-acc_curve_group['US10'].calc_data()['trades_to_use'] ## list of trades
 
 acc_curve_group.gross['US10'].weekly.std() ## notice equivalent way of getting account curves
 ```
@@ -3441,7 +3487,7 @@ acc_curve_group.net.get_stats("sharpe", percent=False) ## defaults to giving sta
 
 ```
 
-*Warning see [weighted and unweighted account curve groups](#weighted_acg)
+*Warning see [weighted and unweighted account curve groups](#weighted_acg)*
 
 You can get summary statistics for these. These can either be simple averages
 across all assets, or time weighted by the amount of data each asset has.
@@ -3450,7 +3496,7 @@ across all assets, or time weighted by the amount of data each asset has.
 acc_curve_group.get_stats("sharpe").mean() ## get simple average of annualised sharpe ratios for net returns using daily data
 acc_curve_group.get_stats("sharpe").std(timeweighted=True) ## get time weighted standard deviation of sharpes across assets,
 acc_curve_group.get_stats("sharpe").tstat(timeweighted=False) ## t tstatistic for average sharpe ratio
-acc_curve_group.get_stats("sharpe").pvalue(tim_weighted=True) ## p value of t statistic of time weighted average sharpe ratio.
+acc_curve_group.get_stats("sharpe").pvalue(timeweighted=True) ## p value of t statistic of time weighted average sharpe ratio.
 
 ```
 
@@ -3881,10 +3927,13 @@ post](https://qoppac.blogspot.com/2016/05/optimising-weights-with-costs.html).
 ```
 forecast_weight_estimate:
    ceiling_cost_SR: 0.13 ## Max cost to allow for assets, annual SR units.
+    
 ```
 
 See ['costs'](#costs) to see how to configure pooling when estimating the costs
 of forecasts.
+
+By default this is set to 9999 which effectively means that all trading rules are included at the optimisation stage. However the use of `post_ceiling_cost_SR` can be used to remove rules that are too expensive. This is recommended if you are pooling gross returns.
 
 
 ### Pooling gross returns (forecast weights only)
@@ -3892,8 +3941,8 @@ of forecasts.
 Pooling across instruments is only available when calculating forecast weights.
 Again I recommend you check out this [blog
 post](https://qoppac.blogspot.com/2016/05/optimising-weights-with-costs.html).
-Only instruments whose rules have survived the application of a ceiling cost
-will be included in the pooling process.
+Only instruments whose rules have survived the application of a ceiling cost (`ceiling_cost_SR`)
+will be included in the pooling process. If you want to pool all instruments, regardless of costs, then you should set `ceiling_cost_SR` to be some high number, and use `post_ceiling_cost_SR` instead to eliminate expensive rules after the optimisation is complete (this is the default).
 
 
 ```
@@ -3905,10 +3954,8 @@ forecast_cost_estimate:
 ```
 
 See ['costs'](#costs) to see how to configure pooling when estimating the costs
-of forecasts. Notice if pool_gross_returns is True, and use_pooled_costs is
-True, then a single optimisation will be run across all instruments with a
-common set of trading rules. Otherwise each instrument is optimised
-individually, which is slower.
+of forecasts. 
+
 
 
 ### Working out net costs (both instrument and forecast weights)
@@ -3921,19 +3968,18 @@ forecast_weight_estimate:  ## can also be applied to instrument weights
    equalise_gross: False ## equalise gross returns so that only costs are used for optimisation
    cost_multiplier: 0.0 ## multiply costs by this number. Zero means grosss returns used. Higher than 1 means costs will be inflated. Use zero if apply_cost_weight=True (see later)
 ```
-Notice if equalise_gross is True, and use_pooled_costs is True, then a single optimisation will be run across all instruments with a common set of trading rules (regardless of the value of pool_gross_returns).
 
 
 ### Time periods
 
 
-There are three options available for the fitting period - expanding
-(recommended), in sample (never!) and rolling. See Chapter 3 of my book.
+There are three options available for the fitting period - `expanding`
+(recommended), `in sample` (never!) and `rolling`. See Chapter 3 of my book.
 
 From the config
 ```
    date_method: expanding ## other options: in_sample, rolling
-   rollyears: 20
+   rollyears: 20 ## only used when rolling
 ```
 
 ### Moment estimation
@@ -3981,10 +4027,9 @@ This will give everything in the optimisation equal weights.
    method: equal_weights
 ```
 
-This differs from the "fixed" flavour of forecast combination which gives equal
-weight to all trading rules; because here any trading rules that are too
-expensive for a particular instrument will not be included, and effectively
-have a zero weight.
+
+
+Tip: Set `date_method: in_sample` to speed things up.
 
 
 #### One period (not recommend)
@@ -4006,7 +4051,7 @@ pooling or changes to cost calculation.
 
 #### Bootstrapping (recommended, but slow)
 
-Bootstrapping is not currently implemented; after a code refactoring I couldn't think of an elegant way of doing it.
+Bootstrapping is no longer implemented; after a code refactoring I couldn't think of an elegant way of doing it.
 
 #### Shrinkage (okay, but trick to calibrate)
 
@@ -4035,7 +4080,7 @@ See [my series of blog posts](https://qoppac.blogspot.com/2018/12/portfolio-cons
 ```
    method: handcraft
    equalise_SR: False # optional
-   equalise_vols: True ## This *must* be true for it to work
+   equalise_vols: True ## This *must* be true for the code to work
 ```
 
 
@@ -4054,8 +4099,10 @@ is given a share of the weight.
 ```
    apply_cost_weight: False
    cleaning: True
+
 ```
 
+At this stage the other cost ceiling will be applied (`config.post_ceiling_cost_SR`). 
 
 <a name="divmult"> </a>
 
@@ -4250,13 +4297,13 @@ Other methods exist to access logging and caching.
 | `rawdata.get_daily_prices` | Standard | `instrument_code` | I | `data.daily_prices`|
 | `rawdata.daily_denominator_price` | Standard | `instrument_code` | O | Price used to calculate % volatility (for futures the current contract price) |
 | `rawdata.daily_returns` | Standard | `instrument_code` | D, O | Daily returns in price units|
-| `rawdata.get_percentage_returns` | Standard | `instrument_code` | D | Daily returns as a percentage. |
+| `rawdata.get_daily_percentage_returns` | Standard | `instrument_code` | D | Daily returns as a percentage. |
 | `rawdata.daily_returns_volatility` | Standard | `instrument_code` | D,O | Daily standard deviation of returns in price units |
 | `rawdata.get_daily_percentage_volatility` | Standard | `instrument_code` | D,O | Daily standard deviation of returns in % (10.0 = 10%) |
-| `rawdata.norm_returns` | Standard | `instrument_code` | D | Daily returns normalised by vol (1.0 = 1 sigma) |
+| `rawdata.get_daily_vol_normalised_returns` | Standard | `instrument_code` | D | Daily returns normalised by vol (1.0 = 1 sigma) |
 | `rawdata.get_instrument_raw_carry_data` | Futures | `instrument_code` | I | data.get_instrument_raw_carry_data |
-| `rawdata.raw_futures_roll`| Futures | `instrument_code` | D | |
-| `rawdata.roll_differentials` | Futures | `instrument_code` | D | |
+| `rawdata.raw_futures_roll`| Futures | `instrument_code` | D | The raw difference between price and carry |
+| `rawdata.roll_differentials` | Futures | `instrument_code` | D | The annualisation factor |
 | `rawdata.annualised_roll` | Futures | `instrument_code` | D | Annualised roll |
 | `rawdata.daily_annualised_roll` | Futures | `instrument_code` | D | Annualised roll. Used for carry rule. |
 
@@ -4278,7 +4325,8 @@ Other methods exist to access logging and caching.
 |:-------------------------:|:---------:|:---------------:|:----:|:--------------------------------------------------------------:|
 | `forecastScaleCap.get_raw_forecast` | Standard | `instrument_code`, `rule_variation_name` | I | `rules.get_raw_forecast` |
 | `forecastScaleCap.get_forecast_scalar` | Standard / Estimate | `instrument_code`, `rule_variation_name` | D | Get the scalar to use for a forecast |
-| `forecastScaleCap.get_forecast_cap` | Standard | `instrument_code`, `rule_variation_name` | D,O | Get the maximum allowable forecast |
+| `forecastScaleCap.get_forecast_cap` | Standard |  | D,O | Get the maximum allowable forecast |
+| `forecastScaleCap.get_forecast_floor` | Standard |  | D,O | Get the minimum allowable forecast |
 | `forecastScaleCap.get_scaled_forecast` | Standard | `instrument_code`, `rule_variation_name` | D | Get the forecast after scaling (after capping) |
 | `forecastScaleCap.get_capped_forecast` | Standard | `instrument_code`, `rule_variation_name` | D, O | Get the forecast after scaling (after capping) |
 
@@ -4288,13 +4336,10 @@ Other methods exist to access logging and caching.
 
 | Call | Standard?| Arguments | Type | Description |
 |:-------------------------:|:---------:|:---------------:|:----:|:--------------------------------------------------------------:|
-| `combForecast.get_capped_forecast` | Standard | `instrument_code`, `rule_variation_name` | I | `forecastScaleCap.get_capped_forecast` |
 | `combForecast.get_trading_rule_list` | Standard | `instrument_code` | I | List of trading rules from config or prior stage |
-| `combForecast.get_all_forecasts` | Standard | `instrument_code`, (`rule_variation_name`) | D | pd.DataFrame of forecast values |
-| `combForecast.get_forecast_cap` | Standard | `instrument_code`, `rule_variation_name` | I | `forecastScaleCap.get_forecast_cap` |
-| combForecast.pandl_for_instrument_rules_unweighted| Estimate | `instrument_code` | I | `accounts.pandl_for_instrument_rules_unweighted` |
-| `combForecast.calculation_of_raw_forecast_weights | Estimate | `instrument_code` | D | Forecast weight calculation objects |
-| `combForecast.get_raw_forecast_weights` | Standard / Estimate | `instrument_code` | D | Forecast weights |
+| `combForecast.get_all_forecasts` | Standard | `instrument_code`, (`rule_variation_list`) | D | pd.DataFrame of forecast values |
+| `combForecast.get_forecast_cap` | Standard |  | I | `forecastScaleCap.get_forecast_cap` |
+| `combForecast.calculation_of_raw_estimated_monthly_forecast_weights` | Estimate | `instrument_code` | D | Forecast weight calculation objects |
 | `combForecast.get_forecast_weights` | Standard / Estimate| `instrument_code` | D | Forecast weights, adjusted for missing forecasts|
 | `combForecast.get_forecast_correlation_matrices` | Estimate | `instrument_code` | D | Correlations of forecasts |
 | `combForecast.get_forecast_diversification_multiplier` | Standard / Estimate | `instrument_code` | D | Get diversification multiplier |
@@ -4309,7 +4354,7 @@ Other methods exist to access logging and caching.
 |:-------------------------:|:---------:|:---------------:|:----:|:--------------------------------------------------------------:|
 | `positionSize.get_combined_forecast` | Standard | `instrument_code` | I | `combForecast.get_combined_forecast` |
 | `positionSize.get_price_volatility` | Standard | `instrument_code` | I | `rawdata.get_daily_percentage_volatility` (or `data.daily_prices`) |
-| `positionSize.get_instrument_sizing_data` | Standard | `instrument_code` | I | `rawdata.get_rawdata.daily_denominator_price( (or `data.daily_prices`); `data.get_value_of_block_price_move` |
+| `positionSize.get_underlying_price` | Standard | `instrument_code` | I | `rawdata.daily_denominator_price` (or `data.daily_prices`); `data.get_value_of_block_price_move` |
 | `positionSize.get_fx_rate` | Standard | `instrument_code` | I | `data.get_fx_for_instrument` |
 | `positionSize.get_daily_cash_vol_target` | Standard | | D | Dictionary of base_currency, percentage_vol_target, notional_trading_capital, annual_cash_vol_target, daily_cash_vol_target |
 | `positionSize.get_block_value` | Standard | `instrument_code` | D | Get value of a 1% move in the price |
@@ -4326,10 +4371,9 @@ Other methods exist to access logging and caching.
 | Call | Standard?| Arguments | Type | Description |
 |:-------------------------:|:---------:|:---------------:|:----:|:--------------------------------------------------------------:|
 | `portfolio.get_subsystem_position`| Standard | `instrument_code` | I |`positionSize.get_subsystem_position` |
-| `portfolio.get_instrument_list`| Standard | | I | `system.get_instrument_list` |
-| `portfolio.pandl_across_subsystems`| Estimate | `instrument_code` | I | `accounts.pandl_across_subsystems`|
-| `calculation_of_raw_instrument_weights`| Estimate | | D | Instrument weight calculation objects |
-| `portfolio.get_raw_instrument_weights`| Standard / Estimate| | D |Get instrument weights |
+| `portfolio.pandl_across_subsystems`| Estimate |  | I | `accounts.pandl_across_subsystems`|
+| `portfolio.calculation_of_raw_instrument_weights`| Estimate | | D | Instrument weight calculation objects |
+| `portfolio.get_unsmoothed_instrument_weights_fitted_to_position_lengths`| Standard / Estimate| | D |Get raw instrument weights |
 | `portfolio.get_instrument_weights`| Standard / Estimate| | D |Get instrument weights, adjusted for missing instruments |
 | `portfolio.get_instrument_diversification_multiplier`| Standard / Estimate | | D |Get instrument div. multiplier |
 | `portfolio.get_notional_position`| Standard | `instrument_code` | D,O |Get the *notional* position (with constant risk capital; doesn't allow for adjustments when profits or losses are made) |
@@ -4348,25 +4392,25 @@ Inputs:
 | `accounts.get_notional_position`| Standard | `instrument_code` | I | `portfolio.get_notional_position`|
 | `accounts.get_actual_position`| Standard | `instrument_code` | I | `portfolio.get_actual_position`|
 | `accounts.get_capped_forecast`| Standard | `instrument_code`, `rule_variation_name` | I | `forecastScaleCap.get_capped_forecast`|
-| `accounts.get_instrument_list`| Standard | | I | `portfolio.get_instrument_list`|
+| `accounts.get_instrument_list`| Standard | | I | `system.get_instrument_list` |
 | `accounts.get_notional_capital`| Standard | | I | `positionSize.get_daily_cash_vol_target`|
 | `accounts.get_fx_rate`| Standard | `instrument_code` | I | `positionSize.get_fx_rate`|
-| `accounts.get_value_of_price_move`| Standard | `instrument_code` | I | `positionSize.get_instrument_sizing_data`|
+| `accounts.get_value_of_block_price_move`| Standard | `instrument_code` | I | `data.get_value_of_block_price_move`|
 | `accounts.get_daily_returns_volatility`| Standard | `instrument_code` | I | `rawdata.daily_returns_volatility` or `data.daily_prices`|
 | `accounts.get_raw_cost_data`| Standard | `instrument_code` | I | `data.get_raw_cost_data` |
 | `accounts.get_buffers_for_position`| Standard | `instrument_code` | I | `portfolio.get_buffers_for_position`|
 | `accounts.get_actual_buffers_for_position`| Standard | `instrument_code` | I | `portfolio.get_actual_buffers_for_position`|
 | `accounts.get_instrument_diversification_multiplier`| Standard | | I | `portfolio.get_instrument_diversification_multiplier`|
 | `accounts.get_instrument_weights`| Standard | | I | `portfolio.get_instrument_weights`|
-| `accounts.get_trading_rules_list`| Standard | `instrument_code` | I | `combForecast.get_trading_rule_list`|
-| `accounts.has_same_rules_as_code`| Standard | `instrument_code` | I | `combForecast._has_same_rules_as_code`|
+| `accounts.list_of_rules_for_code`| Standard | `instrument_code` | I | `combForecast.get_trading_rule_list`|
+| `accounts.has_same_rules_as_code`| Standard | `instrument_code` | I | `combForecast.has_same_rules_as_code`|
 
 
 Diagnostics:
 
 | Call | Standard?| Arguments | Type | Description |
 |:-------------------------:|:---------:|:---------------:|:----:|:--------------------------------------------------------------:|
-| `accounts.get_entire_trading_rule_list`| Standard | | D | All trading rules across instruments|
+| `accounts.list_of_trading_rules`| Standard | | D | All trading rules across instruments|
 | `accounts.get_instrument_scaling_factor`| Standard | `instrument_code` | D | IDM * instrument weight|
 | `accounts.get_forecast_scaling_factor`| Standard | `instrument_code`, `rule_variation_name` | D | FDM * forecast weight|
 | `accounts.get_instrument_forecast_scaling_factor`| Standard | `instrument_code`, `rule_variation_name` | D | IDM * instrument weight * FDM * forecast weight|
@@ -4420,12 +4464,12 @@ new_config=system.config
 
 ## Method two: from a config file
 from syscore.fileutils import get_pathname_for_package
-from sysdata.configdata import Config
+from sysdata.config.configdata import Config
 
 my_config=Config(get_pathname_for_package("private", "this_system_name", "config.yaml"))
 
 ## Method three: with a blank config
-from sysdata.configdata import Config
+from sysdata.config.configdata import Config
 my_config=Config()
 ```
 
@@ -4466,7 +4510,7 @@ values:
 YAML:
 ```
 volatility_calculation:
-  func: "syscore.algos.robust_vol_calc"
+  func: "sysquant.estimators.vol.robust_vol_calc"
   days: 35
   min_periods: 10
   vol_abs_min: 0.0000000001
@@ -4652,6 +4696,15 @@ YAML: (example)
 ```
 forecast_weight_ewma_span: 6
 ```
+
+Remove trading rules which are too expensive for a given instrument:
+
+YAML: (example)
+```
+post_ceiling_cost_SR: 0.13
+```
+
+
 
 
 #### Forecast weights (fixed)

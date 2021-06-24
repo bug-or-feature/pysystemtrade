@@ -25,7 +25,6 @@ class futuresContractPrices(pd.DataFrame):
         price_data_as_df.index.name = "index"  # for arctic compatibility
         super().__init__(price_data_as_df)
 
-
     @classmethod
     def create_empty(futuresContractPrices):
         """

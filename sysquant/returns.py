@@ -26,8 +26,8 @@ class dictOfSR(dict):
 
 
 class dictOfSRacrossAssets(dict):
-    def get_pooled_SR(self) -> dictOfSR:
-        column_names = self.get_column_names()
+    def get_pooled_SR(self, asset_name) -> dictOfSR:
+        column_names = self.get_column_names_for_asset(asset_name)
         column_SR_dict = dict([
             (column, self.get_avg_SR_for_column_name_across_dict(column))
             for column in column_names])
@@ -41,10 +41,12 @@ class dictOfSRacrossAssets(dict):
         avg_SR = np.mean(list_of_SR)
         return avg_SR
 
-    def get_column_names(self) -> list:
-        ## all names should match so shouldn't matter
-        column_names = list(self.values())[0].keys()
-        return column_names
+
+    def get_column_names_for_asset(self, asset_name) -> list:
+        return list(self.get_SR_dict_for_asset(asset_name).keys())
+
+    def get_SR_dict_for_asset(self, asset_name) -> dictOfSR:
+        return self[asset_name]
 
 class returnsForOptimisation(pd.DataFrame):
     def __init__(self, *args, frequency: str = "W", pooled_length: int = 1, **kwargs):
@@ -106,7 +108,7 @@ class dictOfReturnsForOptimisation(dict):
         returns_as_list = listOfDataFrames(self.values())
         pooled_length = len(returns_as_list)
 
-        returns_as_list_downsampled = returns_as_list.resample(frequency)
+        returns_as_list_downsampled = returns_as_list.resample_sum(frequency)
         returns_as_list_common_ts = returns_as_list_downsampled.reindex_to_common_index()
 
         returns_for_optimisation = returns_as_list_common_ts.stacked_df_with_added_time_from_list()
