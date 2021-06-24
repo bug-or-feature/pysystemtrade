@@ -154,7 +154,6 @@ class bcConnection(object):
 
             # convert to expected format
             price_data_as_df = self._raw_barchart_data_to_df(df, bar_freq=bar_freq, log=self.log)
-            self.log.msg(f"GET {data_url} {instr_symbol}, {prices_resp.status_code}")
             self.log.msg(f"Latest price {price_data_as_df.index[-1]}")
 
             return price_data_as_df
