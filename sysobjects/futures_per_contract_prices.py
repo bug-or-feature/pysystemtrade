@@ -103,13 +103,14 @@ class futuresContractPrices(pd.DataFrame):
 
     def remove_zero_volumes(self):
         new_data = self[self[VOLUME_COLUMN] > 0]
+        print(f"remove_zero_volumes() rows removed: {self.shape[0] - new_data.shape[0]}")
         return futuresContractPrices(new_data)
 
     def remove_future_data(self):
         new_data = futuresContractPrices(
             self[self.index < datetime.datetime.now()])
-
-        return  new_data
+        print(f"remove_future_data() rows removed: {self.shape[0] - new_data.shape[0]}")
+        return new_data
 
     def add_rows_to_existing_data(
         self, new_futures_per_contract_prices, check_for_spike=True
