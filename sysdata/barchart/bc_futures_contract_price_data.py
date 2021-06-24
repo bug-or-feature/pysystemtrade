@@ -4,6 +4,9 @@ from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContr
 from sysdata.barchart.bc_connection import bcConnection
 from sysdata.barchart.bc_futures_contracts_data import BarchartFuturesContractData
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
+from sysexecution.orders.broker_orders import brokerOrder
+from sysexecution.orders.contract_orders import contractOrder
+from sysexecution.tick_data import dataFrameOfRecentTicks, tickerObject
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
@@ -162,3 +165,13 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
     def _delete_prices_for_contract_object_with_no_checks_be_careful(
             self, contract_object: futuresContract):
         raise NotImplementedError("Barchart is a read only source of prices")
+
+    def get_ticker_object_for_order(self, order: contractOrder) -> tickerObject:
+        raise NotImplementedError("Not implemented for Barchart, it is not a broker")
+
+    def cancel_market_data_for_order(self, order: brokerOrder):
+        raise NotImplementedError("Not implemented for Barchart, it is not a broker")
+
+    def get_recent_bid_ask_tick_data_for_contract_object(self,
+            contract_object: futuresContract) -> dataFrameOfRecentTicks:
+        raise NotImplementedError("Not implemented for Barchart, it is not a broker")
