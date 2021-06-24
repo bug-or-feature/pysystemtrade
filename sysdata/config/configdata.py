@@ -90,6 +90,10 @@ class Config(object):
         result = getattr(self, element_name, arg_not_supplied)
         return  result
 
+    def get_element_or_default_value(self, element_name, default_value):
+        result = getattr(self, element_name, default_value)
+        return result
+
     def __repr__(self):
         elements = self.elements
         elements.sort()
