@@ -29,11 +29,14 @@ class bcConnection(object):
     Handles connection and config for getting info from Barchart.com
     """
 
-    def __init__(self, log=logtoscreen("Barchart")):
-        self._log = log
+    def __init__(self, log=logtoscreen("bcConnection", log_level="on")):
+
+        log.label(broker="Barchart")
+
         # start HTTP session
         self._session = requests.Session()
         self._session.headers.update({'User-Agent': 'Mozilla/5.0'})
+        self._log = log
 
     def __repr__(self):
         return f"Barchart connection: {BARCHART_URL}"
@@ -61,7 +64,7 @@ class bcConnection(object):
             return resp.status_code == 200
 
         except Exception as e:
-            self._log.error('Error: %s' % e)
+            self.log.error('Error: %s' % e)
             return False
 
     def get_expiry_date(self, futures_contract: futuresContract):
@@ -85,7 +88,7 @@ class bcConnection(object):
                 return expiry_date_clean
 
         except Exception as e:
-            self._log.error('Error: %s' % e)
+            self.log.error('Error: %s' % e)
             return None
 
     def get_historical_futures_data_for_contract(
@@ -99,6 +102,7 @@ class bcConnection(object):
         :return: df
         :rtype: pandas DataFrame
         """
+
         try:
 
             if bar_freq == Frequency.Second or bar_freq == Frequency.Seconds_10:
@@ -106,7 +110,7 @@ class bcConnection(object):
 
             instr_symbol = self.get_barchart_id(contract_object)
             if instr_symbol is None:
-                self._log.warn(f"Can't convert contract ID {str(contract_object)}")
+                self.log.warn(f"Can't convert contract ID {str(contract_object)}")
                 return missing_data
 
             # GET the futures quote chart page, scrape to get XSRF token
@@ -142,17 +146,21 @@ class bcConnection(object):
 
             # get prices for instrument from BC internal API
             prices_resp = self._session.get(data_url, headers=headers, params=payload)
-            self._log.msg(f"GET {data_url} {instr_symbol}, {prices_resp.status_code}")
+            self.log.msg(f"GET {data_url} {instr_symbol}, {prices_resp.status_code}")
 
             # read response into dataframe
             iostr = io.StringIO(prices_resp.text)
             df = pd.read_csv(iostr, header=None)
 
             # convert to expected format
-            return self._raw_barchart_data_to_df(df, bar_freq=bar_freq, log=self.log)
+            price_data_as_df = self._raw_barchart_data_to_df(df, bar_freq=bar_freq, log=self.log)
+            self.log.msg(f"GET {data_url} {instr_symbol}, {prices_resp.status_code}")
+            self.log.msg(f"Latest price {price_data_as_df.index[-1]}")
+
+            return price_data_as_df
 
         except Exception as ex:
-            self._log.error(f"Problem getting historical data: {ex}")
+            self.log.error(f"Problem getting historical data: {ex}")
             return pd.empty
 
     @staticmethod
@@ -189,7 +197,7 @@ class bcConnection(object):
         """
         url = BARCHART_URL + "futures/quotes/%s/overview" % contract_id
         resp = self._session.get(url)
-        self._log.msg(f"GET {url}, response {resp.status_code}")
+        self.log.msg(f"GET {url}, response {resp.status_code}")
         return resp
 
     def get_barchart_id(self, futures_contract: futuresContract) -> str:
