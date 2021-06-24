@@ -1,20 +1,29 @@
+import logging
+from datetime import datetime, timedelta
+import pytz
+
 import pandas as pd
+
+from sysbrokers.IG.ig_connection import connectionIG
+from syscore.dateutils import ROOT_BDAYS_INYEAR
+from syscore.fileutils import get_filename_for_package
+from syscore.pdutils import print_full
 from sysdata.config.configdata import Config
+from sysdata.config.production_config import get_production_config
+from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
+from sysdata.igcsv.csv_fsb_contract_prices import CsvFsbContractPriceData
+from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
+from sysdata.sim.csv_fsb_sim_data import csvFsbSimData
+from sysdata.sim.db_fsb_sim_data import dbFsbSimData
+from sysobjects.contracts import futuresContract
+from systems.accounts.account_forecast import pandl_for_instrument_forecast
+from systems.accounts.accounts_stage import Account
 from systems.basesystem import System
 from systems.forecasting import Rules
-from systems.accounts.accounts_stage import Account
 from systems.futures_spreadbet.rawdata import FuturesSpreadbetRawData
 from systems.leveraged_trading.rules import smac
-from syscore.dateutils import ROOT_BDAYS_INYEAR
-from syscore.pdutils import print_full
-from datetime import datetime
-import logging
-from sysdata.sim.db_fsb_sim_data import dbFsbSimData
-from sysdata.sim.csv_fsb_sim_data import csvFsbSimData
-from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 
 # original account level target risk (%), when trading one instrument
-#TARGET_RISK = 0.12
 ORIG_TARGET_RISK = 0.12
 
 # updated account level target risk (%), per instrument count
@@ -33,20 +42,7 @@ INSTR_TARGET_RISK = 0.265 # 4 instruments
 
 CAPITAL_PER_INSTR = 8000.00
 
-# trading capital, PER INSTRUMENT
-TRADING_CAPITAL = {
-    'BUND': 7700.00,
-    'GOLD': 8370.00,
-    'SP500': 7935.00,
-    'NZD': 7995.00
-}
-
-current_positions = {
-    'BUND': -3.58,
-    'GOLD': 19.26,
-    'SP500': 3.42,
-    'NZD': 1.13
-}
+conn = connectionIG()
 
 # stop loss fraction
 STOP_LOSS_FRACTION = 0.5
@@ -60,6 +56,23 @@ def get_spreadbet_costs(source='db'):
     """
 
     config = Config("systems.leveraged_trading.leveraged_trading_config.yaml")
+    production_config = get_production_config()
+
+    # Date,Open.bid,Open.ask,High.bid,High.ask,Low.bid,Low.ask,Close.bid,Close.ask,Volume
+    pd_config = ConfigCsvFuturesPrices(
+        input_date_index_name="Date",
+        input_skiprows=0, input_skipfooter=0,
+        input_date_format='%Y-%m-%dT%H:%M:%S%z',
+        input_column_mapping=dict(OPEN=dict(BID='Open.bid', ASK='Open.ask'),
+                                  HIGH=dict(BID='High.bid', ASK='High.ask'),
+                                  LOW=dict(BID='Low.bid', ASK='Low.ask'),
+                                  FINAL=dict(BID='Close.bid', ASK='Close.ask'),
+                                  VOLUME='Volume'
+                                  ))
+
+    ig_prices = CsvFsbContractPriceData(
+        datapath=get_filename_for_package(production_config.get_element_or_missing_data('ig_path')),
+        config=pd_config)
 
     if source == 'db':
         sim = dbFsbSimData()
@@ -76,14 +89,13 @@ def get_spreadbet_costs(source='db'):
         ], sim, config)
     roll_config = mongoRollParametersData()
 
+    positions = get_position_list()
     cost_rows = []
 
     for instr in sim.db_futures_instrument_data.get_list_of_instruments():
 
         if instr not in ['GOLD', 'BUND', 'NZD', 'SP500']:
             continue
-
-        #print(f"processing {instr}")
 
         # getting instrument config
         instr_obj = sim._get_instrument_object_with_cost_data(instr)
@@ -97,8 +109,11 @@ def get_spreadbet_costs(source='db'):
         roll_count = len(params.hold_rollcycle._as_list())
 
         # prices
+        warn = ""
         prices = system.rawdata.get_daily_prices(instr)
         date_last_price = prices.index[-1]
+        if not check_price(date_last_price):
+            warn = "!!! dates !!!"
         sb_price = prices.iloc[-1]
 
         # risk (annual volatility of returns)
@@ -138,18 +153,16 @@ def get_spreadbet_costs(source='db'):
         min_exposure = (min_bet_per_point * average_price) / point_size
         orig_min_capital = (min_exposure * avg_annual_vol_perc) / ORIG_TARGET_RISK
         new_min_capital = orig_min_capital * (ORIG_TARGET_RISK / NEW_TARGET_RISK)
-
-        trading_capital = TRADING_CAPITAL[instr]
+        trading_capital = CAPITAL_PER_INSTR + get_current_pandl(instr, positions, ig_prices)
         ideal_notional_exposure = ((rescaledForecast / 10) * INSTR_TARGET_RISK * trading_capital) / avg_annual_vol_perc
-        current_pos = current_positions[instr]
+        current_pos = get_current_position(instr, positions)
         current_notional_exposure = (current_pos * sb_price) / (point_size)
-
         average_notional_exposure = (INSTR_TARGET_RISK * trading_capital) / avg_annual_vol_perc
         deviation = (ideal_notional_exposure - current_notional_exposure) / average_notional_exposure
-        adjustment_required = 'Y' if abs(deviation) > 0.1 else 'N'
         pos_size = (ideal_notional_exposure * 1 * point_size) / average_price
         adjustment_required = pos_size - current_pos if abs(deviation) > 0.1 else 0.0
-
+        account = pandl_for_instrument_forecast(forecast=smac_series, price=system.rawdata.get_daily_prices(instr))
+        #print(f"P&L stats for {instr}: {account.percent.stats()}")
 
         cost_rows.append(
             {
@@ -188,7 +201,7 @@ def get_spreadbet_costs(source='db'):
                 'Dev%': "{:.2%}".format(deviation),
                 'PosSize': round(pos_size, 2),
                 'AdjReq': round(adjustment_required, 2),
-
+                'Msg': warn
                 #'StopGap': round(stop_loss_gap, 0)
             }
         )
@@ -197,8 +210,8 @@ def get_spreadbet_costs(source='db'):
     cost_results = pd.DataFrame(cost_rows)
 
     # filter
-    cost_results = cost_results[cost_results["Ctotal"] < 0.08] # costs
-    cost_results = cost_results[abs(cost_results["PosSize"]) > cost_results["MinBet"]] # min bet
+    #cost_results = cost_results[cost_results["Ctotal"] < 0.08] # costs
+    #cost_results = cost_results[abs(cost_results["PosSize"]) > cost_results["MinBet"]] # min bet
     #cost_results = cost_results[cost_results["minCapital"] < ()] # costs
 
     # group, sort
@@ -222,6 +235,57 @@ def write_file(df, calc_type, source, write=True):
     #print(f"Printing {calc_type}:\n")
     print(f"\n{print_full(df)}\n")
 
+
+def get_position_list():
+    position_list = conn.get_positions()
+    #print(position_list)
+    return position_list
+
+
+def get_current_position(instr, pos_list):
+    total = 0.0
+    filtered = filter(lambda p: p['instr'] == instr, pos_list)
+    for pos in filtered:
+        if pos['dir'] == 'BUY':
+            total += pos['size']
+        else:
+            total -= pos['size']
+    return total
+
+
+def get_current_pandl(instr, pos_list, ig_prices: CsvFsbContractPriceData):
+
+    result = 0.0
+    filtered_list = [el for el in pos_list if el['instr'] == instr]
+
+    if len(filtered_list) > 0:
+        expiry_code = filtered_list[0]['expiry']
+
+        expiry_code_date = datetime.strptime(f'01-{expiry_code}', '%d-%b-%y')
+        #filename = f"{instr}_{expiry_code_date.strftime('%Y%m')}00.csv"
+
+        contract = futuresContract(instr, expiry_code_date.strftime('%Y%m'))
+        prices = ig_prices._get_prices_for_contract_object_no_checking(contract)
+        last_price = prices.return_final_prices()[-1]
+
+        for pos in filtered_list:
+            size = pos['size']
+            dir = pos['dir']
+            level = pos['level']
+            if dir == 'BUY':
+                result += (last_price - level) * size
+            else:
+                result -= (last_price - level) * size
+
+    return result
+
+
+def check_price(price_date):
+    now = datetime.now() #.astimezone(tz=pytz.utc)
+    price_datetime = price_date.to_pydatetime()
+    max_diff = 2 if datetime.now().weekday() == 1 else 1
+    diff = now - price_datetime
+    return diff <= timedelta(days=max_diff)
 
 if __name__ == "__main__":
     get_spreadbet_costs()
