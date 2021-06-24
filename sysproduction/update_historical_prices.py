@@ -39,6 +39,7 @@ class updateHistoricalPrices(object):
 def update_historical_prices_with_data(data: dataBlob):
     price_data = diagPrices(data)
     list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
+    #list_of_codes_all = ['GOLD']
     for instrument_code in list_of_codes_all:
         data.log.label(instrument_code = instrument_code)
         update_historical_prices_for_instrument(
@@ -90,8 +91,8 @@ def update_historical_prices_for_instrument_and_contract(
         # Skip daily data if intraday not working
         return None
 
-    get_and_add_prices_for_frequency(
-        data, contract_object, frequency=daily_frequency)
+    # get_and_add_prices_for_frequency(
+    #     data, contract_object, frequency=daily_frequency)
 
 
 def get_and_add_prices_for_frequency(
@@ -99,8 +100,8 @@ def get_and_add_prices_for_frequency(
     broker_data_source = dataBroker(data)
     db_futures_prices = updatePrices(data)
 
-    broker_prices = broker_data_source.get_prices_at_frequency_for_contract_object(
-        contract_object, frequency)
+    broker_prices = broker_data_source.get_prices_at_frequency_for_contract_object(contract_object, frequency)
+    data.log.msg(f"broker_prices latest price {broker_prices.index[-1]}")
 
     if len(broker_prices)==0:
         data.log.msg("No prices from broker for %s" % str(contract_object))
