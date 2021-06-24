@@ -1,17 +1,25 @@
 #YAML
-percentage_vol_target: 12
+percentage_vol_target: 24
 notional_trading_capital: 20000
 base_currency: "GBP"
 trading_rules:
-  ewmac16_64:
-     function: systems.provided.example.rules.ewmac_forecast_with_defaults
-     data: data.daily_prices
-     other_args: 
-         Lfast: 16
-         Lslow: 64
+  rasmac16_64:
+    function: systems.leveraged_trading.rules.rasmac
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      fast: 16
+      slow: 64
+    #forecast_scalar: 57.12
+#  ewmac16_64:
+#     function: systems.provided.example.rules.ewmac_forecast_with_defaults
+#     data: data.daily_prices
+#     other_args:
+#         Lfast: 16
+#         Lslow: 64
 
-instrument_weights:
-    CORN: 1.0
+#instrument_weights:
+#    CORN: 1.0
 
 volatility_calculation:
   func: "sysquant.estimators.vol.robust_vol_calc"
