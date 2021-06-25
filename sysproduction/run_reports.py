@@ -4,22 +4,16 @@ from sysproduction.reporting.report_configs import all_configs
 from sysdata.data_blob import dataBlob
 
 
-# JUST A COPY AND PASTE JOB RIGHT NOW
+# JUST A COPY AND PAST JOB RIGHT NOW
 
 
 def run_reports():
     process_name = "run_reports"
     data = dataBlob(log_name=process_name)
     list_of_timer_names_and_functions = get_list_of_timer_functions_for_reports()
-
-    for report_tuple in list_of_timer_names_and_functions:
-        print(f"Running {report_tuple[0]}")
-        func = report_tuple[1]
-        func.email_trades_report()
-
-    #price_process = processToRun(
-        #process_name, data, list_of_timer_names_and_functions)
-    #price_process.run_process()
+    price_process = processToRun(
+        process_name, data, list_of_timer_names_and_functions)
+    price_process.run_process()
 
 
 def get_list_of_timer_functions_for_reports():
@@ -52,7 +46,3 @@ class runReport(object):
     def email_trades_report(self):
 
         run_report(self.config, data=self.data)
-
-
-if __name__ == "__main__":
-    run_reports()
