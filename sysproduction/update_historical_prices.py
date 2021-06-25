@@ -76,6 +76,20 @@ def update_historical_prices_for_instrument_and_contract(
     """
     Do a daily update for futures contract prices, using IB historical data
 
+    There are two different calls, the first using intraday frequency, the second daily.
+    So in a typical session we'd get the hourly intraday prices for a given instrument,
+    and then if that instrument has closed we'd also get a new end of day price.
+    The end of day prices are given the artifical datetime stamp of 23:00:00
+    (because I never collect data round that time).
+
+    If the intraday call fails, we don't want to get daily data.
+    Otherwise we wouldn't be able to subsequently backfill hourly prices that occured
+    before the daily close being added (the code doesn't allow you to add prices that have
+    a timestamp which is before the last timestamp in the existing data).
+
+    That's why the result of the first call matters, and is used to abort the function prematurely before we get to daily data.
+    We don't care about the second call succeeding or failing, and so the result of that is ignored.
+
     :param contract_object: futuresContract
     :param data: data blob
     :return: None
@@ -84,15 +98,19 @@ def update_historical_prices_for_instrument_and_contract(
     intraday_frequency = diag_prices.get_intraday_frequency_for_historical_download()
     daily_frequency = DAILY_PRICE_FREQ
 
+    # Get *intraday* data (defaults to hourly)
     result = get_and_add_prices_for_frequency(
         data, contract_object, frequency=intraday_frequency
     )
     if result is failure:
         # Skip daily data if intraday not working
+
         return None
 
-    # get_and_add_prices_for_frequency(
-    #     data, contract_object, frequency=daily_frequency)
+    # Get daily data
+    # we don't care about the result flag for this
+    get_and_add_prices_for_frequency(
+        data, contract_object, frequency=daily_frequency)
 
 
 def get_and_add_prices_for_frequency(
@@ -100,7 +118,8 @@ def get_and_add_prices_for_frequency(
     broker_data_source = dataBroker(data)
     db_futures_prices = updatePrices(data)
 
-    broker_prices = broker_data_source.get_prices_at_frequency_for_contract_object(contract_object, frequency)
+    broker_prices = broker_data_source.get_prices_at_frequency_for_contract_object(
+        contract_object, frequency)
 
     if len(broker_prices)==0:
         data.log.msg("No prices from broker for %s" % str(contract_object))
