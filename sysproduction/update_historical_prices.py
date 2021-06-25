@@ -38,8 +38,8 @@ class updateHistoricalPrices(object):
 
 def update_historical_prices_with_data(data: dataBlob):
     price_data = diagPrices(data)
-    list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
-    #list_of_codes_all = ['GOLD']
+    #list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
+    list_of_codes_all = ['BOBL']
     for instrument_code in list_of_codes_all:
         data.log.label(instrument_code = instrument_code)
         update_historical_prices_for_instrument(
@@ -101,11 +101,12 @@ def get_and_add_prices_for_frequency(
     db_futures_prices = updatePrices(data)
 
     broker_prices = broker_data_source.get_prices_at_frequency_for_contract_object(contract_object, frequency)
-    data.log.msg(f"broker_prices latest price {broker_prices.index[-1]}")
 
     if len(broker_prices)==0:
         data.log.msg("No prices from broker for %s" % str(contract_object))
         return failure
+
+    data.log.msg(f"broker_prices latest price {broker_prices.index[-1]}")
 
     error_or_rows_added = db_futures_prices.update_prices_for_contract(
         contract_object, broker_prices, check_for_spike=True
