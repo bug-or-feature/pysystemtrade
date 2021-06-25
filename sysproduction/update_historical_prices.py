@@ -102,9 +102,9 @@ def update_historical_prices_for_instrument_and_contract(
     result = get_and_add_prices_for_frequency(
         data, contract_object, frequency=intraday_frequency
     )
-    if result is failure:
+    if result is failure or intraday_frequency == daily_frequency:
         # Skip daily data if intraday not working
-
+        # or if intraday frequency is daily
         return None
 
     # Get daily data
