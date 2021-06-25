@@ -38,8 +38,8 @@ class updateHistoricalPrices(object):
 
 def update_historical_prices_with_data(data: dataBlob):
     price_data = diagPrices(data)
-    #list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
-    list_of_codes_all = ['BOBL']
+    list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
+    #list_of_codes_all = ['BOBL']
     for instrument_code in list_of_codes_all:
         data.log.label(instrument_code = instrument_code)
         update_historical_prices_for_instrument(
