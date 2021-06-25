@@ -15,7 +15,7 @@ class TestBarchart:
 
     def test_gold_daily(self):
         bc = bcConnection()
-        prices = bc.get_historical_futures_data_for_contract(fc('GOLD', '20210600'))
+        prices = bc.get_historical_futures_data_for_contract(fc('GOLD', '20210601'))
 
         assert isinstance(prices, pd.DataFrame)
         assert prices.shape[0] == 640
@@ -26,7 +26,7 @@ class TestBarchart:
     def test_gold_hourly(self):
         bc = bcConnection()
         prices = bc.get_historical_futures_data_for_contract(
-            fc('GOLD', '20210600'), bar_freq=Frequency.Hour)
+            fc('GOLD', '20210601'), bar_freq=Frequency.Hour)
 
         assert isinstance(prices, pd.DataFrame)
         assert prices.shape[0] == 640
@@ -49,23 +49,23 @@ class TestBarchart:
 
         bc = bcConnection()
 
-        assert bc.get_barchart_id(fc('GOLD', '20210600')) == "GCM21"
+        assert bc.get_barchart_id(fc('GOLD', '20210601')) == "GCM21"
 
-        assert bc.get_barchart_id(fc('EDOLLAR', '20200300')) == "GEH20"
+        assert bc.get_barchart_id(fc('EDOLLAR', '20200301')) == "GEH20"
 
-        assert bc.get_barchart_id(fc('AEX', '20190900')) == "AEU19"
+        assert bc.get_barchart_id(fc('AEX', '20190901')) == "AEU19"
 
-        assert bc.get_barchart_id(fc('GBP', '20181200')) == "B6Z18"
+        assert bc.get_barchart_id(fc('GBP', '20181201')) == "B6Z18"
 
-        assert bc.get_barchart_id(fc('LEANHOG', '20000200')) == "HEG00"
+        assert bc.get_barchart_id(fc('LEANHOG', '20000201')) == "HEG00"
 
-        assert bc.get_barchart_id(fc('PLAT', '20020400')) == "PLJ02"
-
-        with pytest.raises(Exception):
-            bc.get_barchart_id(fc('BLAH', '20210600'))
+        assert bc.get_barchart_id(fc('PLAT', '20020401')) == "PLJ02"
 
         with pytest.raises(Exception):
-           bc.get_barchart_id(fc('AUD', '20201300'))
+            bc.get_barchart_id(fc('BLAH', '20210601'))
+
+        with pytest.raises(Exception):
+           bc.get_barchart_id(fc('AUD', '20201301'))
 
     # def test_bc_config(self):
     #     config = read_bc_config_from_file()
@@ -98,21 +98,21 @@ class TestBarchart:
         bc = bcConnection()
         data = BarchartFuturesContractData(bc)
 
-        expiry = data.get_actual_expiry_date_for_single_contract(fc('GOLD', '20210600'))
+        expiry = data.get_actual_expiry_date_for_single_contract(fc('GOLD', '20210601'))
         assert expiry == datetime.datetime(2021, 6, 28)
 
-        expiry = data.get_actual_expiry_date_for_single_contract(fc('GBP', '20201200'))
+        expiry = data.get_actual_expiry_date_for_single_contract(fc('GBP', '20201201'))
         assert expiry == datetime.datetime(2020, 12, 14)
 
-        expiry = data.get_actual_expiry_date_for_single_contract(fc('AUD', '20100900'))
+        expiry = data.get_actual_expiry_date_for_single_contract(fc('AUD', '20100901'))
         assert expiry == datetime.datetime(2010, 9, 12)
 
         # too old
         with pytest.raises(Exception):
-            data.get_actual_expiry_date_for_single_contract(fc('EUR', '19900300'))
+            data.get_actual_expiry_date_for_single_contract(fc('EUR', '19900301'))
 
         # too new
-        expiry = data.get_actual_expiry_date_for_single_contract(fc('PLAT', '21000300'))
+        expiry = data.get_actual_expiry_date_for_single_contract(fc('PLAT', '21000301'))
         assert expiry == datetime.datetime(2100, 3, 1)
 
     @pytest.mark.skip
