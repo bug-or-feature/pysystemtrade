@@ -167,9 +167,8 @@ def get_datetime_from_datestring(datestring: str):
     # do string expiry calc
     if len(datestring) == 8:
         if datestring[6:8] == "00":
-            return datetime.datetime.strptime(datestring, "%Y%m")
-        else:
-            return datetime.datetime.strptime(datestring, "%Y%m%d")
+            datestring = datestring[:6] + "01"
+        return datetime.datetime.strptime(datestring, "%Y%m%d")
     if len(datestring) == 6:
         return datetime.datetime.strptime(datestring, "%Y%m")
     else:

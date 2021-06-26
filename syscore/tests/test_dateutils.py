@@ -3,13 +3,36 @@ Created on 27 Nov 2015
 
 @author: rob
 """
-import unittest as ut
-import numpy as np
 import pandas as pd
+from syscore.dateutils import get_datetime_from_datestring
+import pytest
 
 
+class TestDateUtils:
 
-class Test(ut.TestCase):
+    def test_get_datetime_from_datestring(self):
+
+        result = get_datetime_from_datestring('201503')
+        assert result.year == 2015
+        assert result.month == 3
+        assert result.day == 1
+
+        result = get_datetime_from_datestring('20150300')
+        assert result.year == 2015
+        assert result.month == 3
+        assert result.day == 1
+
+        result = get_datetime_from_datestring('20150305')
+        assert result.year == 2015
+        assert result.month == 3
+        assert result.day == 5
+
+        with pytest.raises(Exception):
+            get_datetime_from_datestring('2015031')
+
+        with pytest.raises(Exception):
+            get_datetime_from_datestring('2015013')
+
     def test_data(self):
         x = pd.DataFrame(
             dict(
@@ -35,8 +58,3 @@ class Test(ut.TestCase):
         )
 
         return x
-
-
-if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.test_robust_vol_calc']
-    ut.main()
