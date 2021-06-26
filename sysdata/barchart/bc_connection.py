@@ -207,7 +207,7 @@ class bcConnection(object):
         :return: Barchart format identifier
         :rtype: str
         """
-        date_obj = datetime.strptime(futures_contract.contract_date.date_str, '%Y%m%d')
+        date_obj = datetime.strptime(futures_contract.contract_date.date_str, '%Y%m00')
         bc_symbol = self.barchart_futures_instrument_data.get_brokers_instrument_code(futures_contract.instrument_code)
         symbol = f"{bc_symbol}{contract_month_from_number(int(date_obj.strftime('%m')))}{date_obj.strftime('%y')}"
         return symbol
