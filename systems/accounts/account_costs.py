@@ -9,7 +9,7 @@ from sysquant.estimators.turnover import turnoverDataForTradingRule
 
 from systems.system_cache import diagnostic, input
 from systems.accounts.account_inputs import accountInputs
-from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
+#from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 
 class accountCosts(accountInputs):
     @diagnostic()
@@ -120,9 +120,9 @@ class accountCosts(accountInputs):
             instrument_code, rule_variation_name
         )
         cost_per_trade = self.get_SR_cost_per_trade_for_instrument(instrument_code)
-        holding_costs = self.get_holding_costs_per_instrument(instrument_code)
+        #holding_costs = self.get_holding_costs_per_instrument(instrument_code)
 
-        SR_cost = (turnover * cost_per_trade) + holding_costs
+        SR_cost = (turnover * cost_per_trade) #+ holding_costs
 
         return SR_cost
 
