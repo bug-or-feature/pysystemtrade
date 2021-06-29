@@ -21,12 +21,12 @@ trading_rules:
 #instrument_weights:
 #    CORN: 1.0
 
-volatility_calculation:
-  func: "sysquant.estimators.vol.robust_vol_calc"
-  days: 35
-  min_periods: 10
-  vol_abs_min: 0.0000000001
-  vol_floor: True
-  floor_min_quant: 0.05
-  floor_min_periods: 100
-  floor_days: 500
+#volatility_calculation:
+#  func: "sysquant.estimators.vol.robust_vol_calc"
+#  days: 25
+#  min_periods: 10
+#  vol_abs_min: 0.0000000001
+#  vol_floor: True
+#  floor_min_quant: 0.05
+#  floor_min_periods: 100
+#  floor_days: 500

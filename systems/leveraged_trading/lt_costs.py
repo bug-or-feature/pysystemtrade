@@ -94,6 +94,7 @@ def get_spreadbet_costs(source='db'):
 
     for instr in sim.db_futures_instrument_data.get_list_of_instruments():
 
+        #if instr not in ['GOLD']:
         if instr not in ['GOLD', 'BUND', 'NZD', 'SP500']:
             continue
 
@@ -118,22 +119,22 @@ def get_spreadbet_costs(source='db'):
 
         # risk (annual volatility of returns)
         #   - calculated as per 'Leveraged Trading' Appendix C, p.313,
-        #   - and using code from systems.accounts.account_costs, except using 25 days, not 1 year
         start_date = date_last_price - pd.DateOffset(days=25) # TODO warning if not updated
         average_price = float(prices[start_date:].mean())
-        daily_vol = system.rawdata.daily_returns_volatility(instr)
-        average_vol = float(daily_vol[start_date:].mean())
-        avg_annual_vol = average_vol * ROOT_BDAYS_INYEAR
-        avg_annual_vol_perc = avg_annual_vol / average_price
-        risk_in_price_units = avg_annual_vol_perc * sb_price
+        daily_percentage_returns = system.rawdata.get_daily_percentage_returns(instr)
+        # STDEV of last 25 days of daily percentage returns
+        daily_vol = daily_percentage_returns.ffill().rolling(window=25).std()
+        annual_vol_series = daily_vol * ROOT_BDAYS_INYEAR
+        annual_vol = annual_vol_series[-1]
+        risk_in_price_units = annual_vol * sb_price
 
         # costs
         turnover = 5.4
         tc_ccy = (spread_in_points * min_bet_per_point) / 2
         tc_ratio = tc_ccy / ((min_bet_per_point * sb_price) / point_size)
-        tc_risk = tc_ratio / avg_annual_vol_perc
+        tc_risk = tc_ratio / annual_vol
         hc_ratio = tc_ratio * roll_count * 2
-        hc_risk = hc_ratio / avg_annual_vol_perc
+        hc_risk = hc_ratio / annual_vol
         costs_total = (tc_risk * turnover) + hc_risk
 
         # forecasts
@@ -151,17 +152,17 @@ def get_spreadbet_costs(source='db'):
 
         # positions
         min_exposure = (min_bet_per_point * average_price) / point_size
-        orig_min_capital = (min_exposure * avg_annual_vol_perc) / ORIG_TARGET_RISK
+        orig_min_capital = (min_exposure * annual_vol) / ORIG_TARGET_RISK
         new_min_capital = orig_min_capital * (ORIG_TARGET_RISK / NEW_TARGET_RISK)
         trading_capital = CAPITAL_PER_INSTR + get_current_pandl(instr, positions, ig_prices)
-        ideal_notional_exposure = ((rescaledForecast / 10) * INSTR_TARGET_RISK * trading_capital) / avg_annual_vol_perc
+        ideal_notional_exposure = ((rescaledForecast / 10) * INSTR_TARGET_RISK * trading_capital) / annual_vol
         current_pos = get_current_position(instr, positions)
         current_notional_exposure = (current_pos * sb_price) / (point_size)
-        average_notional_exposure = (INSTR_TARGET_RISK * trading_capital) / avg_annual_vol_perc
+        average_notional_exposure = (INSTR_TARGET_RISK * trading_capital) / annual_vol
         deviation = (ideal_notional_exposure - current_notional_exposure) / average_notional_exposure
         pos_size = (ideal_notional_exposure * 1 * point_size) / average_price
         adjustment_required = pos_size - current_pos if abs(deviation) > 0.1 else 0.0
-        account = pandl_for_instrument_forecast(forecast=smac_series, price=system.rawdata.get_daily_prices(instr))
+        #account = pandl_for_instrument_forecast(forecast=smac_series, price=system.rawdata.get_daily_prices(instr))
         #print(f"P&L stats for {instr}: {account.percent.stats()}")
 
         cost_rows.append(
@@ -178,7 +179,7 @@ def get_spreadbet_costs(source='db'):
                 'MinBet': min_bet_per_point,
                 #'Xpoint': point_size,
                 #'Risk': f"{round(avg_annual_vol_perc, 3)}",
-                'Risk%': "{:.2%}".format(avg_annual_vol_perc),
+                'Risk%': "{:.2%}".format(annual_vol),
                 #'riskPU': round(risk_in_price_units, 2),
                 #'TCccy': f"£{round(tc_ccy, 2)}",
                 #'TCratio': "{:.2%}".format(tc_ratio),
@@ -217,7 +218,7 @@ def get_spreadbet_costs(source='db'):
     # group, sort
     cost_results = cost_results.sort_values(by='MinCap') # Ctotal, NMinCap
     #cost_results = cost_results.groupby('Class').apply(lambda x: x.sort_values(by='MinCap'))
-    write_file(cost_results, 'costs', data_source, write=False)
+    write_file(cost_results, 'costs', data_source, write=True)
 
 
 def write_file(df, calc_type, source, write=True):
