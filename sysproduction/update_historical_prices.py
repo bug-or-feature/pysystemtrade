@@ -16,30 +16,33 @@ from sysproduction.data.contracts import dataContracts
 from syslogdiag.email_via_db_interface import send_production_mail_msg
 
 
-def update_historical_prices():
+def update_historical_prices(instrument_list=None):
     """
     Do a daily update for futures contract prices, using IB historical data
 
     :return: Nothing
     """
     with dataBlob(log_name="Update-Historical-Prices") as data:
-        update_historical_price_object = updateHistoricalPrices(data)
+        update_historical_price_object = updateHistoricalPrices(data, instrument_list)
         update_historical_price_object.update_historical_prices()
     return success
 
 
 class updateHistoricalPrices(object):
-    def __init__(self, data):
+    def __init__(self, data, instrument_list=None):
         self.data = data
+        self._instrument_list = instrument_list
 
     def update_historical_prices(self):
-        data = self.data
-        update_historical_prices_with_data(data)
+        update_historical_prices_with_data(self.data, self._instrument_list)
 
-def update_historical_prices_with_data(data: dataBlob):
+
+def update_historical_prices_with_data(data: dataBlob, instrument_list=None):
     price_data = diagPrices(data)
-    list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
-    #list_of_codes_all = ['BOBL']
+    if instrument_list is None:
+        list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
+    else:
+        list_of_codes_all = instrument_list
     for instrument_code in list_of_codes_all:
         data.log.label(instrument_code = instrument_code)
         update_historical_prices_for_instrument(

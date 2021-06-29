@@ -11,7 +11,7 @@ from sysproduction.data.contracts import dataContracts
 from sysproduction.data.broker import dataBroker
 
 
-def update_sampled_contracts():
+def update_sampled_contracts(instrument_list=None):
     """
     Update the active contracts, according to what is available in IB for a given instrument
 
@@ -37,21 +37,25 @@ def update_sampled_contracts():
     :returns: None
     """
     with dataBlob(log_name="Update-Sampled_Contracts") as data:
-        update_contracts_object = updateSampledContracts(data)
+        update_contracts_object = updateSampledContracts(data, instrument_list)
         update_contracts_object.update_sampled_contracts()
 
 
 class updateSampledContracts(object):
-    def __init__(self, data):
+    def __init__(self, data, instrument_list=None):
         self.data = data
+        self._instrument_list = instrument_list
 
     def update_sampled_contracts(self):
         data = self.data
-        update_active_contracts_with_data(data)
+        update_active_contracts_with_data(self.data, self._instrument_list)
 
-def update_active_contracts_with_data(data: dataBlob):
+def update_active_contracts_with_data(data: dataBlob, instrument_list=None):
     diag_prices = diagPrices(data)
-    list_of_codes_all = diag_prices.get_list_of_instruments_in_multiple_prices()
+    if instrument_list is None:
+        list_of_codes_all = diag_prices.get_list_of_instruments_in_multiple_prices()
+    else:
+        list_of_codes_all = instrument_list
     for instrument_code in list_of_codes_all:
         update_active_contracts_for_instrument(
             instrument_code, data)

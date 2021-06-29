@@ -23,7 +23,7 @@ from sysdata.data_blob import dataBlob
 from sysproduction.data.prices import diagPrices, updatePrices
 
 
-def update_multiple_adjusted_prices():
+def update_multiple_adjusted_prices(instrument_list=None):
     """
     Do a daily update for multiple and adjusted prices
 
@@ -32,24 +32,27 @@ def update_multiple_adjusted_prices():
 
     with dataBlob(log_name="Update-Multiple-Adjusted-Prices") as data:
         update_multiple_adjusted_prices_object = updateMultipleAdjustedPrices(
-            data)
+            data, instrument_list)
         update_multiple_adjusted_prices_object.update_multiple_adjusted_prices()
 
     return success
 
 
 class updateMultipleAdjustedPrices(object):
-    def __init__(self, data: dataBlob):
+    def __init__(self, data: dataBlob, instrument_list=None):
         self.data = data
+        self._instrument_list = instrument_list
 
     def update_multiple_adjusted_prices(self):
-        data = self.data
-        update_multiple_adjusted_prices_with_data(data)
+        update_multiple_adjusted_prices_with_data(self.data, self._instrument_list)
 
-def update_multiple_adjusted_prices_with_data(data: dataBlob):
+
+def update_multiple_adjusted_prices_with_data(data: dataBlob, instrument_list=None):
     diag_prices = diagPrices(data)
-
-    list_of_codes_all = diag_prices.get_list_of_instruments_in_multiple_prices()
+    if instrument_list is None:
+        list_of_codes_all = diag_prices.get_list_of_instruments_in_multiple_prices()
+    else:
+        list_of_codes_all = instrument_list
     for instrument_code in list_of_codes_all:
         update_multiple_adjusted_prices_for_instrument(
             instrument_code, data)
