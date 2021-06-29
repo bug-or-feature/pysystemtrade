@@ -154,13 +154,13 @@ class bcConnection(object):
 
             # convert to expected format
             price_data_as_df = self._raw_barchart_data_to_df(df, bar_freq=bar_freq, log=self.log)
-            self.log.msg(f"Latest price {price_data_as_df.index[-1]}")
+            self.log.msg(f"Latest price {price_data_as_df.index[-1]} with {bar_freq}")
 
             return price_data_as_df
 
         except Exception as ex:
             self.log.error(f"Problem getting historical data: {ex}")
-            return pd.empty
+            return missing_data
 
     @staticmethod
     def _raw_barchart_data_to_df(price_data_raw: pd.DataFrame, log: logger,
