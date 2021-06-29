@@ -56,23 +56,8 @@ def get_spreadbet_costs(source='db'):
     """
 
     config = Config("systems.leveraged_trading.leveraged_trading_config.yaml")
-    production_config = get_production_config()
 
-    # Date,Open.bid,Open.ask,High.bid,High.ask,Low.bid,Low.ask,Close.bid,Close.ask,Volume
-    pd_config = ConfigCsvFuturesPrices(
-        input_date_index_name="Date",
-        input_skiprows=0, input_skipfooter=0,
-        input_date_format='%Y-%m-%dT%H:%M:%S%z',
-        input_column_mapping=dict(OPEN=dict(BID='Open.bid', ASK='Open.ask'),
-                                  HIGH=dict(BID='High.bid', ASK='High.ask'),
-                                  LOW=dict(BID='Low.bid', ASK='Low.ask'),
-                                  FINAL=dict(BID='Close.bid', ASK='Close.ask'),
-                                  VOLUME='Volume'
-                                  ))
-
-    ig_prices = CsvFsbContractPriceData(
-        datapath=get_filename_for_package(production_config.get_element_or_missing_data('ig_path')),
-        config=pd_config)
+    ig_prices = CsvFsbContractPriceData()
 
     if source == 'db':
         sim = dbFsbSimData()
@@ -103,7 +88,7 @@ def get_spreadbet_costs(source='db'):
         instr_class = instr_obj.meta_data.AssetClass
         point_size = instr_obj.meta_data.Pointsize
         instr_subclass = instr_obj.meta_data.AssetSubclass
-        multiplier = instr_obj.meta_data.Multiplier
+        #multiplier = instr_obj.meta_data.Multiplier
         spread_in_points = instr_obj.meta_data.Spread
         min_bet_per_point = instr_obj.meta_data.MinBetPerPoint
         params = roll_config.get_roll_parameters(instr)
