@@ -7,7 +7,7 @@ from sysquant.estimators.vol import robust_vol_calc
 
 def smac(price, fast=16, slow=64):
     """
-    Calculate the smac (Simple Moving Average Crossover) trading fule forecast, given a price and SMA speeds fast, slow
+    Calculate the smac (Simple Moving Average Crossover) trading rule forecast, given a price and SMA speeds fast, slow
 
     Assumes that 'price' is daily data
 
@@ -31,7 +31,7 @@ def smac(price, fast=16, slow=64):
 
 def rasmac(price, fast=16, slow=64, lookback=25):
     """
-    Calculate the risk adjusted SMAC (Simple Moving Average Crossover) trading fule forecast, given a price and
+    Calculate the risk adjusted SMAC (Simple Moving Average Crossover) trading rule forecast, given a price and
     SMA speeds fast, slow, and volatility lookback
 
     Assumes that 'price' is daily data
