@@ -46,3 +46,7 @@ class runReport(object):
     def email_trades_report(self):
 
         run_report(self.config, data=self.data)
+
+
+if __name__ == "__main__":
+    run_reports()
