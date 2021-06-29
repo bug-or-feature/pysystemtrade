@@ -5,6 +5,7 @@ from sysdata.barchart.bc_futures_contract_price_data import BarchartFuturesContr
 
 from sysobjects.contracts import futuresContract as fc
 from syscore.dateutils import Frequency
+from syscore.objects import missing_data
 
 import pandas as pd
 import pytest
@@ -36,10 +37,8 @@ class TestBarchart:
 
     def test_gold_second(self):
         bc = bcConnection()
-
-        with pytest.raises(Exception):
-            bc.get_historical_futures_data_for_contract(
-                fc('GOLD', '20210600'), bar_freq=Frequency.Second)
+        result = bc.get_historical_futures_data_for_contract(fc('GOLD', '20210600'), bar_freq=Frequency.Second)
+        assert result == missing_data
 
     def test_freq_names(self):
         for freq in Frequency:
