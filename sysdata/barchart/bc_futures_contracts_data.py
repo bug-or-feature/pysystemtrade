@@ -97,7 +97,10 @@ class BarchartFuturesContractData(brokerFuturesContractData):
 
         if expiry_date is missing_contract or expiry_date is None:
             self.log.warn(f"Failed to get expiry for contract {futures_contract_plus}, returning approx date")
-            return get_datetime_from_datestring(futures_contract_plus.date_str)
+            datestring = futures_contract_plus.date_str
+            if datestring[6:8] == "00":
+                datestring = datestring[:6] + "01"
+            return expiryDate.from_str(datestring, format="%Y%m%d")
         else:
             expiry_date = expiryDate.from_str(expiry_date, format="%m/%d/%y")
 
