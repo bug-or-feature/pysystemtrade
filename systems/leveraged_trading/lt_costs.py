@@ -21,7 +21,7 @@ from systems.accounts.accounts_stage import Account
 from systems.basesystem import System
 from systems.forecasting import Rules
 from systems.futures_spreadbet.rawdata import FuturesSpreadbetRawData
-from systems.leveraged_trading.rules import smac
+from systems.leveraged_trading.rules import smac, rasmac
 
 # original account level target risk (%), when trading one instrument
 ORIG_TARGET_RISK = 0.12
@@ -104,9 +104,26 @@ def get_spreadbet_costs(source='db'):
 
         # risk (annual volatility of returns)
         #   - calculated as per 'Leveraged Trading' Appendix C, p.313,
-        start_date = date_last_price - pd.DateOffset(days=25) # TODO warning if not updated
+        start_date = date_last_price - pd.DateOffset(days=25)
         average_price = float(prices[start_date:].mean())
+
+        # this is good from parent class
+        daily_returns = system.rawdata.daily_returns(instr)
+
+        #daily_returns_volatility = system.rawdata.daily_returns_volatility(instr)
+        #annual_returns_vol_series = daily_returns_volatility * ROOT_BDAYS_INYEAR
+        #annual_vol = annual_returns_vol_series.iloc[-1]
+
+        # this is good from parent class
         daily_percentage_returns = system.rawdata.get_daily_percentage_returns(instr)
+
+        # this is good from parent class, EXCEPT * 100 for a formatted %
+        # not used in LT?
+        daily_percentage_volatility = system.rawdata.get_daily_percentage_volatility(instr)
+
+        # defined in our subclass
+        annual_vol_percent = system.rawdata.get_annual_percentage_volatility(instr)
+
         # STDEV of last 25 days of daily percentage returns
         daily_vol = daily_percentage_returns.ffill().rolling(window=25).std()
         annual_vol_series = daily_vol * ROOT_BDAYS_INYEAR
@@ -128,6 +145,10 @@ def get_spreadbet_costs(source='db'):
         #ewmac_today = ewmac_series.iloc[-1]
         smac_series = smac(prices, 16, 64)
         smac_today = smac_series.iloc[-1]
+
+        rasmac_series = rasmac(prices, 16, 64)
+        rasmac_today = rasmac_series.iloc[-1]
+
         riskAdjMAC = smac_today / risk_in_price_units
         direction = 'L' if smac_today > 0 else 'S'
         if direction == 'L':
