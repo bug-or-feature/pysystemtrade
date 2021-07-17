@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 from syscore.genutils import sign
-from syscore.objects import missing_data
+from syscore.objects import missing_data, arg_not_supplied
 
 """
 First some constants
@@ -33,8 +33,9 @@ ARBITRARY_START = datetime.datetime(1900, 1, 1)
 
 HOURS_PER_DAY = 24
 MINUTES_PER_HOUR = 60
-SECONDS_PER_HOUR = 60
-SECONDS_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_HOUR
+SECONDS_PER_MINUTE = 60
+SECONDS_PER_HOUR = MINUTES_PER_HOUR * SECONDS_PER_MINUTE
+SECONDS_PER_DAY = HOURS_PER_DAY * SECONDS_PER_HOUR
 
 SECONDS_IN_YEAR = CALENDAR_DAYS_IN_YEAR * SECONDS_PER_DAY
 MINUTES_PER_YEAR = CALENDAR_DAYS_IN_YEAR * HOURS_PER_DAY * MINUTES_PER_HOUR
@@ -552,7 +553,10 @@ def last_run_or_heartbeat_from_date_or_none(last_run_or_heartbeat: datetime.date
 date_formatting = "%Y%m%d_%H%M%S"
 
 
-def create_datetime_string(datetime_to_use):
+def create_datetime_string(datetime_to_use: datetime = arg_not_supplied):
+    if datetime_to_use is arg_not_supplied:
+        datetime_to_use = datetime.datetime.now()
+
     datetime_marker = datetime_to_use.strftime(date_formatting)
 
     return datetime_marker
@@ -561,4 +565,51 @@ def create_datetime_string(datetime_to_use):
 def from_marker_to_datetime(datetime_marker):
     return datetime.datetime.strptime(datetime_marker, date_formatting)
 
+def two_weeks_ago():
+    return n_days_ago(14)
 
+def n_days_ago(n_days: int, date_ref = arg_not_supplied):
+    if date_ref is arg_not_supplied:
+        date_ref = datetime.datetime.now()
+    date_diff = datetime.timedelta(days = n_days)
+    return date_ref - date_diff
+
+
+def adjust_trading_hours_conservatively(trading_hours: list,
+            conservative_times: tuple) -> list:
+
+    new_trading_hours = [adjust_single_day_conservatively(single_days_hours,
+                                                          conservative_times)
+                         for single_days_hours in trading_hours]
+
+    return new_trading_hours
+
+def adjust_single_day_conservatively(single_days_hours: tuple,
+                                     conservative_times: tuple) -> tuple:
+
+    adjusted_start_datetime = adjust_start_time_conservatively(single_days_hours[0],
+                                                               conservative_times[0])
+    adjusted_end_datetime = adjust_end_time_conservatively(single_days_hours[1],
+                                                           conservative_times[1])
+
+    return (adjusted_start_datetime, adjusted_end_datetime)
+
+def adjust_start_time_conservatively(start_datetime: datetime.datetime,
+                                     start_conservative: datetime.time) -> datetime.datetime:
+
+    start_conservative_datetime = adjust_date_conservatively(start_datetime,
+                                                             start_conservative)
+    return max(start_datetime, start_conservative_datetime)
+
+def adjust_end_time_conservatively(end_datetime: datetime.datetime,
+                                     end_conservative: datetime.time) -> datetime.datetime:
+
+    end_conservative_datetime = adjust_date_conservatively(end_datetime,
+                                                             end_conservative)
+    return min(end_datetime, end_conservative_datetime)
+
+
+def adjust_date_conservatively(datetime_to_be_adjusted: datetime.datetime,
+                               conservative_time: datetime.time) -> datetime.datetime:
+
+    return datetime.datetime.combine(datetime_to_be_adjusted.date(), conservative_time)

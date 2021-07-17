@@ -554,6 +554,13 @@ ignore_instruments:
   - SP500
 ```
 
+## How do I.... Exclude some instruments from having positive instrument weights
+
+You might want to calculate forecasts for certain instruments (so don't include them in ignore_instruments'), but not actually trade them.
+
+If you include the config element `allocate_zero_instrument_weights_to_these_instruments` then those instruments will have a zero instrument weight calculated, and the system will produce a zero desired position for them.
+
+
 
 
 <a name="how_do_i_write_rules"> </a>
@@ -3610,8 +3617,9 @@ Weighting for trading rules p&l is a *little* complicated.
 
 *`pandl_for_instrument_forecast`:* If I want the p&l of a single trading rule
 for one instrument in isolation, then I use `pandl_for_instrument_forecast`.
+
 *`pandl_for_trading_rule_unweighted`*: If I aggregate these across instruments
-then I get `pandl_for_trading_rule_unweighted`. The individiual unweighted
+then I get `pandl_for_trading_rule_unweighted`. The individual unweighted
 curves are instrument p&l for each instrument and forecast.
 
 *`pandl_for_instrument_forecast_weighted`:* The weighted p&l of a single
@@ -4412,9 +4420,6 @@ Diagnostics:
 |:-------------------------:|:---------:|:---------------:|:----:|:--------------------------------------------------------------:|
 | `accounts.list_of_trading_rules`| Standard | | D | All trading rules across instruments|
 | `accounts.get_instrument_scaling_factor`| Standard | `instrument_code` | D | IDM * instrument weight|
-| `accounts.get_forecast_scaling_factor`| Standard | `instrument_code`, `rule_variation_name` | D | FDM * forecast weight|
-| `accounts.get_instrument_forecast_scaling_factor`| Standard | `instrument_code`, `rule_variation_name` | D | IDM * instrument weight * FDM * forecast weight|
-| `accounts.get_capital_in_rule`| Standard | `rule_variation_name` | D | Sum of `get_instrument_forecast_scaling_factor` for a given trading rule|
 | `accounts.get_buffered_position`| Standard | `instrument_code` | D | Buffered position at portfolio level|
 | `accounts.get_buffered_position_with_multiplier`| Standard | `instrument_code` | D | Buffered position at portfolio level, including capital multiplier|
 | `accounts.subsystem_turnover`| Standard | `instrument_code` | D | Annualised turnover of subsystem|

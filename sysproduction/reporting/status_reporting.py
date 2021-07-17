@@ -59,9 +59,8 @@ def get_status_report_data(data):
     position = get_last_optimal_position_updates_as_df(data)
     limits = get_trade_limits_as_df(data)
     position_limits = get_position_limits_as_df(data)
-    overrides = get_overrides_as_df(data)  # NOT WORKING
+    overrides = get_overrides_as_df(data)
     locks = get_list_of_position_locks(data)
-
 
     results_object = dict(
         process=process,
@@ -199,6 +198,8 @@ def get_overrides_as_df(data):
 def get_trade_limits_as_df(data):
     cd_list = get_list_of_trade_limits(data)
     pdf = make_df_from_list_of_named_tuple(dataForLimits, cd_list)
+
+    pdf = pdf.sort_values("trade_capacity_remaining", ascending=True)
 
     return pdf
 
@@ -463,7 +464,10 @@ def get_list_of_position_locks(data):
 
 def get_position_limits_as_df(data):
     strat_instrument_limits_as_df = get_strategy_instrument_limits_as_df(data)
+    strat_instrument_limits_as_df = strat_instrument_limits_as_df.sort_values('spare', ascending=True)
+
     instrument_limits_as_df = get_instrument_limits_as_df(data)
+    instrument_limits_as_df = instrument_limits_as_df.sort_values('spare', ascending=True)
 
     agg_limits = pd.concat([strat_instrument_limits_as_df, instrument_limits_as_df], axis=0)
 
@@ -489,7 +493,9 @@ def df_from_list_of_limits_and_positions(pos_limit_list):
     keys = [pos.key for pos in pos_limit_list]
     position = [pos.position for pos in pos_limit_list]
     pos_limit = [pos.position_limit for pos in pos_limit_list]
+    spare = [pos.spare for pos in pos_limit_list]
 
-    df = pd.DataFrame(dict(keys = keys, position = position, pos_limit = pos_limit))
+    df = pd.DataFrame(dict(keys = keys, position = position, pos_limit = pos_limit,
+                           spare = spare))
 
     return df

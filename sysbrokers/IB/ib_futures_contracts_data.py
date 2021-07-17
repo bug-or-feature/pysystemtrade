@@ -156,6 +156,7 @@ class ibFuturesContractData(brokerFuturesContractData):
         return trading_hours_checker.okay_to_trade_now()
 
 
+
     def less_than_N_hours_of_trading_left_for_contract(self, contract_object: futuresContract,
                                                        N_hours: float = 1.0) -> bool:
         trading_hours = self.get_trading_hours_for_contract(contract_object)
@@ -186,3 +187,5 @@ class ibFuturesContractData(brokerFuturesContractData):
             trading_hours = []
 
         return trading_hours
+
+

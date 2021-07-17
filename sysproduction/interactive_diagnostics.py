@@ -1,4 +1,5 @@
-from syscore.dateutils import get_datetime_input
+
+from syscore.dateutils import get_datetime_input, SECONDS_PER_HOUR
 from syscore.interactive import get_and_convert, run_interactive_menu, print_menu_of_values_and_get_response, \
     print_menu_and_get_response
 from syscore.pdutils import set_pd_print_options
@@ -38,7 +39,9 @@ from sysproduction.reporting.report_configs import (
     trade_report_config,
     reconcile_report_config,
     strategy_report_config,
-    risk_report_config
+    risk_report_config,
+liquidity_report_config,
+costs_report_config
 )
 
 
@@ -87,7 +90,9 @@ nested_menu_of_options = {0: {1: "Interactive python",
                               13: "Trade report",
                               14: "Reconcile report",
                               15: "Strategy report",
-                              16: "Risk report"
+                              16: "Risk report",
+                              17: "Costs report",
+                              18: "Liquidity report"
                               },
                           2: {20: "View stored emails",
                               21: "View errors",
@@ -96,6 +101,7 @@ nested_menu_of_options = {0: {1: "Interactive python",
                               31: "Multiple prices",
                               32: "Adjusted prices",
                               33: "FX prices",
+                              34: "Spreads"
                               },
                           4: {40: "Capital for an individual strategy",
                               41: "Capital for global account, all strategies",
@@ -203,6 +209,19 @@ def risk_report(data):
     report_config = email_or_print(risk_report_config)
     run_report(report_config, data=data)
 
+def cost_report(data):
+    start_date, end_date, calendar_days = get_report_dates(data)
+    report_config = email_or_print(costs_report_config)
+    report_config.modify_kwargs(
+        calendar_days_back=calendar_days,
+        start_date=start_date,
+        end_date=end_date)
+    run_report(report_config, data=data)
+
+
+def liquidity_report(data):
+    report_config = email_or_print(liquidity_report_config)
+    run_report(liquidity_report_config, data = data)
 
 def email_or_print(report_config):
     ans = get_and_convert(
@@ -341,6 +360,15 @@ def fx_prices(data):
     diag_prices = dataCurrency(data)
     prices = diag_prices.get_fx_prices(fx_code)
     print(prices)
+
+    return None
+
+def spreads(data):
+    instrument_code = get_valid_instrument_code_from_user(data)
+    diag_prices = diagPrices(data)
+    spreads = diag_prices.get_spreads(instrument_code)
+
+    print(spreads)
 
     return None
 
@@ -548,24 +576,55 @@ def view_contract_config(data):
 
 def print_trading_hours_for_all_instruments(data=arg_not_supplied):
     all_trading_hours = get_trading_hours_for_all_instruments(data)
-    for key, value in sorted(all_trading_hours.items(), key=lambda x: x[0]):
-        print("{} : {}".format(key, value))
+    display_a_dict_of_trading_hours(all_trading_hours)
 
+def display_a_dict_of_trading_hours(all_trading_hours):
+    for key, trading_hour_entry in sorted(all_trading_hours.items(), key=lambda x: x[0]):
+        print("%s: %s" % ('{:20}'.format(key),
+                              nice_print_trading_hours(trading_hour_entry)))
+
+
+def nice_print_trading_hours(trading_hour_entry) -> str:
+    start_datetime = trading_hour_entry[0]
+    end_datetime = trading_hour_entry[1]
+    diff_time = end_datetime - start_datetime
+    hours_in_between = (diff_time.total_seconds()) / SECONDS_PER_HOUR
+
+    NICE_FORMAT = "%d/%m %H:%M"
+
+    start_formatted = start_datetime.strftime(NICE_FORMAT)
+    end_formatted = end_datetime.strftime(NICE_FORMAT)
+
+    nice_string = "%s to %s (%.1f hours)" % (start_formatted,
+                                     end_formatted,
+                                     hours_in_between)
+
+    return nice_string
 
 
 def get_trading_hours_for_all_instruments(data=arg_not_supplied):
     if data is arg_not_supplied:
         data = dataBlob()
 
-    diag_prices = diagPrices()
+    diag_prices = diagPrices(data)
     list_of_instruments = diag_prices.get_list_of_instruments_with_contract_prices()
 
     all_trading_hours = {}
     for instrument_code in list_of_instruments:
         trading_hours = get_trading_hours_for_instrument(data, instrument_code)
-        all_trading_hours[instrument_code] = trading_hours[:1]
+
+        ## will have several days use first one
+        trading_hours_this_instrument = trading_hours[0]
+        check_trading_hours(trading_hours_this_instrument,
+                            instrument_code)
+        all_trading_hours[instrument_code] = trading_hours_this_instrument
 
     return all_trading_hours
+
+def check_trading_hours(trading_hours_this_instrument, instrument_code):
+    if trading_hours_this_instrument[0]>trading_hours_this_instrument[1]:
+        print("%s Trading hours appear to be wrong: %s" % (instrument_code,
+                                                          nice_print_trading_hours(trading_hours_this_instrument)))
 
 
 def get_trading_hours_for_instrument(data, instrument_code):
@@ -593,6 +652,8 @@ dict_of_functions = {
     14: reconcile_report,
     15: strategy_report,
     16: risk_report,
+    17: cost_report,
+    18: liquidity_report,
     20: retrieve_emails,
     21: view_errors,
     22: view_logs,
@@ -600,6 +661,7 @@ dict_of_functions = {
     31: multiple_prices,
     32: adjusted_prices,
     33: fx_prices,
+    34: spreads,
     40: capital_strategy,
     41: total_current_capital,
     50: optimal_positions,

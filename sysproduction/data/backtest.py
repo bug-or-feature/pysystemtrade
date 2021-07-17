@@ -5,12 +5,13 @@ from shutil import copyfile
 
 from syscore.dateutils import create_datetime_string
 from syscore.fileutils import files_with_extension_in_pathname, get_resolved_pathname
-from sysdata.config.production_config import get_production_config
-
-
-from syscore.objects import arg_not_supplied, resolve_function, success, failure
+from syscore.objects import arg_not_supplied, resolve_function, success, failure, missing_data
 from syscore.interactive import print_menu_of_values_and_get_response
+
+
+from sysdata.config.production_config import get_production_config
 from sysdata.data_blob import dataBlob
+
 from sysobjects.production.backtest_storage import interactiveBacktest
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
 from sysproduction.data.strategies import get_valid_strategy_name_from_user, diagStrategiesConfig
@@ -175,8 +176,8 @@ def store_backtest_state(data, system, strategy_name="default_strategy"):
     """
 
     ensure_backtest_directory_exists(strategy_name)
-    datetime_to_use = datetime.datetime.now()
-    datetime_marker = create_datetime_string(datetime_to_use)
+
+    datetime_marker = create_datetime_string()
 
     pickle_filename = get_backtest_pickle_filename(
         strategy_name, datetime_marker)
@@ -189,10 +190,11 @@ def store_backtest_state(data, system, strategy_name="default_strategy"):
     return success
 
 
+
 def ensure_backtest_directory_exists(strategy_name):
     full_directory = get_backtest_directory_for_strategy(strategy_name)
     try:
-        os.mkdir(full_directory)
+        os.makedirs(full_directory)
     except FileExistsError:
         pass
 
@@ -251,9 +253,10 @@ def get_backtest_directory_for_strategy(strategy_name):
 
 def get_directory_store_backtests():
     # eg '/home/rob/data/backtests/'
-    key_name = "backtest_store_directory"
     production_config = get_production_config()
-    store_directory = getattr(production_config, key_name)
+    store_directory = production_config.get_element_or_missing_data("backtest_store_directory")
+    if store_directory is missing_data:
+        raise Exception("Need to specify backtest_store_directory in config file")
 
     return store_directory
 

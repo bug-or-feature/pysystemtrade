@@ -21,7 +21,7 @@ strategy_capital_allocation:
 #    example: 100.0
 #
 ## Where do we save backtests
-backtest_store_directory: 'backtests'
+backtest_store_directory: 'private'
 #
 # And backups
 csv_backup_directory: 'data.backups_csv'
@@ -150,7 +150,7 @@ forecast_weight_estimate:
      using_exponent: True
      ew_lookback: 50000
      min_periods: 10
-     cleaning: True
+     cleaning: False
      floor_at_zero: False
    mean_estimate:
      func: sysquant.estimators.mean_estimator.meanEstimator
@@ -222,7 +222,7 @@ instrument_weight_estimate:
      ew_lookback: 500000
      min_periods: 10
      floor_at_zero: False
-     cleaning: True
+     cleaning: False
    mean_estimate:
      func: sysquant.estimators.mean_estimator.meanEstimator
      using_exponent: True
@@ -270,3 +270,10 @@ small_system:
   max_risk_ceiling_as_fraction_normal_risk: 2.0
   use_process_pool: True
   cost_multiplier: 1.0
+ignore_instruments:
+  - CRUDE_W
+  - GAS_US
+  - GOLD
+  - KOSPI
+  - NASDAQ
+  - SP500
