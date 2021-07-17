@@ -3,8 +3,8 @@ percentage_vol_target: 24
 notional_trading_capital: 20000
 base_currency: "GBP"
 trading_rules:
-  rasmac16_64:
-    function: systems.leveraged_trading.rules.rasmac
+  smac16_64:
+    function: systems.leveraged_trading.rules.smac
     data:
       - "rawdata.get_daily_prices"
     other_args:

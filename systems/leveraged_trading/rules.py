@@ -2,7 +2,8 @@
 Trading rules for Leveraged Trading system
 """
 import pandas as pd
-from sysquant.estimators.vol import robust_vol_calc
+from systems.leveraged_trading.volatility import simple_volatility_calc
+from syscore.dateutils import ROOT_BDAYS_INYEAR
 
 
 def smac(price, fast=16, slow=64):
@@ -29,9 +30,10 @@ def smac(price, fast=16, slow=64):
 
     return raw_smac
 
+
 def rasmac(price, fast=16, slow=64, lookback=25):
     """
-    Calculate the risk adjusted SMAC (Simple Moving Average Crossover) trading rule forecast, given a price and
+    Calculate the Risk Adjusted Simple Moving Average Crossover (rasmac) trading rule forecast, given price and
     SMA speeds fast, slow, and volatility lookback
 
     Assumes that 'price' is daily data
@@ -55,6 +57,13 @@ def rasmac(price, fast=16, slow=64, lookback=25):
     slow_sma = price.ffill().rolling(window=slow).mean()
     raw_smac = fast_sma - slow_sma
 
-    vol = robust_vol_calc(price, lookback)
+    # first we get the standard deviation of daily percentage returns
+    vol = simple_volatility_calc(price, lookback)
 
-    return raw_smac / vol.ffill()
+    # multiply by 16 to get an annual figure
+    annual_vol = vol * ROOT_BDAYS_INYEAR
+
+    # then instrument risk in price units
+    risk_in_price_units = annual_vol * price
+
+    return raw_smac / risk_in_price_units
