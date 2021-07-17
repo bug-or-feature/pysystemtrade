@@ -1,6 +1,7 @@
 import pandas as pd
 from systems.futures.rawdata import FuturesRawData
 from systems.system_cache import input, output
+from syscore.dateutils import ROOT_BDAYS_INYEAR
 
 
 class FuturesSpreadbetRawData(FuturesRawData):
@@ -67,3 +68,13 @@ class FuturesSpreadbetRawData(FuturesRawData):
         daily_prices *= multiplier
 
         return daily_prices
+
+    @output()
+    def get_annual_percentage_volatility(self, instrument_code: str) -> pd.Series:
+        denom_price = self.daily_denominator_price(instrument_code)
+        return_vol = self.daily_returns_volatility(instrument_code)
+        (denom_price, return_vol) = denom_price.align(return_vol, join="right")
+        daily_perc_vol = (return_vol / denom_price.ffill())
+        annual_perc_vol = daily_perc_vol * ROOT_BDAYS_INYEAR
+
+        return annual_perc_vol
