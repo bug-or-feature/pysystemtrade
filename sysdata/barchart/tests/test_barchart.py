@@ -104,7 +104,7 @@ class TestBarchart:
         assert expiry == datetime.datetime(2020, 12, 14)
 
         expiry = data.get_actual_expiry_date_for_single_contract(fc('AUD', '20100900'))
-        assert expiry == datetime.datetime(2010, 9, 12)
+        assert expiry == datetime.datetime(2010, 9, 13)
 
         # too old
         with pytest.raises(Exception):
