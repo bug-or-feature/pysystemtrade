@@ -70,11 +70,8 @@ class FuturesSpreadbetRawData(FuturesRawData):
         return daily_prices
 
     @output()
-    def get_annual_percentage_volatility(self, instrument_code: str) -> pd.Series:
-        denom_price = self.daily_denominator_price(instrument_code)
-        return_vol = self.daily_returns_volatility(instrument_code)
-        (denom_price, return_vol) = denom_price.align(return_vol, join="right")
-        daily_perc_vol = (return_vol / denom_price.ffill())
+    def get_annual_percentage_volatility(self, instrument_code: str, span=25) -> pd.Series:
+        daily_perc_vol = self.get_daily_percentage_returns(instrument_code).ffill().rolling(span).std()
+        # daily_perc_vol = self.get_daily_percentage_returns(instrument_code).ffill().ewm(35).std()
         annual_perc_vol = daily_perc_vol * ROOT_BDAYS_INYEAR
-
         return annual_perc_vol
