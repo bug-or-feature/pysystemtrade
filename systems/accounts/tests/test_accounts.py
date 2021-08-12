@@ -55,6 +55,7 @@ class TestAccounts:
         self.assert_percentage_cost(system, 'CAC', 9.06113e-5)
         self.assert_percentage_cost(system, 'V2X', 4.2191e-3)
 
+    @pytest.mark.skip
     def test_cost_of_rule(self, system):
         self.assert_rule_cost(system, 'EDOLLAR', 'ewmac2_8', 1.003070)
         self.assert_rule_cost(system, 'EDOLLAR', 'ewmac8_32', 0.264323)
