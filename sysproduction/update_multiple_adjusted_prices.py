@@ -20,10 +20,10 @@ from sysobjects.multiple_prices import futuresMultiplePrices, setOfNamedContract
 from sysobjects.contracts import futuresContract
 
 from sysdata.data_blob import dataBlob
-from sysproduction.data.prices import diagPrices, updatePrices
+from sysproduction.data.prices import diagPrices, updatePrices, get_valid_instrument_code_from_user
 
-
-def update_multiple_adjusted_prices(instrument_list=None):
+ALL_INSTRUMENTS = "ALL"
+def update_multiple_adjusted_prices():
     """
     Do a daily update for multiple and adjusted prices
 
@@ -32,28 +32,30 @@ def update_multiple_adjusted_prices(instrument_list=None):
 
     with dataBlob(log_name="Update-Multiple-Adjusted-Prices") as data:
         update_multiple_adjusted_prices_object = updateMultipleAdjustedPrices(
-            data, instrument_list)
-        update_multiple_adjusted_prices_object.update_multiple_adjusted_prices()
+            data)
+        instrument_code = get_valid_instrument_code_from_user(all_code=ALL_INSTRUMENTS,
+                                                              allow_all=True)
+        update_multiple_adjusted_prices_object.update_multiple_adjusted_prices(instrument_code=instrument_code)
 
     return success
 
 
 class updateMultipleAdjustedPrices(object):
-    def __init__(self, data: dataBlob, instrument_list=None):
+    def __init__(self, data: dataBlob):
         self.data = data
-        self._instrument_list = instrument_list
 
-    def update_multiple_adjusted_prices(self):
-        update_multiple_adjusted_prices_with_data(self.data, self._instrument_list)
+    def update_multiple_adjusted_prices(self, instrument_code: str = ALL_INSTRUMENTS):
+        data = self.data
+        update_multiple_adjusted_prices_with_data(data, instrument_code=instrument_code)
 
-
-def update_multiple_adjusted_prices_with_data(data: dataBlob, instrument_list=None):
+def update_multiple_adjusted_prices_with_data(data: dataBlob, instrument_code: str = ALL_INSTRUMENTS):
     diag_prices = diagPrices(data)
-    if instrument_list is None:
-        list_of_codes_all = diag_prices.get_list_of_instruments_in_multiple_prices()
+    if instrument_code == ALL_INSTRUMENTS:
+        list_of_codes = diag_prices.get_list_of_instruments_in_multiple_prices()
     else:
-        list_of_codes_all = instrument_list
-    for instrument_code in list_of_codes_all:
+        list_of_codes = [instrument_code]
+
+    for instrument_code in list_of_codes:
         update_multiple_adjusted_prices_for_instrument(
             instrument_code, data)
 
