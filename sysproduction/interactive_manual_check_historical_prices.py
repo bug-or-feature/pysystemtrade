@@ -134,3 +134,7 @@ def get_and_check_prices_for_frequency(
     price_updater.update_prices_for_contract(
         contract_object, new_prices_checked, check_for_spike=False
     )
+
+
+if __name__ == "__main__":
+    interactive_manual_check_historical_prices()
