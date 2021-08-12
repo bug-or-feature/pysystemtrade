@@ -18,4 +18,4 @@ class TestContractDatesAndExpiries:
 
     def test_empty(self):
         with pytest.raises(Exception):
-            expiryDate.from_str(None)
+            expiryDate.from_str('')
