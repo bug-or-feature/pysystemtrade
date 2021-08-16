@@ -123,7 +123,7 @@ class Config(object):
             filename = get_filename_for_package(config_item)
             with open(filename) as file_to_parse:
                 dict_to_parse = yaml.load(
-                    file_to_parse, Loader=yaml.FullLoader)
+                    file_to_parse, Loader=yaml.CLoader)
 
             self._create_config_from_dict(dict_to_parse)
 
