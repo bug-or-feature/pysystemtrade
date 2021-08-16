@@ -156,8 +156,8 @@ def backup_futures_contract_prices_for_instrument_to_csv(data: dataBlob, instrum
         csv_data = data.csv_futures_contract_price.get_prices_for_contract_object(contract)
 
         if check_df_equals(arctic_data, csv_data):
-            # No updated needed, move on
-            print("No update needed")
+            # No update needed, move on
+            data.log.msg("No prices backup needed for %s" % contract)
         else:
             # Write backup
             try:
@@ -181,7 +181,7 @@ def backup_fx_to_csv(data):
         arctic_data = data.arctic_fx_prices.get_fx_prices(fx_code)
         csv_data = data.csv_fx_prices.get_fx_prices(fx_code)
         if check_ts_equals(arctic_data, csv_data):
-            print("No updated needed")
+            data.log.msg("No fx backup needed for %s" % fx_code)
         else:
             # Write backup
             try:
@@ -198,7 +198,7 @@ def backup_fx_to_csv(data):
         arctic_data = data.arctic_fx_prices.get_fx_prices(fx_code)
         csv_data = data.csv_fx_prices.get_fx_prices(fx_code)
         if check_ts_equals(arctic_data, csv_data):
-            print("No updated needed")
+            data.log.msg("No fx backup needed for %s" % fx_code)
         else:
             # Write backup
             try:
@@ -223,7 +223,7 @@ def backup_multiple_to_csv_for_instrument(data, instrument_code: str):
         instrument_code)
 
     if check_df_equals(arctic_data, csv_data):
-        print("No update needed")
+        data.log.msg("No multiple prices backup needed for %s" % instrument_code)
         pass
     else:
         try:
@@ -253,7 +253,7 @@ def backup_adj_to_csv_for_instrument(data: dataBlob, instrument_code: str):
         instrument_code)
 
     if check_ts_equals(arctic_data, csv_data):
-        print("No update needed")
+        data.log.msg("No adjusted prices backup needed for %s" % instrument_code)
         pass
     else:
         try:
@@ -283,7 +283,7 @@ def backup_spreads_to_csv_for_instrument(data: dataBlob, instrument_code: str):
         instrument_code)
 
     if check_ts_equals(arctic_data, csv_data):
-        print("No update needed")
+        data.log.msg("No spreads backup needed for %s" % instrument_code)
         pass
     else:
         try:
