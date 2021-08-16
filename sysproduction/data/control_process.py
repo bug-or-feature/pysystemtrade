@@ -1,5 +1,5 @@
 import datetime
-import socket
+from functools import lru_cache
 
 from syscore.dateutils import SECONDS_PER_HOUR
 from syscore.genutils import str2Bool
@@ -124,6 +124,11 @@ class diagControlProcess(productionDataLayerGeneric):
     @property
     def db_control_process_data(self) -> controlProcessData:
         return self.data.db_control_process
+
+    @property
+    @lru_cache
+    def control_config(self):
+        return get_control_config()
 
     def get_config_dict(self, process_name: str) -> dict:
         previous_process = self.previous_process_name(process_name)
@@ -325,7 +330,7 @@ class diagControlProcess(productionDataLayerGeneric):
     def get_process_configuration_for_item_name(self, item_name: str) -> dict:
         config = getattr(self, "_process_config_%s" % item_name, {})
         if config == {}:
-            config = get_key_value_from_control_config(
+            config = self.get_key_value_from_control_config(
                 "process_configuration_%s" % item_name
             )
             if config is missing_data:
@@ -357,13 +362,8 @@ class diagControlProcess(productionDataLayerGeneric):
         result = self.db_control_process_data.get_list_of_process_names()
         return result
 
-
-def get_key_value_from_control_config(item_name: str):
-    config = get_control_config()
-    item = config.get_element_or_missing_data(item_name)
-
-    return item
-
+    def get_key_value_from_control_config(self, item_name: str):
+        return self.control_config.get_element_or_missing_data(item_name)
 
 
 def get_list_of_strategies_for_process(data: dataBlob, process_name: str) -> list:
