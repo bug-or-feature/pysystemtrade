@@ -1,5 +1,5 @@
 from copy import copy
-from functools import cached_property
+from functools import lru_cache
 
 from sysbrokers.IB.ib_connection import connectionIB
 from syscore.objects import arg_not_supplied, get_class_name
@@ -304,7 +304,8 @@ class dataBlob(object):
 
         return mongo_db
 
-    @cached_property
+    @property
+    @lru_cache
     def config(self) -> Config:
         config = getattr(self, "_config", None)
         if config is None:
