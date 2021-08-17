@@ -126,7 +126,7 @@ class diagControlProcess(productionDataLayerGeneric):
         return self.data.db_control_process
 
     @property
-    @lru_cache
+    @lru_cache(maxsize=None)
     def control_config(self):
         return get_control_config()
 

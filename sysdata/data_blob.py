@@ -305,7 +305,7 @@ class dataBlob(object):
         return mongo_db
 
     @property
-    @lru_cache
+    @lru_cache(maxsize=None)
     def config(self) -> Config:
         config = getattr(self, "_config", None)
         if config is None:
