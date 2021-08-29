@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>Label</key>
+        <string>net.bugorfeature.pst.daily-price-updates</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>/Users/ageach/Dev/work/pysystemtrade3/sysproduction/macos/macos_run.sh</string>
+            <string>sysproduction.run_daily_price_updates.run_daily_price_updates</string>
+            <string>run_daily_price_updates</string>
+        </array>
+        <key>StartCalendarInterval</key>
+        <dict>
+            <key>Hour</key>
+            <integer>22</integer>
+            <key>Minute</key>
+            <integer>30</integer>
+        </dict>
+    </dict>
+</plist>

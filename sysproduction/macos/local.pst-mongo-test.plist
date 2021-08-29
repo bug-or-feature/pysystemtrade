@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>Label</key>
+        <string>net.bugorfeature.pst-mongo-test</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>/Users/ageach/Dev/work/pysystemtrade3/sysproduction/macos/macos_run.sh</string>
+            <string>sysproduction.run_mongo_check.run_mongo_check</string>
+            <string>run_mongo_check</string>
+        </array>
+        <key>StartInterval</key>
+        <integer>60</integer>
+    </dict>
+</plist>
