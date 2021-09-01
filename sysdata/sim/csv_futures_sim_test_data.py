@@ -32,12 +32,15 @@ class CsvFuturesSimTestData(genericBlobUsingFuturesSimData):
 
         data = dataBlob(
             log=log,
-            class_list=[csvFuturesAdjustedPricesData,
+            class_list=[
+                csvFuturesAdjustedPricesData,
                 csvFuturesMultiplePricesData,
                 csvFuturesInstrumentData,
-                csvFxPricesData])
+                csvFxPricesData
+            ]
+        )
 
-        super().__init__(data = data)
+        super().__init__(data=data)
 
         if start_date is not None:
             self._start_date = start_date
