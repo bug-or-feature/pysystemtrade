@@ -33,6 +33,9 @@ class FuturesSpreadbetMetaData(object):
     # spreadbet prices (CFDs too?) are often a multiple of the underlying futures price, this is that value
     Multiplier: float = 1.0
 
+    # some FX spread bets are priced as the inverse of the future they're based on, eg USDCAD -> CADUSD
+    Inverse: bool = False
+
     # size of contract (value of a 1 point move in price)
     # used by CFDs (contracts)
     # ContractSize: float = 0.0
