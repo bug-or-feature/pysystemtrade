@@ -169,11 +169,9 @@ class futuresContractPriceData(baseData):
         :param ignore_duplication: bool, to stop us overwriting existing prices
         :return: None
         """
-
-        if self.has_data_for_contract(futures_contract_object):
-            if ignore_duplication:
-                pass
-            else:
+        not_ignoring_duplication = not ignore_duplication
+        if not_ignoring_duplication:
+            if self.has_data_for_contract(futures_contract_object):
                 log = futures_contract_object.log(self.log)
                 log.warn(
                     "There is already existing data for %s" % futures_contract_object.key)
