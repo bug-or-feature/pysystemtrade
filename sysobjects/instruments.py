@@ -175,7 +175,6 @@ class assetClassesAndInstruments(dict):
 
 class instrumentCosts(ABC):
 
-
     @abstractmethod
     def get_sr_per_trade_costs(
             self,
@@ -199,11 +198,20 @@ class instrumentCosts(ABC):
         pass
 
     @abstractmethod
-    def get_sr_rule_costs(self, instrument_code: str, turnover: float) -> float:
+    def get_sr_rule_costs(
+            self,
+            instrument_code: str,
+            block_price_multiplier,
+            average_price,
+            avg_annual_vol_perc,
+            turnover: float) -> float:
         pass
 
     @abstractmethod
-    def calculate_total_commission(self, blocks_traded: float, value_per_block: float):
+    def calculate_total_commission(
+            self,
+            blocks_traded: float,
+            value_per_block: float):
         pass
 
 
@@ -275,8 +283,19 @@ class futuresInstrumentCosts(instrumentCosts):
 
         return slippage + commission
 
-    def get_sr_rule_costs(self, instrument_code: str, turnover: float) -> float:
-        cost_per_trade = self.get_sr_per_trade_costs(instrument_code)
+    def get_sr_rule_costs(
+            self,
+            instrument_code: str,
+            block_price_multiplier,
+            average_price,
+            avg_annual_vol_perc,
+            turnover: float) -> float:
+
+        cost_per_trade = self.get_sr_per_trade_costs(
+            instrument_code,
+            block_price_multiplier,
+            average_price,
+            avg_annual_vol_perc)
         sr_rule_cost = (turnover * cost_per_trade)
         return sr_rule_cost
 

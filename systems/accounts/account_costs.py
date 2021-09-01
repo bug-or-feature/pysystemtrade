@@ -110,14 +110,23 @@ class accountCosts(accountInputs):
     def _get_SR_cost_of_rule_for_individual_instrument(self, instrument_code: str,
                                                        rule_variation_name: str) -> float:
 
-        costs = self.get_instrument_costs(instrument_code)
         # note the turnover may still be pooled..
-        turnover = self.forecast_turnover(instrument_code, rule_variation_name)
+        turnover = self.forecast_turnover(
+            instrument_code, rule_variation_name
+        )
+
+        # original
         cost_per_trade = self.get_SR_cost_per_trade_for_instrument(instrument_code)
+        #SR_cost = (turnover * cost_per_trade)
 
-        SR_cost = (turnover * cost_per_trade)
-
-        SR_cost = costs.get_sr_rule_costs(instrument_code, turnover)
+        # AG refactor
+        costs = self.get_instrument_costs(instrument_code)
+        SR_cost = costs.get_sr_rule_costs(
+            instrument_code,
+            self.get_value_of_block_price_move(instrument_code),
+            self._recent_average_price(instrument_code),
+            self._recent_average_annual_perc_vol(instrument_code),
+            turnover)
 
         return SR_cost
 
@@ -232,28 +241,44 @@ class accountCosts(accountInputs):
         >>> (portfolio, posobject, combobject, capobject, rules, rawdata, data, config)=get_test_object_futures_with_portfolios()
         >>> system=System([portfolio, posobject, combobject, capobject, rules, rawdata, Account()], data, config)
         >>>
-        >>> system.accounts.get_SR_cost_per_trade_for_instrument("EDOLLAR")
+        >>> system.accounts.get_SR_cost_of_trading_instrument("EDOLLAR")
         0.0065584086244069775
         """
 
+        # original
+        #cost_in_percentage_terms = self._get_SR_cost_per_trade_for_instrument_percentage(instrument_code)
+        #avg_annual_vol_perc = self._recent_average_annual_perc_vol(instrument_code)
+
+        # cost per round trip
+        #SR_cost = 2.0 * cost_in_percentage_terms / avg_annual_vol_perc
+
+        # AG refactor
         instrument_costs = self.get_instrument_costs(instrument_code)
-        sr_cost = instrument_costs.get_sr_per_trade_costs(
+        SR_cost = instrument_costs.get_sr_per_trade_costs(
             instrument_code,
             self.get_value_of_block_price_move(instrument_code),
             self._recent_average_price(instrument_code),
             self._recent_average_annual_perc_vol(instrument_code)
         )
 
-        return sr_cost
-
-    @diagnostic()
-    def get_holding_costs_per_instrument(self, instrument_code: str) -> float:
-        instrument_costs = self.get_instrument_costs(instrument_code)
-        holding_costs = instrument_costs.get_holding_costs_per_instrument(instrument_code)
-        return holding_costs
+        return SR_cost
 
     @diagnostic()
     def _get_SR_cost_per_trade_for_instrument_percentage(self, instrument_code: str) -> float:
+
+        # original
+        #raw_costs = self.get_raw_cost_data(instrument_code)
+        #block_price_multiplier = self.get_value_of_block_price_move(instrument_code)
+        #average_price = self._recent_average_price(instrument_code)
+        #notional_blocks_traded = 1
+
+        #cost_in_percentage_terms = raw_costs.calculate_cost_percentage_terms(
+        #    blocks_traded=notional_blocks_traded,
+        #    block_price_multiplier=block_price_multiplier,
+        #    price=average_price
+        #)
+
+        # AG refactor
         instrument_costs = self.get_instrument_costs(instrument_code)
         cost_in_percentage_terms = instrument_costs.get_sr_percentage_costs(
             self.get_value_of_block_price_move(instrument_code),
@@ -312,4 +337,9 @@ class accountCosts(accountInputs):
     def use_SR_costs(self) -> float:
         return str2Bool(self.config.use_SR_costs)
 
-
+    # AG refactor
+    @diagnostic()
+    def get_holding_costs_per_instrument(self, instrument_code: str) -> float:
+        instrument_costs = self.get_instrument_costs(instrument_code)
+        holding_costs = instrument_costs.get_holding_costs_per_instrument(instrument_code)
+        return holding_costs

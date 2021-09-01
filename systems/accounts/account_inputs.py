@@ -64,6 +64,7 @@ class accountInputs(SystemStage):
     def get_raw_cost_data(self, instrument_code: str)  -> instrumentCosts:
         return self.parent.data.get_raw_cost_data(instrument_code)
 
+    # AG refactor
     def get_instrument_costs(self, instrument_code: str) -> instrumentCosts:
         return self.parent.data.get_raw_cost_data(instrument_code)
 

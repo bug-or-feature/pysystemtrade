@@ -24,7 +24,6 @@ def system():
 
 class TestAccounts:
 
-    @pytest.mark.skip
     def test_costs_per_trade(self, system):
         self.assert_per_trade_cost(system, 'EDOLLAR', 0.010989)
         self.assert_per_trade_cost(system, 'US10', 0.00660)
@@ -39,7 +38,6 @@ class TestAccounts:
         self.assert_per_trade_cost(system, 'EUROSTX', 0.002768)
         self.assert_per_trade_cost(system, 'VIX', 0.004431)
 
-    @pytest.mark.skip
     def test_costs_percent(self, system):
         self.assert_percentage_cost(system, 'BUND', 4.0376e-5)
         self.assert_percentage_cost(system, 'US5', 4.3924e-5)
@@ -55,7 +53,6 @@ class TestAccounts:
         self.assert_percentage_cost(system, 'CAC', 9.06113e-5)
         self.assert_percentage_cost(system, 'V2X', 4.2191e-3)
 
-    @pytest.mark.skip
     def test_cost_of_rule(self, system):
         self.assert_rule_cost(system, 'EDOLLAR', 'ewmac2_8', 1.003070)
         self.assert_rule_cost(system, 'EDOLLAR', 'ewmac8_32', 0.264323)
