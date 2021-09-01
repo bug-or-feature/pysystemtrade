@@ -218,6 +218,7 @@ def get_spreadbet_costs(source='db'):
                 'IdealExp': round(ideal_notional_exposure, 0),
                 'CurrExp': round(current_notional_exposure, 0),
                 'AvgExp': round(average_notional_exposure, 0),
+                'CurrPos': round(current_pos, 3),
                 'Dev%': "{:.2%}".format(deviation),
                 'PosSize': round(pos_size, 2),
                 'AdjReq': round(adjustment_required, 2),
