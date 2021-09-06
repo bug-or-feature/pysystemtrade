@@ -175,10 +175,13 @@ def get_spreadbet_costs(source='db'):
         ideal_notional_exposure = ((rescaledForecast / 10) * INSTR_TARGET_RISK * trading_capital) / annual_vol
         current_pos = get_current_position(instr, positions)
         current_notional_exposure = (current_pos * sb_price) / (point_size)
+        current_notional_exposure_new = get_current_exposure(instr, positions)
         average_notional_exposure = (INSTR_TARGET_RISK * trading_capital) / annual_vol
         deviation = (ideal_notional_exposure - current_notional_exposure) / average_notional_exposure
+        deviation_new = (ideal_notional_exposure - current_notional_exposure_new) / average_notional_exposure
         pos_size = (ideal_notional_exposure * 1 * point_size) / average_price
         adjustment_required = pos_size - current_pos if abs(deviation) > 0.1 else 0.0
+        adjustment_required_new = adjustment_calc(sb_price, current_notional_exposure_new, ideal_notional_exposure) if abs(deviation_new) > 0.1 else 0.0
         #account = pandl_for_instrument_forecast(forecast=smac_series, price=system.rawdata.get_daily_prices(instr))
         #print(f"P&L stats for {instr}: {account.percent.stats()}")
 
@@ -217,11 +220,14 @@ def get_spreadbet_costs(source='db'):
                 #'PosSize': round(pos_size, 2),
                 'IdealExp': round(ideal_notional_exposure, 0),
                 'CurrExp': round(current_notional_exposure, 0),
+                'CurrExpNew': round(current_notional_exposure_new, 2),
                 'AvgExp': round(average_notional_exposure, 0),
                 'CurrPos': round(current_pos, 3),
                 'Dev%': "{:.2%}".format(deviation),
+                'DevNew%': "{:.2%}".format(deviation_new),
                 'PosSize': round(pos_size, 2),
                 'AdjReq': round(adjustment_required, 2),
+                'AdjReqNew': round(adjustment_required_new, 2),
                 'Msg': warn
                 #'StopGap': round(stop_loss_gap, 0)
             }
@@ -277,6 +283,29 @@ def get_current_position(instr, pos_list):
         else:
             total -= pos['size']
     return total
+
+
+# exposure = amount per point × price ÷ point size
+def get_current_exposure(instr, pos_list):
+    total = 0.0
+    filtered = filter(lambda p: p['instr'] == instr, pos_list)
+    for pos in filtered:
+        size = pos['size']
+        level = pos['level']
+        part_exp = size * level * 1
+        if pos['dir'] == 'BUY':
+            total += part_exp
+        else:
+            total -= part_exp
+    return total
+
+def adjustment_calc(curr_price, ideal_exposure, current_exposure):
+    exposure_diff = ideal_exposure - current_exposure
+    #filtered = filter(lambda p: p['instr'] == instr, positions)
+    # LT p.264
+    # bet per point = (exposure  x point size) / price
+    adj = (exposure_diff * 1) / curr_price
+    return adj
 
 
 def get_current_pandl(instr, pos_list, ig_prices: CsvFsbContractPriceData):
