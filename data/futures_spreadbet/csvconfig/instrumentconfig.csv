@@ -31,7 +31,7 @@ GOLD,Commodities,Metals,GBP,1.0,0.6,1.0,1.0,False,Gold
 HANG,Equities,Asia,GBP,1.0,16.0,0.2,1.0,False,Hang Seng HK Index
 HEATOIL,Commodities,Energy,GBP,1.0,30.0,0.5,10000.0,False,Heating Oil
 JGB,Bonds,Asia,GBP,1.0,6.0,0.5,100.0,False,Japanese Govt Bond
-JPY,FX,Asia,GBP,1.0,20.0,1.0,1000000.0,False,JPYUSD currency
+JPY,FX,Asia,GBP,1.0,20.0,1.0,1000000.0,True,JPYUSD currency
 LEANHOG,Commodities,Agricultural,GBP,1.0,15.0,0.1,100.0,False,Lean hogs
 LIVECOW,Commodities,Agricultural,GBP,1.0,20.0,0.5,100.0,False,Live cattle
 NASDAQ,Equities,US,GBP,1.0,3.0,0.5,1.0,False,US equity index Nasdaq
