@@ -19,8 +19,8 @@ from syscore.dateutils import ARBITRARY_START
 class CsvFuturesSimTestData(genericBlobUsingFuturesSimData):
     """
     Specialisation of futuresSimData that allows start and end dates to be configured.
-    Useful for unit tests, so that new data added to the CSV files doesn't mess with assertions, or if you need
-    to test something at a certain date/time or period
+    Useful for unit tests, so that new data added to the CSV price files doesn't mess with assertions,
+    or if a test is needed at a certain date/time or period
     """
 
     DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
