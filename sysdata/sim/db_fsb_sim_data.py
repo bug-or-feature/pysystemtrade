@@ -17,7 +17,7 @@ from syslogdiag.log_to_screen import logtoscreen
 
 class dbFsbSimData(genericBlobUsingFuturesSimData):
     def __init__(self, data: dataBlob = arg_not_supplied,
-                 log =logtoscreen("dbFsbSimData")):
+                 log=logtoscreen("dbFsbSimData")):
 
         if data is arg_not_supplied:
             data = dataBlob(log=log,
