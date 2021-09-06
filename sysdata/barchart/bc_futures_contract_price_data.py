@@ -1,3 +1,4 @@
+from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from syscore.merge_data import spike_in_data
 from syscore.objects import missing_data, missing_contract
 from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData
@@ -175,3 +176,9 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
     def get_recent_bid_ask_tick_data_for_contract_object(self,
             contract_object: futuresContract) -> dataFrameOfRecentTicks:
         raise NotImplementedError("Not implemented for Barchart, it is not a broker")
+
+    def get_prices_at_frequency_for_potentially_expired_contract_object(
+            self,
+            contract: futuresContract,
+            freq: Frequency = DAILY_PRICE_FREQ) -> futuresContractPrices:
+        raise NotImplementedError("Not implemented for Barchart")
