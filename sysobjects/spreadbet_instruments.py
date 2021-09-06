@@ -205,3 +205,16 @@ class FuturesSpreadbetCosts(instrumentCosts):
         cost_in_percentage_terms = cost_in_currency_terms / ((self.min_bet * price) / self.pointsize)
 
         return cost_in_percentage_terms
+
+    def get_sr_per_trade_costs(self, instr, block_price_multiplier, average_price, avg_annual_vol_perc) -> float:
+        pass
+
+    def get_sr_percentage_costs(self, block_price_multiplier, average_price) -> float:
+        pass
+
+    def get_sr_holding_costs(self, instrument_code: str) -> float:
+        pass
+
+    def get_sr_rule_costs(self, instrument_code: str, block_price_multiplier, average_price, avg_annual_vol_perc,
+            turnover: float) -> float:
+        pass
