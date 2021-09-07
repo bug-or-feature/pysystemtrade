@@ -9,9 +9,15 @@ BUND,Bonds,Europe,GBP,1.0,3.0,0.5,100.0,False,German 10 year bond Bund
 BUXL,Bonds,Europe,GBP,1.0,4.0,0.5,100.0,False,German Buxl 15 to 30 year bond
 CAC,Equities,Europe,GBP,1.0,4.0,1.0,1.0,False,French equity index CAC40
 CAD,FX,US,GBP,1.0,7.3,1.0,10000.0,True,USDCAD currency
+CARBON,Commodities,Energy,GBP,1.0,11.0,0.25,100.0,False,Carbon Emissions
 CHF,FX,Europe,GBP,1.0,9.5,1.0,10000.0,True,USDCHF currency
+COCOA_NY,Commodities,Agricultural,GBP,1.0,8.0,1.0,1.0,False,Cocoa New York
+COCOA_LDN,Commodities,Agricultural,GBP,1.0,4.0,0.5,1.0,False,Cocoa London
+COFFEE,Commodities,Agricultural,GBP,1.0,40.0,0.5,100.0,False,Coffee New York Arabica
+COFFEE_LDN,Commodities,Agricultural,GBP,1.0,6.0,0.5,1.0,False,Coffee London Robusta
 COPPER,Commodities,Metals,GBP,1.0,40.0,0.1,10000.0,False,Copper
 CORN,Commodities,Agricultural,GBP,1.0,1.0,10.0,1.0,False,Corn
+COTTON,Commodities,Agricultural,GBP,1.0,25.0,0.5,100.0,False,Cotton
 CRUDE_W,Commodities,Energy,GBP,1.0,6.0,1.0,100.0,False,Light sweet crude Winter
 DAX,Equities,Europe,GBP,1.0,6.0,0.5,1.0,False,DAX 30 Index
 DOLLAR,FX,US,GBP,1.0,8.5,0.5,100.0,False,USD/Basket global currencies
@@ -34,18 +40,27 @@ JGB,Bonds,Asia,GBP,1.0,6.0,0.5,100.0,False,Japanese Govt Bond
 JPY,FX,Asia,GBP,1.0,20.0,1.0,1000000.0,True,JPYUSD currency
 LEANHOG,Commodities,Agricultural,GBP,1.0,15.0,0.1,100.0,False,Lean hogs
 LIVECOW,Commodities,Agricultural,GBP,1.0,20.0,0.5,100.0,False,Live cattle
+LUMBER,Commodities,Agricultural,GBP,1.0,2000.0,0.1,100.0,False,Random Length Lumber
 NASDAQ,Equities,US,GBP,1.0,3.0,0.5,1.0,False,US equity index Nasdaq
 NIKKEI,Equities,Asia,GBP,1.0,20.0,0.5,1.0,False,Nikkei 225 Index
 NZD,FX,Asia,GBP,1.0,5.8,1.0,10000.0,False,NZDUSD currency
 OAT,Bonds,Europe,GBP,1.0,5.0,0.5,100.0,False,French 10 year bond OAT
+OATIES,Commodities,Agricultural,GBP,1.0,5.0,15.0,1.0,False,Oat Futures
+OJ,Commodities,Agricultural,GBP,1.0,40.0,0.5,100.0,False,Orange Juice
 PALLAD,Commodities,Metals,GBP,1.0,10.0,2.0,1.0,False,Palladium
 PLAT,Commodities,Metals,GBP,1.0,2.5,3.0,1.0,False,Platinum
+RICE,Commodities,Agricultural,GBP,1.0,40.0,0.5,1000.0,False,Rough Rice
 RUSSELL,Equities,US,GBP,1.0,0.5,2.0,1.0,False,Russell 2000 Index
 SHATZ,Bonds,Europe,GBP,1.0,1.5,0.5,100.0,False,German 2 year bond Schatz
+SILVER,Commodities,Metals,GBP,1.0,3.0,1.0,100.0,False,NYMEX Silver Index
 SMI,Equities,Europe,GBP,1.0,6.0,0.5,1.0,False,Swiss equity index SMI
 SSTERL,Bonds,Europe,GBP,1.0,1.0,0.5,100.0,False,Short Sterling
 SOYBEAN,Commodities,Agricultural,GBP,1.0,2.0,5.0,1.0,False,Soybean
+SOYMEAL,Commodities,Agricultural,GBP,1.0,80.0,0.25,100.0,False,Soybean meal
+SOYOIL,Commodities,Agricultural,GBP,1.0,10.0,1.0,100.0,False,Soybean Oil
 SP500,Equities,US,GBP,1.0,1.0,1.0,1.0,False,US equity index S&P500
+SUGAR,Commodities,Agricultural,GBP,1.0,5.0,2.0,100.0,False,Sugar New York No. 11
+SUGAR_LDN,Commodities,Agricultural,GBP,1.0,0.8,15.0,1.0,False,Sugar London No. 5
 US10,Bonds,US,GBP,1.0,4.0,0.5,100.0,False,US 10 year bond note
 US2,Bonds,US,GBP,1.0,2.0,0.5,100.0,False,US 2 year bond note
 US30,Bonds,US,GBP,1.0,4.0,0.5,100.0,False,US Ultra Treasury Bond
@@ -54,3 +69,4 @@ USTB,Bonds,US,GBP,1.0,4.0,0.5,100.0,False,US Treasury Bond
 V2X,Volatility,Europe,GBP,1.0,0.2,100.0,1.0,False,Vol European equity V2X
 VIX,Volatility,US,GBP,1.0,0.2,100.0,1.0,False,Vol US equity VIX
 WHEAT,Commodities,Agricultural,GBP,1.0,1.0,15.0,1.0,False,Wheat
+WHEAT_LDN,Commodities,Agricultural,GBP,1.0,0.75,20.0,1.0,False,Wheat London
