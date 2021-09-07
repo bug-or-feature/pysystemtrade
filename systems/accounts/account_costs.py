@@ -116,8 +116,7 @@ class accountCosts(accountInputs):
         )
 
         # original
-        cost_per_trade = self.get_SR_cost_per_trade_for_instrument(instrument_code)
-        #SR_cost = (turnover * cost_per_trade)
+        #SR_cost = self.get_SR_cost_given_turnover(instrument_code, turnover)
 
         # AG refactor
         costs = self.get_instrument_costs(instrument_code)
@@ -129,6 +128,33 @@ class accountCosts(accountInputs):
             turnover)
 
         return SR_cost
+
+    @diagnostic()
+    def get_SR_cost_given_turnover(self, instrument_code: str,
+                                    turnover: float) -> float:
+
+        SR_cost_trading = self.get_SR_trading_cost_only_given_turnover(instrument_code,
+                                                                       turnover)
+        SR_cost_holding = self.get_SR_holding_cost_only(instrument_code)
+        SR_cost = SR_cost_holding + SR_cost_trading
+
+        return SR_cost
+
+    def get_SR_trading_cost_only_given_turnover(self, instrument_code: str,
+                                                turnover: float) -> float:
+        cost_per_trade = self.get_SR_cost_per_trade_for_instrument(instrument_code)
+
+        SR_cost_trading = turnover * cost_per_trade
+
+        return SR_cost_trading
+
+    def get_SR_holding_cost_only(self, instrument_code: str) -> float:
+        cost_per_trade = self.get_SR_cost_per_trade_for_instrument(instrument_code)
+        hold_turnovers = self.get_rolls_per_year(instrument_code) / 2.0
+
+        SR_cost_holding = hold_turnovers * cost_per_trade
+
+        return SR_cost_holding
 
     @diagnostic()
     def get_turnover_for_forecast_combination(self, codes_to_use: list, rule_variation_name: str) -> turnoverDataForTradingRule:
@@ -336,10 +362,3 @@ class accountCosts(accountInputs):
     @property
     def use_SR_costs(self) -> float:
         return str2Bool(self.config.use_SR_costs)
-
-    # AG refactor
-    @diagnostic()
-    def get_holding_costs_per_instrument(self, instrument_code: str) -> float:
-        instrument_costs = self.get_instrument_costs(instrument_code)
-        holding_costs = instrument_costs.get_holding_costs_per_instrument(instrument_code)
-        return holding_costs
