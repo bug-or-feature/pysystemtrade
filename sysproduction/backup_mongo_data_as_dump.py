@@ -1,5 +1,6 @@
 import os
 import shutil
+from sysdata.config.production_config import get_production_config
 
 from sysproduction.data.directories import get_mongo_dump_directory, \
     get_mongo_backup_directory
@@ -29,16 +30,18 @@ class backupMongo(object):
 
 
 def dump_mongo_data(data):
+    host = get_production_config().get_element_or_arg_not_supplied('mongo_host')
     path = get_mongo_dump_directory()
     data.log.msg("Dumping mongo data to %s NOT TESTED IN WINDOWS" % path)
-    os.system("mongodump -o=%s" % path)
+    os.system("mongodump --uri='%s' -o=%s" % (host, path))
     data.log.msg("Dumped")
 
 
 def backup_mongo_dump(data):
     source_path = get_mongo_dump_directory()
     destination_path = get_mongo_backup_directory()
-    shutil.rmtree(destination_path)
+    if os.path.exists(destination_path):
+        shutil.rmtree(destination_path)
     data.log.msg("Copy from %s to %s" % (source_path, destination_path))
     shutil.copytree(source_path, destination_path)
 
