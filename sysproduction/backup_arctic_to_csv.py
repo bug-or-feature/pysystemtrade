@@ -60,7 +60,7 @@ class backupArcticToCsv:
         log.msg("Dumping from arctic, mongo to .csv files")
         backup_spreads_to_csv(backup_data)
         backup_fx_to_csv(backup_data)
-        backup_futures_contract_prices_to_csv(backup_data)
+        #backup_futures_contract_prices_to_csv(backup_data)
         backup_multiple_to_csv(backup_data)
         backup_adj_to_csv(backup_data)
         backup_strategy_position_data(backup_data)
@@ -369,25 +369,27 @@ def backup_capital(data):
             strategy_name
         ] = data.mongo_capital.get_capital_pd_df_for_strategy(strategy_name)
 
-    capital_data["TOTAL_total"] = data.mongo_capital.get_total_capital_pd_df()
-    capital_data[
-        "TOTAL_broker"
-    ] = data.mongo_capital.get_broker_account_value_pd_df()
-    capital_data["TOTAL_max"] = data.mongo_capital.get_maximum_account_value_pd_df()
-    capital_data[
-        "TOTAL_pandl"
-    ] = data.mongo_capital.get_profit_and_loss_account_pd_df()
+    if len(capital_data) > 0:
+        capital_data["TOTAL_total"] = data.mongo_capital.get_total_capital_pd_df()
+        capital_data[
+            "TOTAL_broker"
+        ] = data.mongo_capital.get_broker_account_value_pd_df()
+        capital_data["TOTAL_max"] = data.mongo_capital.get_maximum_account_value_pd_df()
+        capital_data[
+            "TOTAL_pandl"
+        ] = data.mongo_capital.get_profit_and_loss_account_pd_df()
 
-    capital_data = pd.concat(capital_data, axis=1)
-    capital_data.columns = strategy_list + [
-        "TOTAL_total",
-        "TOTAL_broker",
-        "TOTAL_max",
-        "TOTAL_pandl",
-    ]
-    capital_data = capital_data.ffill()
+        capital_data = pd.concat(capital_data, axis=1)
+        capital_data.columns = strategy_list + [
+            "TOTAL_total",
+            "TOTAL_broker",
+            "TOTAL_max",
+            "TOTAL_pandl",
+        ]
+        capital_data = capital_data.ffill()
 
-    data.csv_capital.write_df_of_all_capital(capital_data)
+        data.csv_capital.write_df_of_all_capital(capital_data)
+
     data.log.msg("Backed up capital data")
 
 
