@@ -18,29 +18,37 @@ class FuturesSpreadbetRawData(FuturesRawData):
     @input
     def get_daily_prices(self, instrument_code) -> pd.Series:
         multiplier = self.get_multiplier(instrument_code)
-        self.log.msg(f"Calculating FSB daily prices for {instrument_code}, with multiplier {multiplier}",
-                     instrument_code=instrument_code)
+        inverse = self.get_inverse(instrument_code)
+        self.log.msg(f"Calculating FSB daily prices for {instrument_code}, multiplier {multiplier}, "
+                     f"inverse {inverse}", instrument_code=instrument_code)
         dailyprice = self.data_stage.daily_prices(instrument_code)
+        if inverse:
+            dailyprice = 1 / dailyprice
         dailyprice *= multiplier
         return dailyprice
 
     @input
     def get_natural_frequency_prices(self, instrument_code: str) -> pd.Series:
         multiplier = self.get_multiplier(instrument_code)
-        self.log.msg(f"Retrieving FSB natural prices for {instrument_code}, with multiplier {multiplier}",
-            instrument_code=instrument_code,
-        )
+        inverse = self.get_inverse(instrument_code)
+        self.log.msg(f"Retrieving FSB natural prices for {instrument_code}, multiplier {multiplier}, "
+                     f"inverse {inverse}", instrument_code=instrument_code)
         natural_prices = self.data_stage.get_raw_price(instrument_code)
+        if inverse:
+            natural_prices = 1 / natural_prices
         natural_prices *= multiplier
         return natural_prices
 
     @input
     def get_hourly_prices(self, instrument_code: str) -> pd.Series:
         multiplier = self.get_multiplier(instrument_code)
-        self.log.msg(f"Retrieving FSB hourly prices for {instrument_code}, with multiplier {multiplier}",
-                     instrument_code=instrument_code)
+        inverse = self.get_inverse(instrument_code)
+        self.log.msg(f"Retrieving FSB hourly prices for {instrument_code}, multiplier {multiplier}, "
+                     f"inverse {inverse}", instrument_code=instrument_code)
         raw_prices = self.get_natural_frequency_prices(instrument_code)
         hourly_prices = raw_prices.resample("1H").last()
+        if inverse:
+            hourly_prices = 1 / hourly_prices
         hourly_prices *= multiplier
         return hourly_prices
 
@@ -48,6 +56,11 @@ class FuturesSpreadbetRawData(FuturesRawData):
         instr_obj = self.data_stage._get_instrument_object_with_cost_data(instrument_code)
         multiplier = instr_obj.meta_data.Multiplier
         return multiplier
+
+    def get_inverse(self, instrument_code):
+        instr_obj = self.data_stage._get_instrument_object_with_cost_data(instrument_code)
+        inverse = bool(instr_obj.meta_data.Inverse)
+        return inverse
 
     @output()
     def daily_denominator_price(self, instrument_code: str) -> pd.Series:
@@ -63,8 +76,11 @@ class FuturesSpreadbetRawData(FuturesRawData):
         KEY OUTPUT
         """
         multiplier = self.get_multiplier(instrument_code)
+        inverse = self.get_inverse(instrument_code)
         prices = self.get_instrument_raw_carry_data(instrument_code).PRICE
         daily_prices = prices.resample("1B").last()
+        if inverse:
+            daily_prices = 1 / daily_prices
         daily_prices *= multiplier
 
         return daily_prices
