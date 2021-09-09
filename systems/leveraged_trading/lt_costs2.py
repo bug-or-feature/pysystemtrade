@@ -83,6 +83,7 @@ def get_spreadbet_costs(source='db'):
 
         #if instr not in ['GOLD']:
         if instr not in ['GOLD', 'BUND', 'NZD', 'SP500']:
+        #if instr not in ["AEX","CAC","CORN","EUROSTX","GOLD","NASDAQ","PALLAD","PLAT","SMI","SOYBEAN","SP500","V2X","VIX","WHEAT"]:
             continue
 
         # prices
@@ -91,57 +92,37 @@ def get_spreadbet_costs(source='db'):
             warn = "!!! dates !!!"
 
         # getting instrument config
-        # instr_obj = data._get_instrument_object_with_cost_data(instr)
-        # instr_class = instr_obj.meta_data.AssetClass
+        instr_obj = data._get_instrument_object_with_cost_data(instr)
+        instr_class = instr_obj.meta_data.AssetClass
         # point_size = instr_obj.meta_data.Pointsize
-        # instr_subclass = instr_obj.meta_data.AssetSubclass
-        # spread_in_points = instr_obj.meta_data.Spread
-        # min_bet_per_point = instr_obj.meta_data.MinBetPerPoint
-        # params = roll_config.get_roll_parameters(instr)
-        # roll_count = len(params.hold_rollcycle._as_list())
+        instr_subclass = instr_obj.meta_data.AssetSubclass
+        spread_in_points = instr_obj.meta_data.Slippage * 2
+        min_bet_per_point = instr_obj.meta_data.Pointsize
 
-        # risk (annual volatility of returns)
-        #   - calculated as per 'Leveraged Trading' Appendix C, p.313,
-        #start_date = date_last_price - pd.DateOffset(days=25)
-        #average_price = float(prices[start_date:].mean())
+        # prices
+        warn = ""
+        prices = system.rawdata.get_daily_prices(instr)
+        date_last_price = prices.index[-1]
+        if not check_price(date_last_price):
+            warn = "!!! dates !!!"
+        sb_price = prices.iloc[-1]
 
-        # this is good from parent class
-        daily_returns = system.rawdata.daily_returns(instr)
+        start_date = date_last_price - pd.DateOffset(days=25)
+        average_price = float(prices[start_date:].mean())
 
-        daily_returns_volatility = system.rawdata.daily_returns_volatility(instr)
-        annual_returns_vol_series = daily_returns_volatility * ROOT_BDAYS_INYEAR
-        annual_vol = annual_returns_vol_series.iloc[-1]
-
-        # this is good from parent class
-        daily_percentage_returns = system.rawdata.get_daily_percentage_returns(instr)
-
-        # this is good from parent class, EXCEPT * 100 for a formatted %
-        # not used in LT?
-        daily_percentage_volatility = system.rawdata.get_daily_percentage_volatility(instr)
+        #annual_vol = recent_average_annual_perc_vol(annual_vol_series)
 
         # defined in our subclass
         annual_vol_percent = system.rawdata.get_annual_percentage_volatility(instr)
 
-        # STDEV of last 25 days of daily percentage returns
-        #daily_vol = daily_percentage_returns.ffill().rolling(window=25).std()
-        #annual_vol_series = daily_vol * ROOT_BDAYS_INYEAR
-        #annual_vol = annual_vol_series[-1]
-        #risk_in_price_units = annual_vol * sb_price
+        # from accounts
+        #annual_vol_percent = system.accounts._recent_average_annual_perc_vol(instr)
 
         # costs
-        # turnover = 5.4
-        instr_turnover = system.accounts.instrument_turnover(instr)  # Annualised turnover of portfolio level position
-        ss_turnover = system.accounts.subsystem_turnover(instr)  # Annualised turnover of subsystem
-        fc_turnover = system.accounts.forecast_turnover(instr, 'smac16_64') # Annualised turnover of forecast
-
-
-        # tc_ccy = (spread_in_points * min_bet_per_point) / 2
-        #tc_ccy = system.accounts.get_SR_cost_per_trade_for_instrument(instr)
-        # tc_ratio = tc_ccy / ((min_bet_per_point * sb_price) / point_size)
+        turnover = 5.4
         tc_risk = system.accounts.get_SR_cost_per_trade_for_instrument(instr)
-        # hc_ratio = tc_ratio * roll_count * 2
-        # hc_risk = hc_ratio / annual_vol
-        # costs_total = (tc_risk * turnover) + hc_risk
+        hc_only = system.accounts.get_SR_holding_cost_only(instr)
+        total_costs = system.accounts.get_SR_cost_given_turnover(instr, turnover)
 
         # forecasts
         #ewmac_series = ewmac(prices, daily_vol, 16, 64)
@@ -161,9 +142,9 @@ def get_spreadbet_costs(source='db'):
         #    rescaledForecast = max(-20, riskAdjMAC * MAV_SCALING_FACTOR)
 
         # positions
-        # min_exposure = (min_bet_per_point * average_price) / point_size
-        # orig_min_capital = (min_exposure * annual_vol) / ORIG_TARGET_RISK
-        # new_min_capital = orig_min_capital * (ORIG_TARGET_RISK / NEW_TARGET_RISK)
+        #min_exposure = (min_bet_per_point * average_price) / 1
+        #orig_min_capital = (min_exposure * annual_vol) / ORIG_TARGET_RISK
+        #new_min_capital = orig_min_capital * (ORIG_TARGET_RISK / NEW_TARGET_RISK)
         # trading_capital = CAPITAL_PER_INSTR + get_current_pandl(instr, positions, ig_prices)
         # ideal_notional_exposure = ((rescaledForecast / 10) * INSTR_TARGET_RISK * trading_capital) / annual_vol
         # current_pos = get_current_position(instr, positions)
@@ -175,18 +156,21 @@ def get_spreadbet_costs(source='db'):
         #account = pandl_for_instrument_forecast(forecast=smac_series, price=system.rawdata.get_daily_prices(instr))
         #print(f"P&L stats for {instr}: {account.percent.stats()}")
 
+        notional_position_series = system.portfolio.get_notional_position(instr)
+        notional_position = notional_position_series.iloc[-1]
+
         cost_rows.append(
             {
                 'Instr': instr,
                 #'Commission': 0,
-                #'Class': instr_class,
+                'Class': instr_class,
                 #'Subclass': instr_subclass,
                 #'PriceF': round(f_price, 2),
                 'Price': round(system.rawdata.get_daily_prices(instr).iloc[-1], 2),
                 'Date': system.rawdata.get_daily_prices(instr).index[-1],
                 #'mult': multiplier,
-                #'Spread': spread_in_points,
-                #'MinBet': min_bet_per_point,
+                'Spread': spread_in_points,
+                'MinBet': min_bet_per_point,
                 #'Xpoint': point_size,
                 #'Risk': f"{round(avg_annual_vol_perc, 3)}",
                 'DailyVol%': round(system.rawdata.get_daily_percentage_volatility(instr).iloc[-1], 4),
@@ -194,7 +178,10 @@ def get_spreadbet_costs(source='db'):
                 #'riskPU': round(risk_in_price_units, 2),
                 #'TCccy': f"£{round(tc_ccy, 2)}",
                 #'TCratio': "{:.2%}".format(tc_ratio),
-                'TCrisk': round(tc_risk, 5),
+                'TCrisk': round(tc_risk, 3),
+                'HConly': round(hc_only, 3),
+                'Ctotal': round(total_costs, 3),
+
                 #'instr_turnover': round(instr_turnover, 2),
                 #'ss_turnover': round(ss_turnover, 2),
                 #'fc_turnover': round(fc_turnover, 2),
@@ -204,11 +191,13 @@ def get_spreadbet_costs(source='db'):
                 #'minExp': round(min_exposure, 0),
                 #'OMinCap': round(orig_min_capital, 0),
                 #'MinCap': round(new_min_capital, 0),
-                'MAC': round(system.rules.get_raw_forecast(instr, 'smac16_64').iloc[-1], 2),
+                #'MAC': round(system.rules.get_raw_forecast(instr, 'smac16_64').iloc[-1], 2),
 
-                'fcScalar': round(system.forecastScaleCap.get_forecast_scalar(instr, 'smac16_64').iloc[-1], 4),
-                'scaledFC': round(system.forecastScaleCap.get_scaled_forecast(instr, 'smac16_64').iloc[-1], 4),
-                'cappedFC': round(system.forecastScaleCap.get_capped_forecast(instr, 'smac16_64').iloc[-1], 4),
+                #'fcScalar': round(system.forecastScaleCap.get_forecast_scalar(instr, 'smac16_64').iloc[-1], 4),
+                #'scaledFC': round(system.forecastScaleCap.get_scaled_forecast(instr, 'smac16_64').iloc[-1], 4),
+                #'cappedFC': round(system.forecastScaleCap.get_capped_forecast(instr, 'smac16_64').iloc[-1], 4),
+
+                'notPos': round(notional_position, 2),
 
                 #'raMAC': round(riskAdjMAC, 3),
                 #'scFC': round(rescaledForecast, 1),
@@ -235,10 +224,10 @@ def get_spreadbet_costs(source='db'):
     #cost_results = cost_results[cost_results["minCapital"] < ()] # costs
 
     # group, sort
-    cost_results = cost_results.sort_values(by='Instr') # Instr
-    #cost_results = cost_results.sort_values(by='MinCap') # Ctotal, NMinCap
+    #cost_results = cost_results.sort_values(by='Instr') # Instr
+    cost_results = cost_results.sort_values(by='Ctotal') # Ctotal, NMinCap
     #cost_results = cost_results.groupby('Class').apply(lambda x: x.sort_values(by='MinCap'))
-    write_file(cost_results, 'costs', write=True)
+    write_file(cost_results, 'costs', write=False)
 
 
 def write_file(df, calc_type, write=True):
