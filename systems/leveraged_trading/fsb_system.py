@@ -6,8 +6,6 @@ from syscore.objects import arg_not_supplied
 
 from sysdata.config.configdata import Config
 from sysdata.sim.db_fsb_sim_data import dbFsbSimData
-from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
-
 from systems.futures_spreadbet.rawdata import FuturesSpreadbetRawData
 from systems.forecasting import Rules
 from systems.basesystem import System
@@ -15,7 +13,7 @@ from systems.forecast_combine import ForecastCombine
 from systems.forecast_scale_cap import ForecastScaleCap
 from systems.positionsizing import PositionSizing
 from systems.portfolio import Portfolios
-from systems.fsb_accounts.fsb_accounts_stage import FsbAccount
+from systems.accounts.accounts_stage import Account
 
 
 def fsb_system(data=arg_not_supplied, config=arg_not_supplied, trading_rules=arg_not_supplied, log_level="on"):
@@ -66,7 +64,7 @@ def fsb_system(data=arg_not_supplied, config=arg_not_supplied, trading_rules=arg
     system = System(
         [
             FuturesSpreadbetRawData(),
-            FsbAccount(),
+            Account(),
             Portfolios(),
             PositionSizing(),
             ForecastCombine(),
