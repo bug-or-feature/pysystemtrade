@@ -48,6 +48,8 @@ class FuturesSpreadbetMetaData(instrumentMetaData):
         return cls(*args_list)
 
 
+
+
 @dataclass
 class FuturesSpreadbetWithMetaData:
     instrument: FuturesSpreadbet
