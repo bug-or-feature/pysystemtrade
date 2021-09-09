@@ -7,7 +7,7 @@ from syscore.pdutils import turnover
 
 from sysquant.estimators.turnover import turnoverDataForTradingRule
 
-from systems.system_cache import diagnostic, input
+from systems.system_cache import  diagnostic, input
 from systems.accounts.account_inputs import accountInputs
 
 class accountCosts(accountInputs):
@@ -115,17 +115,7 @@ class accountCosts(accountInputs):
             instrument_code, rule_variation_name
         )
 
-        # original
-        #SR_cost = self.get_SR_cost_given_turnover(instrument_code, turnover)
-
-        # AG refactor
-        costs = self.get_instrument_costs(instrument_code)
-        SR_cost = costs.get_sr_rule_costs(
-            instrument_code,
-            self.get_value_of_block_price_move(instrument_code),
-            self._recent_average_price(instrument_code),
-            self._recent_average_annual_perc_vol(instrument_code),
-            turnover)
+        SR_cost = self.get_SR_cost_given_turnover(instrument_code, turnover)
 
         return SR_cost
 
@@ -255,7 +245,6 @@ class accountCosts(accountInputs):
     def get_SR_cost_per_trade_for_instrument(self, instrument_code: str) -> float:
         """
         Get the vol normalised SR costs for an instrument
-        AHG: this is Transaction cost per trade, risk adjusted
 
         :param instrument_code: instrument to value for
         :type instrument_code: str
@@ -271,47 +260,29 @@ class accountCosts(accountInputs):
         0.0065584086244069775
         """
 
-        # original
-        #cost_in_percentage_terms = self._get_SR_cost_per_trade_for_instrument_percentage(instrument_code)
-        #avg_annual_vol_perc = self._recent_average_annual_perc_vol(instrument_code)
+        cost_in_percentage_terms = self._get_SR_cost_per_trade_for_instrument_percentage(instrument_code)
+        avg_annual_vol_perc = self._recent_average_annual_perc_vol(instrument_code)
 
         # cost per round trip
-        #SR_cost = 2.0 * cost_in_percentage_terms / avg_annual_vol_perc
-
-        # AG refactor
-        instrument_costs = self.get_instrument_costs(instrument_code)
-        SR_cost = instrument_costs.get_sr_per_trade_costs(
-            instrument_code,
-            self.get_value_of_block_price_move(instrument_code),
-            self._recent_average_price(instrument_code),
-            self._recent_average_annual_perc_vol(instrument_code)
-        )
+        SR_cost = 2.0 * cost_in_percentage_terms / avg_annual_vol_perc
 
         return SR_cost
 
     @diagnostic()
     def _get_SR_cost_per_trade_for_instrument_percentage(self, instrument_code: str) -> float:
+        raw_costs = self.get_raw_cost_data(instrument_code)
+        block_price_multiplier = self.get_value_of_block_price_move(instrument_code)
+        average_price = self._recent_average_price(instrument_code)
+        notional_blocks_traded = 1
 
-        # original
-        #raw_costs = self.get_raw_cost_data(instrument_code)
-        #block_price_multiplier = self.get_value_of_block_price_move(instrument_code)
-        #average_price = self._recent_average_price(instrument_code)
-        #notional_blocks_traded = 1
-
-        #cost_in_percentage_terms = raw_costs.calculate_cost_percentage_terms(
-        #    blocks_traded=notional_blocks_traded,
-        #    block_price_multiplier=block_price_multiplier,
-        #    price=average_price
-        #)
-
-        # AG refactor
-        instrument_costs = self.get_instrument_costs(instrument_code)
-        cost_in_percentage_terms = instrument_costs.get_sr_percentage_costs(
-            self.get_value_of_block_price_move(instrument_code),
-            self._recent_average_price(instrument_code)
+        cost_in_percentage_terms = raw_costs.calculate_cost_percentage_terms(
+            blocks_traded=notional_blocks_traded,
+            block_price_multiplier=block_price_multiplier,
+            price=average_price
         )
 
         return cost_in_percentage_terms
+
 
     @diagnostic()
     def _recent_average_price(self, instrument_code: str) -> float:
