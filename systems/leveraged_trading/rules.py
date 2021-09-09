@@ -3,6 +3,7 @@ Trading rules for Leveraged Trading system
 """
 import pandas as pd
 from systems.leveraged_trading.volatility import simple_volatility_calc
+from sysquant.estimators.vol import robust_vol_calc
 from syscore.dateutils import ROOT_BDAYS_INYEAR
 
 
@@ -29,6 +30,23 @@ def smac(price, fast=16, slow=64):
     raw_smac = fast_sma - slow_sma
 
     return raw_smac
+
+
+def calc_smac_forecast(price, fast=16, slow=64):
+
+    """
+    Calculate the smac trading rule forecast, given a price and SMA speeds fast, slow
+    """
+
+    price = price.resample("1B").last()
+
+    fast_sma = price.ffill().rolling(window=fast).mean()
+    slow_sma = price.ffill().rolling(window=slow).mean()
+    raw_smac = fast_sma - slow_sma
+
+    vol = robust_vol_calc(price.diff())
+
+    return raw_smac / vol
 
 
 def rasmac(price, fast=16, slow=64, lookback=25):
