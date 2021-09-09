@@ -2,7 +2,7 @@
 Trading rules for Leveraged Trading system
 """
 import pandas as pd
-from systems.leveraged_trading.volatility import simple_volatility_calc
+from systems.futures_spreadbet.volatility import simple_volatility_calc
 from sysquant.estimators.vol import robust_vol_calc
 from syscore.dateutils import ROOT_BDAYS_INYEAR
 

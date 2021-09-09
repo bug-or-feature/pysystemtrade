@@ -6,7 +6,7 @@ from systems.provided.futures_chapter15.basesystem import futures_system
 def default_futures():
     system = futures_system(
         data=MyDbFuturesSimData(),
-        config=Config('systems.leveraged_trading.default_futures.yaml'))
+        config=Config('systems.futures_spreadbet.default_futures.yaml'))
     return system
 
 

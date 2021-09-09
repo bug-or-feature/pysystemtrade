@@ -1,5 +1,5 @@
 from sysdata.sim.db_fsb_sim_data import dbFsbSimData
-from systems.leveraged_trading.rules import calc_smac_forecast
+from systems.futures_spreadbet.rules import calc_smac_forecast
 from systems.accounts.account_forecast import pandl_for_instrument_forecast
 from matplotlib.pyplot import show
 

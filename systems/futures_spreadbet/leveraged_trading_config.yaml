@@ -4,7 +4,7 @@ notional_trading_capital: 32000
 base_currency: "GBP"
 trading_rules:
   smac16_64:
-    function: systems.leveraged_trading.rules.smac
+    function: systems.futures_spreadbet.rules.smac
     data:
       - "rawdata.get_daily_prices"
     other_args:

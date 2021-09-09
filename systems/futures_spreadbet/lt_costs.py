@@ -21,7 +21,7 @@ from systems.accounts.accounts_stage import Account
 from systems.basesystem import System
 from systems.forecasting import Rules
 from systems.futures_spreadbet.rawdata import FuturesSpreadbetRawData
-from systems.leveraged_trading.rules import smac, rasmac
+from systems.futures_spreadbet.rules import smac, rasmac
 
 # original account level target risk (%), when trading one instrument
 ORIG_TARGET_RISK = 0.12
@@ -63,7 +63,7 @@ def get_spreadbet_costs():
     if len(sys.argv) > 1:
         args = sys.argv[1]
 
-    config = Config("systems.leveraged_trading.leveraged_trading_config.yaml")
+    config = Config("systems.futures_spreadbet.leveraged_trading_config.yaml")
     ig_prices = CsvFsbContractPriceData()
 
     #if source == 'db':

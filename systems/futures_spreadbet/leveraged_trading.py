@@ -15,7 +15,7 @@ def lt_system(data=None, config=None, log_level="on"):
     Emulates the Starter System from the book Leveraged Trading
     """
     if config is None:
-        config = Config("systems.leveraged_trading.leveraged_trading_config.yaml")
+        config = Config("systems.futures_spreadbet.leveraged_trading_config.yaml")
     if data is None:
         data = csvFuturesSimData()
 
