@@ -1,10 +1,10 @@
 import pandas as pd
-from systems.futures.rawdata import FuturesRawData
+from systems.rawdata import RawData
 from systems.system_cache import input, output
 from syscore.dateutils import ROOT_BDAYS_INYEAR
 
 
-class FuturesSpreadbetRawData(FuturesRawData):
+class FuturesSpreadbetRawData(RawData):
     """
     A SubSystem that does futures spreadbet specific raw data calculations
 
