@@ -1,7 +1,6 @@
 from syscore.objects import arg_not_supplied
 from syscore.genutils import flatten_list
-from dataclasses import dataclass
-from abc import ABC, abstractmethod
+from dataclasses import  dataclass
 import pandas as pd
 
 EMPTY_INSTRUMENT = ""
@@ -172,50 +171,7 @@ class assetClassesAndInstruments(dict):
 
         return filtered_asset_class_instrument_list
 
-
-class instrumentCosts(ABC):
-
-    @abstractmethod
-    def get_sr_per_trade_costs(
-            self,
-            instr,
-            block_price_multiplier,
-            average_price,
-            avg_annual_vol_perc
-    ) -> float:
-        pass
-
-    @abstractmethod
-    def get_sr_percentage_costs(
-            self,
-            block_price_multiplier,
-            average_price
-    ) -> float:
-        pass
-
-    @abstractmethod
-    def get_sr_holding_costs(self, instrument_code: str) -> float:
-        pass
-
-    @abstractmethod
-    def get_sr_rule_costs(
-            self,
-            instrument_code: str,
-            block_price_multiplier,
-            average_price,
-            avg_annual_vol_perc,
-            turnover: float) -> float:
-        pass
-
-    @abstractmethod
-    def calculate_total_commission(
-            self,
-            blocks_traded: float,
-            value_per_block: float):
-        pass
-
-
-class futuresInstrumentCosts(instrumentCosts):
+class instrumentCosts(object):
     def __init__(self,
             price_slippage: float=0.0,
             value_of_block_commission: float=0.0,
@@ -236,8 +192,9 @@ class futuresInstrumentCosts(instrumentCosts):
             value_of_pertrade_commission=meta_data.PerTrade,
         )
 
+
     def __repr__(self):
-        return "futuresInstrumentCosts slippage %f block_commission %f percentage cost %f per trade commission %f " % \
+        return "instrumentCosts slippage %f block_commission %f percentage cost %f per trade commission %f " % \
             (self.price_slippage, self.value_of_block_commission, self.percentage_cost, self.value_of_pertrade_commission)
 
     @property
@@ -283,22 +240,6 @@ class futuresInstrumentCosts(instrumentCosts):
 
         return slippage + commission
 
-    def get_sr_rule_costs(
-            self,
-            instrument_code: str,
-            block_price_multiplier,
-            average_price,
-            avg_annual_vol_perc,
-            turnover: float) -> float:
-
-        cost_per_trade = self.get_sr_per_trade_costs(
-            instrument_code,
-            block_price_multiplier,
-            average_price,
-            avg_annual_vol_perc)
-        sr_rule_cost = (turnover * cost_per_trade)
-        return sr_rule_cost
-
     def calculate_total_commission(self, blocks_traded: float, value_per_block: float):
         ### YOU WILL NEED TO CHANGE THIS IF YOUR BROKER HAS A MORE COMPLEX STRUCTURE
         per_trade_commission = self.calculate_per_trade_commission()
@@ -324,37 +265,3 @@ class futuresInstrumentCosts(instrumentCosts):
     def calculate_trade_value(self, blocks_traded, value_per_block):
         return abs(blocks_traded) * value_per_block
 
-    def get_sr_per_trade_costs(
-            self,
-            instr,
-            block_price_multiplier,
-            average_price,
-            avg_annual_vol_perc) -> float:
-
-        cost_in_percentage_terms = self.get_sr_percentage_costs(
-            block_price_multiplier,
-            average_price
-        )
-
-        # cost per round trip
-        SR_cost = 2.0 * cost_in_percentage_terms / avg_annual_vol_perc
-
-        # this is TCrisk
-        return SR_cost
-
-    def get_sr_percentage_costs(
-            self,
-            block_price_multiplier,
-            average_price
-    ) -> float:
-
-        cost_in_percentage_terms = self.calculate_cost_percentage_terms(
-            blocks_traded=1,
-            block_price_multiplier=block_price_multiplier,
-            price=average_price
-        )
-
-        return cost_in_percentage_terms
-
-    def get_sr_holding_costs(self, instrument_code: str) -> float:
-        return 0.0
