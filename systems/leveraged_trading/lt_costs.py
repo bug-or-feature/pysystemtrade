@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timedelta
-import pytz
+import sys
 
 import pandas as pd
 
@@ -49,22 +49,29 @@ STOP_LOSS_FRACTION = 0.5
 
 MAV_SCALING_FACTOR = 57.12
 
-def get_spreadbet_costs(source='db'):
+
+def get_spreadbet_costs():
 
     """
     calculates spreadbet costs using formulas from Leveraged Trading
     """
 
-    config = Config("systems.leveraged_trading.leveraged_trading_config.yaml")
+    print(f"Name of the script      : {sys.argv[0]=}")
+    print(f"Arguments of the script : {sys.argv[1:]=}")
 
+    args = None
+    if len(sys.argv) > 1:
+        args = sys.argv[1]
+
+    config = Config("systems.leveraged_trading.leveraged_trading_config.yaml")
     ig_prices = CsvFsbContractPriceData()
 
-    if source == 'db':
-        sim = dbFsbSimData()
-        data_source = 'barchart'
-    else:
-        sim = csvFsbSimData(csv_data_paths=dict(csvFuturesInstrumentData="data.futures_spreadbet.csvconfig"))
-        data_source = 'provided'
+    #if source == 'db':
+    sim = dbFsbSimData()
+    data_source = 'barchart'
+    #else:
+    #    sim = csvFsbSimData(csv_data_paths=dict(csvFuturesInstrumentData="data.futures_spreadbet.csvconfig"))
+    #    data_source = 'provided'
 
     system = System(
         [
@@ -77,20 +84,24 @@ def get_spreadbet_costs(source='db'):
     positions = get_position_list()
     cost_rows = []
 
-    for instr in sim.db_futures_instrument_data.get_list_of_instruments():
+    if args is not None:
+        instr_list = sys.argv[1].split(",")
+    else:
+        instr_list = sim.db_futures_instrument_data.get_list_of_instruments()
 
-        #if instr not in ['GOLD']:
-        if instr not in ['GOLD', 'BUND', 'NZD', 'SP500']:
+    for instr in instr_list:
+
+        if instr not in instr_list:
             continue
 
         # getting instrument config
         instr_obj = sim._get_instrument_object_with_cost_data(instr)
         instr_class = instr_obj.meta_data.AssetClass
         point_size = instr_obj.meta_data.Pointsize
-        instr_subclass = instr_obj.meta_data.AssetSubclass
+        #instr_subclass = instr_obj.meta_data.AssetSubclass
         #multiplier = instr_obj.meta_data.Multiplier
-        spread_in_points = instr_obj.meta_data.Spread
-        min_bet_per_point = instr_obj.meta_data.MinBetPerPoint
+        spread_in_points = instr_obj.meta_data.Slippage * 2
+        min_bet_per_point = instr_obj.meta_data.Pointsize
         params = roll_config.get_roll_parameters(instr)
         roll_count = len(params.hold_rollcycle._as_list())
 
@@ -230,12 +241,12 @@ def get_spreadbet_costs(source='db'):
     cost_results = pd.DataFrame(cost_rows)
 
     # filter
-    #cost_results = cost_results[cost_results["Ctotal"] < 0.08] # costs
+    cost_results = cost_results[cost_results["Ctotal"] < 0.08] # costs
     #cost_results = cost_results[abs(cost_results["PosSize"]) > cost_results["MinBet"]] # min bet
     #cost_results = cost_results[cost_results["minCapital"] < ()] # costs
 
     # group, sort
-    cost_results = cost_results.sort_values(by='MinCap') # Ctotal, NMinCap
+    cost_results = cost_results.sort_values(by='Ctotal') # Ctotal, NMinCap
     #cost_results = cost_results.groupby('Class').apply(lambda x: x.sort_values(by='MinCap'))
     write_file(cost_results, 'costs', data_source, write=True)
 
