@@ -9,6 +9,8 @@ from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesDat
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
 from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
 from sysdata.mongodb.mongo_fsb_instruments import mongoFsbInstrumentData
+# from sysdata.csv.csv_fsb_instrument_data import CsvFsbInstrumentData
+from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysdata.data_blob import dataBlob
 from sysdata.sim.futures_sim_data_with_data_blob import genericBlobUsingFuturesSimData
 from sysdata.futures.instruments import futuresInstrumentData
@@ -25,7 +27,8 @@ class dbFsbSimData(genericBlobUsingFuturesSimData):
                                 arcticFuturesAdjustedPricesData,
                                 arcticFuturesMultiplePricesData,
                                 arcticFxPricesData,
-                                mongoFsbInstrumentData])
+                                mongoFsbInstrumentData, # CsvFsbInstrumentData
+                                mongoRollParametersData])
 
         super().__init__(data=data)
 
