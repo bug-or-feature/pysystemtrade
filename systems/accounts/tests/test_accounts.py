@@ -54,15 +54,15 @@ class TestAccounts:
         self.assert_percentage_cost(system, 'V2X', 4.2191e-3)
 
     def test_cost_of_rule(self, system):
-        self.assert_rule_cost(system, 'EDOLLAR', 'ewmac2_8', 1.003070)
-        self.assert_rule_cost(system, 'EDOLLAR', 'ewmac8_32', 0.264323)
-        self.assert_rule_cost(system, 'EDOLLAR', 'ewmac32_128', 0.091679)
-        self.assert_rule_cost(system, 'EDOLLAR', 'carry', 0.013979)
+        self.assert_rule_cost(system, 'EDOLLAR', 'ewmac2_8', 1.025049)
+        self.assert_rule_cost(system, 'EDOLLAR', 'ewmac8_32', 0.286303)
+        self.assert_rule_cost(system, 'EDOLLAR', 'ewmac32_128', 0.113658)
+        self.assert_rule_cost(system, 'EDOLLAR', 'carry', 0.035958)
 
-        self.assert_rule_cost(system, 'CORN', 'ewmac4_16', 0.266683)
-        self.assert_rule_cost(system, 'CORN', 'ewmac16_64', 0.075904)
-        self.assert_rule_cost(system, 'CORN', 'ewmac64_256', 0.034408)
-        self.assert_rule_cost(system, 'CORN', 'carry', 0.007257)
+        self.assert_rule_cost(system, 'CORN', 'ewmac4_16', 0.269535)
+        self.assert_rule_cost(system, 'CORN', 'ewmac16_64', 0.078757)
+        self.assert_rule_cost(system, 'CORN', 'ewmac64_256', 0.037261)
+        self.assert_rule_cost(system, 'CORN', 'carry', 0.010109)
 
     @staticmethod
     def assert_per_trade_cost(system, instr: str, expected: float):
