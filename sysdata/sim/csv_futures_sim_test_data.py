@@ -5,6 +5,7 @@ from sysdata.csv.csv_multiple_prices import csvFuturesMultiplePricesData
 from sysdata.csv.csv_adjusted_prices import csvFuturesAdjustedPricesData
 from sysdata.csv.csv_spot_fx import csvFxPricesData
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
+from sysdata.csv.csv_roll_parameters import csvRollParametersData
 
 from sysdata.data_blob import dataBlob
 from sysobjects.spot_fx_prices import fxPrices
@@ -36,7 +37,8 @@ class CsvFuturesSimTestData(genericBlobUsingFuturesSimData):
                 csvFuturesAdjustedPricesData,
                 csvFuturesMultiplePricesData,
                 csvFuturesInstrumentData,
-                csvFxPricesData
+                csvFxPricesData,
+                csvRollParametersData
             ]
         )
 
