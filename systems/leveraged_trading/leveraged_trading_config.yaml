@@ -49,8 +49,22 @@ instrument_weights:
     SP500: 0.20
     GOLD: 0.20
     NZD: 0.20
-    CORN: 0.20
-instrument_div_multiplier: 1.89
+#    CORN: 0.20
+    #AEX: 0.07143
+    #CAC: 0.07143
+    #CORN: 0.07143
+    #EUROSTX: 0.07143
+    #GOLD: 0.07143
+    #NASDAQ: 0.07143
+    #PALLAD: 0.07143
+    #PLAT: 0.07143
+    #SMI: 0.07143
+    #SOYBEAN: 0.07143e
+    #SP500: 0.07143
+    #V2X: 0.07143
+    #VIX: 0.07143
+    #WHEAT: 0.07143
+#instrument_div_multiplier: 1.89
 
 ignore_instruments:
   - KOSPI
