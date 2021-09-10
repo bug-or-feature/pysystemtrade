@@ -8,7 +8,7 @@ from systems.provided.futures_chapter15.basesystem import futures_system
 
 @pytest.fixture(scope="module")
 def system():
-    """test fixture creates a system"""
+    """test fixture creates a system with start and end dates"""
     system = futures_system(
         data=CsvFuturesSimTestData(),
         config=Config("systems.provided.futures_chapter15.futuresconfig.yaml"))
@@ -64,6 +64,34 @@ class TestAccounts:
         self.assert_rule_cost(system, 'CORN', 'ewmac64_256', 0.037261)
         self.assert_rule_cost(system, 'CORN', 'carry', 0.010109)
 
+    def test_costs_holding(self, system):
+        self.assert_holding_cost(system, 'BOBL', 0.009903)
+        self.assert_holding_cost(system, 'US2', 0.023439)
+        self.assert_holding_cost(system, 'SHATZ', 0.028115)
+
+        self.assert_holding_cost(system, 'EUR', 0.003261)
+        self.assert_holding_cost(system, 'GBP', 0.004076)
+
+        self.assert_holding_cost(system, 'WHEAT', 0.002518)
+        self.assert_holding_cost(system, 'PALLAD', 0.008138)
+
+        self.assert_holding_cost(system, 'AEX', 0.009141)
+        self.assert_holding_cost(system, 'SP500', 0.000924)
+        self.assert_holding_cost(system, 'NASDAQ', 0.000575)
+
+    def test_costs_total(self, system):
+        self.assert_total_cost(system, 'KR10', 5.7, 0.02553)
+        self.assert_total_cost(system, 'VIX', 2.8, 0.038997)
+
+        self.assert_total_cost(system, 'MXP', 6.0, 0.019435)
+        self.assert_total_cost(system, 'JPY', 3.9, 0.010811)
+
+        self.assert_total_cost(system, 'COPPER', 4.2, 0.012725)
+        self.assert_total_cost(system, 'SOYBEAN', 5.7, 0.032369)
+
+        self.assert_total_cost(system, 'KOSPI', 3.1, 0.018728)
+        self.assert_total_cost(system, 'SMI', 4.4, 0.008252)
+
     @staticmethod
     def assert_per_trade_cost(system, instr: str, expected: float):
         actual = system.accounts.get_SR_cost_per_trade_for_instrument(instr)
@@ -77,4 +105,14 @@ class TestAccounts:
     @staticmethod
     def assert_rule_cost(system, instr: str, rule: str, expected: float):
         actual = system.accounts._get_SR_cost_of_rule_for_individual_instrument(instr, rule)
+        assert actual == approx(expected, rel=1e-3)
+
+    @staticmethod
+    def assert_holding_cost(system, instr: str, expected: float):
+        actual = system.accounts.get_SR_holding_cost_only(instr)
+        assert actual == approx(expected, rel=1e-3)\
+
+    @staticmethod
+    def assert_total_cost(system, instr: str, turnover: float, expected: float):
+        actual = system.accounts.get_SR_cost_given_turnover(instr, turnover)
         assert actual == approx(expected, rel=1e-3)
