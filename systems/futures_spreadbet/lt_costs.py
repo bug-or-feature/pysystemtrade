@@ -97,7 +97,7 @@ def get_spreadbet_costs():
         # getting instrument config
         instr_obj = sim._get_instrument_object_with_cost_data(instr)
         instr_class = instr_obj.meta_data.AssetClass
-        point_size = instr_obj.meta_data.Pointsize
+        point_size = 1 # assumed
         #instr_subclass = instr_obj.meta_data.AssetSubclass
         #multiplier = instr_obj.meta_data.Multiplier
         spread_in_points = instr_obj.meta_data.Slippage * 2
@@ -183,14 +183,15 @@ def get_spreadbet_costs():
         orig_min_capital = (min_exposure * annual_vol) / ORIG_TARGET_RISK
         new_min_capital = orig_min_capital * (ORIG_TARGET_RISK / NEW_TARGET_RISK)
         trading_capital = CAPITAL_PER_INSTR + get_current_pandl(instr, positions, ig_prices)
-        ideal_notional_exposure = ((rescaledForecast / 10) * INSTR_TARGET_RISK * trading_capital) / annual_vol
+        ideal_exposure = ((rescaledForecast / 10) * INSTR_TARGET_RISK * trading_capital) / annual_vol
         current_pos = get_current_position(instr, positions, sb_price)
         #current_notional_exposure_old = (current_pos * sb_price) / (point_size)
-        current_notional_exposure = get_current_exposure(instr, positions)
-        average_notional_exposure = (INSTR_TARGET_RISK * trading_capital) / annual_vol
-        deviation = (ideal_notional_exposure - current_notional_exposure) / average_notional_exposure
-        pos_size = (ideal_notional_exposure * 1 * point_size) / average_price
-        adjustment_required = adjustment_calc(sb_price, current_notional_exposure, ideal_notional_exposure) if abs(deviation) > 0.1 else 0.0
+        current_exposure = get_current_exposure(instr, positions)
+        average_exposure = (INSTR_TARGET_RISK * trading_capital) / annual_vol
+        deviation = (ideal_exposure - current_exposure) / average_exposure
+        #pos_size = (ideal_notional_exposure * 1 * point_size) / average_price
+        ideal_pos_size = ideal_exposure / sb_price
+        adjustment_required = adjustment_calc(sb_price, current_exposure, ideal_exposure) if abs(deviation) > 0.1 else 0.0
         #account = pandl_for_instrument_forecast(forecast=smac_series, price=system.rawdata.get_daily_prices(instr))
         #print(f"P&L stats for {instr}: {account.percent.stats()}")
 
@@ -225,12 +226,12 @@ def get_spreadbet_costs():
                 #'sFC': round(scaledForecast, 1),
                 #'scFC': round(scaledCappedForecast, 1),
                 'Dir': direction,
-                'IdealExp': round(ideal_notional_exposure, 0),
-                'CurrExp': round(current_notional_exposure, 0),
-                'AvgExp': round(average_notional_exposure, 0),
+                'IdealExp': round(ideal_exposure, 0),
+                'CurrExp': round(current_exposure, 0),
+                'AvgExp': round(average_exposure, 0),
                 'Dev%': "{:.2%}".format(deviation),
                 'CurrPos': round(current_pos, 2),
-                'IdealPos': round(pos_size, 2),
+                'IdealPos': round(ideal_pos_size, 2),
                 'AdjReq': round(adjustment_required, 2),
                 'Msg': warn
                 #'StopGap': round(stop_loss_gap, 0)
@@ -309,11 +310,9 @@ def get_current_exposure(instr, pos_list):
 
 def adjustment_calc(curr_price, current_exposure, ideal_exposure):
     exposure_diff = ideal_exposure - current_exposure
-    #exposure_diff = current_exposure - ideal_exposure
-    #filtered = filter(lambda p: p['instr'] == instr, positions)
     # LT p.264
     # bet per point = (exposure  x point size) / price
-    adj = (exposure_diff * 1) / curr_price
+    adj = (exposure_diff) / curr_price
     return adj
 
 
