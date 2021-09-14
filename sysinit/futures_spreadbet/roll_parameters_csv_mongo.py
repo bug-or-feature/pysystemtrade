@@ -9,8 +9,8 @@ if __name__ == "__main__":
     input("Will overwrite existing data are you sure?! CTL-C to abort")
     # modify flags as required
 
-    data_out = mongoRollParametersData()
-    data_in = csvRollParametersData(datapath="sysinit.futures_bc.config.")
+    data_out = mongoRollParametersData(collection_name='fsb_roll_parameters')
+    data_in = csvRollParametersData(datapath="data.futures_spreadbet.csvconfig.")
 
     instrument_list = data_in.get_list_of_instruments()
 
