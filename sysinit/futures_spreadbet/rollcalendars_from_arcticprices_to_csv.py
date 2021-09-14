@@ -115,16 +115,56 @@ def check_saved_roll_calendar(
 
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    instrument_code = get_valid_instrument_code_from_user(source='single')
+    #instrument_code = get_valid_instrument_code_from_user(source='single')
+    instrument_code = "FTSE"
     ## MODIFY DATAPATH IF REQUIRED
 
     build_and_write_roll_calendar(
         instrument_code,
-        output_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_bc/roll_calendars_csv')
+        output_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_spreadbet/roll_calendars_csv')
 
     # check_saved_roll_calendar("AUD",
     #     #input_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_bc/roll_calendars_csv',
     #     input_datapath='sysinit.futures.tests.data.aud',
     #     input_prices=csvFuturesContractPriceData())
 
-    # EDOLLAR xxx
+    # FTSE
+    # HANG
+    # NIKKEI
+    # DOW
+    # RUSSELL
+
+    # US30
+    # USTB
+    # BUXL
+    # GILT
+    # JGB
+    # EURIBOR
+    # SSTERL
+
+    # EURGBP
+    # CAD
+    # CHF
+    # DOLLAR
+
+    # BRENT_W
+    # GASOLINE
+    # HEATOIL
+    # GASOIL_LDN
+
+    # SILVER
+    # CARBON
+    # COFFEE
+    # COTTON
+    # SOYOIL
+    # SUGAR
+    # LUMBER
+    # OATIES
+    # COCOA_NY
+    # COCOA_LDN
+    # SUGAR_LDN
+    # COFFEE_LDN
+    # OJ
+    # SOYMEAL
+    # WHEAT_LDN
+    # RICE
