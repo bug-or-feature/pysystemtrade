@@ -11,8 +11,8 @@ CAC,Equities,Europe,GBP,2.0,1.0,0.0,0.0,0.0,1.0,False,French equity index CAC40
 CAD,FX,US,GBP,3.65,1.0,0.0,0.0,0.0,10000.0,True,USDCAD currency
 CARBON,Commodities,Energy,GBP,5.5,0.25,0.0,0.0,0.0,100.0,False,Carbon Emissions
 CHF,FX,Europe,GBP,4.75,1.0,0.0,0.0,0.0,10000.0,True,USDCHF currency
-COCOA_NY,Commodities,Agricultural,GBP,4.0,1.0,0.0,0.0,0.0,1.0,False,Cocoa New York
 COCOA_LDN,Commodities,Agricultural,GBP,2.0,0.5,0.0,0.0,0.0,1.0,False,Cocoa London
+COCOA_NY,Commodities,Agricultural,GBP,4.0,1.0,0.0,0.0,0.0,1.0,False,Cocoa New York
 COFFEE,Commodities,Agricultural,GBP,20.0,0.5,0.0,0.0,0.0,100.0,False,Coffee New York Arabica
 COFFEE_LDN,Commodities,Agricultural,GBP,3.0,0.5,0.0,0.0,0.0,1.0,False,Coffee London Robusta
 COPPER,Commodities,Metals,GBP,20.0,0.1,0.0,0.0,0.0,10000.0,False,Copper
@@ -54,11 +54,11 @@ RUSSELL,Equities,US,GBP,0.25,2.0,0.0,0.0,0.0,1.0,False,Russell 2000 Index
 SHATZ,Bonds,Europe,GBP,0.75,0.5,0.0,0.0,0.0,100.0,False,German 2 year bond Schatz
 SILVER,Commodities,Metals,GBP,1.5,1.0,0.0,0.0,0.0,100.0,False,NYMEX Silver Index
 SMI,Equities,Europe,GBP,3.0,0.5,0.0,0.0,0.0,1.0,False,Swiss equity index SMI
-SSTERL,Bonds,Europe,GBP,0.5,0.5,0.0,0.0,0.0,100.0,False,Short Sterling
 SOYBEAN,Commodities,Agricultural,GBP,1.0,5.0,0.0,0.0,0.0,1.0,False,Soybean
 SOYMEAL,Commodities,Agricultural,GBP,40.0,0.25,0.0,0.0,0.0,100.0,False,Soybean meal
 SOYOIL,Commodities,Agricultural,GBP,5.0,1.0,0.0,0.0,0.0,100.0,False,Soybean Oil
 SP500,Equities,US,GBP,0.5,1.0,0.0,0.0,0.0,1.0,False,US equity index S&P500
+SSTERL,Bonds,Europe,GBP,0.5,0.5,0.0,0.0,0.0,100.0,False,Short Sterling
 SUGAR,Commodities,Agricultural,GBP,2.5,2.0,0.0,0.0,0.0,100.0,False,Sugar New York No. 11
 SUGAR_LDN,Commodities,Agricultural,GBP,0.4,15.0,0.0,0.0,0.0,1.0,False,Sugar London No. 5
 US10,Bonds,US,GBP,2.0,0.5,0.0,0.0,0.0,100.0,False,US 10 year bond note
