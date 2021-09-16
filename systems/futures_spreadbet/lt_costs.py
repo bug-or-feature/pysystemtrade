@@ -94,6 +94,14 @@ def get_spreadbet_costs():
         if instr not in instr_list:
             continue
 
+        # ignore instruments that are not fully setup yet
+        # TODO move to higher level function?
+        if instr in ["ASX","DAX","FTSE","HANG","NIKKEI","DOW","RUSSELL","US30","USTB","BUXL","GILT","JGB","EURIBOR",
+                     "SSTERL","EURGBP","CAD","CHF","DOLLAR","BRENT_W","GASOLINE","HEATOIL","GASOIL_LDN","SILVER",
+                     "CARBON","COFFEE","COTTON","SOYOIL","SUGAR","LUMBER","OATIES","COCOA_NY","COCOA_LDN","SUGAR_LDN",
+                     "COFFEE_LDN","OJ","SOYMEAL","WHEAT_LDN","RICE"]:
+            continue
+
         # getting instrument config
         instr_obj = sim._get_instrument_object_with_cost_data(instr)
         instr_class = instr_obj.meta_data.AssetClass
