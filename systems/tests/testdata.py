@@ -152,7 +152,7 @@ def get_test_object_futures_spreadbet():
     #         csvFuturesAdjustedPricesData="data.futures_bc.adjusted_prices_csv",
     #         csvFuturesMultiplePricesData="data.futures_bc.multiple_prices_csv")
     # )
-    rawdata = FuturesRawData()
+    rawdata = RawData()
     config = Config("systems.provided.example.exampleconfig.yaml")
     return rawdata, data, config
 
