@@ -102,9 +102,10 @@ if __name__ == "__main__":
     #transfer_barchart_prices_to_arctic(datapath)
     #transfer_barchart_prices_to_arctic_single('GOLD', datapath)
 
-    instr = "DAX"
+    instr = "FTSE"
     #for contract_date in ['DAX.20201200', 'DAX.20210300', 'DAX.20210600', 'DAX.20210900', 'DAX.20211200']:
-    for contract_date in ['20200600', '20200900', '20201200', '20210300', '20210600', '20210900', '20211200']:
+    #for contract_date in ['20200600', '20200900', '20201200', '20210300', '20210600', '20210900', '20211200']:
+    for contract_date in ['20020300']:
     #for contract in ['DAX.20210600', 'DAX.20210900', 'DAX.20211200']:
         transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)
 
