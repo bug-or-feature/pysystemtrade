@@ -184,20 +184,24 @@ class mongoConnection(object):
                 name=joint_indexname,
             )
 
-def mongo_clean_ints(dict_to_clean):
+
+def mongo_clean_primitives(dict_to_clean):
     """
-    Mongo doesn't like ints
+    Mongo doesn't like certain primitives
 
     :param dict_to_clean: dict
     :return: dict
     """
     new_dict = copy(dict_to_clean)
-    for key_name in new_dict.keys():
-        key_value = new_dict[key_name]
-        if (isinstance(key_value, int)) or (isinstance(key_value, np.int64)):
-            key_value = float(key_value)
+    for key, val in new_dict.items():
+        # Mongo doesn't like ints
+        if (isinstance(val, int)) or (isinstance(val, np.int64)):
+            val = float(val)
+        # Mongo doesn't like numpy bools
+        if isinstance(val, np.bool_):
+            val = bool(val)
 
-        new_dict[key_name] = key_value
+        new_dict[key] = val
 
     return new_dict
 

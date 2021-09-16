@@ -4,7 +4,6 @@ from syscore.objects import arg_not_supplied
 from sysobjects.spreadbet_instruments import FuturesSpreadbet, FuturesSpreadbetMetaData, FuturesSpreadbetWithMetaData
 from syslogdiag.log_to_screen import logtoscreen
 import pandas as pd
-import numpy as np
 
 INSTRUMENT_CONFIG_PATH = "data.futures_spreadbet.csvconfig"
 CONFIG_FILE_NAME = "instrumentconfig.csv"
@@ -93,15 +92,9 @@ def get_instrument_with_meta_data_object(all_instrument_data: pd.DataFrame,
 
     meta_data_dict = get_meta_data_dict_for_instrument(config_for_this_instrument, config_items)
 
-    meta_data_dict_fixed = {}
-    for key1, val1 in meta_data_dict.items():
-        if isinstance(val1, np.bool_):
-            val1 = bool(val1)
-        meta_data_dict_fixed[key1] = val1
-
     instrument = FuturesSpreadbet(instrument_code)
 
-    meta_data = FuturesSpreadbetMetaData.from_dict(meta_data_dict_fixed)
+    meta_data = FuturesSpreadbetMetaData.from_dict(meta_data_dict)
 
     instrument_with_meta_data = FuturesSpreadbetWithMetaData(instrument, meta_data)
 

@@ -5,7 +5,7 @@ from syscore.objects import arg_not_supplied, missingData, existingData, missing
 from sysdata.mongodb.mongo_connection import (
     mongoConnection,
     MONGO_ID_KEY,
-    mongo_clean_ints,
+    mongo_clean_primitives,
     clean_mongo_host
 )
 
@@ -123,7 +123,7 @@ class mongoDataWithSingleKey(object):
 
     def add_data(self, key, data_dict: dict, allow_overwrite = False, clean_ints = True):
         if clean_ints:
-            cleaned_data_dict = mongo_clean_ints(data_dict)
+            cleaned_data_dict = mongo_clean_primitives(data_dict)
         else:
             cleaned_data_dict = copy(data_dict)
 
@@ -229,7 +229,7 @@ class mongoDataWithMultipleKeys(object):
 
     def add_data(self, dict_of_keys: dict, data_dict: dict, allow_overwrite = False, clean_ints = True):
         if clean_ints:
-            cleaned_data_dict = mongo_clean_ints(data_dict)
+            cleaned_data_dict = mongo_clean_primitives(data_dict)
         else:
             cleaned_data_dict = copy(data_dict)
 
