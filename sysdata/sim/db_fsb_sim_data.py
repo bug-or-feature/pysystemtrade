@@ -27,7 +27,7 @@ class dbFsbSimData(genericBlobUsingFuturesSimData):
                                 arcticFuturesAdjustedPricesData,
                                 arcticFuturesMultiplePricesData,
                                 arcticFxPricesData,
-                                CsvFsbInstrumentData, # CsvFsbInstrumentData / mongoFsbInstrumentData
+                                mongoFsbInstrumentData, # CsvFsbInstrumentData / mongoFsbInstrumentData
                                 mongoRollParametersData])
 
         super().__init__(data=data)
