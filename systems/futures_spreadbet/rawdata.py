@@ -1,4 +1,6 @@
 import pandas as pd
+
+from sysobjects.carry_data import rawCarryData
 from systems.rawdata import RawData
 from systems.system_cache import input, output
 from syscore.dateutils import ROOT_BDAYS_INYEAR
@@ -17,40 +19,35 @@ class FuturesSpreadbetRawData(RawData):
 
     @input
     def get_daily_prices(self, instrument_code) -> pd.Series:
-        multiplier = self.get_multiplier(instrument_code)
-        inverse = self.get_inverse(instrument_code)
-        self.log.msg(f"Calculating FSB daily prices for {instrument_code}, multiplier {multiplier}, "
-                     f"inverse {inverse}", instrument_code=instrument_code)
-        dailyprice = self.data_stage.daily_prices(instrument_code)
-        if inverse:
-            dailyprice = 1 / dailyprice
-        dailyprice *= multiplier
-        return dailyprice
+        return self.do_price_massage(
+            instrument_code,
+            self.data_stage.daily_prices(instrument_code),
+            "FSB daily")
 
     @input
     def get_natural_frequency_prices(self, instrument_code: str) -> pd.Series:
-        multiplier = self.get_multiplier(instrument_code)
-        inverse = self.get_inverse(instrument_code)
-        self.log.msg(f"Retrieving FSB natural prices for {instrument_code}, multiplier {multiplier}, "
-                     f"inverse {inverse}", instrument_code=instrument_code)
-        natural_prices = self.data_stage.get_raw_price(instrument_code)
-        if inverse:
-            natural_prices = 1 / natural_prices
-        natural_prices *= multiplier
-        return natural_prices
+        return self.do_price_massage(
+            instrument_code,
+            self.data_stage.get_raw_price(instrument_code),
+            "FSB natural")
 
     @input
     def get_hourly_prices(self, instrument_code: str) -> pd.Series:
+        return self.do_price_massage(
+            instrument_code,
+            self.get_natural_frequency_prices(instrument_code).resample("1H").last(),
+            "FSB hourly")
+
+    def get_instrument_raw_carry_data(self, instrument_code: str) -> rawCarryData:
         multiplier = self.get_multiplier(instrument_code)
         inverse = self.get_inverse(instrument_code)
-        self.log.msg(f"Retrieving FSB hourly prices for {instrument_code}, multiplier {multiplier}, "
-                     f"inverse {inverse}", instrument_code=instrument_code)
-        raw_prices = self.get_natural_frequency_prices(instrument_code)
-        hourly_prices = raw_prices.resample("1H").last()
+        df = super().get_instrument_raw_carry_data(instrument_code)
         if inverse:
-            hourly_prices = 1 / hourly_prices
-        hourly_prices *= multiplier
-        return hourly_prices
+            df['PRICE'] = 1 / df['PRICE']
+            df['CARRY'] = 1 / df['CARRY']
+        df['PRICE'] *= multiplier
+        df['CARRY'] *= multiplier
+        return df
 
     def get_multiplier(self, instrument_code):
         instr_obj = self.data_stage._get_instrument_object_with_cost_data(instrument_code)
@@ -75,15 +72,10 @@ class FuturesSpreadbetRawData(RawData):
 
         KEY OUTPUT
         """
-        multiplier = self.get_multiplier(instrument_code)
-        inverse = self.get_inverse(instrument_code)
-        prices = self.get_instrument_raw_carry_data(instrument_code).PRICE
-        daily_prices = prices.resample("1B").last()
-        if inverse:
-            daily_prices = 1 / daily_prices
-        daily_prices *= multiplier
-
-        return daily_prices
+        return self.do_price_massage(
+            instrument_code,
+            self.get_instrument_raw_carry_data(instrument_code).PRICE.resample("1B").last(),
+            "FSB daily denominator")
 
     @output()
     def get_annual_percentage_volatility(self, instrument_code: str, span=25) -> pd.Series:
@@ -91,3 +83,14 @@ class FuturesSpreadbetRawData(RawData):
         # daily_perc_vol = self.get_daily_percentage_returns(instrument_code).ffill().ewm(35).std()
         annual_perc_vol = daily_perc_vol * ROOT_BDAYS_INYEAR
         return annual_perc_vol
+
+    def do_price_massage(self, instrument_code, prices, description):
+        multiplier = self.get_multiplier(instrument_code)
+        inverse = self.get_inverse(instrument_code)
+        self.log.msg(f"Calculating {description} prices for {instrument_code}, multiplier {multiplier}, "
+                     f"inverse {inverse}", instrument_code=instrument_code)
+        if inverse:
+            prices = 1 / prices
+        prices *= multiplier
+
+        return prices
