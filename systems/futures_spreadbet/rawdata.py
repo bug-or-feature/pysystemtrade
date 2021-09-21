@@ -66,16 +66,13 @@ class FuturesSpreadbetRawData(RawData):
         futures spread bet price
 
         :param instrument_code: Instrument to get prices for
-        :type trading_rules: str
-
         :returns: Tx1 pd.DataFrame
 
         KEY OUTPUT
         """
-        return self.do_price_massage(
-            instrument_code,
-            self.get_instrument_raw_carry_data(instrument_code).PRICE.resample("1B").last(),
-            "FSB daily denominator")
+        prices = self.get_instrument_raw_carry_data(instrument_code).PRICE
+        daily_prices = prices.resample("1B").last()
+        return daily_prices
 
     @output()
     def get_annual_percentage_volatility(self, instrument_code: str, span=25) -> pd.Series:
