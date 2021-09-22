@@ -56,9 +56,9 @@ class diagPrices(productionDataLayerGeneric):
 
     def get_list_of_instruments_in_multiple_prices(self) -> list:
         # TODO revert
-        #list_of_instruments = self.db_futures_multiple_prices_data.get_list_of_instruments()
+        list_of_instruments = self.db_futures_multiple_prices_data.get_list_of_instruments()
         #list_of_instruments = ['AEX', 'ASX', 'AUD', 'BOBL', 'BTP', 'BUND', 'CAC', 'COPPER', 'CORN', 'CRUDE_W', 'DAX', 'EDOLLAR', 'EUR', 'EUROSTX', 'FTSE', 'GAS_US', 'GBP', 'GOLD', 'JPY', 'LEANHOG', 'LIVECOW', 'NASDAQ', 'NZD', 'OAT', 'PALLAD', 'PLAT', 'SHATZ', 'SMI', 'SOYBEAN', 'SP500', 'US10', 'US2', 'US5', 'V2X', 'VIX', 'WHEAT']
-        list_of_instruments = ['AEX', 'AUD', 'BOBL', 'BTP', 'BUND', 'CAC', 'COPPER', 'CORN', 'CRUDE_W', 'EDOLLAR', 'EUR', 'EUROSTX', 'GAS_US', 'GBP', 'GOLD', 'JPY', 'LEANHOG', 'LIVECOW', 'NASDAQ', 'NZD', 'OAT', 'PALLAD', 'PLAT', 'SHATZ', 'SMI', 'SOYBEAN', 'SP500', 'US10', 'US2', 'US5', 'V2X', 'VIX', 'WHEAT']
+        #list_of_instruments = ['AEX', 'AUD', 'BOBL', 'BTP', 'BUND', 'CAC', 'COPPER', 'CORN', 'CRUDE_W', 'EDOLLAR', 'EUR', 'EUROSTX', 'GAS_US', 'GBP', 'GOLD', 'JPY', 'LEANHOG', 'LIVECOW', 'NASDAQ', 'NZD', 'OAT', 'PALLAD', 'PLAT', 'SHATZ', 'SMI', 'SOYBEAN', 'SP500', 'US10', 'US2', 'US5', 'V2X', 'VIX', 'WHEAT']
 
         return list_of_instruments
 
