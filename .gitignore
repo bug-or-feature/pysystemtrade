@@ -27,3 +27,7 @@ env/
 
 # libreoffice
 .~lock.*
+
+# backups
+data/backups_csv
+data/mongo_dump
