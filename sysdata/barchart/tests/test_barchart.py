@@ -73,7 +73,7 @@ class TestBarchart:
     def test_config(self):
         bc_futures_instr = BarchartFuturesInstrumentData()
 
-        assert len(bc_futures_instr.get_list_of_instruments()) == 35
+        assert len(bc_futures_instr.get_list_of_instruments()) == 71
 
         assert bc_futures_instr.get_brokers_instrument_code('GOLD') == 'GC'
         assert bc_futures_instr.get_brokers_instrument_code('COPPER') == 'HG'
@@ -120,4 +120,5 @@ class TestBarchart:
         assert prices.has_data_for_contract(fc('GOLD', '20210600'))
 
         instr_list = prices.get_list_of_instrument_codes_with_price_data()
-        assert(len(instr_list) == 35)
+        print(instr_list)
+        assert(len(instr_list) == 71)
