@@ -116,7 +116,8 @@ def check_saved_roll_calendar(
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     #instrument_code = get_valid_instrument_code_from_user(source='single')
-    instrument_code = "FTSE"
+
+    instrument_code = "BRENT_W"
     ## MODIFY DATAPATH IF REQUIRED
 
     build_and_write_roll_calendar(
@@ -128,43 +129,26 @@ if __name__ == "__main__":
     #     input_datapath='sysinit.futures.tests.data.aud',
     #     input_prices=csvFuturesContractPriceData())
 
-    # FTSE
-    # HANG
-    # NIKKEI
-    # DOW
-    # RUSSELL
-
-    # US30
-    # USTB
-    # BUXL
-    # GILT
-    # JGB
-    # EURIBOR
-    # SSTERL
-
-    # EURGBP
-    # CAD
-    # CHF
-    # DOLLAR
-
     # BRENT_W
-    # GASOLINE
-    # HEATOIL
-    # GASOIL_LDN
-
-    # SILVER
     # CARBON
+    # COCOA_LDN
+    # COCOA_NY
     # COFFEE
+    # COFFEE_LDN
     # COTTON
-    # SOYOIL
-    # SUGAR
+    # GASOLINE
+    # GASOIL_LDN
+    # HEATOIL
     # LUMBER
     # OATIES
-    # COCOA_NY
-    # COCOA_LDN
-    # SUGAR_LDN
-    # COFFEE_LDN
     # OJ
-    # SOYMEAL
-    # WHEAT_LDN
     # RICE
+    # SILVER
+    # SOYMEAL
+    # SOYOIL
+    # SUGAR
+    # SUGAR_LDN
+    # WHEAT_LDN
+
+    # EURIBOR not enough data, like EDOLLAR. need one year per contract
+    # STERLING3 not enough data, like EDOLLAR. need two years per contract
