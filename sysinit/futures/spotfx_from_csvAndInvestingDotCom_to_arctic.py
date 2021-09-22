@@ -34,6 +34,9 @@ def spotfx_from_csv_and_investing_dot_com(datapath, ADD_TO_ARCTIC = True, ADD_TO
 
         fx_prices_my_csv = my_csv_fx_prices_data.get_fx_prices(currency_code)
 
+        fx_prices = investingDotCom_csv_fx_prices.get_fx_prices(
+            currency_code)
+
         if ADD_EXTRA_DATA:
             fx_prices_investingDotCom = investingDotCom_csv_fx_prices.get_fx_prices(
                     currency_code)
