@@ -96,10 +96,11 @@ def get_spreadbet_costs():
 
         # ignore instruments that are not fully setup yet
         # TODO move to higher level function?
-        if instr in ["ASX","DAX","FTSE","HANG","NIKKEI","DOW","RUSSELL","US30","USTB","BUXL","GILT","JGB","EURIBOR",
-                     "SSTERL","EURGBP","CAD","CHF","DOLLAR","BRENT_W","GASOLINE","HEATOIL","GASOIL_LDN","SILVER",
-                     "CARBON","COFFEE","COTTON","SOYOIL","SUGAR","LUMBER","OATIES","COCOA_NY","COCOA_LDN","SUGAR_LDN",
-                     "COFFEE_LDN","OJ","SOYMEAL","WHEAT_LDN","RICE"]:
+        if instr in [
+            "BRENT_W","GASOLINE","HEATOIL","GASOIL_LDN","SILVER", "CARBON","COFFEE","COTTON","SOYOIL","SUGAR","LUMBER",
+            "OATIES","COCOA_NY","COCOA_LDN","SUGAR_LDN", "COFFEE_LDN","OJ","SOYMEAL","WHEAT_LDN","RICE",
+            "EURIBOR", "STERLING3"
+        ]:
             continue
 
         # getting instrument config
