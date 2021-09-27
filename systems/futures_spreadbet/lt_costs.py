@@ -98,8 +98,7 @@ def get_spreadbet_costs():
         # TODO move to higher level function?
         if instr in [
             "BRENT_W","GASOLINE","HEATOIL","GASOIL_LDN","SILVER", "CARBON","COFFEE","COTTON","SOYOIL","SUGAR","LUMBER",
-            "OATIES","COCOA_NY","COCOA_LDN","SUGAR_LDN", "COFFEE_LDN","OJ","SOYMEAL","WHEAT_LDN","RICE",
-            "EURIBOR", "STERLING3"
+            "OATIES","COCOA_NY","COCOA_LDN","SUGAR_LDN", "COFFEE_LDN","OJ","SOYMEAL","WHEAT_LDN","RICE"
         ]:
             continue
 
@@ -251,7 +250,7 @@ def get_spreadbet_costs():
     cost_results = pd.DataFrame(cost_rows)
 
     # filter
-    cost_results = cost_results[cost_results["Ctotal"] < 0.08] # costs
+    #cost_results = cost_results[cost_results["Ctotal"] < 0.13] # costs
     #cost_results = cost_results[abs(cost_results["PosSize"]) > cost_results["MinBet"]] # min bet
     #cost_results = cost_results[cost_results["minCapital"] < ()] # costs
 
