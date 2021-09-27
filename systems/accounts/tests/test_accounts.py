@@ -22,6 +22,7 @@ def system():
     return system
 
 
+@pytest.mark.slow # will be skipped unless run with 'pytest --runslow'
 class TestAccounts:
 
     def test_costs_per_trade(self, system):
@@ -89,7 +90,7 @@ class TestAccounts:
         self.assert_total_cost(system, 'COPPER', 4.2, 0.012725)
         self.assert_total_cost(system, 'SOYBEAN', 5.7, 0.032369)
 
-        self.assert_total_cost(system, 'KOSPI', 3.1, 0.018728)
+        self.assert_total_cost(system, 'KOSPI', 3.1, 0.018684)
         self.assert_total_cost(system, 'SMI', 4.4, 0.008252)
 
     @staticmethod
@@ -110,7 +111,7 @@ class TestAccounts:
     @staticmethod
     def assert_holding_cost(system, instr: str, expected: float):
         actual = system.accounts.get_SR_holding_cost_only(instr)
-        assert actual == approx(expected, rel=1e-3)\
+        assert actual == approx(expected, rel=1e-3)
 
     @staticmethod
     def assert_total_cost(system, instr: str, turnover: float, expected: float):
