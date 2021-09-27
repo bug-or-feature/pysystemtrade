@@ -117,7 +117,7 @@ if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     #instrument_code = get_valid_instrument_code_from_user(source='single')
 
-    instrument_code = "BRENT_W"
+    instrument_code = "STERLING3"
     ## MODIFY DATAPATH IF REQUIRED
 
     build_and_write_roll_calendar(
@@ -128,6 +128,8 @@ if __name__ == "__main__":
     #     #input_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_bc/roll_calendars_csv',
     #     input_datapath='sysinit.futures.tests.data.aud',
     #     input_prices=csvFuturesContractPriceData())
+
+    # HANG missing data for Nov 21 (HSX21)
 
     # BRENT_W
     # CARBON
@@ -150,5 +152,3 @@ if __name__ == "__main__":
     # SUGAR_LDN
     # WHEAT_LDN
 
-    # EURIBOR not enough data, like EDOLLAR. need one year per contract
-    # STERLING3 not enough data, like EDOLLAR. need two years per contract
