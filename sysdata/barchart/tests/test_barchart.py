@@ -73,7 +73,7 @@ class TestBarchart:
     def test_config(self):
         bc_futures_instr = BarchartFuturesInstrumentData()
 
-        assert len(bc_futures_instr.get_list_of_instruments()) == 71
+        assert len(bc_futures_instr.get_list_of_instruments()) == 72
 
         assert bc_futures_instr.get_brokers_instrument_code('GOLD') == 'GC'
         assert bc_futures_instr.get_brokers_instrument_code('COPPER') == 'HG'
