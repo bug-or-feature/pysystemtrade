@@ -71,7 +71,7 @@ use_forecast_weight_estimates: True
 use_forecast_div_mult_estimates: True
 #
 #
-rule_variations: ['ewmac2_8','ewmac4_16','ewmac8_32','ewmac16_64','ewmac32_128','ewmac64_256']
+rule_variations: ['ewmac2_8','ewmac4_16','ewmac8_32','ewmac16_64','ewmac32_128','ewmac64_256','carry']
 #rule_variations: ['ewmac16_64','ewmac32_128','ewmac64_256','carry']
 #rule_variations: ['ewmac16_64','ewmac32_128','ewmac64_256']
 #
@@ -86,8 +86,8 @@ use_instrument_div_mult_estimates: True
 #
 # Capital correction
 #
-percentage_vol_target: 20.0
-notional_trading_capital: 100000
+percentage_vol_target: 25.0
+notional_trading_capital: 32000
 base_currency: "GBP"
 #
 # Portfolio creation
