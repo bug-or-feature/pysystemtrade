@@ -13,3 +13,4 @@ beautifulsoup4>4.9
 ratelimit>=2.2
 pytest>6.2
 git+git://github.com/bug-or-feature/ig-markets-api-python-library#egg=trading-ig
+MongoDBProxy-official==0.1.0

@@ -1,4 +1,5 @@
 from pymongo import MongoClient, ASCENDING
+import mongo_proxy
 from copy import copy
 import numpy as np
 import re
@@ -67,8 +68,9 @@ class MongoClientFactory(object):
             return self.mongo_clients.get(key)
         else:
             client = MongoClient(host=host, port=port)
-            self.mongo_clients[key] = client
-            return client
+            proxy = mongo_proxy.MongoProxy(client)
+            self.mongo_clients[key] = proxy
+            return proxy
 
 
 # Only need one of these
