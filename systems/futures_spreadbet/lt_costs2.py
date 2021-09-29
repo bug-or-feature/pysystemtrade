@@ -131,31 +131,6 @@ def get_spreadbet_costs(source='db'):
         #smac_series = smac(prices, 16, 64)
         #smac_today = smac_series.iloc[-1]
 
-        #rasmac_series = rasmac(prices, 16, 64)
-        #rasmac_today = rasmac_series.iloc[-1]
-
-        #riskAdjMAC = smac_today / risk_in_price_units
-        #direction = 'L' if smac_today > 0 else 'S'
-        #if direction == 'L':
-        #    rescaledForecast = min(20, riskAdjMAC * MAV_SCALING_FACTOR)
-        #else:
-        #    rescaledForecast = max(-20, riskAdjMAC * MAV_SCALING_FACTOR)
-
-        # positions
-        #min_exposure = (min_bet_per_point * average_price) / 1
-        #orig_min_capital = (min_exposure * annual_vol) / ORIG_TARGET_RISK
-        #new_min_capital = orig_min_capital * (ORIG_TARGET_RISK / NEW_TARGET_RISK)
-        # trading_capital = CAPITAL_PER_INSTR + get_current_pandl(instr, positions, ig_prices)
-        # ideal_notional_exposure = ((rescaledForecast / 10) * INSTR_TARGET_RISK * trading_capital) / annual_vol
-        # current_pos = get_current_position(instr, positions)
-        # current_notional_exposure = (current_pos * sb_price) / (point_size)
-        # average_notional_exposure = (INSTR_TARGET_RISK * trading_capital) / annual_vol
-        # deviation = (ideal_notional_exposure - current_notional_exposure) / average_notional_exposure
-        # pos_size = (ideal_notional_exposure * 1 * point_size) / average_price
-        # adjustment_required = pos_size - current_pos if abs(deviation) > 0.1 else 0.0
-        #account = pandl_for_instrument_forecast(forecast=smac_series, price=system.rawdata.get_daily_prices(instr))
-        #print(f"P&L stats for {instr}: {account.percent.stats()}")
-
         notional_position_series = system.portfolio.get_notional_position(instr)
         notional_position = notional_position_series.iloc[-1]
 
