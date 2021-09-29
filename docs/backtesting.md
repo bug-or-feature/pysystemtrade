@@ -1527,7 +1527,7 @@ config=Config("systems.provided.futures_chapter15.futuresconfig.yaml") ## or the
 ## Optionally the user can provide trading_rules (something which can be parsed as a set of trading rules); however this defaults to None in which case
 ##     the rules in the config will be used.
 
-system=System([Account(), PortfoliosFixed(), PositionSizing(), RawData(), ForecastCombine(),
+system=System([Account(), Portfolios(), PositionSizing(), RawData(), ForecastCombine(),
                    ForecastScaleCap(), Rules(trading_rules)], data, config)
 ```
 
