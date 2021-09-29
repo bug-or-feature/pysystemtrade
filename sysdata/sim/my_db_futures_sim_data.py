@@ -11,6 +11,7 @@ from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesDat
 from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
 #from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
+from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.data_blob import dataBlob
 from sysdata.sim.futures_sim_data_with_data_blob import genericBlobUsingFuturesSimData
 
@@ -28,7 +29,8 @@ class MyDbFuturesSimData(genericBlobUsingFuturesSimData):
                     arcticFuturesAdjustedPricesData,
                     arcticFuturesMultiplePricesData,
                     arcticFxPricesData,
-                    csvFuturesInstrumentData
+                    csvFuturesInstrumentData,
+                    csvRollParametersData
                 ]
             )
 
