@@ -15,8 +15,6 @@ class FuturesSpreadbetRawData(RawData):
     Name: rawdata
     """
 
-    # TODO override carry based methods to also apply multiplier
-
     @input
     def get_daily_prices(self, instrument_code) -> pd.Series:
         return self.do_price_massage(
@@ -49,6 +47,16 @@ class FuturesSpreadbetRawData(RawData):
         df['CARRY'] *= multiplier
         return df
 
+    def get_pointsize(self, instrument_code):
+        instr_obj = self.data_stage._get_instrument_object_with_cost_data(instrument_code)
+        pointsize = instr_obj.meta_data.Pointsize
+        return pointsize
+
+    def get_spread(self, instrument_code):
+        instr_obj = self.data_stage._get_instrument_object_with_cost_data(instrument_code)
+        spread = instr_obj.meta_data.Slippage * 2
+        return spread
+
     def get_multiplier(self, instrument_code):
         instr_obj = self.data_stage._get_instrument_object_with_cost_data(instrument_code)
         multiplier = instr_obj.meta_data.Multiplier
@@ -58,6 +66,11 @@ class FuturesSpreadbetRawData(RawData):
         instr_obj = self.data_stage._get_instrument_object_with_cost_data(instrument_code)
         inverse = bool(instr_obj.meta_data.Inverse)
         return inverse
+
+    def get_asset_class(self, instrument_code):
+        instr_obj = self.data_stage._get_instrument_object_with_cost_data(instrument_code)
+        asset_class = instr_obj.meta_data.AssetClass
+        return asset_class
 
     @output()
     def daily_denominator_price(self, instrument_code: str) -> pd.Series:
