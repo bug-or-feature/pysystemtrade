@@ -12,6 +12,7 @@ from systems.basesystem import System
 from systems.forecast_combine import ForecastCombine
 from systems.forecast_scale_cap import ForecastScaleCap
 from systems.positionsizing import PositionSizing
+from systems.futures_spreadbet.positionsizing import FsbPositionSizing
 from systems.portfolio import Portfolios
 from systems.accounts.accounts_stage import Account
 
@@ -59,6 +60,7 @@ def fsb_system(data=arg_not_supplied, config=arg_not_supplied, trading_rules=arg
     if config is arg_not_supplied:
         #config = Config("systems.futures_spreadbet.fsb_estimate_config.yaml")
         config = Config("systems.futures_spreadbet.fsb_config.yaml")
+        #config = Config("systems.futures_spreadbet.fsb_config_old.yaml")
         #config = Config("systems.futures_spreadbet.leveraged_trading_config.yaml")
 
     rules = Rules(trading_rules)
@@ -68,7 +70,8 @@ def fsb_system(data=arg_not_supplied, config=arg_not_supplied, trading_rules=arg
             FuturesSpreadbetRawData(),
             Account(),
             Portfolios(),
-            PositionSizing(),
+            #PositionSizing(),
+            FsbPositionSizing(),
             ForecastCombine(),
             ForecastScaleCap(),
             rules
