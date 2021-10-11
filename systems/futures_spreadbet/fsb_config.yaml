@@ -116,18 +116,18 @@ forecast_post_ceiling_cost_SR: 0.13
 # Capital correction
 #
 percentage_vol_target: 25.0
-notional_trading_capital: 32000
+notional_trading_capital: 50000
 base_currency: "GBP"
 #
 # Portfolio creation
 #
 instrument_weights:
-  BUND: 0.24487469459356373
-  GOLD: 0.2551253054042631
-  NZD: 0.24487469459356373
-  SP500: 0.255125305408611
+  BUND: 0.25
+  GOLD: 0.25
+  NZD: 0.25
+  SP500: 0.25
 
-instrument_div_multiplier: 1.9325327767319607
+instrument_div_multiplier: 1.93
 
 #instruments:
 #  - BUND
