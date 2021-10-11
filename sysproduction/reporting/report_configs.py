@@ -4,7 +4,7 @@ from sysproduction.reporting.roll_report import ALL_ROLL_INSTRUMENTS
 
 class reportConfig(object):
     def __init__(self, title, function, output="console", **kwargs):
-        assert output in ["console", "email"]
+        assert output in ["console", "email", "file"]
         self.title = title
         self.function = function
         self.output = output
@@ -49,7 +49,7 @@ roll_report_config = reportConfig(
 )
 
 daily_pandl_report_config = reportConfig(
-    title="One day P&L report",
+    title="P&L report",
     function="sysproduction.reporting.pandl_report.pandl_info",
     calendar_days_back=1,
 )
