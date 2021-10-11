@@ -34,31 +34,44 @@ class FsbPositionSizing(PositionSizing):
     Name: positionSize
     """
 
-    @diagnostic()
-    def get_ideal_exposure(self, instrument_code: str) -> pd.Series:
-        daily_cash_vol_target = self.get_daily_cash_vol_target()
-        forecast = self.get_combined_forecast(instrument_code)
-        daily_vol = self.rawdata_stage.get_daily_percentage_volatility(instrument_code)
-        ideal_exposure = ((forecast / 10) * daily_cash_vol_target / daily_vol) * ROOT_BDAYS_INYEAR
+    # @diagnostic()
+    # def get_ideal_exposure(self, instrument_code: str) -> pd.Series:
+    #     daily_cash_vol_target = self.get_daily_cash_vol_target()
+    #     forecast = self.get_combined_forecast(instrument_code)
+    #     daily_vol = self.rawdata_stage.get_daily_percentage_volatility(instrument_code)
+    #     ideal_exposure = ((forecast / 10) * daily_cash_vol_target / daily_vol) * ROOT_BDAYS_INYEAR
+    #
+    #     return ideal_exposure
 
-        return ideal_exposure
+    # @diagnostic()
+    # def get_block_value(self, instrument_code: str) -> pd.Series:
+    #     spreadbet_price = self.rawdata_stage.get_daily_prices(instrument_code)
+    #     value_of_price_move = self.parent.data.get_value_of_block_price_move(instrument_code)
+    #     block_value = spreadbet_price.ffill() * value_of_price_move * 0.01
+    #
+    #     return block_value
 
     @diagnostic()
     def get_block_value(self, instrument_code: str) -> pd.Series:
-        spreadbet_price = self.rawdata_stage.get_daily_prices(instrument_code)
-        value_of_price_move = self.parent.data.get_value_of_block_price_move(instrument_code)
-        block_value = spreadbet_price.ffill() * value_of_price_move * 0.01
+
+        underlying_price = self.get_underlying_price(
+            instrument_code)
+        value_of_price_move = self.parent.data.get_value_of_block_price_move(
+            instrument_code
+        )
+
+        block_value = underlying_price.ffill() * value_of_price_move * 0.01
 
         return block_value
 
-    @output()
-    def get_subsystem_position(self, instrument_code: str) -> pd.Series:
-        exp = self.get_ideal_exposure(instrument_code)
-        point_size = self.rawdata_stage.get_pointsize(instrument_code)
-        price = self.rawdata_stage.get_daily_prices(instrument_code)
-        fsb_subsystem_position = (exp * point_size) / price
-
-        return fsb_subsystem_position
+    # @output()
+    # def get_subsystem_position(self, instrument_code: str) -> pd.Series:
+    #     exp = self.get_ideal_exposure(instrument_code)
+    #     point_size = self.rawdata_stage.get_pointsize(instrument_code)
+    #     price = self.rawdata_stage.get_daily_prices(instrument_code)
+    #     fsb_subsystem_position = (exp * point_size) / price
+    #
+    #     return fsb_subsystem_position
 
     # @diagnostic()
     # def get_annual_percentage_vol(self, instrument_code: str) -> pd.Series:
