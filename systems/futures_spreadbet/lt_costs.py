@@ -110,6 +110,7 @@ def get_spreadbet_costs():
         #multiplier = instr_obj.meta_data.Multiplier
         spread_in_points = instr_obj.meta_data.Slippage * 2
         min_bet_per_point = instr_obj.meta_data.Pointsize
+        margin = instr_obj.meta_data.Margin
         params = roll_config.get_roll_parameters(instr)
         roll_count = len(params.hold_rollcycle._as_list())
 
@@ -215,6 +216,7 @@ def get_spreadbet_costs():
                 #'mult': multiplier,
                 'Spread': spread_in_points,
                 'MinBet': min_bet_per_point,
+                'Margin': margin,
                 #'Xpoint': point_size,
                 #'Risk': f"{round(avg_annual_vol_perc, 3)}",
                 'Risk%': "{:.2%}".format(annual_vol),
@@ -250,7 +252,8 @@ def get_spreadbet_costs():
     cost_results = pd.DataFrame(cost_rows)
 
     # filter
-    #cost_results = cost_results[cost_results["Ctotal"] < 0.13] # costs
+    cost_results = cost_results[cost_results["Ctotal"] < 0.13] # costs
+    #cost_results = cost_results[cost_results["Margin"] < 0.11] # costs
     #cost_results = cost_results[abs(cost_results["PosSize"]) > cost_results["MinBet"]] # min bet
     #cost_results = cost_results[cost_results["minCapital"] < ()] # costs
 
