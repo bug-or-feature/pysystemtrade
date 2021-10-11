@@ -129,19 +129,13 @@ if __name__ == "__main__":
     #     input_datapath='sysinit.futures.tests.data.aud',
     #     input_prices=csvFuturesContractPriceData())
 
-    # HANG missing data for Nov 21 (HSX21)
 
-    # BRENT_W
-    # CARBON
-    # COCOA_LDN
-    # COCOA_NY
-    # COFFEE
-    # COFFEE_LDN
-    # COTTON
-    # GASOLINE
-    # GASOIL_LDN
-    # HEATOIL
-    # LUMBER
+    # COCOA_NY x
+    # COFFEE x
+    # COTTON x
+    # GASOLINE x
+    # HEATOIL x
+    # LUMBER x
     # OATIES
     # OJ
     # RICE
@@ -149,6 +143,12 @@ if __name__ == "__main__":
     # SOYMEAL
     # SOYOIL
     # SUGAR
+
+    # COFFEE_LDN
+    # COCOA_LDN
+    # GASOIL_LDN
     # SUGAR_LDN
     # WHEAT_LDN
+    # CARBON
+    # BRENT_W
 

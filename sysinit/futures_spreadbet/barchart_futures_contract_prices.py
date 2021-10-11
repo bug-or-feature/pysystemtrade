@@ -100,7 +100,9 @@ if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     datapath = "/Users/ageach/Dev/work/pyhistprice/data/barchart_new"
     #transfer_barchart_prices_to_arctic(datapath)
-    #transfer_barchart_prices_to_arctic_single('GOLD', datapath)
+
+    #for instr in ["HANG", "BRENT_W", "CARBON", "COCOA_LDN", "COCOA_NY", "COFFEE", "COFFEE_LDN", "COTTON", "GASOLINE", "GASOIL_LDN", "HEATOIL", "LUMBER", "OATIES", "OJ", "RICE", "SILVER", "SOYMEAL", "SOYOIL", "SUGAR", "SUGAR_LDN", "WHEAT_LDN"]:
+    #    transfer_barchart_prices_to_arctic_single(instr, datapath)
 
     #for instr in ["US30", "USTB", "EURIBOR", "STERLING3", "EURGBP", "JGB", "CAD", "CHF", "DOLLAR", "BRENT_W", "GASOLINE", "HEATOIL", "GASOIL_LDN"]:
     #    for contract_date in ['20200300', '20200600', '20200900', '20201200', '20210300', '20210600', '20210900', '20211200']:
@@ -109,9 +111,11 @@ if __name__ == "__main__":
     #for contract_date in ['DAX.20201200', 'DAX.20210300', 'DAX.20210600', 'DAX.20210900', 'DAX.20211200']:
     #for contract_date in ['20200100', '20200200', '20200300', '20200400','20200500', '20200600', '20200700', '20200800','20200900', '20201000', '20201100', '20201200','20210100', '20210200', '20210300', '20210400','20210500', '20210600', '20210700', '20210800','20210900', '20211000', '20211100', '20211200']:
     #for contract in ['DAX.20210600', 'DAX.20210900', 'DAX.20211200']:
-    instr = "BRENT_W"
-    #for contract_date in ['20210300', '20210600', '20210900', '20211200']:
-    #    transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)
-
-    for contract_date in ['20080800']:
+    instr = "LUMBER"
+    #for contract_date in ['20200900','20201200','20210300','20210500','20210700','20210900','20211200','20220300','20220500','20220700','20220900','20221200']:
+    #for contract_date in ['20210300', '20210500', '20210700', '20210900', '20211200', '20220300']:
+    for contract_date in ['20150100']:
         transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)
+
+    #for contract_date in ['20080800']:
+    # transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)
