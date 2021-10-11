@@ -26,6 +26,9 @@ class FuturesSpreadbetMetaData(instrumentMetaData):
     # to help with diversification
     AssetSubclass: str = ""
 
+    # IG margin band %
+    Margin: float = 0.1
+
     # size of contract (value of a 1 point move in price)
     # used by CFDs (contracts)
     # ContractSize: float = 0.0
