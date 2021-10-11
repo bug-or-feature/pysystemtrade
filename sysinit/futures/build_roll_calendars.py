@@ -11,6 +11,7 @@ from sysobjects.multiple_prices import futuresMultiplePrices
 from sysobjects.roll_parameters_with_price_data import find_earliest_held_contract_with_price_data, \
     contractWithRollParametersAndPrices
 from sysobjects.rolls import rollParameters, contractDateWithRollParameters
+from syscore.pdutils import print_full
 
 
 def generate_approximate_calendar(
@@ -59,6 +60,9 @@ class _rollCalendarRow(dict):
             self['next_contract'] = next_contract
             self['carry_contract'] = carry_contract
 
+    def __repr__(self) -> str:
+        return f"{self[INDEX_NAME]},{self['current_contract']},{self['next_contract']},{self['carry_contract']}"
+
     @property
     def roll_date(self):
         return self[INDEX_NAME]
@@ -102,7 +106,7 @@ def _create_approx_calendar_from_earliest_contract(earliest_contract_with_roll_d
 
         roll_calendar_as_list.append(new_row)
         current_contract = copy(next_contract)
-        print(current_contract)
+        #print(current_contract)
 
     roll_calendar = roll_calendar_as_list.to_pd_df()
 
@@ -358,15 +362,11 @@ def _does_carry_come_after_current_contract(local_row_data: localRowData)->bool:
 
 def _print_roll_date_error(local_row_data: localRowData):
     approx_row = local_row_data.current_row
-    next_approx_row = local_row_data.next_row 
-    current_contract = approx_row.current_contract
-    next_contract = approx_row.next_contract
-    carry_contract = approx_row.carry_contract
-    next_carry_contract = next_approx_row.carry_contract
+    next_approx_row = local_row_data.next_row
 
     print(
         "Couldn't find matching roll date for contracts %s, %s (even after omitting carry contracts %s and %s)"
-        % (current_contract, next_contract, carry_contract, next_carry_contract)
+        % (approx_row.current_contract, approx_row.next_contract, approx_row.carry_contract, next_approx_row.carry_contract)
     )
     print("OK if happens at the end or beginning of a roll calendar, otherwise problematic")
 
@@ -403,11 +403,13 @@ def _find_best_matching_roll_date(
     """
 
     # Get the list of dates for which a roll is possible
+    # AHG
     paired_prices = _required_paired_prices(set_of_prices)
     valid_dates = _valid_dates_from_paired_prices(paired_prices, avoid_date)
 
     if len(valid_dates) == 0:
         # no matching prices
+        print_full(paired_prices)
         raise LookupError("No date with a matching price")
 
     adjusted_date = _find_closest_valid_date_to_approx_roll_date(valid_dates,
@@ -416,6 +418,8 @@ def _find_best_matching_roll_date(
     return adjusted_date
 
 
+# TODO ageach this is the function that puts possible sync dates side by
+# TODO side in a data frame
 def _required_paired_prices(set_of_prices: setOfPrices)\
                             -> pd.DataFrame:
 
@@ -497,10 +501,10 @@ def    _print_data_at_start_not_valid_flag(local_row_data: localRowData):
 
 
 def _print_adjustment_message(local_row_data: localRowData, adjusted_row: _rollCalendarRow):
-    print("Changed date from %s to %s for row with contracts %s" %
+    print("Changed date from %s to %s for '%s'" %
           (str(local_row_data.current_row.name),
            str(adjusted_row.roll_date),
-           str(adjusted_row.items())))
+           str(adjusted_row)))
 
 
 def _add_carry_calendar(
