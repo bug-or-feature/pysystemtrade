@@ -5,6 +5,7 @@ from sysobjects.instruments import futuresInstrument
 @dataclass
 class BcInstrumentConfigData:
     symbol: str
+    freq: str
     currency: str = ""
 
 
@@ -20,3 +21,7 @@ class BcFuturesInstrument(object):
     @property
     def bc_symbol(self):
         return self.bc_data.symbol
+
+    @property
+    def freq(self):
+        return self.bc_data.freq

@@ -140,7 +140,9 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
             contract_object_plus, bar_freq=freq)
 
         if price_data is missing_data:
-            self.log.warn(f"Problem getting Barchart price data for {str(contract_object)}")
+            self.log.warn(f"Problem getting Barchart price data for {str(contract_object)}",
+                          instrument_code=contract_object.instrument_code,
+                          contract_date=contract_object.contract_date.date_str)
             price_data = futuresContractPrices.create_empty()
 
         elif len(price_data) == 0:

@@ -22,7 +22,7 @@ def read_bc_config_from_file() -> BarchartConfig:
 
 class BarchartFuturesInstrumentData(brokerFuturesInstrumentData):
 
-    def __init__(self, log=logtoscreen("bcFuturesContractData")):
+    def __init__(self, log=logtoscreen("bcFuturesInstrumentData")):
         super().__init__(log=log)
 
     def __repr__(self):
@@ -125,10 +125,11 @@ def get_instrument_object_from_config(
     config_row = config[config.Instrument == instr_code]
     symbol = config_row.Symbol.values[0]
     currency = value_or_npnan(config_row.Currency.values[0], "")
+    freq = value_or_npnan(config_row.Freq.values[0], "")
 
     # We use the flexibility of futuresInstrument to add additional arguments
     instrument = futuresInstrument(instr_code)
-    bc_data = BcInstrumentConfigData(symbol, currency=currency)
+    bc_data = BcInstrumentConfigData(symbol, currency=currency, freq=freq)
 
     futures_instrument_with_bc_data = BcFuturesInstrument(instrument, bc_data)
 

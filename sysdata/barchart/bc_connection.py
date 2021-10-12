@@ -12,6 +12,7 @@ from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from syslogdiag.log_to_screen import logger, logtoscreen
 from sysobjects.contracts import futuresContract
 from syscore.objects import missing_data
+from syscore.dateutils import from_config_frequency_to_frequency
 
 BARCHART_URL = 'https://www.barchart.com/'
 
@@ -112,6 +113,9 @@ class bcConnection(object):
             if instr_symbol is None:
                 self.log.warn(f"Can't convert contract ID {str(contract_object)}")
                 return missing_data
+
+            if contract_object.instrument.freq:
+                bar_freq = from_config_frequency_to_frequency(contract_object.instrument.freq)
 
             # GET the futures quote chart page, scrape to get XSRF token
             # https://www.barchart.com/futures/quotes/GCM21/interactive-chart
