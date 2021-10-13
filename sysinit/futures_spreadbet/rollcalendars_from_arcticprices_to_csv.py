@@ -129,26 +129,15 @@ if __name__ == "__main__":
     #     input_datapath='sysinit.futures.tests.data.aud',
     #     input_prices=csvFuturesContractPriceData())
 
+    # !!! change update_all() !!!
 
-    # COCOA_NY x
-    # COFFEE x
-    # COTTON x
-    # GASOLINE x
-    # HEATOIL x
-    # LUMBER x
-    # OATIES
-    # OJ
-    # RICE
-    # SILVER
-    # SOYMEAL
-    # SOYOIL
+
+    # need all recent October contract downloaded due to weird cycle
     # SUGAR
 
-    # COFFEE_LDN
-    # COCOA_LDN
-    # GASOIL_LDN
+    # need to redownload, not enough overlap or due to roll cycle
     # SUGAR_LDN
     # WHEAT_LDN
     # CARBON
-    # BRENT_W
+
 
