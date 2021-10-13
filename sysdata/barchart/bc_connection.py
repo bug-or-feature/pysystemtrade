@@ -114,7 +114,7 @@ class bcConnection(object):
                 self.log.warn(f"Can't convert contract ID {str(contract_object)}")
                 return missing_data
 
-            if hasattr(contract_object.instrument, 'freq'):
+            if hasattr(contract_object.instrument, 'freq') and contract_object.instrument.freq:
                 bar_freq = from_config_frequency_to_frequency(contract_object.instrument.freq)
 
             # GET the futures quote chart page, scrape to get XSRF token
