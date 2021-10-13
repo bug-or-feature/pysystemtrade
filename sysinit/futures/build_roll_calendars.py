@@ -195,7 +195,7 @@ def adjust_to_price_series(approx_calendar: pd.DataFrame,
             # without requiring prices for carry contracts to be available (Even though carry
             # contract is present the price  might not necessarily be available on otherwise
             # suitable roll dates)
-            _print_roll_date_carry_warning(local_row_data)
+            #_print_roll_date_carry_warning(local_row_data)
             adjusted_row = _adjust_row_of_approx_roll_calendar(local_row_data,
                                                            dict_of_futures_contract_prices, omit_carry=True)
 
@@ -409,7 +409,8 @@ def _find_best_matching_roll_date(
 
     if len(valid_dates) == 0:
         # no matching prices
-        print_full(paired_prices)
+        if paired_prices.shape[1] == 2:
+            print_full(paired_prices)
         raise LookupError("No date with a matching price")
 
     adjusted_date = _find_closest_valid_date_to_approx_roll_date(valid_dates,
