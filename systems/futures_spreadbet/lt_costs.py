@@ -87,20 +87,16 @@ def get_spreadbet_costs():
     if args is not None:
         instr_list = sys.argv[1].split(",")
     else:
-        instr_list = sim.db_futures_instrument_data.get_list_of_instruments()
+        #instr_list = sim.db_futures_instrument_data.get_list_of_instruments()
+        instr_list = ["AEX", "ASX", "AUD", "BOBL", "BRENT_W", "BTP", "BUND", "BUXL", "CAC", "CAD", "CHF", "COCOA_NY",
+                      "COCOA_LDN", "COFFEE", "COFFEE_LDN", "COPPER", "CORN", "COTTON", "CRUDE_W", "DAX", "DOLLAR",
+                      "DOW", "EDOLLAR", "EUR", "EURGBP", "EURIBOR", "EUROSTX", "FTSE", "GASOIL_LDN", "GASOIL_LDN",
+                      "GASOLINE", "GAS_US", "GBP", "GILT", "GOLD", "HANG", "HEATOIL", "JGB", "JPY", "LEANHOG",
+                      "LIVECOW", "LUMBER", "NASDAQ", "NIKKEI", "NZD", "OAT", "OATIES", "OJ", "PALLAD", "PLAT", "RICE",
+                      "RUSSELL", "SHATZ", "SILVER", "SMI", "SOYBEAN", "SOYMEAL", "SOYOIL", "SP500", "STERLING3", "US10",
+                      "US2", "US30", "US5", "USTB", "V2X", "VIX", "WHEAT"]
 
     for instr in instr_list:
-
-        if instr not in instr_list:
-            continue
-
-        # ignore instruments that are not fully setup yet
-        # TODO move to higher level function?
-        if instr in [
-            "BRENT_W","GASOLINE","HEATOIL","GASOIL_LDN","SILVER", "CARBON","COFFEE","COTTON","SOYOIL","SUGAR","LUMBER",
-            "OATIES","COCOA_NY","COCOA_LDN","SUGAR_LDN", "COFFEE_LDN","OJ","SOYMEAL","WHEAT_LDN","RICE"
-        ]:
-            continue
 
         # getting instrument config
         instr_obj = sim._get_instrument_object_with_cost_data(instr)
@@ -252,7 +248,7 @@ def get_spreadbet_costs():
     cost_results = pd.DataFrame(cost_rows)
 
     # filter
-    cost_results = cost_results[cost_results["Ctotal"] < 0.13] # costs
+    #cost_results = cost_results[cost_results["Ctotal"] < 0.13] # costs
     #cost_results = cost_results[cost_results["Margin"] < 0.11] # costs
     #cost_results = cost_results[abs(cost_results["PosSize"]) > cost_results["MinBet"]] # min bet
     #cost_results = cost_results[cost_results["minCapital"] < ()] # costs
