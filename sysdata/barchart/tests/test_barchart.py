@@ -16,7 +16,7 @@ class TestBarchart:
 
     def test_gold_daily(self):
         bc = bcConnection()
-        prices = bc.get_historical_futures_data_for_contract(fc('GOLD', '20210600'))
+        prices = bc.get_historical_futures_data_for_contract(fc.from_two_strings('GOLD', '20210600'))
 
         assert isinstance(prices, pd.DataFrame)
         assert prices.shape[0] == 640
@@ -27,7 +27,7 @@ class TestBarchart:
     def test_gold_hourly(self):
         bc = bcConnection()
         prices = bc.get_historical_futures_data_for_contract(
-            fc('GOLD', '20210600'), bar_freq=Frequency.Hour)
+            fc.from_two_strings('GOLD', '20210600'), bar_freq=Frequency.Hour)
 
         assert isinstance(prices, pd.DataFrame)
         assert prices.shape[0] == 640
@@ -37,7 +37,9 @@ class TestBarchart:
 
     def test_gold_second(self):
         bc = bcConnection()
-        result = bc.get_historical_futures_data_for_contract(fc('GOLD', '20210600'), bar_freq=Frequency.Second)
+        result = bc.get_historical_futures_data_for_contract(
+            fc.from_two_strings('GOLD', '20210600'),
+            bar_freq=Frequency.Second)
         assert result == missing_data
 
     def test_freq_names(self):
@@ -48,23 +50,23 @@ class TestBarchart:
 
         bc = bcConnection()
 
-        assert bc.get_barchart_id(fc('GOLD', '20210600')) == "GCM21"
+        assert bc.get_barchart_id(fc.from_two_strings('GOLD', '20210600')) == "GCM21"
 
-        assert bc.get_barchart_id(fc('EDOLLAR', '20200300')) == "GEH20"
+        assert bc.get_barchart_id(fc.from_two_strings('EDOLLAR', '20200300')) == "GEH20"
 
-        assert bc.get_barchart_id(fc('AEX', '20190900')) == "AEU19"
+        assert bc.get_barchart_id(fc.from_two_strings('AEX', '20190900')) == "AEU19"
 
-        assert bc.get_barchart_id(fc('GBP', '20181200')) == "B6Z18"
+        assert bc.get_barchart_id(fc.from_two_strings('GBP', '20181200')) == "B6Z18"
 
-        assert bc.get_barchart_id(fc('LEANHOG', '20000200')) == "HEG00"
+        assert bc.get_barchart_id(fc.from_two_strings('LEANHOG', '20000200')) == "HEG00"
 
-        assert bc.get_barchart_id(fc('PLAT', '20020400')) == "PLJ02"
-
-        with pytest.raises(Exception):
-            bc.get_barchart_id(fc('BLAH', '20210600'))
+        assert bc.get_barchart_id(fc.from_two_strings('PLAT', '20020400')) == "PLJ02"
 
         with pytest.raises(Exception):
-           bc.get_barchart_id(fc('AUD', '20201300'))
+            bc.get_barchart_id(fc.from_two_strings('BLAH', '20210600'))
+
+        with pytest.raises(Exception):
+           bc.get_barchart_id(fc.from_two_strings('AUD', '20201300'))
 
     # def test_bc_config(self):
     #     config = read_bc_config_from_file()
@@ -97,27 +99,27 @@ class TestBarchart:
         bc = bcConnection()
         data = BarchartFuturesContractData(bc)
 
-        expiry = data.get_actual_expiry_date_for_single_contract(fc('GOLD', '20210600'))
+        expiry = data.get_actual_expiry_date_for_single_contract(fc.from_two_strings('GOLD', '20210600'))
         assert expiry == datetime.datetime(2021, 6, 28)
 
-        expiry = data.get_actual_expiry_date_for_single_contract(fc('GBP', '20201200'))
+        expiry = data.get_actual_expiry_date_for_single_contract(fc.from_two_strings('GBP', '20201200'))
         assert expiry == datetime.datetime(2020, 12, 14)
 
-        expiry = data.get_actual_expiry_date_for_single_contract(fc('AUD', '20100900'))
+        expiry = data.get_actual_expiry_date_for_single_contract(fc.from_two_strings('AUD', '20100900'))
         assert expiry == datetime.datetime(2010, 9, 13)
 
         # too old
         with pytest.raises(Exception):
-            data.get_actual_expiry_date_for_single_contract(fc('EUR', '19900300'))
+            data.get_actual_expiry_date_for_single_contract(fc.from_two_strings('EUR', '19900300'))
 
         # too new
-        expiry = data.get_actual_expiry_date_for_single_contract(fc('PLAT', '21000300'))
+        expiry = data.get_actual_expiry_date_for_single_contract(fc.from_two_strings('PLAT', '21000300'))
         assert expiry == datetime.datetime(2100, 3, 1)
 
     @pytest.mark.skip
     def test_price_data(self):
         prices = BarchartFuturesContractPriceData()
-        assert prices.has_data_for_contract(fc('GOLD', '20210600'))
+        assert prices.has_data_for_contract(fc.from_two_strings('GOLD', '20210600'))
 
         instr_list = prices.get_list_of_instrument_codes_with_price_data()
         print(instr_list)
