@@ -1,0 +1,6 @@
+# YAML
+forecast_post_ceiling_cost_SR: 0.13
+percentage_vol_target: 25.0
+notional_trading_capital: 50000
+base_currency: "GBP"
+

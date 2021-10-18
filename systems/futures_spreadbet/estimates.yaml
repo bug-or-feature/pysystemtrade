@@ -1,0 +1,24 @@
+#instruments: ['BUXL','CHF','DAX','CRUDE_W','GOLD','NASDAQ','EURGBP','US30','SOYOIL']
+instruments: ['BUXL','CAD','DAX','CRUDE_W','GOLD','NASDAQ','NZD','US30','SOYOIL']
+
+#
+use_forecast_scale_estimates: True
+#
+forecast_scalar_estimate:
+   pool_instruments: True
+#
+# forecast combination
+#
+use_forecast_weight_estimates: True
+use_forecast_div_mult_estimates: True
+
+#
+forecast_correlation_estimate:
+   pool_instruments: True
+#
+use_instrument_weight_estimates: True
+use_instrument_div_mult_estimates: True
+
+
+
+

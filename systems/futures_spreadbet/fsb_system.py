@@ -58,9 +58,9 @@ def fsb_system(data=arg_not_supplied, config=arg_not_supplied, trading_rules=arg
         data = dbFsbSimData()
 
     if config is arg_not_supplied:
-        #config = Config("systems.futures_spreadbet.fsb_estimate_config.yaml")
+        config = Config("systems.futures_spreadbet.fsb_estimate_config.yaml")
         #config = Config("systems.futures_spreadbet.fsb_config.yaml")
-        config = Config("systems.futures_spreadbet.futures_chp15_config.yaml")
+        #config = Config("systems.futures_spreadbet.futures_chp15_config.yaml")
         #config = Config("systems.futures_spreadbet.fsb_config_old.yaml")
         #config = Config("systems.futures_spreadbet.leveraged_trading_config.yaml")
 
