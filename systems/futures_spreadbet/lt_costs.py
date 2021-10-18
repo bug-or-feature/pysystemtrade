@@ -29,16 +29,16 @@ ORIG_TARGET_RISK = 0.12
 # updated account level target risk (%), per instrument count
 #NEW_TARGET_RISK = 0.13 # 2 instruments
 #NEW_TARGET_RISK = 0.14 # 3 instruments
-NEW_TARGET_RISK = 0.17 # 4 instruments
+#NEW_TARGET_RISK = 0.17 # 4 instruments
 #NEW_TARGET_RISK = 0.19 # 5 instruments
-#NEW_TARGET_RISK = 0.24 # 8-14 instruments
+NEW_TARGET_RISK = 0.24 # 8-14 instruments
 
 # instrument level risk (%), per instrument count
 #INSTR_TARGET_RISK = 0.156 # 2 instruments
 #INSTR_TARGET_RISK = 0.207 # 3 instruments
-INSTR_TARGET_RISK = 0.265 # 4 instruments
+#INSTR_TARGET_RISK = 0.265 # 4 instruments
 #INSTR_TARGET_RISK = 0.323 # 5 instruments
-#INSTR_TARGET_RISK = 0.568 # 8-14 instruments
+INSTR_TARGET_RISK = 0.568 # 8-14 instruments
 
 CAPITAL_PER_INSTR = 8000.00
 
@@ -90,7 +90,7 @@ def get_spreadbet_costs():
         #instr_list = sim.db_futures_instrument_data.get_list_of_instruments()
         instr_list = ["AEX", "ASX", "AUD", "BOBL", "BRENT_W", "BTP", "BUND", "BUXL", "CAC", "CAD", "CHF", "COCOA_NY",
                       "COCOA_LDN", "COFFEE", "COFFEE_LDN", "COPPER", "CORN", "COTTON", "CRUDE_W", "DAX", "DOLLAR",
-                      "DOW", "EDOLLAR", "EUR", "EURGBP", "EURIBOR", "EUROSTX", "FTSE", "GASOIL_LDN", "GASOIL_LDN",
+                      "DOW", "EDOLLAR", "EUR", "EURGBP", "EURIBOR", "EUROSTX", "FTSE", "GASOIL_LDN",
                       "GASOLINE", "GAS_US", "GBP", "GILT", "GOLD", "HANG", "HEATOIL", "JGB", "JPY", "LEANHOG",
                       "LIVECOW", "LUMBER", "NASDAQ", "NIKKEI", "NZD", "OAT", "OATIES", "OJ", "PALLAD", "PLAT", "RICE",
                       "RUSSELL", "SHATZ", "SILVER", "SMI", "SOYBEAN", "SOYMEAL", "SOYOIL", "SP500", "STERLING3", "US10",
@@ -102,7 +102,7 @@ def get_spreadbet_costs():
         instr_obj = sim._get_instrument_object_with_cost_data(instr)
         instr_class = instr_obj.meta_data.AssetClass
         point_size = 1 # assumed
-        #instr_subclass = instr_obj.meta_data.AssetSubclass
+        instr_subclass = instr_obj.meta_data.AssetSubclass
         #multiplier = instr_obj.meta_data.Multiplier
         spread_in_points = instr_obj.meta_data.Slippage * 2
         min_bet_per_point = instr_obj.meta_data.Pointsize
@@ -205,7 +205,7 @@ def get_spreadbet_costs():
                 'Instr': instr,
                 #'Commission': 0,
                 'Class': instr_class,
-                #'Subclass': instr_subclass,
+                'Subclass': instr_subclass,
                 #'PriceF': round(f_price, 2),
                 'Price': round(sb_price, 2),
                 'Date': date_last_price,
