@@ -3,7 +3,7 @@ AEX,Equities,Europe,GBP,0.1,5.0,0.0,0.0,0.0,1.0,False,0.1,Netherlands equity ind
 ASX,Equities,Asia,GBP,2.0,2.0,0.0,0.0,0.0,1.0,False,0.05,Australian 200 Index ***
 AUD,FX,Asia,GBP,5.3,1.0,0.0,0.0,0.0,10000.0,False,0.05,AUDUSD currency
 BOBL,Bonds,Europe,GBP,1.5,0.5,0.0,0.0,0.0,100.0,False,0.2,German 5 year bond Bobl
-BRENT_W,Commodities,Energy,GBP,4.0,1.0,0.0,0.0,0.0,100.0,False,0.6,Brent Crude
+BRENT_W,Commodities,Energy,GBP,4.0,1.0,0.0,0.0,0.0,100.0,False,0.1,Brent Crude
 BTP,Bonds,Europe,GBP,2.5,0.5,0.0,0.0,0.0,100.0,False,0.2,Italian 10 year bond BTP
 BUND,Bonds,Europe,GBP,1.5,0.5,0.0,0.0,0.0,100.0,False,0.2,German 10 year bond Bund
 BUXL,Bonds,Europe,GBP,2.0,0.5,0.0,0.0,0.0,100.0,False,0.2,German Buxl 15 to 30 year bond
@@ -18,14 +18,14 @@ COFFEE_LDN,Commodities,Agricultural,GBP,3.0,0.5,0.0,0.0,0.0,1.0,False,0.1,Coffee
 COPPER,Commodities,Metals,GBP,20.0,0.1,0.0,0.0,0.0,10000.0,False,0.1,Copper
 CORN,Commodities,Agricultural,GBP,0.5,10.0,0.0,0.0,0.0,1.0,False,0.1,Corn
 COTTON,Commodities,Agricultural,GBP,12.5,0.5,0.0,0.0,0.0,100.0,False,0.1,Cotton
-CRUDE_W,Commodities,Energy,GBP,3.0,1.0,0.0,0.0,0.0,100.0,False,0.6,Light sweet crude Winter
+CRUDE_W,Commodities,Energy,GBP,3.0,1.0,0.0,0.0,0.0,100.0,False,0.1,Light sweet crude Winter
 DAX,Equities,Europe,GBP,3.0,0.5,0.0,0.0,0.0,1.0,False,0.05,DAX 30 Index
 DOLLAR,FX,US,GBP,4.25,0.5,0.0,0.0,0.0,100.0,False,0.1,USD/Basket global currencies
 DOW,Equities,US,GBP,3.0,0.2,0.0,0.0,0.0,1.0,False,0.05,Dow Jones Industrial Average Index
 EDOLLAR,STIR,Europe,GBP,0.8,0.5,0.0,0.0,0.0,100.0,False,0.2,US STIR Eurodollar
 EUR,FX,Europe,GBP,5.3,0.5,0.0,0.0,0.0,10000.0,False,0.033,EURUSD currency
 EURGBP,FX,Europe,GBP,3.95,1.0,0.0,0.0,0.0,10000.0,False,0.033,EURGBP currency
-EURIBOR,Bonds,Europe,GBP,0.75,0.5,0.0,0.0,0.0,100.0,False,0.2,Three Month EURIBOR
+EURIBOR,STIR,Europe,GBP,0.75,0.5,0.0,0.0,0.0,100.0,False,0.2,Three Month EURIBOR
 EUROSTX,Equities,Europe,GBP,1.0,1.0,0.0,0.0,0.0,1.0,False,0.05,European equity index EUROSTOXX50
 FTSE,Equities,Europe,GBP,4.0,0.5,0.0,0.0,0.0,1.0,False,0.05,UK FTSE Index
 GASOIL_LDN,Commodities,Energy,GBP,0.6,10.0,0.0,0.0,0.0,1.0,False,0.1,London Gas Oil
@@ -58,7 +58,7 @@ SOYBEAN,Commodities,Agricultural,GBP,1.0,5.0,0.0,0.0,0.0,1.0,False,0.1,Soybean
 SOYMEAL,Commodities,Agricultural,GBP,40.0,0.25,0.0,0.0,0.0,100.0,False,0.1,Soybean meal
 SOYOIL,Commodities,Agricultural,GBP,5.0,1.0,0.0,0.0,0.0,100.0,False,0.1,Soybean Oil
 SP500,Equities,US,GBP,0.5,1.0,0.0,0.0,0.0,1.0,False,0.05,US equity index S&P500
-STERLING3,Bonds,Europe,GBP,0.5,0.5,0.0,0.0,0.0,100.0,False,0.20,Short Sterling
+STERLING3,STIR,Europe,GBP,0.5,0.5,0.0,0.0,0.0,100.0,False,0.20,Short Sterling
 SUGAR,Commodities,Agricultural,GBP,2.5,2.0,0.0,0.0,0.0,100.0,False,0.1,Sugar New York No. 11
 SUGAR_LDN,Commodities,Agricultural,GBP,0.4,15.0,0.0,0.0,0.0,1.0,False,0.1,Sugar London No. 5
 US10,Bonds,US,GBP,2.0,0.5,0.0,0.0,0.0,100.0,False,0.2,US 10 year bond note
