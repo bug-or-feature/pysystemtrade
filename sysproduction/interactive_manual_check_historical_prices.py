@@ -16,6 +16,7 @@ from sysproduction.data.prices import (
 )
 from sysproduction.data.broker import dataBroker
 from sysproduction.data.contracts import dataContracts
+from sysproduction.update_multiple_adjusted_prices import update_multiple_adjusted_prices
 from sysdata.futures.manual_price_checker import manual_price_checker
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 from sysobjects.contracts import futuresContract
@@ -29,15 +30,20 @@ def interactive_manual_check_historical_prices():
     :return: Nothing
     """
     with dataBlob(log_name="Update-Historical-prices-manually") as data:
+        instr_list = []
         do_another = True
         while do_another:
             instrument_code = get_valid_instrument_code_from_user(data, source='single')
             check_instrument_ok_for_broker(data, instrument_code)
             data.log.label(instrument_code=instrument_code)
             update_historical_prices_with_checks_for_instrument(instrument_code, data)
+            instr_list.append(instrument_code)
             ans = input("Another <type anything> ? or <RETURN> to exit: ")
             if ans == "":
                 do_another = False
+
+        print(f"Now updating multiple and adjusted prices for: {instr_list}")
+        update_multiple_adjusted_prices(instr_list)
 
     return success
 
