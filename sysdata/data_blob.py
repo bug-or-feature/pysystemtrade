@@ -101,7 +101,8 @@ class dataBlob(object):
                           arctic=self._add_arctic_class,
                           mongo=self._add_mongo_class,
                           barchart=self._add_alt_data_source_class,
-                          av=self._add_alt_data_source_class)
+                          av=self._add_alt_data_source_class,
+                          ig=self._add_ig_class)
 
         method_to_add_with = class_dict.get(prefix, None)
         if method_to_add_with is None:
@@ -172,6 +173,19 @@ class dataBlob(object):
 
         return resolved_instance
 
+    def _add_ig_class(self, class_object):
+        log = self._get_specific_logger(class_object)
+        try:
+            resolved_instance = class_object(log = log)
+        except Exception as e:
+                class_name = get_class_name(class_object)
+                msg = (
+                        "Error %s couldn't evaluate %s(self.ib_conn, log = self.log.setup(component = %s)) This might be because (a) import is missing \
+                         or (b) arguments don't follow pattern" % (str(e), class_name, class_name))
+                self._raise_and_log_error(msg)
+
+        return resolved_instance
+
     def _add_csv_class(self, class_object):
         datapath = self._get_csv_paths_for_class(class_object)
         log = self._get_specific_logger(class_object)
@@ -231,7 +245,7 @@ class dataBlob(object):
     def _add_new_class_with_new_name(self, resolved_instance, attr_name:str):
         already_exists = self._already_existing_class_name(attr_name)
         if already_exists:
-            ## not uncommon don't log or would be a sea of span
+            ## not uncommon don't log or would be a sea of spam
             pass
         else:
             setattr(self, attr_name, resolved_instance)
@@ -347,7 +361,7 @@ class dataBlob(object):
         return log_name
 
 
-source_dict = dict(arctic="db", mongo="db", csv="db", ib="broker", barchart="broker", av="broker")
+source_dict = dict(arctic="db", mongo="db", csv="db", ib="broker", barchart="broker", av="broker", ig="broker")
 
 
 def identifying_name(split_up_name: list, keep_original_prefix=False)-> str:

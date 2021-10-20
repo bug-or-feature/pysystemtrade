@@ -13,6 +13,8 @@ from sysdata.alphavantage.av_spot_FX_data import avFxPricesData
 from sysdata.barchart.bc_futures_contract_price_data import BarchartFuturesContractPriceData
 from sysdata.barchart.bc_futures_contracts_data import BarchartFuturesContractData
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
+from sysbrokers.IG.ig_capital_data import IgCapitalData
+from sysbrokers.IG.ig_static_data import IgStaticData
 
 from sysbrokers.broker_fx_handling import brokerFxHandlingData
 from sysbrokers.broker_static_data import brokerStaticData
@@ -69,7 +71,9 @@ class dataBroker(productionDataLayerGeneric):
             avFxPricesData,
             BarchartFuturesContractPriceData,
             BarchartFuturesContractData,
-            BarchartFuturesInstrumentData]
+            BarchartFuturesInstrumentData,
+            IgStaticData,
+            IgCapitalData]
         )
 
         return data
