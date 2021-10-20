@@ -165,8 +165,12 @@ def get_data_for_objective_instance(data: dataBlob,
                                                                 list_of_instruments=list_of_instruments)
 
     data.log.msg("Getting covariance matrix")
+    # FIXME THIS REALLY OUGHT TO BE BASED ON small_system:   instrument_returns_correlation: in .yaml file
     covariance_matrix = get_covariance_matrix(data,
                                               list_of_instruments=list_of_instruments)
+
+    print("Covariance matrix")
+    print(covariance_matrix)
 
     data.log.msg("Getting per contract values")
     per_contract_value = \
@@ -203,6 +207,7 @@ def get_data_for_objective_instance(data: dataBlob,
                                             per_contract_value=per_contract_value)
 
     trade_shadow_cost = get_trade_shadow_cost()
+    data.log.msg("Shadow cost %f" % trade_shadow_cost)
 
     data_for_objective = dataForObjectiveInstance(weights_optimal=weights_optimal,
                                                   positions_optimal = positions_optimal,
