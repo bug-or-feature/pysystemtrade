@@ -7,14 +7,13 @@ from sysproduction.data.prices import diagPrices
 
 def update_all():
 
-    instr_list = ["AEX", "ASX", "AUD", "BOBL", "BRENT_W", "BTP", "BUND", "BUXL", "CAC", "CAD", "CHF", "COCOA_NY",
-                  "COCOA_LDN", "COFFEE", "COFFEE_LDN", "COPPER", "CORN", "COTTON", "CRUDE_W", "DAX", "DOLLAR", "DOW",
-                  "EDOLLAR", "EUR", "EURGBP", "EURIBOR", "EUROSTX", "FTSE", "GASOIL_LDN", "GASOIL_LDN", "GASOLINE",
-                  "GAS_US", "GBP", "GILT", "GOLD", "HANG", "HEATOIL", "JGB", "JPY", "LEANHOG", "LIVECOW", "LUMBER",
-                  "NASDAQ", "NIKKEI", "NZD", "OAT", "OATIES", "OJ", "PALLAD", "PLAT", "RICE", "RUSSELL", "SHATZ",
-                  "SILVER", "SMI", "SOYBEAN", "SOYMEAL", "SOYOIL", "SP500", "STERLING3", "US10", "US2", "US30", "US5",
-                  "USTB", "V2X", "VIX", "WHEAT"]
-    # prices = diagPrices()
+    instr_list = ["AEX", "ASX", "AUD", "BOBL", "BRENT_W", "BTP", "BUND", "BUXL", "CAC", "CAD", "CARBON", "CHF",
+                  "COCOA_NY", "COCOA_LDN", "COFFEE", "COFFEE_LDN", "COPPER", "CORN", "COTTON", "CRUDE_W", "DAX",
+                  "DOLLAR", "DOW", "EDOLLAR", "EUR", "EURGBP", "EURIBOR", "EUROSTX", "FTSE", "GASOIL_LDN", "GASOIL_LDN",
+                  "GASOLINE", "GAS_US", "GBP", "GILT", "GOLD", "HANG", "HEATOIL", "JGB", "JPY", "LEANHOG", "LIVECOW",
+                  "LUMBER", "NASDAQ", "NIKKEI", "NZD", "OAT", "OATIES", "OJ", "PALLAD", "PLAT", "RICE", "RUSSELL",
+                  "SHATZ", "SILVER", "SMI", "SOYBEAN", "SOYMEAL", "SOYOIL", "SP500", "STERLING3", "US10", "US2", "US30",
+                  "US5", "USTB", "V2X", "VIX", "WHEAT"]  # prices = diagPrices()
     # print(prices.get_list_of_instruments_in_multiple_prices())
 
     update_fx_prices()
