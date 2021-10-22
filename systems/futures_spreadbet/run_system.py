@@ -1,3 +1,4 @@
+import logging
 from systems.futures_spreadbet.fsb_system import fsb_system
 from systems.futures.futures_system import futures_system
 import pandas as pd
@@ -20,7 +21,6 @@ def run_system():
 
     config_files = [rules, capital]
 
-
     if do_fsb:
         if do_estimate:
             config_files.append(estimates)
@@ -30,10 +30,12 @@ def run_system():
         system = fsb_system(config=config)
         prod_label = "FSB"
         bet_label = "BetPerPoint"
+        type_label = "estimate"
     else:
         system = futures_system()
         prod_label = "FUT"
         bet_label = "NumContracts"
+        type_label = "normal"
 
     curve_group = system.accounts.portfolio()
     stats = system.accounts.portfolio().stats()
@@ -44,7 +46,8 @@ def run_system():
     elif hasattr(system.config, "instrument_weights"):
         instr_list = system.config.instrument_weights.keys()
     else:
-        print("Which instruments...?")
+        instr_list = []
+        print("No instruments...?")
 
     total_cap_req = 0.0
 
@@ -97,7 +100,8 @@ def run_system():
             #cap_req = 0.0
 
         # accounts
-        total_costs = system.accounts.get_SR_cost_given_turnover(instr, 5.4) # TODO dynamic turnover
+        turnover = system.accounts.subsystem_turnover(instr)
+        total_costs = system.accounts.get_SR_cost_given_turnover(instr, turnover)
         pandl = system.accounts.pandl_for_subsystem(instr)
         #acc_curve_group = system.accounts.portfolio()
 
@@ -139,8 +143,7 @@ def run_system():
 
     # create dataframe
     results = pd.DataFrame(rows)
-    print(f"\n{prod_label}")
-    print(f"{print_full(results)}\n")
+    write_file(results, type_label, prod_label)
 
     print(f"\nTotal capital required: £{round(total_cap_req, 2)}\n")
     print(f"\n{stats}\n")
@@ -175,6 +178,21 @@ def write_estimate_file(system):
             'instrument_div_multiplier'
         ]
     )
+
+
+def write_file(df, run_type, product, write=True):
+    now = datetime.now()
+    dir = 'data/run_systems'
+    full_path = f"{dir}/run_{run_type}_{product}_{now.strftime('%Y-%m-%d_%H%M%S')}.csv"
+
+    if write:
+        try:
+            df.to_csv(full_path, date_format='%Y-%m-%dT%H:%M:%S%z')
+        except Exception as ex:
+            logging.warning(f"Problem with {full_path}: {ex}")
+
+    print(f"\n{product}")
+    print(f"\n{print_full(df)}\n")
 
 
 def config_from_file(path_string):
