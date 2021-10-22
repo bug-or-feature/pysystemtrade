@@ -17,21 +17,21 @@ class FuturesSpreadbetRawData(RawData):
 
     @input
     def get_daily_prices(self, instrument_code) -> pd.Series:
-        return self.do_price_massage(
+        return self._do_price_massage(
             instrument_code,
             self.data_stage.daily_prices(instrument_code),
             "FSB daily")
 
     @input
     def get_natural_frequency_prices(self, instrument_code: str) -> pd.Series:
-        return self.do_price_massage(
+        return self._do_price_massage(
             instrument_code,
             self.data_stage.get_raw_price(instrument_code),
             "FSB natural")
 
     @input
     def get_hourly_prices(self, instrument_code: str) -> pd.Series:
-        return self.do_price_massage(
+        return self._do_price_massage(
             instrument_code,
             self.get_natural_frequency_prices(instrument_code).resample("1H").last(),
             "FSB hourly")
@@ -94,7 +94,7 @@ class FuturesSpreadbetRawData(RawData):
         annual_perc_vol = daily_perc_vol * ROOT_BDAYS_INYEAR
         return annual_perc_vol
 
-    def do_price_massage(self, instrument_code, prices, description):
+    def _do_price_massage(self, instrument_code, prices, description):
         multiplier = self.get_multiplier(instrument_code)
         inverse = self.get_inverse(instrument_code)
         self.log.msg(f"Calculating {description} prices for {instrument_code}, multiplier {multiplier}, "
