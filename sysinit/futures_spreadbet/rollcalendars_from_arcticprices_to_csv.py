@@ -129,15 +129,17 @@ if __name__ == "__main__":
     #     input_datapath='sysinit.futures.tests.data.aud',
     #     input_prices=csvFuturesContractPriceData())
 
-    # !!! change update_all() !!!
+    # !!! change update_all() and lt_costs() !!!
 
 
-    # need all recent October contract downloaded due to weird cycle
+    # need further downloads due to missing data
     # SUGAR
 
     # need to redownload, not enough overlap or due to roll cycle
     # SUGAR_LDN
+
+    # No september contracts available on BC since 2005
     # WHEAT_LDN
-    # CARBON
+
 
 
