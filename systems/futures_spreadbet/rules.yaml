@@ -59,21 +59,3 @@ trading_rules:
 rule_variations: ['ewmac2_8','ewmac4_16','ewmac8_32','ewmac16_64','ewmac32_128','ewmac64_256','carry']
 #rule_variations: ['ewmac16_64','ewmac32_128','ewmac64_256','carry']
 #rule_variations: ['ewmac16_64','ewmac32_128','ewmac64_256']
-
-# MUST include at least first row in every config to override defaults!
-ignore_instruments:
-  - KOSPI # not supported on IG
-  - GAS_US # too expensive
-  - US2 # too expensive
-  - V2X # too expensive
-  - RICE # too expensive
-  - JGB # too expensive
-  - JPY # too expensive
-  - OATIES # too expensive
-  - SHATZ # too expensive
-  - LUMBER # too expensive
-  - EURIBOR # too expensive
-  - EDOLLAR # too expensive
-  - VIX # too expensive
-  - STERLING3 # too expensive
-
