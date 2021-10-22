@@ -4,7 +4,7 @@ import sys
 
 import pandas as pd
 
-from sysbrokers.IG.ig_connection import connectionIG
+from sysbrokers.IG.ig_connection import ConnectionIG
 from syscore.dateutils import ROOT_BDAYS_INYEAR
 from syscore.fileutils import get_filename_for_package
 from syscore.pdutils import print_full
@@ -88,9 +88,9 @@ def get_spreadbet_costs():
         instr_list = sys.argv[1].split(",")
     else:
         #instr_list = sim.db_futures_instrument_data.get_list_of_instruments()
-        instr_list = ["AEX", "ASX", "AUD", "BOBL", "BRENT_W", "BTP", "BUND", "BUXL", "CAC", "CAD", "CHF", "COCOA_NY",
-                      "COCOA_LDN", "COFFEE", "COFFEE_LDN", "COPPER", "CORN", "COTTON", "CRUDE_W", "DAX", "DOLLAR",
-                      "DOW", "EDOLLAR", "EUR", "EURGBP", "EURIBOR", "EUROSTX", "FTSE", "GASOIL_LDN",
+        instr_list = ["AEX", "ASX", "AUD", "BOBL", "BRENT_W", "BTP", "BUND", "BUXL", "CAC", "CAD", "CARBON", "CHF",
+                      "COCOA_NY", "COCOA_LDN", "COFFEE", "COFFEE_LDN", "COPPER", "CORN", "COTTON", "CRUDE_W", "DAX",
+                      "DOLLAR", "DOW", "EDOLLAR", "EUR", "EURGBP", "EURIBOR", "EUROSTX", "FTSE", "GASOIL_LDN",
                       "GASOLINE", "GAS_US", "GBP", "GILT", "GOLD", "HANG", "HEATOIL", "JGB", "JPY", "LEANHOG",
                       "LIVECOW", "LUMBER", "NASDAQ", "NIKKEI", "NZD", "OAT", "OATIES", "OJ", "PALLAD", "PLAT", "RICE",
                       "RUSSELL", "SHATZ", "SILVER", "SMI", "SOYBEAN", "SOYMEAL", "SOYOIL", "SP500", "STERLING3", "US10",
