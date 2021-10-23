@@ -42,7 +42,7 @@ INSTR_TARGET_RISK = 0.568 # 8-14 instruments
 
 CAPITAL_PER_INSTR = 8000.00
 
-conn = connectionIG()
+conn = ConnectionIG()
 
 # stop loss fraction
 STOP_LOSS_FRACTION = 0.5
