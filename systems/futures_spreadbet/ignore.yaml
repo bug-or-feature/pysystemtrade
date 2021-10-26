@@ -1,17 +1,17 @@
 # MUST include at least first row in every config to override defaults!
 ignore_instruments:
   - KOSPI # not supported on IG
+  #- STERLING3 # too expensive
   #- EURIBOR # too expensive
+  #- VIX # too expensive
+  #- EDOLLAR # too expensive
+  #- V2X # too expensive
+  #- LUMBER # too expensive
   #- GAS_US # too expensive
   #- US2 # too expensive
-  #- V2X # too expensive
   #- RICE # too expensive
   #- JGB # too expensive
   #- JPY # too expensive
   #- OATIES # too expensive
   #- SHATZ # too expensive
-  #- LUMBER # too expensive
-  #- EDOLLAR # too expensive
-  #- VIX # too expensive
-  #- STERLING3 # too expensive
 

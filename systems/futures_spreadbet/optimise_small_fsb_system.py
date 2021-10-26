@@ -1,23 +1,16 @@
 from copy import copy
 import yaml
+import os
+import os.path
 from sysquant.estimators.correlations import correlationEstimate
 from sysquant.optimisation.optimisers.handcraft import *
 from sysquant.estimators.estimates import Estimates, meanEstimates, stdevEstimates
 from sysquant.optimisation.shared import neg_SR
 from syscore.dateutils import WEEKS_IN_YEAR
-from syscore.objects import arg_not_supplied
-
-from sysdata.config.configdata import Config
-from sysdata.sim.db_fsb_sim_data import dbFsbSimData
-from systems.futures_spreadbet.rawdata import FuturesSpreadbetRawData
-from systems.forecasting import Rules
-from systems.basesystem import System
-from systems.forecast_combine import ForecastCombine
-from systems.forecast_scale_cap import ForecastScaleCap
-from systems.positionsizing import PositionSizing
-from systems.portfolio import Portfolios
-from systems.accounts.accounts_stage import Account
+from systems.futures_spreadbet.fsb_system import fsb_system
+from systems.futures_spreadbet.run_system import calc_forecasts
 from syscore.fileutils import get_filename_for_package
+from sysdata.config.production_config import Config
 
 ## THIS MIGHT NEED TWEAKING, DEPENDING ON CAPITAL
 max_instrument_weight = 0.33
@@ -26,27 +19,15 @@ notional_starting_IDM = 1.0
 minimum_instrument_weight_idm = max_instrument_weight * notional_starting_IDM
 
 
-def do_thing():
+def optimise():
     ignore = config_from_file("systems.futures_spreadbet.ignore.yaml")
     rules = config_from_file("systems.futures_spreadbet.rules2.yaml")
     capital = config_from_file("systems.futures_spreadbet.capital.yaml")
-    system = System(
-        [
-            FuturesSpreadbetRawData(),
-            Account(),
-            Portfolios(),
-            PositionSizing(),
-            ForecastCombine(),
-            ForecastScaleCap(),
-            Rules(arg_not_supplied)
-        ],
-        dbFsbSimData(),
-        Config([rules, capital, ignore])
-    )
+    config = Config([rules, capital, ignore])
+    system = fsb_system(config=config)
     system.set_logging_level("on")
 
     find_best_ordered_set_of_instruments(system, 50000)
-
     #do_simple_iter(system, capital=50000)
 
 
@@ -58,21 +39,20 @@ def do_simple_iter(system, capital=500000):
 
     results = []
     for instr in system.portfolio.get_instrument_list():
+        avg_pos = system.positionSize.get_volatility_scalar(instr).iloc[-1]
         max_pos = calculate_maximum_position(system, instr, 0.1)
         cost = calculate_trading_cost(system, instr)
-        net_sr = net_SR_for_instrument(max_pos, cost, notional_SR=0.5)
-        results.append((instr, max_pos, cost, net_sr))
+        net_sr = net_SR_for_instrument(instr, max_pos, cost, notional_SR=0.5)
+        results.append((instr, avg_pos, max_pos, cost, net_sr))
 
-    results = sorted(results, key=lambda tup: tup[3], reverse=True)
+    results = sorted(results, key=lambda tup: tup[4], reverse=True)
+    #results.sort(key=operator.itemgetter(1, 2))
     for tup2 in results:
-        print(f"{tup2[0]}: max_pos: {round(tup2[1],3)}, cost: {round(tup2[2],3)}, net_sr: {round(tup2[3],3)}")
-
-
-def config_from_file(path_string):
-    path = get_filename_for_package(path_string)
-    with open(path) as file_to_parse:
-        config_dict = yaml.load(file_to_parse, Loader=yaml.CLoader)
-    return config_dict
+        print(f"{tup2[0]}: "
+              f"avg_pos: {round(tup2[1],3)}, "
+              f"max_pos: {round(tup2[2],3)}, "
+              f"cost: {round(tup2[3],3)}, "
+              f"net_sr: {round(tup2[4],3)}")
 
 
 def find_best_ordered_set_of_instruments(system, capital=500000) -> list:
@@ -85,6 +65,9 @@ def find_best_ordered_set_of_instruments(system, capital=500000) -> list:
     system.config.instrument_correlation_estimate['floor_at_zero'] = False
 
     list_of_instruments = system.portfolio.get_instrument_list(for_instrument_weights=True)
+
+    calc_forecasts(system)
+
     list_of_correlations = system.portfolio.get_instrument_correlation_matrix()
     corr_matrix = list_of_correlations.corr_list[-1]
 
@@ -104,7 +87,7 @@ def find_best_ordered_set_of_instruments(system, capital=500000) -> list:
             corr_matrix=corr_matrix,
             sizes_dict=portfolio_sizes_dict)
 
-        if (new_SR) < (max_SR * .9):
+        if (new_SR) < (max_SR * 0.9):
             print("PORTFOLIO TOO BIG! SR falling")
             break
         portfolio_size_with_market = portfolio_sizes_dict[selected_market]
@@ -136,7 +119,8 @@ def find_best_market(system) -> str:
 
     best_market = all_results[-1][0]
 
-    return best_market
+    #return best_market
+    return 'GOLD'
 
 
 def find_next_instrument(system,
@@ -256,7 +240,7 @@ def net_SR_for_instrument_in_system(system, instrument_code, instrument_weight_i
     maximum_pos_final = calculate_maximum_position(system, instrument_code, instrument_weight_idm=instrument_weight_idm)
     trading_cost = calculate_trading_cost(system, instrument_code)
 
-    return net_SR_for_instrument(maximum_position=maximum_pos_final, trading_cost=trading_cost)
+    return net_SR_for_instrument(instrument_code, maximum_position=maximum_pos_final, trading_cost=trading_cost)
 
 
 def calculate_maximum_position(system, instrument_code, instrument_weight_idm=0.25):
@@ -277,18 +261,31 @@ def calculate_trading_cost(system, instrument_code):
     return total_cost
 
 
-def net_SR_for_instrument(maximum_position, trading_cost, notional_SR=0.5, cost_multiplier=1.0):
-    return notional_SR - (trading_cost*cost_multiplier) - size_penalty(maximum_position)
+def net_SR_for_instrument(instr_code, maximum_position, trading_cost, notional_SR=0.5, cost_multiplier=1.0):
+    return notional_SR - (trading_cost * cost_multiplier) - size_penalty(instr_code, maximum_position)
     #return notional_SR - (trading_cost * cost_multiplier)
 
 
-def size_penalty(maximum_position):
+def size_penalty(instr_code, maximum_position):
     if maximum_position < 0.5:
-        print("Penalty awarded")
+        print(f"{instr_code} size penalty awarded")
         return 9999
 
     return 0.125 / maximum_position ** 2
+    #return 0.25 / maximum_position ** 2
 
+
+def cost_penalty(instr_code, trading_cost):
+    if trading_cost > 0.08:
+        print(f"{instr_code} cost penalty awarded")
+        return 9999
+    return trading_cost
+
+def config_from_file(path_string):
+    path = get_filename_for_package(path_string)
+    with open(path) as file_to_parse:
+        config_dict = yaml.load(file_to_parse, Loader=yaml.CLoader)
+    return config_dict
 
 if __name__ == "__main__":
-    do_thing()
+    optimise()

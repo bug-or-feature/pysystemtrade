@@ -1,7 +1,8 @@
 # YAML
-forecast_post_ceiling_cost_SR: 0.13
+#forecast_post_ceiling_cost_SR: 0.13
 percentage_vol_target: 25.0
 notional_trading_capital: 50000
 base_currency: "GBP"
 #instruments: ['GOLD','NASDAQ','NZD','BUXL']
+#instruments: ['GOLD', 'CARBON', 'BUXL', 'EUROSTX', 'LEANHOG', 'CHF', 'OJ', 'COPPER', 'RUSSELL', 'COCOA_NY', 'CRUDE_W', 'EURGBP']
 

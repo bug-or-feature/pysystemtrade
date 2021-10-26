@@ -1,4 +1,7 @@
 import logging
+import os
+import os.path
+
 from systems.futures_spreadbet.fsb_system import fsb_system
 from systems.futures.futures_system import futures_system
 import pandas as pd
@@ -7,25 +10,28 @@ from matplotlib.pyplot import show
 from systems.diagoutput import systemDiag
 from datetime import datetime
 from syscore.fileutils import get_filename_for_package
-from sysdata.config.configdata import Config
+from sysdata.config.production_config import get_production_config, Config
 import yaml
+
 
 def run_system():
 
     do_fsb = True
     do_estimate = False
 
-    rules = config_from_file("systems.futures_spreadbet.rules.yaml")
+    rules = config_from_file("systems.futures_spreadbet.rules2.yaml")
     capital = config_from_file("systems.futures_spreadbet.capital.yaml")
-    estimates = config_from_file("systems.futures_spreadbet.estimates.yaml")
+    ignore = config_from_file("systems.futures_spreadbet.ignore.yaml")
+    #ignore = config_from_file("systems.futures_spreadbet.ignore.yaml")
 
-    config_files = [rules, capital]
+    config_files = [rules, capital, ignore]
 
     if do_fsb:
         if do_estimate:
+            estimates = config_from_file("systems.futures_spreadbet.estimates.yaml")
             config_files.append(estimates)
         else:
-            config_files.append("systems.futures_spreadbet.estimate_9_instruments.yaml")
+            config_files.append("systems.futures_spreadbet.empty_instruments.yaml")
         config = Config(config_files)
         system = fsb_system(config=config)
         prod_label = "FSB"
@@ -37,7 +43,8 @@ def run_system():
         bet_label = "NumContracts"
         type_label = "normal"
 
-    curve_group = system.accounts.portfolio()
+    #curve_group = system.accounts.portfolio()
+    #calc_forecasts(system)
     stats = system.accounts.portfolio().stats()
     rows = []
 
@@ -46,8 +53,7 @@ def run_system():
     elif hasattr(system.config, "instrument_weights"):
         instr_list = system.config.instrument_weights.keys()
     else:
-        instr_list = []
-        print("No instruments...?")
+        instr_list = system.get_instrument_list()
 
     total_cap_req = 0.0
 
@@ -85,7 +91,7 @@ def run_system():
         subsys_pos = system.positionSize.get_subsystem_position(instr).iloc[-1]
 
         # sharpe
-        sharpe = curve_group[instr].annual.sharpe()
+        #sharpe = curve_group[instr].annual.sharpe()
 
         # portfolio
         notional_position = system.portfolio.get_notional_position(instr).iloc[-1]
@@ -124,8 +130,9 @@ def run_system():
                 'Price': round(price, 2),
                 'DailyVol%': round(system.rawdata.get_daily_percentage_volatility(instr).iloc[-1], 4),
                 'AnnVol%': round(system.rawdata.get_daily_percentage_volatility(instr).iloc[-1] * 16, 2),
+                'Turnover': round(turnover, 2),
                 'Costs': round(total_costs, 3),
-                'Sharpe': round(sharpe, 2),
+                #'Sharpe': round(sharpe, 2),
 
                 'Forecast': round(comb_fc, 2),
                 'BlockVal': round(block_val, 2),
@@ -143,6 +150,7 @@ def run_system():
 
     # create dataframe
     results = pd.DataFrame(rows)
+    results = results.sort_values(by='Costs')  # Ctotal, NMinCap
     write_file(results, type_label, prod_label)
 
     print(f"\nTotal capital required: £{round(total_cap_req, 2)}\n")
@@ -199,9 +207,24 @@ def config_from_file(path_string):
     path = get_filename_for_package(path_string)
     with open(path) as file_to_parse:
         config_dict = yaml.load(file_to_parse, Loader=yaml.CLoader)
-
     return config_dict
 
+def get_daily_backtest_path():
+    now = datetime.now()
+    dir = get_production_config().get_element_or_missing_data('backtest_store_directory')
+    return f"{dir}.daily_backtest_{now.strftime('%Y-%m-%d')}.pickle"
+
+def calc_forecasts(system):
+    saved_system = get_daily_backtest_path()
+    if os.path.isfile(get_filename_for_package(saved_system)):
+        system.cache.unpickle(saved_system)
+    else:
+        for instr in system.portfolio.get_instrument_list(for_instrument_weights=True):
+            system.combForecast.get_combined_forecast(instr)
+            # system.positionSize.get_subsystem_position(instr)
+            # system.accounts.pandl_for_subsystem(instr)
+        # save system for later
+        system.cache.pickle(saved_system)
 
 if __name__ == "__main__":
     run_system()
