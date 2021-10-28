@@ -1,8 +1,9 @@
 #instruments: ['BUXL','CHF','DAX','CRUDE_W','GOLD','NASDAQ','EURGBP','US30','SOYOIL']
 #instruments: ['GOLD', 'CARBON', 'BUXL', 'EUROSTX', 'LEANHOG', 'CHF', 'OJ', 'COPPER', 'RUSSELL', 'COCOA_NY', 'CRUDE_W', 'EURGBP']
+instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","EUROSTX"]
 
 #
-use_forecast_scale_estimates: True
+#use_forecast_scale_estimates: True
 #
 forecast_scalar_estimate:
    pool_instruments: True

@@ -1,0 +1,95 @@
+# YAML
+forecast_post_ceiling_cost_SR: 0.13
+percentage_vol_target: 25.0
+notional_trading_capital: 50000
+base_currency: "GBP"
+
+trading_rules:
+  ewmac2_8:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+     forecast_scalar: 10.6
+  ewmac4_16:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+     forecast_scalar: 7.5
+  ewmac8_32:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+     forecast_scalar: 5.3
+  ewmac16_64:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+     forecast_scalar: 3.75
+  ewmac32_128:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+     forecast_scalar: 2.65
+  ewmac64_256:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+     forecast_scalar: 1.87
+  carry:
+     function: systems.provided.futures_chapter15.rules.carry2
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 90
+     forecast_scalar: 30
+forecast_cap: 20.0
+
+#
+# forecast combination
+#
+forecast_weights:
+     ewmac16_64: 0.21
+     ewmac32_128: 0.08
+     ewmac64_256: 0.21
+     carry: 0.50
+forecast_div_multiplier: 1.31
+
+instrument_div_multiplier: 2.22
+instrument_weights:
+  BUXL: 0.11
+  CARBON: 0.10
+  CRUDE_W: 0.10
+  DAX: 0.06
+  EUROSTX: 0.06
+  GILT: 0.076
+  GOLD: 0.15
+  HANG: 0.18
+  NASDAQ: 0.11
+  US30: 0.07
+
+ignore_instruments:
+  - KOSPI # not supported on IG

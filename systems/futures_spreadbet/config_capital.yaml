@@ -1,0 +1,36 @@
+# YAML
+#forecast_post_ceiling_cost_SR: 0.13
+percentage_vol_target: 25.0
+notional_trading_capital: 50000
+base_currency: "GBP"
+#instruments: ['GOLD','NASDAQ','NZD','BUXL']
+#instruments: ['GOLD', 'CARBON', 'BUXL', 'EUROSTX', 'LEANHOG', 'CHF', 'OJ', 'COPPER', 'RUSSELL', 'COCOA_NY', 'CRUDE_W', 'EURGBP']
+
+# all instruments with costs below 0.08
+#instruments: ["RUSSELL","NASDAQ","US30","DOW","SP500","BUXL","GOLD","DAX","AEX","USTB","SILVER","EUROSTX","HANG","NIKKEI","GILT","ASX","CARBON","CRUDE_W","COPPER","SMI","BUND","WHEAT","BRENT_W","CAC", "PLAT"]
+# minus those too large (AEX,ASX,WHEAT,PLAT,CORN,SOYBEAN,PALLAD)
+#instruments: ["RUSSELL","NASDAQ","US30","DOW","SP500","BUXL","GOLD","DAX","USTB","SILVER","EUROSTX","HANG","NIKKEI","GILT","CARBON","CRUDE_W","COPPER","SMI","BUND","BRENT_W","CAC"]
+# top 12
+#instruments: ["RUSSELL","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","EUROSTX","USTB","COPPER"] 0.3667
+#instruments: ["RUSSELL","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","EUROSTX","USTB"] 0.4134
+#instruments: ["RUSSELL","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","EUROSTX"] # 0.427
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","EUROSTX"] # 0.4416
+#instruments: ["RUSSELL","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W"] 0.4102
+#instruments: ["RUSSELL","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT"] 0.4165
+
+
+# all instruments with costs below 0.13
+#instruments: ["RUSSELL","NASDAQ","US30","DOW","SP500","BUXL","GOLD","DAX","AEX","USTB","SILVER","EUROSTX","HANG","NIKKEI","GILT","ASX","CARBON","CRUDE_W","COPPER","SMI","BUND","WHEAT","BRENT_W","CAC","PLAT","SOYOIL","CORN","SOYBEAN","FTSE","CAD","HEATOIL","NZD","GASOLINE","BTP","US5","LEANHOG","COFFEE","US10","SOYMEAL","GBP","OAT","PALLAD"]
+# minus those too large (AEX,ASX,WHEAT,PLAT,CORN,SOYBEAN,PALLAD)
+#instruments: ["RUSSELL","NASDAQ","US30","DOW","SP500","BUXL","GOLD","DAX","USTB","SILVER","EUROSTX","HANG","NIKKEI","GILT","CARBON","CRUDE_W","COPPER","SMI","BUND","BRENT_W","CAC","SOYOIL","FTSE","CAD","HEATOIL","NZD","GASOLINE","BTP","US5","LEANHOG","COFFEE","US10","SOYMEAL","GBP","OAT"]
+
+# selection list
+#instruments: ["NASDAQ","DOW","SP500","USTB","SILVER","NIKKEI","COPPER","SMI","BUND","BRENT_W","CAC","FTSE","HEATOIL","GASOLINE","BTP","US5","LEANHOG","COFFEE","US10","SOYMEAL","OAT"]
+# top 12
+#instruments: ["RUSSELL","US30","GOLD","CAD","DAX","BUXL","CARBON","NZD","HANG","GILT","CRUDE_W","GBP"]
+#instruments: ["RUSSELL","US30","GOLD","CAD","DAX","BUXL","CARBON","NZD","HANG","GILT","CRUDE_W"]
+#instruments: ["RUSSELL","US30","GOLD","CAD","DAX","BUXL","CARBON","NZD","HANG","GILT"]
+#instruments: ["RUSSELL","US30","GOLD","CAD","DAX","BUXL","CARBON","NZD","HANG"] 0.38
+#instruments: ["RUSSELL","US30","GOLD","CAD","DAX","BUXL","CARBON","NZD"] 0.39
+#instruments: ["RUSSELL","US30","GOLD","CAD","DAX","BUXL","CARBON"] 0.3954
+#instruments: ["RUSSELL","US30","GOLD","CAD","DAX","BUXL"] 0.3965

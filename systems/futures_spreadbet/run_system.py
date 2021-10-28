@@ -13,25 +13,29 @@ from syscore.fileutils import get_filename_for_package
 from sysdata.config.production_config import get_production_config, Config
 import yaml
 
+FULL_ESTIMATES_ATTRS = ['forecast_scalars', 'forecast_weights', 'forecast_div_multiplier', 'forecast_mapping', 'instrument_weights', 'instrument_div_multiplier']
+SLIM_ESTIMATES_ATTRS = ['instrument_weights', 'instrument_div_multiplier']
 
 def run_system():
 
     do_fsb = True
     do_estimate = False
 
-    rules = config_from_file("systems.futures_spreadbet.rules2.yaml")
-    capital = config_from_file("systems.futures_spreadbet.capital.yaml")
-    ignore = config_from_file("systems.futures_spreadbet.ignore.yaml")
-    #ignore = config_from_file("systems.futures_spreadbet.ignore.yaml")
+    capital = config_from_file("systems.futures_spreadbet.config_capital.yaml")
+    #rules = config_from_file("systems.futures_spreadbet.config_rules.yaml")
+    rules = config_from_file("systems.futures_spreadbet.config_rules2.yaml")
+    ignore = config_from_file("systems.futures_spreadbet.config_ignore.yaml")
 
     config_files = [rules, capital, ignore]
 
     if do_fsb:
         if do_estimate:
-            estimates = config_from_file("systems.futures_spreadbet.estimates.yaml")
+            estimates = config_from_file("systems.futures_spreadbet.config_estimates.yaml")
             config_files.append(estimates)
         else:
-            config_files.append("systems.futures_spreadbet.empty_instruments.yaml")
+            #config_files.append("systems.futures_spreadbet.config_empty_instruments.yaml")
+            config_files.append("systems.futures_spreadbet.estimate_10_cheap.yaml")
+            #config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
         config = Config(config_files)
         system = fsb_system(config=config)
         prod_label = "FSB"
@@ -94,6 +98,9 @@ def run_system():
         #sharpe = curve_group[instr].annual.sharpe()
 
         # portfolio
+        pos_at_5 = calc_pos_for_fc(system, instr, 5.0)
+        pos_at_10 = calc_pos_for_fc(system, instr, 10.0)
+        pos_at_20 = calc_pos_for_fc(system, instr, 20.0)
         notional_position = system.portfolio.get_notional_position(instr).iloc[-1]
 
         can_trade = abs(notional_position) > min_bet_per_point
@@ -141,9 +148,13 @@ def run_system():
                 'VolScalar': round(vol_scalar, 2),
                 'SubsysPos': round(subsys_pos, 2),
 
+                'Pos5': round(pos_at_5, 2),
+                'Pos10': round(pos_at_10, 2),
+                'Pos20': round(pos_at_20, 2),
                 bet_label: round(notional_position, 2),
                 #'IdealExp': round(ideal_exposure, 2),
                 'CanTrade': abs(notional_position) > min_bet_per_point,
+                'CanTrade5': abs(pos_at_5) > min_bet_per_point,
                 'CapReq': round(abs(cap_req), 2),
             }
         )
@@ -170,22 +181,22 @@ def run_system():
     return system
 
 
+def calc_pos_for_fc(system, instrument_code, forecast, instr_weight=0.1):
+    pos_at_average = system.positionSize.get_volatility_scalar(instrument_code)
+    idm = system.config.instrument_div_multiplier
+    pos_at_average_in_system = pos_at_average * instr_weight * idm
+    forecast_multiplier = forecast / system.positionSize.avg_abs_forecast()
+    pos_final = pos_at_average_in_system.iloc[-1] * forecast_multiplier
+    return pos_final
+
+
+
 def write_estimate_file(system):
     now = datetime.now()
     sysdiag = systemDiag(system)
     output_file = get_filename_for_package(f"systems.futures_spreadbet.estimate-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml")
     print(f"writing to: {output_file}")
-    sysdiag.yaml_config_with_estimated_parameters(
-        output_file,
-        attr_names=[
-            'forecast_scalars',
-            'forecast_weights',
-            'forecast_div_multiplier',
-            'forecast_mapping',
-            'instrument_weights',
-            'instrument_div_multiplier'
-        ]
-    )
+    sysdiag.yaml_config_with_estimated_parameters(output_file, FULL_ESTIMATES_ATTRS)
 
 
 def write_file(df, run_type, product, write=True):

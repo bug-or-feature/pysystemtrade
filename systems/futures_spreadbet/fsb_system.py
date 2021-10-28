@@ -31,38 +31,13 @@ def fsb_system(data=arg_not_supplied, config=arg_not_supplied, trading_rules=arg
 
     :param log_level: How much logging to do
     :type log_level: str
-
-    >>> from systems.futures_spreadbet.fsb_system import fsb_system
-    >>> system=fsb_system(log_level="off")
-    >>> system
-    System with stages: accounts, portfolio, positionSize, rawdata, combForecast, forecastScaleCap, rules
-    >>> system.rules.get_raw_forecast("GOLD", "smac16_64").tail(20)
-                ewmac2_8
-    1983-10-10  0.695929
-    1983-10-11 -0.604704
-
-                ewmac2_8
-    2015-04-21  0.172416
-    2015-04-22 -0.477559
-    >>> system.rules.get_raw_forecast("EDOLLAR", "carry").dropna().head(2)
-                   carry
-    1983-10-10  0.952297
-    1983-10-11  0.854075
-
-                   carry
-    2015-04-21  0.350892
-    2015-04-22  0.350892
     """
 
     if data is arg_not_supplied:
         data = dbFsbSimData()
 
     if config is arg_not_supplied:
-        config = Config("systems.futures_spreadbet.fsb_estimate_config.yaml")
-        #config = Config("systems.futures_spreadbet.fsb_config.yaml")
-        #config = Config("systems.futures_spreadbet.futures_chp15_config.yaml")
-        #config = Config("systems.futures_spreadbet.fsb_config_old.yaml")
-        #config = Config("systems.futures_spreadbet.leveraged_trading_config.yaml")
+        config = Config("systems.futures_spreadbet.config_fsb_system_v1.yaml")
 
     rules = Rules(trading_rules)
 
