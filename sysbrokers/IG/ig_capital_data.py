@@ -32,7 +32,8 @@ class IgCapitalData(brokerCapitalData):
         return "IG capital data"
 
     def get_account_value_across_currency(self, account_id: str = arg_not_supplied) -> listOfCurrencyValues:
-        return self.ig_client.broker_get_account_value_across_currency(account_id=account_id)
+        acc_val = self.ig_client.broker_get_account_value_across_currency(account_id=account_id)
+        return acc_val
 
     def _get_series_dict_with_data_class_for_args_dict(self, args_dict: dict) -> classStrWithListOfEntriesAsListOfDicts:
         pass
