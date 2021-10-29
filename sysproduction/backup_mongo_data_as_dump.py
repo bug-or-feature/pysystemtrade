@@ -33,8 +33,10 @@ def dump_mongo_data(data):
     host = get_production_config().get_element_or_arg_not_supplied('mongo_host')
     path = get_mongo_dump_directory()
     data.log.msg("Dumping mongo data to %s NOT TESTED IN WINDOWS" % path)
-    # TODO fix for default config
-    os.system("mongodump --uri='%s' -o=%s" % (host, path))
+    if host.startswith('mongodb://'):
+        os.system("mongodump --uri='%s' -o=%s" % (host, path))
+    else:
+        os.system("mongodump -o=%s" % path)
     data.log.msg("Dumped")
 
 
