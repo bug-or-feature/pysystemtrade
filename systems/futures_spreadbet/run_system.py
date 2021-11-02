@@ -37,7 +37,8 @@ def run_system():
             config_files.append("systems.futures_spreadbet.estimate_10_cheap.yaml")
             #config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
         config = Config(config_files)
-        system = fsb_system(config=config)
+        #system = fsb_system(config=config)
+        system = fsb_system()
         prod_label = "FSB"
         bet_label = "BetPerPoint"
         type_label = "estimate"
@@ -79,7 +80,6 @@ def run_system():
         # price
         price = system.rawdata.get_daily_prices(instr).iloc[-1]
 
-
         #asset_class = system.rawdata.get_asset_class(instr)
         #spread_in_points = system.rawdata.get_spread(instr)
         #min_bet_per_point = system.rawdata.get_pointsize(instr)
@@ -118,6 +118,10 @@ def run_system():
         pandl = system.accounts.pandl_for_subsystem(instr)
         #acc_curve_group = system.accounts.portfolio()
 
+        buffers = system.portfolio.get_buffers_for_position(instr)
+        lower_buffer = buffers.iloc[-1].bot_pos
+        upper_buffer = buffers.iloc[-1].top_pos
+
         #if do_fsb:
         #ideal_exposure_series = system.positionSize.get_ideal_exposure(instr)
         #ideal_exposure = ideal_exposure_series.iloc[-1]
@@ -152,6 +156,8 @@ def run_system():
                 'Pos10': round(pos_at_10, 2),
                 'Pos20': round(pos_at_20, 2),
                 bet_label: round(notional_position, 2),
+                'Lower': round(lower_buffer, 2),
+                'Upper': round(upper_buffer, 2),
                 #'IdealExp': round(ideal_exposure, 2),
                 'CanTrade': abs(notional_position) > min_bet_per_point,
                 'CanTrade5': abs(pos_at_5) > min_bet_per_point,
