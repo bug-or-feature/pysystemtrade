@@ -303,7 +303,7 @@ def get_datetime_input(prompt:str, allow_default:bool=True, allow_no_arg:bool=Fa
             if len(ans) == 10:
                 return_datetime = datetime.datetime.strptime(ans, "%Y-%m-%d")
             elif len(ans) == 19:
-                return_datetime = datetime.datetime.strptime(ans, "%Y-%m-%d %H:%M:%S")
+                return_datetime = datetime.datetime.strptime(ans, LONG_DATE_PATTERN)
             else:
                 # problems formatting will also raise value error
                 raise ValueError
@@ -394,6 +394,7 @@ class manyTradingStartAndEndDateTimes(list):
 
 
 SHORT_DATE_PATTERN = "%m/%d %H:%M:%S"
+LONG_DATE_PATTERN = "%Y-%m-%d %H:%M:%S"
 MISSING_STRING_PATTERN = "     ???      "
 
 
@@ -402,7 +403,7 @@ def last_run_or_heartbeat_from_date_or_none(last_run_or_heartbeat: datetime.date
         last_run_or_heartbeat = MISSING_STRING_PATTERN
     else:
         last_run_or_heartbeat = last_run_or_heartbeat.strftime(
-            SHORT_DATE_PATTERN)
+            LONG_DATE_PATTERN)
 
     return last_run_or_heartbeat
 
