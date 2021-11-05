@@ -17,6 +17,7 @@ We kick them all off in the crontab at a specific time (midnight is easiest), bu
 
 """
 import time
+import sys
 from syscontrol.report_process_status import reportProcessStatus
 from syscore.objects import (success,
                              failure,
@@ -312,6 +313,7 @@ def wait_for_next_method_run_time(process_to_run: processToRun):
     if seconds_to_next_run>10.0:
         print("Sleeping for %d seconds until next method ready to run (will react to STOP or PAUSE at that point)" % seconds_to_next_run)
         process_to_run.log.msg("Sleeping for %d seconds until next method ready to run (will react to STOP or PAUSE at that point)" % seconds_to_next_run)
+        sys.stdout.flush()
         time.sleep(seconds_to_next_run)
 
 ## PAUSE CODE
