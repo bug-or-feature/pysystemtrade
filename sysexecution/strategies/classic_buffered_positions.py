@@ -138,9 +138,9 @@ def trade_given_optimal_and_actual_positions(
     actual_for_instrument = actual_positions.get(instrument_code, 0.0)
 
     if actual_for_instrument < lower_for_instrument:
-        required_position = round(lower_for_instrument)
+        required_position = lower_for_instrument
     elif actual_for_instrument > upper_for_instrument:
-        required_position = round(upper_for_instrument)
+        required_position = upper_for_instrument
     else:
         required_position = actual_for_instrument
 
@@ -168,7 +168,7 @@ def trade_given_optimal_and_actual_positions(
 
     log = order_required.log_with_attributes(data.log)
     log.msg(
-        "Upper %.2f Lower %.2f Current %d Required position %d Required trade %d Reference price %f  for contract %s" %
+        "Upper %.2f, Lower %.2f, Curr %.2f, Req pos %.2f, Req trade %.2f, Ref price %f, contract %s" %
         (upper_for_instrument,
          lower_for_instrument,
          actual_for_instrument,
