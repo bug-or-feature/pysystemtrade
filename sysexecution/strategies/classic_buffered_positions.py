@@ -135,12 +135,20 @@ def trade_given_optimal_and_actual_positions(
 
     upper_for_instrument = optimal_positions.upper_positions[instrument_code]
     lower_for_instrument = optimal_positions.lower_positions[instrument_code]
+    mid_for_instrument = (upper_for_instrument + lower_for_instrument) / 2
+
     actual_for_instrument = actual_positions.get(instrument_code, 0.0)
 
     if actual_for_instrument < lower_for_instrument:
-        required_position = lower_for_instrument
+        if actual_for_instrument == 0.0:
+            required_position = mid_for_instrument
+        else:
+            required_position = lower_for_instrument
     elif actual_for_instrument > upper_for_instrument:
-        required_position = upper_for_instrument
+        if actual_for_instrument == 0.0:
+            required_position = mid_for_instrument
+        else:
+            required_position = upper_for_instrument
     else:
         required_position = actual_for_instrument
 
