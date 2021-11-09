@@ -53,6 +53,7 @@ def get_list_of_strategies(data: dataBlob=arg_not_supplied, source="config") -> 
         return get_list_of_strategies_from_config(data)
     elif source=="positions":
         return get_list_of_strategies_from_positions(data)
+        #return get_list_of_strategies_from_config(data)
     elif source=="optimal_positions":
         return get_list_of_strategies_from_optimal_positions(data)
     else:
