@@ -15,6 +15,7 @@ from sysdata.barchart.bc_futures_contracts_data import BarchartFuturesContractDa
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from sysbrokers.IG.ig_capital_data import IgCapitalData
 from sysbrokers.IG.ig_static_data import IgStaticData
+from sysbrokers.IG.ig_contract_position_data import IgContractPositionData
 
 from sysbrokers.broker_fx_handling import brokerFxHandlingData
 from sysbrokers.broker_static_data import brokerStaticData
@@ -72,6 +73,7 @@ class dataBroker(productionDataLayerGeneric):
             BarchartFuturesContractPriceData,
             BarchartFuturesContractData,
             BarchartFuturesInstrumentData,
+            IgContractPositionData,
             IgStaticData,
             IgCapitalData]
         )
