@@ -5,13 +5,6 @@ from syslogdiag.log_to_screen import logtoscreen
 
 class ConnectionIG(object):
 
-    INSTR_CODES = {
-        'Bund': 'BUND',
-        'Gold': 'GOLD',
-        'NZD/USD Forward': 'NZD',
-        'US 500': 'SP500',
-    }
-
     def __init__(self, log=logtoscreen("ConnectionIG")):
         production_config = get_production_config()
         self._ig_username = production_config.get_element_or_missing_data('ig_username')
@@ -51,16 +44,18 @@ class ConnectionIG(object):
         result_list = []
         for i in range(0, len(positions)):
             pos = dict()
+            pos['account'] = ig_service.ACC_NUMBER
             pos['name'] = positions.iloc[i]['instrumentName']
-            try:
-                pos['instr'] = self.INSTR_CODES[pos['name']]
-            except KeyError:
-                continue
             pos['size'] = positions.iloc[i]['size']
             pos['dir'] = positions.iloc[i]['direction']
             pos['level'] = positions.iloc[i]['level']
             pos['expiry'] = positions.iloc[i]['expiry']
             pos['epic'] = positions.iloc[i]['epic']
+            pos['currency'] = positions.iloc[i]['currency']
+            pos['createDate'] = positions.iloc[i]['createdDateUTC']
+            pos['dealId'] = positions.iloc[i]['dealId']
+            pos['dealReference'] = positions.iloc[i]['dealReference']
+            pos['instrumentType'] = positions.iloc[i]['instrumentType']
             result_list.append(pos)
 
         ig_service.logout()
