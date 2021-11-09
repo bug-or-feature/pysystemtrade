@@ -14,10 +14,12 @@ class tradeQuantity(list):
             trade_or_fill_qty = [trade_or_fill_qty]
 
         elif (isinstance(trade_or_fill_qty, float)):
-            trade_or_fill_qty = [int(trade_or_fill_qty)]
+            #trade_or_fill_qty = [int(trade_or_fill_qty)]
+            trade_or_fill_qty = [round(trade_or_fill_qty, 2)]
         else:
             # must be a list
-            trade_or_fill_qty = [int(trade) for trade in trade_or_fill_qty]
+            #trade_or_fill_qty = [int(trade) for trade in trade_or_fill_qty]
+            trade_or_fill_qty = [round(trade, 2) for trade in trade_or_fill_qty]
 
         super().__init__(trade_or_fill_qty)
 
@@ -137,6 +139,7 @@ def change_trade_size_proportionally_to_meet_abs_qty_limit(trade_list: tradeQuan
     :param max_abs_qty: int
     :return: list of ints
 
+    TODO GEACH
 
     """
     original_qty = trade_list
@@ -163,7 +166,7 @@ def reduce_trade_size_proportionally_to_abs_limit_per_leg(trade_list_qty: list, 
     :param abs_list:
     :return: list
 
-
+    TODO GEACH
     """
     # for each item in _trade and abs_list, return the signed minimum of the zip
     # eg if self._trade = [2,-2] and abs_list = [1,1], return [2,-2]
@@ -204,7 +207,7 @@ def reduce_trade_size_proportionally_so_smallest_leg_is_max_size(trade_list_qty:
     :param max_size:
     :return: tradeQuantity
 
-
+    TODO GEACH
     """
 
     if max_size==0:
