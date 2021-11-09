@@ -1,12 +1,11 @@
 """
-Strategy specific execution code
+FSB strategy specific order generation code
 
-For the classic buffered strategy we just compare actual positions with optimal positions, and generate orders
-  accordingly
+For the FSB buffered strategy we just compare actual positions with optimal positions, and minimum bets, and generate
+orders accordingly
 
 These are 'virtual' orders, because they are per instrument. We translate that to actual contracts downstream
 
-Desired virtual orders have to be labelled with the desired type: limit, market,best-execution
 """
 from collections import  namedtuple
 
@@ -97,7 +96,7 @@ def trade_fsb(
 
     trade_required = required_position - actual_for_instrument
     # if required_trade is less than minimum bet, make it zero
-    if trade_required < min_bet:
+    if abs(trade_required) < min_bet:
         trade_required = 0.0
 
     reference_contract = optimal_positions.reference_contracts[instrument_code]
