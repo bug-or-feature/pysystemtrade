@@ -4,8 +4,7 @@ import numpy as np
 
 from syscore.objects import arg_not_supplied
 
-from syslogdiag.logger import logger
-from syslogdiag.log_to_screen import logtoscreen
+from syslogdiag.logger import logger, nullLog
 
 from sysquant.estimators.covariance import covarianceEstimate
 from sysquant.estimators.mean_estimator import meanEstimates
@@ -31,7 +30,7 @@ class objectiveFunctionForGreedy:
                  previous_positions: portfolioWeights = arg_not_supplied,
                  constraints: constraintsForDynamicOpt = arg_not_supplied,
                  maximum_positions: portfolioWeights = arg_not_supplied,
-                 log: logger = logtoscreen("optimisation")
+                 log: logger = nullLog("")
                  ):
 
         self.covariance_matrix = covariance_matrix
@@ -41,8 +40,6 @@ class objectiveFunctionForGreedy:
         self.speed_control = speed_control
         self.constraints = constraints
 
-        self.previous_positions = previous_positions
-
         weights_optimal = contracts_optimal * per_contract_value
 
         self.weights_optimal = weights_optimal
@@ -51,9 +48,11 @@ class objectiveFunctionForGreedy:
         if previous_positions is arg_not_supplied:
             weights_prior = arg_not_supplied
         else:
+            previous_positions = previous_positions.with_zero_weights_instead_of_nan()
             weights_prior = previous_positions * per_contract_value
 
         self.weights_prior = weights_prior
+        self.previous_positions = previous_positions
 
         if maximum_positions is arg_not_supplied:
             maximum_position_weights = arg_not_supplied
@@ -68,8 +67,8 @@ class objectiveFunctionForGreedy:
 
     def optimise_positions(self) -> portfolioWeights:
         optimal_weights = self.optimise_weights()
-
-        return optimal_weights / self.per_contract_value
+        optimal_positions =optimal_weights / self.per_contract_value
+        return optimal_positions
 
     def optimise_weights(self) -> portfolioWeights:
         optimal_weights_without_missing_items_as_np = self.optimise_np_for_valid_keys()
@@ -110,9 +109,12 @@ class objectiveFunctionForGreedy:
         tracking_error_smaller_than_buffer = \
             tracking_error < tracking_error_buffer
 
-        #if tracking_error_smaller_than_buffer:
-            #self.log.msg("Tracking error of current positions vs unrounded optimal is %.2f smaller than buffer %2.f, no trades needed"
-            #             % (tracking_error, tracking_error_buffer))
+        if tracking_error_smaller_than_buffer:
+            self.log.msg("Tracking error of current positions vs unrounded optimal is %.4f smaller than buffer %4.f, no trades needed"
+                         % (tracking_error, tracking_error_buffer))
+        else:
+            self.log.msg("Tracking error of current positions vs unrounded optimal is %.4f larger than buffer %.4f"
+                         % (tracking_error, tracking_error_buffer))
 
         return tracking_error_smaller_than_buffer
 
@@ -126,11 +128,22 @@ class objectiveFunctionForGreedy:
 
     def optimise_np_with_large_tracking_error(self) -> np.array:
         optimised_weights_as_np = greedy_algo_across_integer_values(self)
+        self.log_optimised_results(optimised_weights_as_np, "Optimised (before adjustment)")
 
         optimised_weights_as_np_track_adjusted = \
             self.adjust_weights_for_size_of_tracking_error(optimised_weights_as_np)
 
+        self.log_optimised_results(optimised_weights_as_np_track_adjusted, "Optimised (after adjustment)")
+
         return optimised_weights_as_np_track_adjusted
+
+    def log_optimised_results(self, optimised_weights_as_np: np.array,
+                              label: str = "Optimised"):
+        tracking_error = self.tracking_error_against_optimal(optimised_weights_as_np)
+        costs = self.calculate_costs(optimised_weights_as_np)
+
+        self.log.msg("%s weights, tracking error vs unrounded optimal %.4f costs %.4f" %
+                     (label, tracking_error, costs))
 
     def adjust_weights_for_size_of_tracking_error(self, optimised_weights_as_np: np.array) -> np.array:
         if self.no_prior_positions_provided:
@@ -146,9 +159,9 @@ class objectiveFunctionForGreedy:
             tracking_error_of_prior=tracking_error_of_prior,
             speed_control=speed_control)
 
-        #self.log.msg("Tracking error current vs optimised %.4f vs buffer %.4f doing %.3f of adjusting trades (0 means no trade)" %
-        #             (tracking_error_of_prior, speed_control.tracking_error_buffer,
-        #              adj_factor))
+        self.log.msg("Tracking error current vs optimised %.4f vs buffer %.4f doing %.3f of adjusting trades (0 means no trade)" %
+                     (tracking_error_of_prior, speed_control.tracking_error_buffer,
+                      adj_factor))
 
         if adj_factor <= 0:
             return prior_weights_as_np

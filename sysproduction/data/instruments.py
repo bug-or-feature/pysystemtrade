@@ -8,6 +8,19 @@ from sysdata.futures.instruments import futuresInstrumentData
 from sysobjects.spot_fx_prices import currencyValue
 from sysobjects.instruments import instrumentCosts
 
+class dataInstruments(productionDataLayerGeneric):
+    def _add_required_classes_to_data(self, data) -> dataBlob:
+        data.add_class_object(mongoFuturesInstrumentData)
+        return data
+
+    def update_slippage_costs(self, instrument_code: str, new_slippage: float):
+        self.db_futures_instrument_data. update_slippage_costs(
+            instrument_code, new_slippage)
+
+    @property
+    def db_futures_instrument_data(self) -> futuresInstrumentData:
+        return self.data.db_futures_instrument
+
 
 class diagInstruments(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:

@@ -4,7 +4,7 @@ from copy import copy
 import pandas as pd
 
 from syscore.genutils import progressBar
-from syscore.objects import arg_not_supplied
+from syscore.objects import arg_not_supplied, missing_data
 from systems.provided.dynamic_small_system_optimise.optimisation import objectiveFunctionForGreedy, constraintsForDynamicOpt
 from systems.provided.dynamic_small_system_optimise.buffering import speedControlForDynamicOpt
 
@@ -35,7 +35,7 @@ class optimisedPositions(SystemStage):
     @diagnostic()
     def get_optimised_position_df(self) -> pd.DataFrame:
         self.log.msg("Optimising positions for small capital: may take a while!")
-        common_index = list(self.common_index())[:-1000]
+        common_index = list(self.common_index())
         p = progressBar(len(common_index), show_timings=True, show_each_time=True)
         previous_optimal_positions = portfolioWeights.allzeros(self.instrument_list())
         position_list = []
@@ -53,14 +53,12 @@ class optimisedPositions(SystemStage):
 
     def get_optimal_positions_with_fixed_contract_values(self, relevant_date: datetime.datetime = arg_not_supplied,
                                                        previous_positions: portfolioWeights = arg_not_supplied,
-                                                        constraints: constraintsForDynamicOpt = arg_not_supplied,
                                                        maximum_positions: portfolioWeights = arg_not_supplied) -> portfolioWeights:
 
         obj_instance = self.\
             _get_optimal_positions_objective_instance(
                 relevant_date=relevant_date,
                 previous_positions=previous_positions,
-                constraints=constraints,
                 maximum_positions = maximum_positions
         )
 
@@ -72,7 +70,6 @@ class optimisedPositions(SystemStage):
     def _get_optimal_positions_objective_instance(self,
                                                 relevant_date: datetime.datetime = arg_not_supplied,
                                                        previous_positions: portfolioWeights = arg_not_supplied,
-                                                        constraints: constraintsForDynamicOpt = arg_not_supplied,
                                                        maximum_positions: portfolioWeights = arg_not_supplied) -> objectiveFunctionForGreedy:
 
         covariance_matrix = self.get_covariance_matrix(relevant_date=relevant_date)
@@ -82,8 +79,9 @@ class optimisedPositions(SystemStage):
 
         costs = self.get_costs_per_contract_as_proportion_of_capital_all_instruments()
         speed_control = self.get_speed_control()
+        constraints = self.get_constraints()
 
-        obj_instance = objectiveFunctionForGreedy(log = self.log,
+        obj_instance = objectiveFunctionForGreedy(
                                                 contracts_optimal=contracts_optimal,
                                                 covariance_matrix=covariance_matrix,
                                                 per_contract_value = per_contract_value,
@@ -94,6 +92,19 @@ class optimisedPositions(SystemStage):
                                                 speed_control=speed_control)
 
         return obj_instance
+
+    def get_constraints(self) -> constraintsForDynamicOpt:
+        ## 'reduce only' is as good as do not trade in backtesting
+        ## but we use this rather than 'don't trade' for consistency with production
+        reduce_only_keys = self.get_reduce_only_instruments()
+
+        return constraintsForDynamicOpt(reduce_only_keys=reduce_only_keys)
+
+    @diagnostic()
+    def get_reduce_only_instruments(self) -> list:
+        reduce_only_keys = self.parent.get_list_of_markets_not_trading_but_with_data()
+
+        return reduce_only_keys
 
     def get_speed_control(self):
         small_config = self.config.small_system

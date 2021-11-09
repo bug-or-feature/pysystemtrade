@@ -44,7 +44,11 @@
   <table id="rolls_status" hidden>
     <caption>Status</caption>
     <thead><tr><th>Contract</th><th>State</th><th>Roll Expiry</th>
-        <th>Carry Expiry</th><th>Price Expiry</th><th>Options</th></tr></thead>
+        <th>Carry Expiry</th><th>Price Expiry</th>
+        <th>Price Contract</th><th>Forward Contract</th>
+        <th>Forward Rel Vol</th>
+        <th>Position</th>
+        <th>Options</th></tr></thead>
     <tbody></tbody>
   </table>
   <div id="roll_prices" class="hidden">
@@ -70,16 +74,16 @@
         <tbody></tbody>
     </table>
   </div>
-  <br>
-  <table id="rolls_details" hidden>
-    <caption>Details</caption>
-    <thead><tr><th>Contract</th></tr></thead>
-    <tbody></tbody>
-  </table>
 </div>
 
 <div id="processes">
   <div class="loading">Loading...</div>
+  <table id="processes_config" hidden>
+    <caption>Configuration</caption>
+    <thead><tr><th>Connection</th><th></th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <br>
   <table id="processes_status" hidden>
     <caption>Status</caption>
     <thead><tr><th>Process</th><th>Status</th><th>Condition</th><th>PID</th>

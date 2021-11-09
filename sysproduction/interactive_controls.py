@@ -1,10 +1,19 @@
 import numpy as np
+import pandas as pd
 
 from syscore.interactive import get_and_convert, run_interactive_menu, print_menu_and_get_response
+from syscore.algos import magnitude
+from syscore.pdutils import set_pd_print_options
+from syscore.dateutils import CALENDAR_DAYS_IN_YEAR
+from syscore.objects import missing_data, named_object
+
+from sysdata.data_blob import dataBlob
+from sysdata.config.production_config import get_production_config
+from sysdata.config.instruments import generate_matching_duplicate_dict
 from sysobjects.production.override import override_dict, Override
 from sysobjects.production.tradeable_object import instrumentStrategy
 
-from sysdata.data_blob import dataBlob
+from sysproduction.backup_arctic_to_csv import get_data_and_create_csv_directories, backup_instrument_data
 from sysproduction.data.controls import (
     diagOverrides,
     updateOverrides,
@@ -15,13 +24,17 @@ from sysproduction.data.controls import (
 from sysproduction.data.control_process import dataControlProcess, diagControlProcess
 from sysproduction.data.prices import get_valid_instrument_code_from_user, get_list_of_instruments
 from sysproduction.data.strategies import get_valid_strategy_name_from_user
-from sysproduction.data.positions import diagPositions
-from sysproduction.utilities.risk_metrics import get_risk_data_for_instrument
+from sysproduction.data.instruments import dataInstruments
+from sysproduction.reporting.data.risk_metrics import get_risk_data_for_instrument
+
+
+from sysproduction.reporting.api import reportingApi
 
 # could get from config, but might be different by system
 MAX_VS_AVERAGE_FORECAST = 2.0
 
 def interactive_controls():
+    set_pd_print_options()
     with dataBlob(log_name="Interactive-Controls") as data:
         menu = run_interactive_menu(
             top_level_menu_of_options,
@@ -68,10 +81,11 @@ nested_menu_of_options = {
         13: "Auto populate position limits"
     },
     2: {
-        20: "View overrides",
-        21: "Update / add / remove override for strategy",
-        22: "Update / add / remove override for instrument",
-        23: "Update / add / remove override for strategy & instrument",
+        20: "View overrides (configured, and database)",
+        21: "Update / add / remove override for strategy in database",
+        22: "Update / add / remove override for instrument in database",
+        23: "Update / add / remove override for strategy & instrument in database",
+        24: "Delete all overrides in database"
     },
     3: {
         30: "Clear all unused client IDS"
@@ -85,7 +99,9 @@ nested_menu_of_options = {
         45: "View process configuration (set in YAML, cannot change here)",
     },
     5: {
-        50: "Auto update spread cost configuration based on sampling and trades"
+        50: "Auto update spread cost configuration based on sampling and trades",
+        51: "Suggest 'bad' markets (illiquid or costly)",
+        52: "Suggest which duplicate market to use"
     }
 }
 
@@ -448,6 +464,13 @@ def get_overide_object_from_user():
         except Exception as e:
             print(e)
 
+def delete_all_overrides_in_db(data):
+    update_overrides = updateOverrides(data)
+
+    print("Delete all overrides in database (not config!)")
+    ans = input("Are you sure? (y/other)")
+    if ans =="y":
+        update_overrides.delete_all_overrides_in_db(are_you_sure=True)
 
 def clear_used_client_ids(data):
     print("Clear all locks on broker client IDs. DO NOT DO IF ANY BROKER SESSIONS ARE ACTIVE!")
@@ -546,8 +569,256 @@ def finish_all_processes(data):
     data_control.check_if_pid_running_and_if_not_finish_all_processes()
 
 def auto_update_spread_costs(data):
-    pass
+    slippage_comparison_pd = get_slippage_data(data)
+    changes_to_make = get_list_of_changes_to_make_to_slippage(slippage_comparison_pd)
 
+    make_changes_to_slippage(data, changes_to_make)
+
+def get_slippage_data(data) -> pd.DataFrame:
+    reporting_api = reportingApi(data, calendar_days_back=CALENDAR_DAYS_IN_YEAR)
+    print("Getting data might take a while...")
+    slippage_comparison_pd = reporting_api.combined_df_costs()
+
+    return slippage_comparison_pd
+
+def get_list_of_changes_to_make_to_slippage(slippage_comparison_pd: pd.DataFrame) -> dict:
+
+    filter = get_filter_size_for_slippage()
+    changes_to_make = dict()
+    instrument_list = slippage_comparison_pd.index
+
+    for instrument_code in instrument_list:
+        pd_row = slippage_comparison_pd.loc[instrument_code]
+        difference = pd_row['% Difference']
+        configured = pd_row['Configured']
+        suggested_estimate = pd_row['estimate']
+
+        if np.isnan(suggested_estimate) or np.isnan(configured):
+            print("No data for %s" % instrument_code)
+            continue
+
+        if abs(difference)*100<filter:
+            ## do nothing
+            continue
+
+        mult_factor = calculate_mult_factor(pd_row)
+
+        if mult_factor>1:
+            print("ALL VALUES MULTIPLIED BY %f INCLUDING INPUTS!!!!" % mult_factor)
+
+        suggested_estimate_multiplied = suggested_estimate*mult_factor
+        configured_estimate_multiplied = configured*mult_factor
+
+        print(pd_row*mult_factor)
+        estimate_to_use_with_mult = \
+            get_and_convert(
+                "New configured slippage value (current %f, default is estimate %f)"
+                    % (configured_estimate_multiplied, suggested_estimate_multiplied),
+              type_expected=float,
+              allow_default=True,
+              default_value=suggested_estimate*mult_factor
+              )
+
+        if estimate_to_use_with_mult == configured_estimate_multiplied:
+            print("Same as configured, do nothing...")
+            continue
+        if estimate_to_use_with_mult!=suggested_estimate_multiplied:
+            difference = abs(estimate_to_use_with_mult/suggested_estimate_multiplied)-1.0
+            if difference>0.5:
+                ans = input("Quite a big difference from the suggested %f and yours %f, are you sure about this? (y/other)" %
+                            (suggested_estimate_multiplied, estimate_to_use_with_mult))
+                if ans!="y":
+                    continue
+
+        estimate_to_use = estimate_to_use_with_mult / mult_factor
+        changes_to_make[instrument_code] = estimate_to_use
+
+    return changes_to_make
+
+
+def get_filter_size_for_slippage() -> float:
+    filter = get_and_convert("% difference to filter on? (eg 30 means we ignore differences<30%",
+                    type_expected=float,
+                    allow_default=True,
+                    default_value=30.0)
+
+    return filter
+
+def calculate_mult_factor(pd_row) -> float:
+    configured = pd_row['Configured']
+    suggested_estimate = pd_row['estimate']
+
+    smallest = min(configured, suggested_estimate)
+    if smallest>0.01:
+        return 1
+
+    if smallest ==0:
+        return 1000000
+
+    mag = magnitude(min(suggested_estimate, configured))
+    mult_factor = 10 ** (-mag)
+
+    return mult_factor
+
+
+
+def make_changes_to_slippage(data: dataBlob, changes_to_make: dict):
+    make_changes_to_slippage_in_db(data, changes_to_make)
+    backup_instrument_data_to_csv(data)
+
+def make_changes_to_slippage_in_db(data: dataBlob, changes_to_make: dict):
+    futures_data = dataInstruments(data)
+    for instrument_code, new_slippage in changes_to_make.items():
+        futures_data.update_slippage_costs(instrument_code, new_slippage)
+
+
+def backup_instrument_data_to_csv(data: dataBlob):
+    backup_data = get_data_and_create_csv_directories("")
+    backup_data.mongo_futures_instrument = data.db_futures_instrument
+    print("Backing up database to .csv %s; you will need to copy to /pysystemtrade/data/csvconfig/ for it to work in sim" %
+          backup_data.csv_futures_instrument.config_file)
+    backup_instrument_data(backup_data)
+
+def suggest_bad_markets(data: dataBlob):
+    max_cost, min_contracts, min_risk = get_bad_market_filter_parameters()
+    SR_costs, liquidity_data, _unused_risk_data= get_data_for_markets(data)
+    bad_markets = get_bad_market_list(SR_costs=SR_costs,
+                                      liquidity_data=liquidity_data,
+                                      min_risk=min_risk,
+                                      min_contracts=min_contracts,
+                                      max_cost=max_cost)
+    display_bad_market_info(bad_markets)
+
+def get_bad_market_filter_parameters():
+    max_cost = get_and_convert("Maximum SR cost?", type_expected=float, allow_default=True,
+                               default_value=0.01)
+    min_contracts =get_and_convert("Minimum contracts traded per day?", type_expected=int,
+                                   allow_default=True, default_value=100)
+    min_risk = get_and_convert("Min risk $m traded per day?", type_expected=float,
+                               allow_default=True, default_value=1.5)
+
+    return max_cost, min_contracts, min_risk
+
+def get_data_for_markets(data):
+    api = reportingApi(data)
+    SR_costs = api.SR_costs()
+    SR_costs = SR_costs.dropna()
+    liquidity_data = api.liquidity_data()
+    risk_data = api.instrument_risk_data_all_instruments()
+
+    return SR_costs, liquidity_data, risk_data
+
+def get_bad_market_list(SR_costs: pd.DataFrame,
+                        liquidity_data: pd.DataFrame,
+                        max_cost: float = .01,
+                        min_risk: float = 1.5,
+                        min_contracts: int = 100) -> list:
+    expensive = list(SR_costs[SR_costs.SR_cost>max_cost].index)
+
+    not_enough_contracts = list(liquidity_data[liquidity_data.contracts<min_contracts].index)
+    not_enough_risk = list(liquidity_data[liquidity_data.risk<min_risk].index)
+
+    bad_markets = list(set(expensive+not_enough_risk+not_enough_contracts))
+    bad_markets.sort()
+
+    return bad_markets
+
+def display_bad_market_info(bad_markets: list):
+    print("Add the following to yaml .config under bad_markets heading:\n")
+    print("bad_markets:")
+    __ = [print("  - %s" % instrument) for instrument in bad_markets]
+
+    production_config = get_production_config()
+
+    ## this should be a function
+    existing_bad_markets = production_config.get_element_or_missing_data("bad_markets")
+    if existing_bad_markets is missing_data:
+        existing_bad_markets = []
+    existing_bad_markets.sort()
+
+    new_bad_markets = list(set(bad_markets).difference(set(existing_bad_markets)))
+    removed_bad_markets = list(set(existing_bad_markets).difference(set(bad_markets)))
+
+    print("New bad markets %s" % new_bad_markets)
+    print("Removed bad markets %s" % removed_bad_markets)
+
+no_change= object()
+
+def suggest_duplicate_markets(data: dataBlob):
+    filters = get_bad_market_filter_parameters()
+    duplicate_dict = generate_matching_duplicate_dict()
+    mkt_data = get_data_for_markets(data)
+    duplicates = [suggest_duplicate_markets_for_dict_entry(mkt_data, dict_entry, filters)
+          for dict_entry in duplicate_dict.values()]
+    duplicates_changed = [duplicate_entry for duplicate_entry in duplicates if duplicate_entry is not no_change]
+    for duplicate_results in duplicates_changed:
+        print("Replace %s with %s" % (duplicate_results['existing_entry'],
+              duplicate_results['new_entry']))
+
+    if len(duplicates_changed)>0:
+        print("\n\n\n\n")
+        print("\n\n Make the following changes to config.duplicate_instruments\n\n")
+
+
+def suggest_duplicate_markets_for_dict_entry(mkt_data, dict_entry: dict, filters: tuple):
+    included = dict_entry['included']
+    excluded = dict_entry['excluded']
+
+    all_markets = list(set(list(included+excluded)))
+    mkt_data_for_duplicates = get_df_of_data_for_duplicate(mkt_data, all_markets)
+    best_market = get_best_market(mkt_data_for_duplicates, filters)
+    print("\n\nCurrent list of included markets %s, excluded markets %s" % (included, excluded))
+    print(mkt_data_for_duplicates)
+    print("Best market %s, current included market(s) %s" % (best_market, str(included)))
+
+    if best_market is no_good_markets:
+        return no_change
+
+    if len(included)>1:
+        return dict(new_entry = best_market, existing_entry = str(included))
+
+    if best_market!=included[0]:
+        return dict(new_entry=best_market, existing_entry=included[0])
+
+    return no_change
+
+
+def get_df_of_data_for_duplicate(mkt_data, all_markets: list) -> pd.DataFrame:
+    mkt_data_for_duplicates = [
+        get_market_data_for_duplicate(mkt_data, instrument_code)
+        for instrument_code in all_markets]
+
+    mkt_data_for_duplicates = pd.DataFrame(mkt_data_for_duplicates, index = all_markets)
+
+    return mkt_data_for_duplicates
+
+no_good_markets = named_object("<No good markets>")
+
+def get_best_market(mkt_data_for_duplicates: pd.DataFrame, filters: tuple) -> str:
+    max_cost, min_contracts, min_risk = filters
+    only_valid = mkt_data_for_duplicates.dropna()
+    only_valid = only_valid[only_valid.SR_cost<=max_cost]
+    only_valid = only_valid[only_valid.volume_contracts>min_contracts]
+    only_valid = only_valid[only_valid.volume_risk>min_risk]
+
+    if len(only_valid)==0:
+        return no_good_markets
+
+    only_valid = only_valid.sort_values('contract_size')
+    best_market = only_valid.index[0]
+    return best_market
+
+def get_market_data_for_duplicate(mkt_data, instrument_code: str):
+    SR_costs, liquidity_data, risk_data = mkt_data
+    SR_cost = SR_costs.SR_cost.get(instrument_code, np.nan)
+    volume_contracts = liquidity_data.contracts.get(instrument_code, np.nan)
+    volume_risk = liquidity_data.risk.get(instrument_code, np.nan)
+    contract_size = risk_data.annual_risk_per_contract.get(instrument_code, np.nan)
+
+    return dict(SR_cost = np.round(SR_cost, 6),
+                volume_contracts=volume_contracts,
+                volume_risk=np.round(volume_risk, 2),
+                contract_size=np.round(contract_size))
 
 def not_defined(data):
     print("\n\nFunction not yet defined\n\n")
@@ -569,6 +840,7 @@ dict_of_functions = {
     21: update_strategy_override,
     22: update_instrument_override,
     23: update_strategy_instrument_override,
+    24: delete_all_overrides_in_db,
     30: clear_used_client_ids,
     40: view_process_controls,
     41: change_process_control_status,
@@ -576,6 +848,8 @@ dict_of_functions = {
     43: finish_process,
     44: finish_all_processes,
     45: view_process_config,
-    50: auto_update_spread_costs
+    50: auto_update_spread_costs,
+    51: suggest_bad_markets,
+    52: suggest_duplicate_markets
 }
 

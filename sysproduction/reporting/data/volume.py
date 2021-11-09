@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd
 
-from syscore.dateutils import two_weeks_ago
+from syscore.dateutils import four_weeks_ago
 from syscore.genutils import progressBar
 from sysdata.data_blob import dataBlob
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.prices import diagPrices
-from sysproduction.utilities.risk_metrics import get_risk_data_for_instrument
+from sysproduction.reporting.data.risk_metrics import get_risk_data_for_instrument
 
 
 def get_liquidity_data_df(data: dataBlob):
@@ -43,8 +43,8 @@ def get_average_daily_volume_for_contract_object(data, contract_object):
     if all_price_data.empty:
         return 0.0
     volume = all_price_data.daily_volumes()
-    date_two_weeks_ago = two_weeks_ago()
-    volume = volume[date_two_weeks_ago:].mean()
+    date_four_weeks_ago = four_weeks_ago()
+    volume = volume[date_four_weeks_ago:].mean()
 
     return volume
 

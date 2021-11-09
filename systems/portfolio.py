@@ -612,7 +612,7 @@ class Portfolios(SystemStage):
     def _remove_zero_weighted_instruments_from_df(self, some_data_frame: pd.DataFrame) -> pd.DataFrame:
         copy_df = copy(some_data_frame)
         instruments_with_zero_weights = self.allocate_zero_instrument_weights_to_these_instruments()
-        copy_df.drop(instruments_with_zero_weights)
+        copy_df.drop(labels=instruments_with_zero_weights)
 
         return copy_df
 
@@ -742,10 +742,22 @@ class Portfolios(SystemStage):
 
         return instrument_list
 
+    @diagnostic()
     def allocate_zero_instrument_weights_to_these_instruments(self) -> list:
+        likely_bad = self.parent.get_list_of_markets_not_trading_but_with_data()
         config = self.config
         allocate_zero_instrument_weights_to_these_instruments = \
             getattr(config,"allocate_zero_instrument_weights_to_these_instruments", [])
+        instrument_list = self.get_instrument_list()
+        likely_bad_in_instrument_list = list(set(instrument_list).intersection(set(likely_bad)))
+        likely_bad_no_zero_allocation = list(set(likely_bad_in_instrument_list).difference(set(allocate_zero_instrument_weights_to_these_instruments)))
+        if len(likely_bad_no_zero_allocation)>0:
+            self.log.warn("*** Following instruments are listed as trading_restrictions and/or bad_markets but still included in instrument weight optimisation: ***\n%s" % str(likely_bad_no_zero_allocation))
+            self.log.warn("This is fine for dynamic systems where we remove them in later optimisation, but may be problematic for static systems")
+            self.log.warn("Consider adding to config element allocate_zero_instrument_weights_to_these_instruments")
+
+        if len(allocate_zero_instrument_weights_to_these_instruments)>0:
+            self.log.msg("Following instruments will have zero weight in optimisation of instrument weights%s" % str(allocate_zero_instrument_weights_to_these_instruments))
 
         return allocate_zero_instrument_weights_to_these_instruments
 
