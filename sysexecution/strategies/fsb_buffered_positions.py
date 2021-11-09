@@ -11,14 +11,11 @@ Desired virtual orders have to be labelled with the desired type: limit, market,
 from collections import  namedtuple
 
 from sysdata.data_blob import dataBlob
+from sysdata.mongodb.mongo_fsb_instruments import mongoFsbInstrumentData
 
 from sysexecution.orders.instrument_orders import instrumentOrder, best_order_type
 from sysexecution.orders.list_of_orders import listOfOrders
-from sysexecution.strategies.strategy_order_handling import orderGeneratorForStrategy
-
-from sysobjects.production.tradeable_object import instrumentStrategy
-
-from sysproduction.data.positions import dataOptimalPositions
+from sysexecution.strategies.classic_buffered_positions import orderGeneratorForBufferedPositions
 
 optimalPositions = namedtuple("optimalPositions",  [
             "upper_positions",
@@ -29,81 +26,21 @@ optimalPositions = namedtuple("optimalPositions",  [
         ])
 
 
-class orderGeneratorForBufferedPositions(orderGeneratorForStrategy):
+class FsbOrderGenerator(orderGeneratorForBufferedPositions):
     def get_required_orders(self) -> listOfOrders:
         strategy_name = self.strategy_name
 
         optimal_positions = self.get_optimal_positions()
         actual_positions = self.get_actual_positions_for_strategy()
 
-        list_of_trades = list_of_trades_given_optimal_and_actual_positions(
+        list_of_trades = get_fsb_trades_list(
             self.data, strategy_name, optimal_positions, actual_positions
         )
 
         return list_of_trades
 
-    def get_optimal_positions(self) -> optimalPositions:
-        data = self.data
-        strategy_name = self.strategy_name
 
-        optimal_position_data = dataOptimalPositions(data)
-
-        list_of_instruments = optimal_position_data.get_list_of_instruments_for_strategy_with_optimal_position(
-            strategy_name)
-
-        list_of_instrument_strategies = [instrumentStrategy(strategy_name=strategy_name,
-                                                 instrument_code=instrument_code)
-            for instrument_code in list_of_instruments]
-
-        optimal_positions = dict(
-            [
-                (instrument_strategy.instrument_code,
-                 optimal_position_data.get_current_optimal_position_for_instrument_strategy(
-                    instrument_strategy),
-                 ) for instrument_strategy in list_of_instrument_strategies])
-
-        ref_dates = dict(
-            [
-                (instrument_code, opt_position.date)
-                for instrument_code, opt_position in optimal_positions.items()
-            ]
-        )
-
-        upper_positions = dict(
-            [
-                (instrument_code, opt_position.upper_position)
-                for instrument_code, opt_position in optimal_positions.items()
-            ]
-        )
-        lower_positions = dict(
-            [
-                (instrument_code, opt_position.lower_position)
-                for instrument_code, opt_position in optimal_positions.items()
-            ]
-        )
-
-        reference_prices = dict(
-            [
-                (instrument_code, opt_position.reference_price)
-                for instrument_code, opt_position in optimal_positions.items()
-            ]
-        )
-
-        reference_contracts = dict(
-            [
-                (instrument_code, opt_position.reference_contract)
-                for instrument_code, opt_position in optimal_positions.items()
-            ]
-        )
-
-        optimal_positions = optimalPositions(upper_positions=upper_positions,
-                                             lower_positions=lower_positions,
-                                             reference_prices=reference_prices,
-                                             reference_contracts=reference_contracts,
-                                             ref_dates=ref_dates)
-        return optimal_positions
-
-def list_of_trades_given_optimal_and_actual_positions(
+def get_fsb_trades_list(
     data: dataBlob,
         strategy_name: str,
         optimal_positions: optimalPositions,
@@ -113,7 +50,7 @@ def list_of_trades_given_optimal_and_actual_positions(
     upper_positions = optimal_positions.upper_positions
     list_of_instruments = upper_positions.keys()
     trade_list = [
-        trade_given_optimal_and_actual_positions(
+        trade_fsb(
             data, strategy_name, instrument_code, optimal_positions, actual_positions
         )
         for instrument_code in list_of_instruments
@@ -124,7 +61,7 @@ def list_of_trades_given_optimal_and_actual_positions(
     return trade_list
 
 
-def trade_given_optimal_and_actual_positions(
+def trade_fsb(
     data: dataBlob,
         strategy_name: str,
         instrument_code: str,
@@ -132,15 +69,26 @@ def trade_given_optimal_and_actual_positions(
         actual_positions: dict
 ) -> instrumentOrder:
 
+    data.add_class_object(mongoFsbInstrumentData)
+    instr_data = data.db_fsb_instrument.get_instrument_data(instrument_code)
 
     upper_for_instrument = optimal_positions.upper_positions[instrument_code]
     lower_for_instrument = optimal_positions.lower_positions[instrument_code]
+    mid_for_instrument = (upper_for_instrument + lower_for_instrument) / 2
+    min_bet = instr_data.as_dict()['Pointsize']
+
     actual_for_instrument = actual_positions.get(instrument_code, 0.0)
 
     if actual_for_instrument < lower_for_instrument:
-        required_position = round(lower_for_instrument)
+        if actual_for_instrument == 0.0:
+            required_position = mid_for_instrument
+        else:
+            required_position = lower_for_instrument
     elif actual_for_instrument > upper_for_instrument:
-        required_position = round(upper_for_instrument)
+        if actual_for_instrument == 0.0:
+            required_position = mid_for_instrument
+        else:
+            required_position = upper_for_instrument
     else:
         required_position = actual_for_instrument
 
@@ -148,10 +96,12 @@ def trade_given_optimal_and_actual_positions(
     # it makes sense
 
     trade_required = required_position - actual_for_instrument
+    # if required_trade is less than minimum bet, make it zero
+    if trade_required < min_bet:
+        trade_required = 0.0
 
     reference_contract = optimal_positions.reference_contracts[instrument_code]
     reference_price = optimal_positions.reference_prices[instrument_code]
-
 
     ref_date = optimal_positions.ref_dates[instrument_code]
 
@@ -168,9 +118,10 @@ def trade_given_optimal_and_actual_positions(
 
     log = order_required.log_with_attributes(data.log)
     log.msg(
-        "Upper %.2f Lower %.2f Current %d Required position %d Required trade %d Reference price %f  for contract %s" %
+        "Upper %.2f, Lower %.2f, Min %.2f, Curr %.2f, Req pos %.2f, Req trade %.2f, Ref price %f, contract %s" %
         (upper_for_instrument,
          lower_for_instrument,
+         min_bet,
          actual_for_instrument,
          required_position,
          trade_required,
