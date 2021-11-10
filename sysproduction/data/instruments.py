@@ -1,5 +1,6 @@
 
-from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
+#from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
+from sysdata.mongodb.mongo_fsb_instruments import mongoFsbInstrumentData
 
 from sysdata.data_blob import dataBlob
 from sysproduction.data.currency_data import dataCurrency
@@ -10,7 +11,8 @@ from sysobjects.instruments import instrumentCosts
 
 class dataInstruments(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
-        data.add_class_object(mongoFuturesInstrumentData)
+        #data.add_class_object(mongoFuturesInstrumentData)
+        data.add_class_object(mongoFsbInstrumentData)
         return data
 
     def update_slippage_costs(self, instrument_code: str, new_slippage: float):
@@ -24,13 +26,15 @@ class dataInstruments(productionDataLayerGeneric):
 
 class diagInstruments(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
-        data.add_class_object(mongoFuturesInstrumentData)
+        #data.add_class_object(mongoFuturesInstrumentData)
+        data.add_class_object(mongoFsbInstrumentData)
         return data
 
 
     @property
     def db_futures_instrument_data(self) -> futuresInstrumentData:
-        return self.data.db_futures_instrument
+        #return self.data.db_futures_instrument
+        return self.data.db_fsb_instrument
 
     def get_cost_object(self, instrument_code: str) -> instrumentCosts:
         meta_data =self.get_meta_data(instrument_code)
