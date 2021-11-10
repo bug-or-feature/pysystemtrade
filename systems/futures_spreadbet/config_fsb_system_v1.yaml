@@ -91,8 +91,7 @@ instrument_weights:
   NASDAQ: 0.11
   US30: 0.07
 
-ignore_instruments:
-
+#ignore_instruments:
 
 #
 # duplicated/excluded instruments are ignored in backtests
