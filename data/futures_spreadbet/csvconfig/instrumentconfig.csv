@@ -2,6 +2,7 @@ Instrument,AssetClass,AssetSubclass,Currency,Slippage,Pointsize,PerBlock,Percent
 AEX,Equities,Europe,GBP,0.1,5.0,0.0,0.0,0.0,1.0,False,0.1,Netherlands equity index AEX
 ASX,Equities,Asia,GBP,2.0,2.0,0.0,0.0,0.0,1.0,False,0.05,Australian 200 Index ***
 AUD,FX,Asia,GBP,5.3,1.0,0.0,0.0,0.0,10000.0,False,0.05,AUDUSD currency
+BITCOIN,Crypto,US,GBP,70.0,1.0,0.0,0.0,0.0,1.0,False,1.0,Bitcoin
 BOBL,Bonds,Europe,GBP,1.5,0.5,0.0,0.0,0.0,100.0,False,0.2,German 5 year bond Bobl
 BRENT_W,Commodities,Energy,GBP,4.0,1.0,0.0,0.0,0.0,100.0,False,0.1,Brent Crude
 BTP,Bonds,Europe,GBP,2.5,0.5,0.0,0.0,0.0,100.0,False,0.2,Italian 10 year bond BTP
@@ -41,6 +42,7 @@ JPY,FX,Asia,GBP,10.0,1.0,0.0,0.0,0.0,10000.0,True,0.033,JPYUSD currency
 LEANHOG,Commodities,Agricultural,GBP,7.5,0.1,0.0,0.0,0.0,100.0,False,0.1,Lean hogs
 LIVECOW,Commodities,Agricultural,GBP,10.0,0.5,0.0,0.0,0.0,100.0,False,0.1,Live cattle
 LUMBER,Commodities,Agricultural,GBP,1000.0,0.1,0.0,0.0,0.0,100.0,False,0.1,Random Length Lumber
+MXP,FX,US,GBP,75.0,0.1,0.0,0.0,0.0,10000.0,True,0.05,MXNUSD currency
 NASDAQ,Equities,US,GBP,1.5,0.5,0.0,0.0,0.0,1.0,False,0.05,US equity index Nasdaq
 NIKKEI,Equities,Asia,GBP,10.0,0.5,0.0,0.0,0.0,1.0,False,0.05,Nikkei 225 Index
 NZD,FX,Asia,GBP,2.9,1.0,0.0,0.0,0.0,10000.0,False,0.05,NZDUSD currency
