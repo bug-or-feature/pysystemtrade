@@ -23,23 +23,23 @@ def run_solo_report(format="console", title=None, function=None, instrument_code
     with dataBlob(log_name="Solo-Report") as data:
         run_report_with_data_blob(config, data)
 
-    def run_status_report():
-        run_solo_report(title="Status report", function="sysproduction.reporting.status_reporting.system_status")
+def run_status_report():
+    run_solo_report(title="Status report", function="sysproduction.reporting.status_reporting.system_status")
 
-    def run_roll_report():
-        run_solo_report(title="Roll report", function="sysproduction.reporting.roll_report.roll_info", instrument_code=ALL_ROLL_INSTRUMENTS)
+def run_roll_report():
+    run_solo_report(title="Roll report", function="sysproduction.reporting.roll_report.roll_info", instrument_code=ALL_ROLL_INSTRUMENTS)
 
-    def run_pandl_report():
-        run_solo_report(title="P&L report", function="sysproduction.reporting.pandl_report.pandl_info")
+def run_pandl_report():
+    run_solo_report(title="P&L report", function="sysproduction.reporting.pandl_report.pandl_info")
 
-    def run_trade_report():
-        run_solo_report(title="Trade report", function="sysproduction.reporting.trades_report.trades_info")
+def run_trade_report():
+    run_solo_report(title="Trade report", function="sysproduction.reporting.trades_report.trades_info")
 
-    def run_strategy_report():
-        run_solo_report(title="Strategy report", function="sysproduction.reporting.strategies_report.strategy_report")
+def run_strategy_report():
+    run_solo_report(title="Strategy report", function="sysproduction.reporting.strategies_report.strategy_report")
 
-    def run_risk_report():
-        run_solo_report(title="Risk report", function="sysproduction.reporting.risk_report.risk_report")
+def run_risk_report():
+    run_solo_report(title="Risk report", function="sysproduction.reporting.risk_report.risk_report")
 
 
 
