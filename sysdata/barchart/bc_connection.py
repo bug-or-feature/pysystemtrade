@@ -2,6 +2,7 @@ import io
 import re
 import urllib.parse
 from datetime import datetime
+import time
 
 import pandas as pd
 import requests
@@ -144,13 +145,18 @@ class bcConnection(object):
             if bar_freq == Frequency.Day:
                 data_url = BARCHART_URL + 'proxies/timeseries/queryeod.ashx'
                 payload['data'] = 'daily'
+                payload['contractroll'] = 'expiration'
             else:
                 data_url = BARCHART_URL + 'proxies/timeseries/queryminutes.ashx'
                 payload['interval'] = freq_mapping[bar_freq]
+                payload['contractroll'] = 'combined'
 
             # get prices for instrument from BC internal API
             prices_resp = self._session.get(data_url, headers=headers, params=payload)
-            self.log.msg(f"GET {data_url} {instr_symbol}, {prices_resp.status_code}")
+            ratelimit = prices_resp.headers['x-ratelimit-remaining']
+            if int(ratelimit) <= 15:
+                time.sleep(20)
+            self.log.msg(f"GET {data_url} {instr_symbol}, {prices_resp.status_code}, ratelimit {ratelimit}")
 
             # read response into dataframe
             iostr = io.StringIO(prices_resp.text)
