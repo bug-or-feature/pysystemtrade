@@ -23,7 +23,9 @@ from sysdata.data_blob import dataBlob
 from sysproduction.data.prices import diagPrices, updatePrices, get_valid_instrument_code_from_user
 
 ALL_INSTRUMENTS = "ALL"
-def update_multiple_adjusted_prices():
+
+
+def update_multiple_adjusted_prices(instrument_list=None):
     """
     Do a daily update for multiple and adjusted prices
 
@@ -31,43 +33,55 @@ def update_multiple_adjusted_prices():
     """
 
     with dataBlob(log_name="Update-Multiple-Adjusted-Prices") as data:
-        update_multiple_adjusted_prices_object = updateMultipleAdjustedPrices(
-            data)
+        if instrument_list is None:
+            update_multiple_adjusted_prices_object = updateMultipleAdjustedPrices(data)
+            instrument_code = get_valid_instrument_code_from_user(all_code=ALL_INSTRUMENTS, allow_all=True)
+            update_multiple_adjusted_prices_object.update_multiple_adjusted_prices(instrument_code=instrument_code)
+            if instrument_code is ALL_INSTRUMENTS:
+                ## done
+                return success
 
-        instrument_code = get_valid_instrument_code_from_user(all_code=ALL_INSTRUMENTS,
-                                                              allow_all=True)
+            ## else go into a loop
+            do_another = True
 
-        update_multiple_adjusted_prices_object.update_multiple_adjusted_prices(instrument_code=instrument_code)
-        if instrument_code is ALL_INSTRUMENTS:
-            ## done
-            return success
+            while do_another:
+                EXIT_CODE = "EXIT"
+                instrument_code = get_valid_instrument_code_from_user(allow_exit=True, exit_code="EXIT")
+                if instrument_code is EXIT_CODE:
+                    do_another = False
+                else:
+                    update_multiple_adjusted_prices_object.update_multiple_adjusted_prices(instrument_code=instrument_code)
 
-        ## else go into a loop
-        do_another = True
-
-        while do_another:
-            EXIT_CODE = "EXIT"
-            instrument_code = get_valid_instrument_code_from_user(allow_exit=True,
-                                                                  exit_code="EXIT")
-            if instrument_code is EXIT_CODE:
-                do_another = False
-            else:
-                update_multiple_adjusted_prices_object.update_multiple_adjusted_prices(instrument_code=instrument_code)
+        else:
+            update_multiple_adjusted_prices_object = updateMultipleAdjustedPrices(
+                data, instrument_list)
+            update_multiple_adjusted_prices_object.update_multiple_adjusted_prices()
 
     return success
 
 
 class updateMultipleAdjustedPrices(object):
-    def __init__(self, data: dataBlob):
+    def __init__(self, data: dataBlob, instrument_list=None):
         self.data = data
+        self._instrument_list = instrument_list
 
     def update_multiple_adjusted_prices(self, instrument_code: str = ALL_INSTRUMENTS):
         data = self.data
-        update_multiple_adjusted_prices_with_data(data, instrument_code=instrument_code)
+        if self._instrument_list is None:
+            update_multiple_adjusted_prices_with_data(data, instrument_code=instrument_code)
+        else:
+            update_multiple_adjusted_prices_with_data(self.data, instrument_list=self._instrument_list)
 
-def update_multiple_adjusted_prices_with_data(data: dataBlob, instrument_code: str = ALL_INSTRUMENTS):
+
+def update_multiple_adjusted_prices_with_data(
+        data: dataBlob,
+        instrument_code: str = ALL_INSTRUMENTS,
+        instrument_list=None):
+
     diag_prices = diagPrices(data)
-    if instrument_code == ALL_INSTRUMENTS:
+    if instrument_list is not None:
+        list_of_codes = instrument_list
+    elif instrument_code == ALL_INSTRUMENTS:
         list_of_codes = diag_prices.get_list_of_instruments_in_multiple_prices()
     else:
         list_of_codes = [instrument_code]

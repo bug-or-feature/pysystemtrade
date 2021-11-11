@@ -12,7 +12,8 @@ from sysproduction.data.broker import dataBroker
 
 ALL_INSTRUMENTS = "ALL"
 
-def update_sampled_contracts():
+
+def update_sampled_contracts(instrument_list=None):
     """
     Update the active contracts, according to what is available in IB for a given instrument
 
@@ -38,38 +39,46 @@ def update_sampled_contracts():
     :returns: None
     """
     with dataBlob(log_name="Update-Sampled_Contracts") as data:
-        update_contracts_object = updateSampledContracts(data)
-        instrument_code = get_valid_instrument_code_from_user(allow_all=True,
-                                                              all_code=ALL_INSTRUMENTS)
+        if instrument_list is None:
+            update_contracts_object = updateSampledContracts(data)
+            instrument_code = get_valid_instrument_code_from_user(allow_all=True, all_code=ALL_INSTRUMENTS)
+            update_contracts_object.update_sampled_contracts(instrument_code=instrument_code)
+            if instrument_code is ALL_INSTRUMENTS:
+                return success
 
-        update_contracts_object.update_sampled_contracts(instrument_code=instrument_code)
+            do_another = True
 
-        if instrument_code is ALL_INSTRUMENTS:
-            return success
+            while do_another:
+                EXIT_CODE = "EXIT"
+                instrument_code = get_valid_instrument_code_from_user(allow_exit=True,
+                                                                      exit_code=EXIT_CODE)
+                if instrument_code is EXIT_CODE:
+                    do_another = False
+                else:
+                    update_contracts_object.update_sampled_contracts(instrument_code=instrument_code)
 
-        do_another = True
-
-        while do_another:
-            EXIT_CODE="EXIT"
-            instrument_code = get_valid_instrument_code_from_user(allow_exit=True,
-                                                                  exit_code=EXIT_CODE)
-            if instrument_code is EXIT_CODE:
-                do_another= False
-            else:
-                update_contracts_object.update_sampled_contracts(instrument_code=instrument_code)
+        else:
+            update_contracts_object = updateSampledContracts(data, instrument_list)
+            update_contracts_object.update_sampled_contracts()
 
 
 class updateSampledContracts(object):
-    def __init__(self, data):
+    def __init__(self, data, instrument_list=None):
         self.data = data
+        self._instrument_list = instrument_list
 
-    def update_sampled_contracts(self, instrument_code: str  = ALL_INSTRUMENTS):
-        data = self.data
-        update_active_contracts_with_data(data, instrument_code=instrument_code)
+    def update_sampled_contracts(self, instrument_code: str = ALL_INSTRUMENTS):
+        if self._instrument_list is None:
+            update_active_contracts_with_data(self.data, instrument_code=instrument_code)
+        else:
+            update_active_contracts_with_data(self.data, instrument_list=self._instrument_list)
 
-def update_active_contracts_with_data(data: dataBlob, instrument_code: str = ALL_INSTRUMENTS):
+
+def update_active_contracts_with_data(data: dataBlob, instrument_code: str = ALL_INSTRUMENTS, instrument_list=None):
     diag_prices = diagPrices(data)
-    if instrument_code is ALL_INSTRUMENTS:
+    if instrument_list is not None:
+        list_of_codes = instrument_list
+    elif instrument_code is ALL_INSTRUMENTS:
         list_of_codes = diag_prices.get_list_of_instruments_in_multiple_prices()
     else:
         list_of_codes = [instrument_code]
