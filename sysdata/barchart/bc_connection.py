@@ -3,7 +3,7 @@ import re
 import urllib.parse
 from datetime import datetime
 import time
-
+from functools import lru_cache
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup as Scraper
@@ -78,8 +78,23 @@ class bcConnection(object):
         :return: str
         """
         try:
-            contract_id = self.get_barchart_id(futures_contract)
-            resp = self._get_overview(contract_id)
+            return self._get_expiry_date_for_symbol(self.get_barchart_id(futures_contract))
+        except Exception as e:
+            self.log.error('Error: %s' % e)
+            return None
+
+    @lru_cache(maxsize=256)
+    def _get_expiry_date_for_symbol(self, bc_symbol: str):
+        """
+        Get the actual expiry date for the given Barchart symbol
+
+        This implementation just scrapes the info page for the given contract to grab the date
+        :param futures_contract:
+        :return: str
+        """
+        try:
+
+            resp = self._get_overview(bc_symbol)
             if resp.status_code == 200:
                 overview_soup = Scraper(resp.text, 'html.parser')
                 table = overview_soup.find(name='div', attrs={'class': 'commodity-profile'})
