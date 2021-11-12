@@ -23,7 +23,7 @@ restats
 .python-version
 
 # venv
-env/
+env*/
 
 # libreoffice
 .~lock.*
