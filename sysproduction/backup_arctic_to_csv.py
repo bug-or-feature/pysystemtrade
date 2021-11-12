@@ -60,7 +60,7 @@ class backupArcticToCsv:
         log.msg("Dumping from arctic, mongo to .csv files")
         backup_spreads_to_csv(backup_data)
         backup_fx_to_csv(backup_data)
-        #backup_futures_contract_prices_to_csv(backup_data)
+        backup_futures_contract_prices_to_csv(backup_data)
         backup_multiple_to_csv(backup_data)
         backup_adj_to_csv(backup_data)
         backup_strategy_position_data(backup_data)
