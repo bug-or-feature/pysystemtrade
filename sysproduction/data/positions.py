@@ -421,24 +421,24 @@ class updatePositions(productionDataLayerGeneric):
 
         instrument_strategy = original_instrument_order.instrument_strategy
 
-        current_position_as_int = self.diag_positions.get_current_position_for_instrument_strategy(instrument_strategy)
+        current_position = self.diag_positions.get_current_position_for_instrument_strategy(instrument_strategy)
         trade_done_as_int = new_fill.as_single_trade_qty_or_error()
         if trade_done_as_int is missing_order:
             self.log.critical("Instrument orders can't be spread orders!")
             return failure
 
-        new_position_as_int = current_position_as_int + trade_done_as_int
+        new_position = current_position + trade_done_as_int
 
         self.db_strategy_position_data.update_position_for_instrument_strategy_object(
-            instrument_strategy, new_position_as_int)
+            instrument_strategy, new_position)
 
         log = original_instrument_order.log_with_attributes(self.log)
         log.msg(
-            "Updated position of %s from %d to %d because of trade %s %d fill %s"
+            "Updated position of %s from %.2f to %.2f because of trade %s %d fill %s"
             % (
                 str(instrument_strategy),
-                current_position_as_int,
-                new_position_as_int,
+                current_position,
+                new_position,
                 str(original_instrument_order),
                 original_instrument_order.order_id,
                 str(new_fill)
@@ -494,7 +494,7 @@ class updatePositions(productionDataLayerGeneric):
 
         log = contract.specific_log(self.log)
         log.msg(
-            "Updated position of %s from %d to %d; new position in db is %d"
+            "Updated position of %s from %.2f to %.2f; new position in db is %.2f"
             % (
                 str(contract),
                 current_position,
