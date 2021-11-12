@@ -26,37 +26,65 @@ from sysproduction.data.sim_fsb_data import get_sim_fsb_data_object_for_producti
 from sysproduction.data.backtest import store_backtest_state
 
 from syslogdiag.log_to_screen import logtoscreen
+
 from systems.futures_spreadbet.fsb_system import fsb_system
 from systems.basesystem import System
-from sysproduction.strategy_code.run_system_classic import runSystemClassic
+
+class RunFsbSystemClassic(object):
+
+    def __init__(
+        self,
+        data: dataBlob,
+        strategy_name: str,
+        backtest_config_filename=arg_not_supplied,
+    ):
+
+        if backtest_config_filename is arg_not_supplied:
+            raise Exception("Need to supply config filename")
+
+        self.data = data
+        self.strategy_name = strategy_name
+        self.backtest_config_filename = backtest_config_filename
 
 
-class RunFsbSystemClassic(runSystemClassic):
+    def run_backtest(self):
+        strategy_name = self.strategy_name
+        data = self.data
 
-    # def _get_currency_and_capital(self):
-    #     data = self.data
-    #     strategy_name = self.strategy_name
-    #
-    #     capital_data = dataCapital(data)
-    #     notional_trading_capital = capital_data.get_capital_for_strategy(strategy_name)
-    #     if notional_trading_capital is missing_data:
-    #         # critical log will send email
-    #         error_msg = (
-    #             "Capital data is missing for %s: can't run backtest" %
-    #             strategy_name)
-    #         data.log.critical(error_msg)
-    #         raise Exception(error_msg)
-    #
-    #     currency_data = dataCurrency(data)
-    #     base_currency = currency_data.get_base_currency()
-    #
-    #     return base_currency, notional_trading_capital
+        base_currency, notional_trading_capital = self._get_currency_and_capital()
+
+        system = self.system_method(
+            notional_trading_capital=notional_trading_capital, base_currency=base_currency
+        )
+
+        updated_buffered_positions(data, strategy_name, system)
+
+        store_backtest_state(data, system, strategy_name=strategy_name)
+
+    def _get_currency_and_capital(self):
+        data = self.data
+        strategy_name = self.strategy_name
+
+        capital_data = dataCapital(data)
+        notional_trading_capital = capital_data.get_capital_for_strategy(strategy_name)
+        if notional_trading_capital is missing_data:
+            # critical log will send email
+            error_msg = (
+                "Capital data is missing for %s: can't run backtest" %
+                strategy_name)
+            data.log.critical(error_msg)
+            raise Exception(error_msg)
+
+        currency_data = dataCurrency(data)
+        base_currency = currency_data.get_base_currency()
+
+        return base_currency, notional_trading_capital
 
     # DO NOT CHANGE THE NAME OF THIS FUNCTION; IT IS HARDCODED INTO CONFIGURATION FILES
     # BECAUSE IT IS ALSO USED TO LOAD BACKTESTS
     def system_method(self,
-                      notional_trading_capital: float = None,
-                      base_currency: str = None) -> System:
+                      notional_trading_capital: float=None,
+                      base_currency: str=None) -> System:
         data = self.data
         backtest_config_filename = self.backtest_config_filename
 
