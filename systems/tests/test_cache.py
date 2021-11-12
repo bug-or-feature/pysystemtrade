@@ -6,7 +6,6 @@ from systems.system_cache import input, diagnostic, output, ALL_KEYNAME
 from sysdata.sim.sim_data import simData
 from sysdata.config.configdata import Config
 
-@unittest.SkipTest
 class testStage1(SystemStage):
     @property
     def name(self):
@@ -61,7 +60,7 @@ class testStage2(SystemStage):
         # deliberate duplicate
         return 15
 
-
+@unittest.SkipTest
 class TestCache(unittest.TestCase):
     def setUp(self):
 
