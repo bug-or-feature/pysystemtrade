@@ -470,11 +470,11 @@ class updatePositions(productionDataLayerGeneric):
                 contract=contract, trade_done=trade_done, time_date=time_date
             )
             log.msg(
-                "Updated position of %s because of trade %s ID:%d with fills %d" %
+                "Updated position of %s because of trade %s ID:%d with fills %.2f" %
                 (str(contract),
                  str(contract_order_before_fills),
                  contract_order_before_fills.order_id,
-                trade_done
+                 trade_done
                  ))
 
     def _update_positions_for_individual_contract_leg(
