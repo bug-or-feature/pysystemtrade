@@ -16,6 +16,8 @@ from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from sysbrokers.IG.ig_capital_data import IgCapitalData
 from sysbrokers.IG.ig_static_data import IgStaticData
 from sysbrokers.IG.ig_contract_position_data import IgContractPositionData
+from sysbrokers.IG.ig_fsb_contract_data import IgFuturesContractData
+from sysbrokers.IG.ig_activity_data import IgActivityData
 
 from sysbrokers.broker_fx_handling import brokerFxHandlingData
 from sysbrokers.broker_static_data import brokerStaticData
@@ -26,6 +28,7 @@ from sysbrokers.broker_capital_data import brokerCapitalData
 from sysbrokers.broker_contract_position_data import brokerContractPositionData
 from sysbrokers.broker_fx_prices_data import brokerFxPricesData
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
+from sysbrokers.broker_activity_data import BrokerActivityData
 
 from syscore.objects import arg_not_supplied, missing_order, missing_contract, missing_data
 from syscore.dateutils import Frequency
@@ -71,11 +74,13 @@ class dataBroker(productionDataLayerGeneric):
         data.add_class_list([
             avFxPricesData,
             BarchartFuturesContractPriceData,
-            BarchartFuturesContractData,
+            #BarchartFuturesContractData,
+            IgFuturesContractData,
             BarchartFuturesInstrumentData,
             IgContractPositionData,
             IgStaticData,
-            IgCapitalData]
+            IgCapitalData,
+            IgActivityData]
         )
 
         return data
@@ -115,6 +120,10 @@ class dataBroker(productionDataLayerGeneric):
     @property
     def broker_static_data(self) -> brokerStaticData:
         return self.data.broker_static
+
+    @property
+    def broker_activity_data(self) -> BrokerActivityData:
+        return self.data.broker_activity
 
     ## Methods
 
@@ -479,3 +488,7 @@ class dataBroker(productionDataLayerGeneric):
         )
 
         return total_account_value_in_base_currency
+
+    def get_recent_activity(self):
+        activities = self.broker_activity_data.get_recent()
+        return activities

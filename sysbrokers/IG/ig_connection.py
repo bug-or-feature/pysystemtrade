@@ -61,3 +61,24 @@ class ConnectionIG(object):
         ig_service.logout()
 
         return result_list
+
+    def get_activity(self):
+        ig_service = self._create_ig_session()
+        activities = ig_service.fetch_account_activity_by_period(24 * 60 * 60 * 1000)
+
+        result_list = []
+        for i in range(0, len(activities)):
+            action = dict()
+            action['epic'] = activities.iloc[i]['epic']
+            action['date'] = activities.iloc[i]['date']
+            action['time'] = activities.iloc[i]['time']
+            action['marketName'] = activities.iloc[i]['marketName']
+            action['size'] = activities.iloc[i]['size']
+            action['level'] = activities.iloc[i]['level']
+            action['actionStatus'] = activities.iloc[i]['actionStatus']
+
+            result_list.append(action)
+
+        ig_service.logout()
+
+        return result_list

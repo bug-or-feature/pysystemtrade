@@ -67,6 +67,7 @@ nested_menu_of_options = {0: {0: "View specific order",
                               3: "View broker order stack (stored local DB)",
                               4: "View IB orders and fills",
                               9: "View positions",
+                              5: "View recent broker transactions"
                               },
                           1: {10: "Spawn contract orders from instrument orders",
                               11: "Create force roll contract orders",
@@ -816,6 +817,24 @@ def view_positions(data):
         print("(No breaks positions consistent)")
     return None
 
+def view_recent_broker_transactions(data):
+    data_broker = dataBroker(data)
+    broker_actions = data_broker.get_recent_activity()
+    print("\n\nRecent broker activity\n")
+    for action in broker_actions:
+        print(f"{action['marketName']}, {action['size']}, {action['level']}")
+    print("\n")
+    print("\n")
+
+    # action['epic'] = activities.iloc[i]['epic']
+    # action['date'] = activities.iloc[i]['date']
+    # action['time'] = activities.iloc[i]['time']
+    # action['actionStatus'] = activities.iloc[i]['actionStatus']
+
+
+
+    return None
+
 
 def end_of_day(data):
     print(
@@ -885,6 +904,7 @@ dict_of_functions = {
     2: view_contract_stack,
     3: view_broker_stack,
     4: view_broker_order_list,
+    5: view_recent_broker_transactions,
     9: view_positions,
     10: spawn_contracts_from_instrument_orders,
     11: generate_force_roll_orders,
