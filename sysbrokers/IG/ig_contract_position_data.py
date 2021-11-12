@@ -4,18 +4,20 @@ from sysdata.barchart.bc_futures_contracts_data import BarchartFuturesContractDa
 
 from sysbrokers.IG.client.ig_positions_client import IgPositionsClient
 from sysbrokers.IG.ig_instruments_data import IgFsbInstrumentData
-from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
+
 from sysbrokers.IG.ig_connection import ConnectionIG
 from sysbrokers.broker_contract_position_data import brokerContractPositionData
 from syscore.objects import arg_not_supplied, missing_contract
 from sysobjects.production.positions import contractPosition, listOfContractPositions
 from sysobjects.contracts import futuresContract
+from sysobjects.contract_dates_and_expiries import contractDate, expiryDate
 
 
 class IgContractPositionData(brokerContractPositionData):
 
     def __init__(self, log=logtoscreen("IgContractPositionData")):
         self._igconnection = ConnectionIG()
+        self._barchart = BarchartFuturesContractData()
         super().__init__(log=log)
 
     @property
@@ -36,7 +38,7 @@ class IgContractPositionData(brokerContractPositionData):
 
     @property
     def futures_contract_data(self) -> BarchartFuturesContractData:
-        return BarchartFuturesContractData(self.igconnection, log=self.log)
+        return self._barchart
 
     @property
     def futures_instrument_data(self) -> IgFsbInstrumentData:
@@ -75,7 +77,7 @@ class IgContractPositionData(brokerContractPositionData):
             self.futures_instrument_data.get_instrument_code_from_broker_code(epic))
         expiry_key = position_entry["expiry"]
 
-        contract = futuresContract(instrument_code, self._convert_expiry(expiry_key))
+        contract = futuresContract(instrument_code, contractDate(self.get_actual_expiry(instrument_code, expiry_key)))
 
         contract_position_object = contractPosition(
             position, contract
@@ -83,10 +85,11 @@ class IgContractPositionData(brokerContractPositionData):
 
         return contract_position_object
 
-    @staticmethod
-    def _convert_expiry(expiry_key):
+    def get_actual_expiry(self, instr_code, expiry_key):
         expiry_code_date = datetime.strptime(f'01-{expiry_key}', '%d-%b-%y')
-        return expiry_code_date.strftime('%Y%m')
+        fc = futuresContract.from_two_strings(instr_code, f"{expiry_code_date.strftime('%Y%m')}00")
+        actual_expiry = self.futures_contract_data.get_actual_expiry_date_for_single_contract(fc)
+        return actual_expiry.strftime('%Y%m%d')
 
     def _get_all_futures_positions_as_raw_list(self, account_id: str = arg_not_supplied) -> list:
         all_positions = self.ig_client.broker_get_positions(
