@@ -64,18 +64,23 @@ class ConnectionIG(object):
 
     def get_activity(self):
         ig_service = self._create_ig_session()
-        activities = ig_service.fetch_account_activity_by_period(24 * 60 * 60 * 1000)
+        activities = ig_service.fetch_account_activity_by_period(48 * 60 * 60 * 1000)
+        test_epics = ['CS.D.GBPUSD.TODAY.IP', 'IX.D.FTSE.DAILY.IP']
+        activities = activities.loc[~activities['epic'].isin(test_epics)]
+
 
         result_list = []
         for i in range(0, len(activities)):
+            row = activities.iloc[i]
             action = dict()
-            action['epic'] = activities.iloc[i]['epic']
-            action['date'] = activities.iloc[i]['date']
-            action['time'] = activities.iloc[i]['time']
-            action['marketName'] = activities.iloc[i]['marketName']
-            action['size'] = activities.iloc[i]['size']
-            action['level'] = activities.iloc[i]['level']
-            action['actionStatus'] = activities.iloc[i]['actionStatus']
+            action['epic'] = row['epic']
+            action['date'] = row['date']
+            action['time'] = row['time']
+            action['marketName'] = row['marketName']
+            action['size'] = row['size']
+            action['level'] = row['level']
+            action['actionStatus'] = row['actionStatus']
+            action['expiry'] = row['period']
 
             result_list.append(action)
 

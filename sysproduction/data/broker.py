@@ -17,7 +17,7 @@ from sysbrokers.IG.ig_capital_data import IgCapitalData
 from sysbrokers.IG.ig_static_data import IgStaticData
 from sysbrokers.IG.ig_contract_position_data import IgContractPositionData
 from sysbrokers.IG.ig_fsb_contract_data import IgFuturesContractData
-from sysbrokers.IG.ig_activity_data import IgActivityData
+from sysbrokers.IG.ig_orders import IgExecutionStackData
 
 from sysbrokers.broker_fx_handling import brokerFxHandlingData
 from sysbrokers.broker_static_data import brokerStaticData
@@ -78,9 +78,9 @@ class dataBroker(productionDataLayerGeneric):
             IgFuturesContractData,
             BarchartFuturesInstrumentData,
             IgContractPositionData,
+            IgExecutionStackData,
             IgStaticData,
-            IgCapitalData,
-            IgActivityData]
+            IgCapitalData]
         )
 
         return data
@@ -382,6 +382,11 @@ class dataBroker(productionDataLayerGeneric):
             list_of_orders)
 
         return list_of_orders_with_commission
+
+    def get_list_of_recent_transactions(self) -> listOfOrders:
+        list_of_orders = self.broker_execution_stack_data.get_list_of_broker_orders_with_account_id()
+
+        return list_of_orders
 
     def add_commissions_to_list_of_orders(self, list_of_orders:  listOfOrders) ->  listOfOrders:
         list_of_orders_with_commission = [
