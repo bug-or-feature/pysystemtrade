@@ -120,9 +120,6 @@ class dataBroker(productionDataLayerGeneric):
     def broker_static_data(self) -> brokerStaticData:
         return self.data.broker_static
 
-    @property
-    def broker_activity_data(self) -> BrokerActivityData:
-        return self.data.broker_activity
 
     ## Methods
 
