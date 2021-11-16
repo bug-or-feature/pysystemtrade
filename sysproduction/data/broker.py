@@ -28,7 +28,6 @@ from sysbrokers.broker_capital_data import brokerCapitalData
 from sysbrokers.broker_contract_position_data import brokerContractPositionData
 from sysbrokers.broker_fx_prices_data import brokerFxPricesData
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
-from sysbrokers.broker_activity_data import BrokerActivityData
 
 from syscore.objects import arg_not_supplied, missing_order, missing_contract, missing_data
 from syscore.dateutils import Frequency
