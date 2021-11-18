@@ -45,8 +45,8 @@ def interactive_manual_check_historical_prices():
                 update_historical_prices_with_checks_for_instrument(instrument_code, data)
                 instr_list.append(instrument_code)
 
-        #print(f"Now updating multiple and adjusted prices for: {instr_list}")
-        #update_multiple_adjusted_prices(instr_list)
+        print(f"Now updating multiple and adjusted prices for: {instr_list}")
+        update_multiple_adjusted_prices(instr_list)
 
     return success
 
