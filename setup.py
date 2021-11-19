@@ -94,4 +94,10 @@ setup(
     extras_require=dict(),
     test_suite="nose.collector",
     include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'yourscript = sysproduction.interactive_fsb:hello',
+            'optimals = sysproduction.interactive_fsb:show_optimals',
+        ],
+    }
 )

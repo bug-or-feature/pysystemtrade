@@ -1,4 +1,6 @@
-from trading_ig import IGService
+from tenacity import Retrying, wait_exponential, retry_if_exception_type
+from trading_ig.rest import IGService, ApiExceededException
+
 from sysdata.config.production_config import get_production_config
 from syslogdiag.log_to_screen import logtoscreen
 
@@ -14,8 +16,13 @@ class ConnectionIG(object):
         self._ig_acc_number = production_config.get_element_or_missing_data('ig_acc_number')
 
     def _create_ig_session(self):
+        retryer = Retrying(wait=wait_exponential(), retry=retry_if_exception_type(ApiExceededException))
         ig_service = IGService(
-            self._ig_username, self._ig_password, self._ig_api_key, acc_number=self._ig_acc_number
+            self._ig_username,
+            self._ig_password,
+            self._ig_api_key,
+            acc_number=self._ig_acc_number,
+            retryer=retryer
         )
         ig_service.create_session(version='3')
         return ig_service
