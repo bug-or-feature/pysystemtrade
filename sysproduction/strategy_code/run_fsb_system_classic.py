@@ -52,6 +52,7 @@ class RunFsbSystemClassic(object):
         data = self.data
 
         base_currency, notional_trading_capital = self._get_currency_and_capital()
+        data.log.msg(f"Capital: {notional_trading_capital}, currency: {base_currency}")
 
         system = self.system_method(
             notional_trading_capital=notional_trading_capital, base_currency=base_currency
