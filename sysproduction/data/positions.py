@@ -420,7 +420,7 @@ class updatePositions(productionDataLayerGeneric):
         """
 
         instrument_strategy = original_instrument_order.instrument_strategy
-
+        # TODO AG position int -> float
         current_position = self.diag_positions.get_current_position_for_instrument_strategy(instrument_strategy)
         trade_done_as_int = new_fill.as_single_trade_qty_or_error()
         if trade_done_as_int is missing_order:
@@ -469,6 +469,8 @@ class updatePositions(productionDataLayerGeneric):
             self._update_positions_for_individual_contract_leg(
                 contract=contract, trade_done=trade_done, time_date=time_date
             )
+
+            # TODO AG position int -> float
             log.msg(
                 "Updated position of %s because of trade %s ID:%d with fills %.2f" %
                 (str(contract),
