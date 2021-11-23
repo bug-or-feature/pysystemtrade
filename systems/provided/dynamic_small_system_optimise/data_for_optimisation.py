@@ -1,3 +1,4 @@
+from copy import copy
 import numpy as np
 
 from syscore.objects import arg_not_supplied, missing_data
@@ -36,6 +37,10 @@ class dataForOptimisation(object):
         else:
             return stored_value
 
+    def set_key(self, keyname, value):
+        reference = "_stored_" + keyname
+        setattr(self, reference, value)
+
     @property
     def weights_optimal_as_np(self) -> list:
         return self.get_key("weights_optimal_as_np")
@@ -56,9 +61,17 @@ class dataForOptimisation(object):
     def covariance_matrix_as_np(self) -> np.array:
         return self.get_key("covariance_matrix_as_np")
 
+    @covariance_matrix_as_np.setter
+    def covariance_matrix_as_np(self, cov_matrix:np.array):
+        self.set_key("covariance_matrix_as_np", cov_matrix)
+
     @property
     def costs_as_np(self) -> np.array:
         return self.get_key("costs_as_np")
+
+    @property
+    def weights_prior_as_np_replace_nans_with_zeros(self) -> np.array:
+        return self.get_key("weights_prior_as_np_replace_nans_with_zeros")
 
     @property
     def starting_weights_as_np(self) -> np.array:
@@ -108,6 +121,23 @@ class dataForOptimisation(object):
             ))
 
         return per_contract_value_as_np
+
+    @property
+    def _weights_prior_as_np_replace_nans_with_zeros(self) -> np.array:
+        weights_prior_as_np = copy(self.weights_prior_as_np)
+
+        if self.weights_prior_as_np is arg_not_supplied:
+            return arg_not_supplied
+
+        def _zero_if_nan(x):
+            if np.isnan(x):
+                return 0
+            else:
+                return x
+
+        weights_prior_as_np_zero_replaced = [_zero_if_nan(x) for x in weights_prior_as_np]
+
+        return np.array(weights_prior_as_np_zero_replaced)
 
     @property
     def _weights_prior_as_np(self) -> np.array:

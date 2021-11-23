@@ -16,4 +16,4 @@ trading-ig
 MongoDBProxy-official==0.1.0
 Flask>=2.0.1
 Werkzeug>=2.0.1
-cvxpy>=1.1.15
+statsmodels==0.12.2

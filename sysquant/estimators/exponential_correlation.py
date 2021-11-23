@@ -3,7 +3,7 @@ import pandas as pd
 from syscore.genutils import str2Bool
 from syscore.objects import arg_not_supplied
 from sysquant.fitting_dates import fitDates
-from sysquant.estimators.correlations import correlationEstimate, create_boring_corr_matrix
+from sysquant.estimators.correlations import correlationEstimate, create_boring_corr_matrix, modify_correlation
 from sysquant.estimators.generic_estimator import exponentialEstimator
 
 class exponentialCorrelation(exponentialEstimator):
@@ -13,6 +13,8 @@ class exponentialCorrelation(exponentialEstimator):
                  cleaning:bool = True,
                  floor_at_zero:bool = True,
                  length_adjustment: int = 1,
+                 shrinkage_parameter: float = 0.0,
+                 offdiag: float = 0.99,
                  **_ignored_kwargs):
 
         super().__init__(data_for_correlation,
@@ -21,6 +23,8 @@ class exponentialCorrelation(exponentialEstimator):
                          cleaning = cleaning,
                          floor_at_zero=floor_at_zero,
                          length_adjustment=length_adjustment,
+                         shrinkage_parameter = shrinkage_parameter,
+                         offdiag=offdiag,
                          **_ignored_kwargs)
 
 
@@ -37,10 +41,19 @@ class exponentialCorrelation(exponentialEstimator):
         return correlation_calculations
 
     @property
+    def offdiag(self) -> float:
+        return self.other_kwargs['offdiag']
+
+    @property
     def cleaning(self) -> bool:
         cleaning = str2Bool(self.other_kwargs['cleaning'])
 
         return cleaning
+
+    @property
+    def shrinkage_parameter(self) -> float:
+        shrinkage_parameter = float(self.other_kwargs['shrinkage_parameter'])
+        return shrinkage_parameter
 
     @property
     def floor_at_zero(self) -> bool:
@@ -67,7 +80,7 @@ class exponentialCorrelation(exponentialEstimator):
         cleaning = self.cleaning
         if cleaning:
             data_for_correlation = self.data
-            offdiag = self.other_kwargs.get('offdiag', 0.99)
+            offdiag = self.offdiag
             corr_matrix = raw_corr_matrix.clean_corr_matrix_given_data(
                                                                fit_period,
                                                                data_for_correlation,
@@ -76,11 +89,13 @@ class exponentialCorrelation(exponentialEstimator):
             corr_matrix = raw_corr_matrix
 
         floor_at_zero = self.floor_at_zero
-        if floor_at_zero:
-            corr_matrix = corr_matrix.floor_correlation_matrix(floor = 0.0)
-
         clip = self.clip
-        corr_matrix = corr_matrix.clip_correlation_matrix(clip=clip)
+        shrinkage = self.shrinkage_parameter
+
+        corr_matrix = modify_correlation(corr_matrix,
+                                         floor_at_zero=floor_at_zero,
+                                         shrinkage=shrinkage,
+                                         clip=clip)
 
         return corr_matrix
 

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from syscore.algos import get_near_psd
 from syscore.objects import arg_not_supplied
 
 from syslogdiag.logger import logger, nullLog
@@ -68,6 +69,9 @@ class objectiveFunctionForGreedy:
     def optimise_positions(self) -> portfolioWeights:
         optimal_weights = self.optimise_weights()
         optimal_positions =optimal_weights / self.per_contract_value
+
+        optimal_positions = optimal_positions.replace_weights_with_ints()
+
         return optimal_positions
 
     def optimise_weights(self) -> portfolioWeights:
@@ -92,7 +96,7 @@ class objectiveFunctionForGreedy:
             self.is_tracking_error_of_prior_smaller_than_buffer()
 
         if tracking_error_of_prior_smaller_than_buffer:
-            return self.weights_prior_as_np
+            return self.weights_prior_as_np_replace_nans_with_zeros
 
         weights_as_np = \
             self.optimise_np_with_large_tracking_error()
@@ -121,13 +125,13 @@ class objectiveFunctionForGreedy:
 
     def tracking_error_of_prior_weights(self) -> float:
 
-        prior_weights = self.weights_prior_as_np
+        prior_weights = self.weights_prior_as_np_replace_nans_with_zeros
         tracking_error = self.tracking_error_against_optimal(prior_weights)
 
         return tracking_error
 
     def optimise_np_with_large_tracking_error(self) -> np.array:
-        optimised_weights_as_np = greedy_algo_across_integer_values(self)
+        optimised_weights_as_np = self.get_optimisation_results_raw()
         self.log_optimised_results(optimised_weights_as_np, "Optimised (before adjustment)")
 
         optimised_weights_as_np_track_adjusted = \
@@ -135,7 +139,18 @@ class objectiveFunctionForGreedy:
 
         self.log_optimised_results(optimised_weights_as_np_track_adjusted, "Optimised (after adjustment)")
 
+
         return optimised_weights_as_np_track_adjusted
+
+    def get_optimisation_results_raw(self):
+        optimised_weights_as_np = greedy_algo_across_integer_values(self)
+
+        if all(optimised_weights_as_np==0):
+            # pretty unlikely
+            self.log.error("All zeros in optimisation, using prior weights")
+            return self.weights_prior_as_np_replace_nans_with_zeros
+
+        return optimised_weights_as_np
 
     def log_optimised_results(self, optimised_weights_as_np: np.array,
                               label: str = "Optimised"):
@@ -149,7 +164,7 @@ class objectiveFunctionForGreedy:
         if self.no_prior_positions_provided:
             return optimised_weights_as_np
 
-        prior_weights_as_np = self.weights_prior_as_np
+        prior_weights_as_np = self.weights_prior_as_np_replace_nans_with_zeros
         tracking_error_of_prior = \
             self.tracking_error_against_passed_weights(prior_weights_as_np, optimised_weights_as_np)
         speed_control = self.speed_control
@@ -186,19 +201,31 @@ class objectiveFunctionForGreedy:
 
     def tracking_error_against_passed_weights(self, weights: np.array, optimal_weights: np.array) -> float:
         solution_gap = weights - optimal_weights
-        track_error = \
-            (solution_gap.dot(self.covariance_matrix_as_np).dot(solution_gap)) ** .5
+        track_error_var = \
+            (solution_gap.dot(self.covariance_matrix_as_np).dot(solution_gap))
 
-        return track_error
+        if track_error_var<0:
+            ## can happen in some corner cases due to way covar estimated
+            ## this effectively means we won't trade until problem solved seems reasonable
+            msg = "Negative covariance when optimising!"
+            self.log.critical(msg)
+            raise Exception(msg)
+
+        track_error_std = track_error_var**.5
+
+        return track_error_std
 
 
     def calculate_costs(self, weights: np.array) -> float:
         if self.no_prior_positions_provided:
             return 0.0
-        trade_gap = weights - self.weights_prior_as_np
+        trade_gap = weights - self.weights_prior_as_np_replace_nans_with_zeros
         costs_per_trade = self.costs_as_np
         trade_shadow_cost = self.trade_shadow_cost
         trade_costs = sum(abs(costs_per_trade * trade_gap * trade_shadow_cost))
+
+        if np.isnan(trade_costs):
+            raise Exception("Trade costs are zero, most likely have a zero cost somewhere")
 
         return trade_costs
 
@@ -235,12 +262,16 @@ class objectiveFunctionForGreedy:
         return self.input_data.per_contract_value_as_np
 
     @property
-    def weights_prior_as_np(self) -> np.array:
-        return self.input_data.weights_prior_as_np
+    def weights_prior_as_np_replace_nans_with_zeros(self) -> np.array:
+        return self.input_data.weights_prior_as_np_replace_nans_with_zeros
 
     @property
     def covariance_matrix_as_np(self) -> np.array:
         return self.input_data.covariance_matrix_as_np
+
+    @covariance_matrix_as_np.setter
+    def covariance_matrix_as_np(self, new_array: np.array) -> np.array:
+        self.input_data.covariance_matrix_as_np = new_array
 
     @property
     def costs_as_np(self) -> np.array:
