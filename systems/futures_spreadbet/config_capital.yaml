@@ -15,6 +15,21 @@ base_currency: "GBP"
 #instruments: ["RUSSELL","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","EUROSTX","USTB"] 0.4134
 #instruments: ["RUSSELL","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","EUROSTX"] # 0.427
 #instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","EUROSTX"] # 0.4416
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","NIKKEI","GILT","CRUDE_W","EUROSTX"] # 0.46
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","NIKKEI","GILT","CRUDE_W","SP500"] # 0.47
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","NIKKEI","GILT","CRUDE_W","SOYOIL"] # 0.35
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","NIKKEI","GILT","CRUDE_W","LEANHOG"] # 0.39
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","NIKKEI","GILT","CRUDE_W","COPPER"] # 0.40
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","SOYOIL"] #
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","SOYOIL"] # 0.33
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","HANG","CRUDE_W","SOYOIL"] # 0.34
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","HANG","CRUDE_W","COFFEE"] # 0.42
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","HANG","COFFEE"] # 0.41
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","NIKKEI","COFFEE"] # 0.43
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","NIKKEI","GILT","COFFEE"] # 0.43
+#instruments: ["NASDAQ","US30","GOLD","DAX","CARBON","NIKKEI","GILT","COFFEE"] #
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","NIKKEI","JGB","COFFEE"] # 0.42
+#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","LEANHOG"] #
 #instruments: ["RUSSELL","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W"] 0.4102
 #instruments: ["RUSSELL","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT"] 0.4165
 

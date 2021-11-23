@@ -34,11 +34,13 @@ def run_system():
             config_files.append(estimates)
         else:
             #config_files.append("systems.futures_spreadbet.config_empty_instruments.yaml")
-            config_files.append("systems.futures_spreadbet.estimate_10_cheap.yaml")
+            #config_files.append("systems.futures_spreadbet.estimate_10_cheap.yaml")
             #config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
+            config_files.append("systems.futures_spreadbet.config_fsb_system_v1.yaml")
+            #config_files.append("systems.futures_spreadbet.config_fsb_system_v2.yaml")
         config = Config(config_files)
-        #system = fsb_system(config=config)
-        system = fsb_system()
+        system = fsb_system(config=config)
+        #system = fsb_system()
         prod_label = "FSB"
         bet_label = "BetPerPoint"
         type_label = "estimate"
@@ -180,6 +182,11 @@ def run_system():
     # system.accounts.pandl_for_instrument("US10").percent.stats()  # produce % statistics for a 10 year bond
     # system.accounts.pandl_for_instrument_forecast("EDOLLAR", "carry").sharpe()
     # show()
+
+    print(f"\nSharpe: {system.accounts.portfolio().sharpe()}\n")
+
+    system.accounts.portfolio().curve().plot()
+    show()
 
     if do_estimate:
         write_estimate_file(system)
