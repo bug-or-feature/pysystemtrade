@@ -6,6 +6,7 @@ from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
 from sysdata.mongodb.mongo_fsb_instruments import mongoFsbInstrumentData
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
+from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
 from sysexecution.strategies.classic_buffered_positions import orderGeneratorForBufferedPositions
 
 
@@ -20,6 +21,7 @@ def show_optimals():
     data = dataBlob()
     data.add_class_object(mongoFsbInstrumentData)
     data.add_class_object(mongoFuturesContractData)
+    data.add_class_object(arcticFuturesAdjustedPricesData)
     broker = dataBroker(data=data)
     pos = orderGeneratorForBufferedPositions(data=data, strategy_name='fsb_strategy_v1')
     now = datetime.datetime.now()
@@ -57,6 +59,7 @@ def show_optimals():
         instr_data = data.db_fsb_instrument.get_instrument_data(instr_code)
         min_bet = instr_data.as_dict()['Pointsize']
         delta = expiry - now
+        price_date = data.db_futures_adjusted_prices.get_adjusted_prices(instr_code).index[-1]
 
         if pos < lower:
             if pos == 0.0:
@@ -79,6 +82,7 @@ def show_optimals():
         rows.append(
             {
                 'Instr': instr_code,
+                'Price date': price_date.strftime('%Y-%m-%d %H:%M:%S'),
                 'Expiry': expiry.strftime('%Y-%m-%d'),
                 'Current': pos,
                 'Lower': lower,
@@ -92,7 +96,17 @@ def show_optimals():
 
     results = pd.DataFrame(rows)
     results = results.sort_values(by='Expires')
+
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.width', 2000)
+    pd.set_option('display.max_colwidth', None)
+
     click.echo(results)
+
+    pd.reset_option('display.max_columns')
+    pd.reset_option('display.width')
+    pd.reset_option('display.max_colwidth')
+
 
 
 if __name__ == '__main__':
