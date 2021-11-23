@@ -96,8 +96,9 @@ setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'yourscript = sysproduction.interactive_fsb:hello',
-            'optimals = sysproduction.interactive_fsb:show_optimals',
+            #'pst = sysproduction.pst:pst',
+            #'pstm = sysproduction.pst:main',
+            'fsb = sysproduction.interactive_fsb:show_optimals',
         ],
     }
 )
