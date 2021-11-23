@@ -55,22 +55,15 @@ def show_optimals():
 
         lower = round(lower_positions[instr_code], 2)
         upper = round(upper_positions[instr_code], 2)
-        optimal = round((lower_positions[instr_code] + upper_positions[instr_code]) / 2, 2)
         instr_data = data.db_fsb_instrument.get_instrument_data(instr_code)
         min_bet = instr_data.as_dict()['Pointsize']
         delta = expiry - now
         price_date = data.db_futures_adjusted_prices.get_adjusted_prices(instr_code).index[-1]
 
         if pos < lower:
-            if pos == 0.0:
-                required_position = optimal
-            else:
-                required_position = lower
+            required_position = lower
         elif pos > upper:
-            if pos == 0.0:
-                required_position = optimal
-            else:
-                required_position = upper
+            required_position = upper
         else:
             required_position = pos
 
@@ -86,7 +79,6 @@ def show_optimals():
                 'Expiry': expiry.strftime('%Y-%m-%d'),
                 'Current': pos,
                 'Lower': lower,
-                'Optimal': optimal,
                 'Upper': upper,
                 'Min': min_bet,
                 'Expires': delta.days,
@@ -106,7 +98,6 @@ def show_optimals():
     pd.reset_option('display.max_columns')
     pd.reset_option('display.width')
     pd.reset_option('display.max_colwidth')
-
 
 
 if __name__ == '__main__':
