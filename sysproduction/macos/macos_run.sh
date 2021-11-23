@@ -3,7 +3,7 @@
 # shellcheck source=/dev/null
 . ~/.profile
 cd $PYSYS_CODE || return
-source env/bin/activate
+source env397/bin/activate
 
 IN=$1
 array=(${IN//./ })
