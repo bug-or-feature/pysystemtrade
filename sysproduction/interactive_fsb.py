@@ -9,6 +9,14 @@ from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
 from sysexecution.strategies.classic_buffered_positions import orderGeneratorForBufferedPositions
 
+MIN_BET_DEMO_OVERRIDES = {
+    'CARBON': 0.5,
+    'CRUDE_W': 0.5,
+    'EUROSTX': 0.5,
+    'GOLD': 0.5,
+    'HANG': 0.5
+}
+
 
 @click.command()
 def hello():
@@ -57,6 +65,8 @@ def show_optimals():
         upper = round(upper_positions[instr_code], 2)
         instr_data = data.db_fsb_instrument.get_instrument_data(instr_code)
         min_bet = instr_data.as_dict()['Pointsize']
+        if instr_code in MIN_BET_DEMO_OVERRIDES:
+            min_bet = MIN_BET_DEMO_OVERRIDES[instr_code]
         delta = expiry - now
         price_date = data.db_futures_adjusted_prices.get_adjusted_prices(instr_code).index[-1]
 
@@ -76,18 +86,17 @@ def show_optimals():
             {
                 'Instr': instr_code,
                 'Price date': price_date.strftime('%Y-%m-%d %H:%M:%S'),
-                'Expiry': expiry.strftime('%Y-%m-%d'),
+                'Contract expiry': f"{expiry.strftime('%Y-%m-%d')} ({delta.days})",
                 'Current': pos,
                 'Lower': lower,
                 'Upper': upper,
                 'Min': min_bet,
-                'Expires': delta.days,
                 'Trade': trade_required,
             }
         )
 
     results = pd.DataFrame(rows)
-    results = results.sort_values(by='Expires')
+    #results = results.sort_values(by='Days to expiry')
 
     pd.set_option('display.max_columns', None)
     pd.set_option('display.width', 2000)
