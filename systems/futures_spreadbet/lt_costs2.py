@@ -4,7 +4,7 @@ import pytz
 
 import pandas as pd
 
-from sysbrokers.IG.ig_connection import connectionIG
+from sysbrokers.IG.ig_connection import ConnectionIG
 from syscore.dateutils import ROOT_BDAYS_INYEAR
 from syscore.fileutils import get_filename_for_package
 from syscore.pdutils import print_full
