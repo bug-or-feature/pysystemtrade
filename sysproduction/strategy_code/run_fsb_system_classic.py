@@ -113,10 +113,10 @@ def production_classic_fsb_system(
     config = set_up_config(data, config_filename)
 
     # Overwrite capital and base currency
-    if notional_trading_capital is not arg_not_supplied:
+    if notional_trading_capital is not arg_not_supplied and notional_trading_capital is not None:
         config.notional_trading_capital = notional_trading_capital
 
-    if base_currency is not arg_not_supplied:
+    if base_currency is not arg_not_supplied and base_currency is not None:
         config.base_currency = base_currency
 
     system = fsb_system(data=sim_data, config=config)
