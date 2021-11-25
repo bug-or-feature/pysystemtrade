@@ -35,7 +35,7 @@ def dump_mongo_data(data):
     if host.startswith('mongodb://'):
         os.system("mongodump --uri='%s' -o=%s" % (host, path))
     else:
-        os.system("mongodump -o=%s" % path)
+        os.system("mongodump --host='%s' -o=%s" % (host, path))
     data.log.msg("Dumped")
 
 
