@@ -60,7 +60,6 @@ class testStage2(SystemStage):
         # deliberate duplicate
         return 15
 
-@unittest.SkipTest
 class TestCache(unittest.TestCase):
     def setUp(self):
 
@@ -74,7 +73,7 @@ class TestCache(unittest.TestCase):
     def test_get_instrument_list(self):
         self.system.get_instrument_list()
         self.system.get_instrument_list()
-        self.assertEqual(3, len(self.system.cache.get_items_with_data()))
+        self.assertEqual(4, len(self.system.cache.get_items_with_data()))
 
     def test_stage_input_wrapper(self):
         # this shouldn't cache
@@ -89,7 +88,7 @@ class TestCache(unittest.TestCase):
         self.assertEqual("code", cache_ref.instrument_code)
         self.assertEqual(5, self.system.cache[cache_ref].value())
         self.assertEqual(
-            4, len(self.system.cache._get_pickable_items())
+            5, len(self.system.cache._get_pickable_items())
         )  # includes cache of instrument list
         self.assertEqual(0, len(self.system.cache._get_protected_items()))
 
@@ -97,7 +96,7 @@ class TestCache(unittest.TestCase):
 
         # no protected, so should still have two elements inside
         self.assertEqual(
-            4, len(
+            5, len(
                 self.system.cache.cache_ref_list_with_protected_removed(cache_ref_list)
             )
         )
@@ -134,7 +133,7 @@ class TestCache(unittest.TestCase):
 
         ans = self.system.cache.get_cache_refs_across_system()
         self.assertEqual(
-            4, len(ans)
+            5, len(ans)
         )  # also includes base_system.get_instrument_list()
 
         # test deletion across ...
@@ -161,13 +160,13 @@ class TestCache(unittest.TestCase):
         self.assertEqual(2, len(cache_refs))
 
         cache_refs = self.system.cache.get_items_with_data()
-        self.assertEqual(5, len(cache_refs))
+        self.assertEqual(6, len(cache_refs))
 
         cache_refs = self.system.cache._get_pickable_items()
-        self.assertEqual(4, len(cache_refs))
+        self.assertEqual(5, len(cache_refs))
 
         partial_cache = self.system.cache.partial_cache(cache_refs)
-        self.assertEqual(4, len(partial_cache))
+        self.assertEqual(5, len(partial_cache))
 
         # pickle, and then unpickle, after which should have lost one item
         self.system.cache.pickle("systems.tests.tempcachefile.pck")
@@ -175,7 +174,7 @@ class TestCache(unittest.TestCase):
             "systems.tests.tempcachefile.pck",
             clearcache=True)
         cache_refs = self.system.cache.get_items_with_data()
-        self.assertEqual(4, len(cache_refs))
+        self.assertEqual(5, len(cache_refs))
 
     def test_protection_and_deletion_across(self):
 
@@ -189,7 +188,7 @@ class TestCache(unittest.TestCase):
 
         cache_refs = self.system.cache.get_items_with_data()
         # includes base system get_instruments
-        self.assertEqual(7, len(cache_refs))
+        self.assertEqual(8, len(cache_refs))
 
         self.system.cache.delete_items_across_system()
         cache_refs = self.system.cache.get_items_with_data()
@@ -310,13 +309,14 @@ class TestCache(unittest.TestCase):
         items.sort()
         self.assertEqual(
             [
-                "get_instrument_list",
-                "get_list_of_ignored_instruments_to_remove",
-                "get_list_of_instruments_to_remove",
-                "single2_instrument_no_keywords",
-                "single_instrument_no_keywords",
-                "single_instrument_with_keywords",
-            ],
+                'get_instrument_list',
+                'get_list_of_duplicate_instruments_to_remove',
+                'get_list_of_ignored_instruments_to_remove',
+                'get_list_of_instruments_to_remove',
+                'single2_instrument_no_keywords',
+                'single_instrument_no_keywords',
+                'single_instrument_with_keywords'
+             ],
             items
         )
 
