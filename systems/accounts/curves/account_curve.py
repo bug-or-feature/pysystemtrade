@@ -184,14 +184,20 @@ class accountCurve(pd.Series):
         return float(self.as_ts.std())
 
     def ann_mean(self):
-        avg = self.mean()
+        ## If nans, then mean will be biased upwards
+        total = self.sum()
+        divisor = self.number_of_years_in_data
 
-        return avg * self.returns_scalar
+        return total / divisor
 
     def ann_std(self):
         period_std = self.std()
 
         return period_std * self.vol_scalar
+
+    @property
+    def number_of_years_in_data(self) -> float:
+        return len(self) / self.returns_scalar
 
     @property
     def returns_scalar(self) -> float:
@@ -311,17 +317,18 @@ class accountCurve(pd.Series):
         return np.mean([upper, lower])
 
     def quant_ratio_lower(self):
-        x = self.demeaned()
+        x = self.demeaned_remove_zeros()
         raw_ratio =x.quantile(QUANT_PERCENTILE_EXTREME) / x.quantile(QUANT_PERCENTILE_STD)
         return raw_ratio / NORMAL_DISTR_RATIO
 
     def quant_ratio_upper(self):
-        x = self.demeaned()
+        x = self.demeaned_remove_zeros()
         raw_ratio = x.quantile(1 - QUANT_PERCENTILE_EXTREME) / x.quantile(1 - QUANT_PERCENTILE_STD)
         return raw_ratio / NORMAL_DISTR_RATIO
 
-    def demeaned(self):
+    def demeaned_remove_zeros(self):
         x = self.as_ts
+        x[x==0] = np.nan
         return x - x.mean()
 
     def stats(self):

@@ -3,9 +3,10 @@ import numpy as np
 import pandas as pd
 
 from syscore.dateutils import BUSINESS_DAYS_IN_YEAR
+from syscore.pdutils import prices_to_daily_prices
 
 def robust_daily_vol_given_price(price: pd.Series, **kwargs):
-    price = price.resample("1B").ffill()
+    price = prices_to_daily_prices(price)
     daily_returns = price.diff()
 
     vol = robust_vol_calc(daily_returns, **kwargs)
@@ -23,6 +24,7 @@ def robust_vol_calc(
         floor_min_periods: int = 100,
         floor_days: int = 500,
         backfill: bool = False,
+        **ignored_kwargs
 ) -> pd.Series:
     """
     Robust exponential volatility calculation, assuming daily series of prices

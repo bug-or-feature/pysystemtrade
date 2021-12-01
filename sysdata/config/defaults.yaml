@@ -57,14 +57,12 @@ production_capital_method: 'full'
 # Raw data
 #
 volatility_calculation:
-  func: "sysquant.estimators.vol.robust_vol_calc"
+  func: "sysquant.estimators.vol.mixed_vol_calc"
   days: 35
   min_periods: 10
+  slow_vol_years: 10
+  proportion_of_slow_vol: 0.3
   vol_abs_min: 0.0000000001
-  vol_floor: True
-  floor_min_quant: 0.05
-  floor_min_periods: 100
-  floor_days: 500
 #
 # forecast capping and scaling
 # fixed values
@@ -323,6 +321,7 @@ exclude_instrument_lists:
   # If you want to include in sim data, but not actually trade, use trading_restrictions
   ignore_instruments:
     - 'EURIBOR'
+    - 'SGX'
   #
   # Here we put stuff we can't trade, but for which we still want to bring in prices in sim
   # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
@@ -349,33 +348,61 @@ exclude_instrument_lists:
   # Run interactive controls to get a list of suggested markets here
   # To override this list, change in sim .yaml config (sim) and private_config.yaml (production)
   bad_markets:
-    - ALUMINIUM
-    - BBCOMM
-    - CHEESE
-    - DJSTX-SMALL
-    - EU-BANKS
-    - EU-CHEM
-    - EU-CONSTRUCTION
-    - EU-DIV30
-    - EU-FOOD
-    - EU-HEALTH
-    - EU-INSURE
-    - EU-TRAVEL
-    - EURIBOR
-    - FTSEINDO
-    - INR
-    - KOSPI_mini
-    - KRWUSD
-    - LUMBER
-    - MILK
-    - MILKDRY
-    - MSCIASIA
-    - NOK
-    - OATIES
-    - RICE
-    - SGD
-    - SHATZ
-    - US-DISCRETE
-    - US-REALESTATE
-    - USIRS5
-    - V2X
+  - ALUMINIUM
+  - BBCOMM
+  - BITCOIN
+  - CH10
+  - CHEESE
+  - COPPER-mini
+  - DJSTX-SMALL
+  - EU-BANKS
+  - EU-CHEM
+  - EU-CONSTRUCTION
+  - EU-DJ-OIL
+  - EU-DJ-TECH
+  - EU-DJ-TELECOM
+  - EU-DJ-UTIL
+  - EU-FOOD
+  - EU-HOUSE
+  - EU-MEDIA
+  - EU-MID
+  - EU-REALESTATE
+  - EU-RETAIL
+  - EU-TRAVEL
+  - EURCHF
+  - EURIBOR
+  - EUROSTX-SMALL
+  - EUROSTX200-LARGE
+  - FTSEINDO
+  - INR
+  - JGB-SGX-mini
+  - JP-REALESTATE
+  - KOSPI_mini
+  - KRWUSD
+  - LUMBER
+  - MID-DAX
+  - MILK
+  - MILKDRY
+  - NOK
+  - OATIES
+  - R1000
+  - RICE
+  - SEK
+  - SGD
+  - SGX
+  - SHATZ
+  - SMI-MID
+  - US-DISCRETE
+  - US-ENERGY
+  - US-FINANCE
+  - US-HEALTH
+  - US-INDUSTRY
+  - US-MATERIAL
+  - US-PROPERTY
+  - US-REALESTATE
+  - US-STAPLES
+  - US-TECH
+  - US-UTILS
+  - USIRS5
+  - V2X
+  - VNKI
