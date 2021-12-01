@@ -1,74 +1,66 @@
-Instrument,AssetClass,AssetSubclass,Currency,Slippage,Pointsize,PerBlock,Percentage,PerTrade,Multiplier,Inverse,Margin,Description
-AEX,Equities,Europe,GBP,0.1,5.0,0.0,0.0,0.0,1.0,False,0.1,Netherlands equity index AEX
-ASX,Equities,Asia,GBP,2.0,2.0,0.0,0.0,0.0,1.0,False,0.05,Australian 200 Index ***
-AUD,FX,Asia,GBP,5.3,1.0,0.0,0.0,0.0,10000.0,False,0.05,AUDUSD currency
-BITCOIN,Crypto,US,GBP,70.0,1.0,0.0,0.0,0.0,1.0,False,1.0,Bitcoin
-BOBL,Bonds,Europe,GBP,1.5,0.5,0.0,0.0,0.0,100.0,False,0.2,German 5 year bond Bobl
-BRENT_W,Commodities,Energy,GBP,4.0,1.0,0.0,0.0,0.0,100.0,False,0.1,Brent Crude
-BTP,Bonds,Europe,GBP,2.5,0.5,0.0,0.0,0.0,100.0,False,0.2,Italian 10 year bond BTP
-BUND,Bonds,Europe,GBP,1.5,0.5,0.0,0.0,0.0,100.0,False,0.2,German 10 year bond Bund
-BUXL,Bonds,Europe,GBP,2.0,0.5,0.0,0.0,0.0,100.0,False,0.2,German Buxl 15 to 30 year bond
-CAC,Equities,Europe,GBP,2.0,1.0,0.0,0.0,0.0,1.0,False,0.05,French equity index CAC40
-CAD,FX,US,GBP,3.65,1.0,0.0,0.0,0.0,10000.0,True,0.033,USDCAD currency
-CARBON,Commodities,Energy,GBP,5.5,0.25,0.0,0.0,0.0,100.0,False,0.1,Carbon Emissions
-CHF,FX,Europe,GBP,4.75,1.0,0.0,0.0,0.0,10000.0,True,0.033,USDCHF currency
-COCOA_LDN,Commodities,Agricultural,GBP,2.0,0.5,0.0,0.0,0.0,1.0,False,0.1,Cocoa London
-COCOA_NY,Commodities,Agricultural,GBP,4.0,1.0,0.0,0.0,0.0,1.0,False,0.1,Cocoa New York
-COFFEE,Commodities,Agricultural,GBP,20.0,0.5,0.0,0.0,0.0,100.0,False,0.1,Coffee New York Arabica
-COFFEE_LDN,Commodities,Agricultural,GBP,3.0,0.5,0.0,0.0,0.0,1.0,False,0.1,Coffee London Robusta
-COPPER,Commodities,Metals,GBP,20.0,0.1,0.0,0.0,0.0,10000.0,False,0.1,Copper
-CORN,Commodities,Agricultural,GBP,0.5,10.0,0.0,0.0,0.0,1.0,False,0.1,Corn
-COTTON,Commodities,Agricultural,GBP,12.5,0.5,0.0,0.0,0.0,100.0,False,0.1,Cotton
-CRUDE_W,Commodities,Energy,GBP,3.0,1.0,0.0,0.0,0.0,100.0,False,0.1,Light sweet crude Winter
-DAX,Equities,Europe,GBP,3.0,0.5,0.0,0.0,0.0,1.0,False,0.05,DAX 30 Index
-DOLLAR,FX,US,GBP,4.25,0.5,0.0,0.0,0.0,100.0,False,0.1,USD/Basket global currencies
-DOW,Equities,US,GBP,3.0,0.2,0.0,0.0,0.0,1.0,False,0.05,Dow Jones Industrial Average Index
-EDOLLAR,STIR,Europe,GBP,0.8,0.5,0.0,0.0,0.0,100.0,False,0.2,US STIR Eurodollar
-EUR,FX,Europe,GBP,5.3,0.5,0.0,0.0,0.0,10000.0,False,0.033,EURUSD currency
-EURGBP,FX,Europe,GBP,3.95,1.0,0.0,0.0,0.0,10000.0,False,0.033,EURGBP currency
-EURIBOR,STIR,Europe,GBP,0.75,0.5,0.0,0.0,0.0,100.0,False,0.2,Three Month EURIBOR
-EUROSTX,Equities,Europe,GBP,1.0,1.0,0.0,0.0,0.0,1.0,False,0.05,European equity index EUROSTOXX50
-FTSE,Equities,Europe,GBP,4.0,0.5,0.0,0.0,0.0,1.0,False,0.05,UK FTSE Index
-GASOIL_LDN,Commodities,Energy,GBP,0.6,10.0,0.0,0.0,0.0,1.0,False,0.1,London Gas Oil
-GASOLINE,Commodities,Energy,GBP,15.0,0.5,0.0,0.0,0.0,10000.0,False,0.1,Gasoline
-GAS_US,Commodities,Energy,GBP,10.0,1.0,0.0,0.0,0.0,1000.0,False,0.1,Natural gas US
-GBP,FX,Europe,GBP,5.25,1.0,0.0,0.0,0.0,10000.0,False,0.033,GBPUSD currency
-GILT,Bonds,Europe,GBP,1.0,0.5,0.0,0.0,0.0,100.0,False,0.2,UK Govt Bond
-GOLD,Commodities,Metals,GBP,0.3,1.0,0.0,0.0,0.0,1.0,False,0.05,Gold
-HANG,Equities,Asia,GBP,8.0,0.2,0.0,0.0,0.0,1.0,False,0.1,Hang Seng HK Index
-HEATOIL,Commodities,Energy,GBP,15.0,0.5,0.0,0.0,0.0,10000.0,False,0.1,Heating Oil
-JGB,Bonds,Asia,GBP,3.0,0.5,0.0,0.0,0.0,100.0,False,0.2,Japanese Govt Bond
-JPY,FX,Asia,GBP,10.0,1.0,0.0,0.0,0.0,10000.0,True,0.033,JPYUSD currency
-LEANHOG,Commodities,Agricultural,GBP,7.5,0.1,0.0,0.0,0.0,100.0,False,0.1,Lean hogs
-LIVECOW,Commodities,Agricultural,GBP,10.0,0.5,0.0,0.0,0.0,100.0,False,0.1,Live cattle
-LUMBER,Commodities,Agricultural,GBP,1000.0,0.1,0.0,0.0,0.0,100.0,False,0.1,Random Length Lumber
-MXP,FX,US,GBP,75.0,0.1,0.0,0.0,0.0,10000.0,True,0.05,MXNUSD currency
-NASDAQ,Equities,US,GBP,1.5,0.5,0.0,0.0,0.0,1.0,False,0.05,US equity index Nasdaq
-NIKKEI,Equities,Asia,GBP,10.0,0.5,0.0,0.0,0.0,1.0,False,0.05,Nikkei 225 Index
-NZD,FX,Asia,GBP,2.9,1.0,0.0,0.0,0.0,10000.0,False,0.05,NZDUSD currency
-OAT,Bonds,Europe,GBP,2.5,0.5,0.0,0.0,0.0,100.0,False,0.2,French 10 year bond OAT
-OATIES,Commodities,Agricultural,GBP,2.5,15.0,0.0,0.0,0.0,1.0,False,0.1,Oat Futures
-OJ,Commodities,Agricultural,GBP,20.0,0.5,0.0,0.0,0.0,100.0,False,0.1,Orange Juice
-PALLAD,Commodities,Metals,GBP,5.0,2.0,0.0,0.0,0.0,1.0,False,0.1,Palladium
-PLAT,Commodities,Metals,GBP,1.25,3.0,0.0,0.0,0.0,1.0,False,0.1,Platinum
-RICE,Commodities,Agricultural,GBP,20.0,0.5,0.0,0.0,0.0,1000.0,False,0.1,Rough Rice
-RUSSELL,Equities,US,GBP,0.25,2.0,0.0,0.0,0.0,1.0,False,0.1,Russell 2000 Index
-SHATZ,Bonds,Europe,GBP,0.75,0.5,0.0,0.0,0.0,100.0,False,0.2,German 2 year bond Schatz
-SILVER,Commodities,Metals,GBP,1.5,1.0,0.0,0.0,0.0,100.0,False,0.1,NYMEX Silver Index
-SMI,Equities,Europe,GBP,3.0,0.5,0.0,0.0,0.0,1.0,False,0.1,Swiss equity index SMI
-SOYBEAN,Commodities,Agricultural,GBP,1.0,5.0,0.0,0.0,0.0,1.0,False,0.1,Soybean
-SOYMEAL,Commodities,Agricultural,GBP,40.0,0.25,0.0,0.0,0.0,100.0,False,0.1,Soybean meal
-SOYOIL,Commodities,Agricultural,GBP,5.0,1.0,0.0,0.0,0.0,100.0,False,0.1,Soybean Oil
-SP500,Equities,US,GBP,0.5,1.0,0.0,0.0,0.0,1.0,False,0.05,US equity index S&P500
-STERLING3,STIR,Europe,GBP,0.5,0.5,0.0,0.0,0.0,100.0,False,0.20,Short Sterling
-SUGAR,Commodities,Agricultural,GBP,2.5,2.0,0.0,0.0,0.0,100.0,False,0.1,Sugar New York No. 11
-SUGAR_LDN,Commodities,Agricultural,GBP,0.4,15.0,0.0,0.0,0.0,1.0,False,0.1,Sugar London No. 5
-US10,Bonds,US,GBP,2.0,0.5,0.0,0.0,0.0,100.0,False,0.2,US 10 year bond note
-US2,Bonds,US,GBP,1.0,0.5,0.0,0.0,0.0,100.0,False,0.2,US 2 year bond note
-US30,Bonds,US,GBP,2.0,0.5,0.0,0.0,0.0,100.0,False,0.2,US Ultra Treasury Bond
-US5,Bonds,US,GBP,1.0,0.5,0.0,0.0,0.0,100.0,False,0.2,US 5 year bond note
-USTB,Bonds,US,GBP,2.0,0.5,0.0,0.0,0.0,100.0,False,0.2,US Treasury Bond
-V2X,Volatility,Europe,GBP,0.1,100.0,0.0,0.0,0.0,1.0,False,0.2,Vol European equity V2X
-VIX,Volatility,US,GBP,0.1,100.0,0.0,0.0,0.0,1.0,False,0.2,Vol US equity VIX
-WHEAT,Commodities,Agricultural,GBP,0.5,15.0,0.0,0.0,0.0,1.0,False,0.1,Wheat
-WHEAT_LDN,Commodities,Agricultural,GBP,0.375,20.0,0.0,0.0,0.0,1.0,False,0.1,Wheat London
+Instrument,Pointsize,PerTrade,AssetClass,PerBlock,Description,Percentage,Currency,Slippage
+AEX_fsb,5.0,0.0,Equity,0.0,Netherlands equity index AEX,0.0,GBP,0.1
+ASX_fsb,2.0,0.0,Equity,0.0,Australian 200 Index ***,0.0,GBP,2.0
+AUD_fsb,1.0,0.0,FX,0.0,AUDUSD currency,0.0,GBP,5.3
+BOBL_fsb,0.5,0.0,Bond,0.0,German 5 year bond Bobl,0.0,GBP,1.5
+BRENT_W_fsb,1.0,0.0,OilGas,0.0,Brent Crude,0.0,GBP,4.0
+BTP_fsb,0.5,0.0,Bond,0.0,Italian 10 year bond BTP,0.0,GBP,2.5
+BUND_fsb,0.5,0.0,Bond,0.0,German 10 year bond Bund,0.0,GBP,1.5
+BUXL_fsb,0.5,0.0,Bond,0.0,German Buxl 15 to 30 year bond,0.0,GBP,2.0
+CAC_fsb,1.0,0.0,Equity,0.0,French equity index CAC40,0.0,GBP,2.0
+CAD_fsb,1.0,0.0,FX,0.0,USDCAD currency,0.0,GBP,3.65
+CARBON_fsb,0.25,0.0,OilGas,0.0,Carbon Emissions,0.0,GBP,5.5
+CHF_fsb,1.0,0.0,FX,0.0,USDCHF currency,0.0,GBP,4.75
+COCOA_LDN_fsb,0.5,0.0,Ags,0.0,Cocoa London,0.0,GBP,2.0
+COCOA_NY_fsb,1.0,0.0,Ags,0.0,Cocoa New York,0.0,GBP,4.0
+COFFEE_fsb,0.5,0.0,Ags,0.0,Coffee New York Arabica,0.0,GBP,20.0
+COFFEE_LDN_fsb,0.5,0.0,Ags,0.0,Coffee London Robusta,0.0,GBP,3.0
+COPPER_fsb,0.1,0.0,Metals,0.0,Copper,0.0,GBP,20.0
+CORN_fsb,10.0,0.0,Ags,0.0,Corn,0.0,GBP,0.5
+COTTON_fsb,0.5,0.0,Ags,0.0,Cotton,0.0,GBP,12.5
+CRUDE_W_fsb,1.0,0.0,OilGas,0.0,Light sweet crude Winter,0.0,GBP,3.0
+DAX_fsb,0.5,0.0,Equity,0.0,DAX 30 Index,0.0,GBP,3.0
+DOLLAR_fsb,0.5,0.0,FX,0.0,USD/Basket global currencies,0.0,GBP,4.25
+DOW_fsb,0.2,0.0,Equity,0.0,Dow Jones Industrial Average Index,0.0,GBP,3.0
+EUR_fsb,0.5,0.0,FX,0.0,EURUSD currency,0.0,GBP,5.3
+EURGBP_fsb,1.0,0.0,FX,0.0,EURGBP currency,0.0,GBP,3.95
+EUROSTX_fsb,1.0,0.0,Equity,0.0,European equity index EUROSTOXX50,0.0,GBP,1.0
+FTSE_fsb,0.5,0.0,Equity,0.0,UK FTSE Index,0.0,GBP,4.0
+GASOIL_LDN_fsb,10.0,0.0,OilGas,0.0,London Gas Oil,0.0,GBP,0.6
+GASOLINE_fsb,0.5,0.0,OilGas,0.0,Gasoline,0.0,GBP,15.0
+GAS_US_fsb,1.0,0.0,OilGas,0.0,Natural gas US,0.0,GBP,10.0
+GBP_fsb,1.0,0.0,FX,0.0,GBPUSD currency,0.0,GBP,5.25
+GILT_fsb,0.5,0.0,Bond,0.0,UK Govt Bond,0.0,GBP,1.0
+GOLD_fsb,1.0,0.0,Metals,0.0,Gold,0.0,GBP,0.3
+HANG_fsb,0.2,0.0,Equity,0.0,Hang Seng HK Index,0.0,GBP,8.0
+HEATOIL_fsb,0.5,0.0,OilGas,0.0,Heating Oil,0.0,GBP,15.0
+JGB_fsb,0.5,0.0,Bond,0.0,Japanese Govt Bond,0.0,GBP,3.0
+JPY_fsb,1.0,0.0,FX,0.0,JPYUSD currency,0.0,GBP,10.0
+LEANHOG_fsb,0.1,0.0,Ags,0.0,Lean hogs,0.0,GBP,7.5
+LIVECOW_fsb,0.5,0.0,Ags,0.0,Live cattle,0.0,GBP,10.0
+NASDAQ_fsb,0.5,0.0,Equity,0.0,US equity index Nasdaq,0.0,GBP,1.5
+NIKKEI_fsb,0.5,0.0,Equity,0.0,Nikkei 225 Index,0.0,GBP,10.0
+NZD_fsb,1.0,0.0,FX,0.0,NZDUSD currency,0.0,GBP,2.9
+OAT_fsb,0.5,0.0,Bond,0.0,French 10 year bond OAT,0.0,GBP,2.5
+OATIES_fsb,15.0,0.0,Ags,0.0,Oat Futures,0.0,GBP,2.5
+OJ_fsb,0.5,0.0,Ags,0.0,Orange Juice,0.0,GBP,20.0
+PALLAD_fsb,2.0,0.0,Metals,0.0,Palladium,0.0,GBP,5.0
+PLAT_fsb,3.0,0.0,Metals,0.0,Platinum,0.0,GBP,1.25
+RICE_fsb,0.5,0.0,Ags,0.0,Rough Rice,0.0,GBP,20.0
+RUSSELL_fsb,2.0,0.0,Equity,0.0,Russell 2000 Index,0.0,GBP,0.25
+SHATZ_fsb,0.5,0.0,Bond,0.0,German 2 year bond Schatz,0.0,GBP,0.75
+SILVER_fsb,1.0,0.0,Metals,0.0,NYMEX Silver Index,0.0,GBP,1.5
+SMI_fsb,0.5,0.0,Equity,0.0,Swiss equity index SMI,0.0,GBP,3.0
+SOYBEAN_fsb,5.0,0.0,Ags,0.0,Soybean,0.0,GBP,1.0
+SOYMEAL_fsb,0.25,0.0,Ags,0.0,Soybean meal,0.0,GBP,40.0
+SOYOIL_fsb,1.0,0.0,Ags,0.0,Soybean Oil,0.0,GBP,5.0
+SP500_fsb,1.0,0.0,Equity,0.0,US equity index S&P500,0.0,GBP,0.5
+SUGAR_fsb,2.0,0.0,Ags,0.0,Sugar New York No. 11,0.0,GBP,2.5
+SUGAR_LDN_fsb,15.0,0.0,Ags,0.0,Sugar London No. 5,0.0,GBP,0.4
+US10_fsb,0.5,0.0,Bond,0.0,US 10 year bond note,0.0,GBP,2.0
+US2_fsb,0.5,0.0,Bond,0.0,US 2 year bond note,0.0,GBP,1.0
+US30_fsb,0.5,0.0,Bond,0.0,US Ultra Treasury Bond,0.0,GBP,2.0
+US5_fsb,0.5,0.0,Bond,0.0,US 5 year bond note,0.0,GBP,1.0
+USTB_fsb,0.5,0.0,Bond,0.0,US Treasury Bond,0.0,GBP,2.0
+WHEAT_fsb,15.0,0.0,Ags,0.0,Wheat,0.0,GBP,0.5
+WHEAT_LDN_fsb,20.0,0.0,Ags,0.0,Wheat London,0.0,GBP,0.375
