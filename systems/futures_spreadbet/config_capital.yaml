@@ -1,7 +1,7 @@
 # YAML
 #forecast_post_ceiling_cost_SR: 0.13
-percentage_vol_target: 25.0
-notional_trading_capital: 50000
+percentage_vol_target: 15.0
+notional_trading_capital: 100000
 base_currency: "GBP"
 #instruments: ['GOLD','NASDAQ','NZD','BUXL']
 #instruments: ['GOLD', 'CARBON', 'BUXL', 'EUROSTX', 'LEANHOG', 'CHF', 'OJ', 'COPPER', 'RUSSELL', 'COCOA_NY', 'CRUDE_W', 'EURGBP']
@@ -32,6 +32,17 @@ base_currency: "GBP"
 #instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","LEANHOG"] #
 #instruments: ["RUSSELL","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W"] 0.4102
 #instruments: ["RUSSELL","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT"] 0.4165
+
+#instruments: ["NASDAQ","EUROSTX","NIKKEI","US30","BUXL","GILT","CAD","NZD","GBP","GOLD","CARBON","CRUDE_W","COPPER","SOYOIL"] # 0.31
+#instruments: ["NASDAQ","EUROSTX","NIKKEI","US30","BUXL","GILT","CAD","NZD","GOLD","CARBON","CRUDE_W","COPPER","SOYOIL"] # 0.34
+#instruments: ["NASDAQ","EUROSTX","US30","BUXL","CAD","NZD","GOLD","CARBON","CRUDE_W","SOYOIL"] # 0.34
+
+# fsb to match futures below
+instruments: ["NASDAQ","EUROSTX","NIKKEI","US30","BUXL","CAD","NZD","GOLD","CRUDE_W","COPPER","SOYOIL"] # 0.34
+
+# just testing futures
+#instruments: ["NASDAQ","EUROSTX","NIKKEI","US30","BUXL","CAD","NZD","GOLD","CRUDE_W","COPPER","SOYOIL"] #
+
 
 
 # all instruments with costs below 0.13

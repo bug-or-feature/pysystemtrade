@@ -33,10 +33,10 @@ def run_system():
             estimates = config_from_file("systems.futures_spreadbet.config_estimates.yaml")
             config_files.append(estimates)
         else:
-            #config_files.append("systems.futures_spreadbet.config_empty_instruments.yaml")
+            config_files.append("systems.futures_spreadbet.config_empty_instruments.yaml")
             #config_files.append("systems.futures_spreadbet.estimate_10_cheap.yaml")
             #config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
-            config_files.append("systems.futures_spreadbet.config_fsb_system_v1.yaml")
+            #config_files.append("systems.futures_spreadbet.config_fsb_system_v1.yaml")
             #config_files.append("systems.futures_spreadbet.config_fsb_system_v2.yaml")
         config = Config(config_files)
         system = fsb_system(config=config)
@@ -45,14 +45,16 @@ def run_system():
         bet_label = "BetPerPoint"
         type_label = "estimate"
     else:
-        system = futures_system()
+        config = Config(config_files)
+        system = futures_system(config=config)
         prod_label = "FUT"
         bet_label = "NumContracts"
         type_label = "normal"
 
     #curve_group = system.accounts.portfolio()
     #calc_forecasts(system)
-    stats = system.accounts.portfolio().stats()
+    portfolio = system.accounts.portfolio()
+    portfolio_percent = system.accounts.portfolio().percent
     rows = []
 
     if hasattr(system.config, "instruments"):
@@ -137,7 +139,7 @@ def run_system():
                 'Subclass': asset_subclass,
                 'Spread': spread_in_points,
                 'MinBet': min_bet_per_point,
-                'Deposit%': round(deposit_factor,2),
+                #'Deposit%': round(deposit_factor,2),
                 #'Multi': multi,
                 'Date': system.rawdata.get_daily_prices(instr).index[-1],
                 'Price': round(price, 2),
@@ -173,7 +175,8 @@ def run_system():
     write_file(results, type_label, prod_label)
 
     print(f"\nTotal capital required: £{round(total_cap_req, 2)}\n")
-    print(f"\n{stats}\n")
+    print(f"\nStats: {portfolio.stats()}\n")
+    print(f"\nStats as %: {portfolio_percent.stats()}\n")
 
     # print(system.portfolio._get_all_subsystem_positions())
     # system.accounts.portfolio().stats()  # see some statistics
@@ -185,7 +188,8 @@ def run_system():
 
     print(f"\nSharpe: {system.accounts.portfolio().sharpe()}\n")
 
-    system.accounts.portfolio().curve().plot()
+    #portfolio.curve().plot()
+    portfolio_percent.curve().plot()
     show()
 
     if do_estimate:
