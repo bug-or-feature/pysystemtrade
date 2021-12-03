@@ -5,8 +5,7 @@ from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey
 from syslogdiag.log_to_screen import logtoscreen
 from syscore.objects import arg_not_supplied, missing_data
 
-#ROLL_COLLECTION = "futures_roll_parameters"
-ROLL_COLLECTION = "fsb_roll_parameters"
+ROLL_COLLECTION = "futures_roll_parameters"
 
 
 class mongoRollParametersData(rollParametersData):
