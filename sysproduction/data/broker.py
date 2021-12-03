@@ -18,6 +18,7 @@ from sysbrokers.IG.ig_static_data import IgStaticData
 from sysbrokers.IG.ig_contract_position_data import IgContractPositionData
 from sysbrokers.IG.ig_fsb_contract_data import IgFuturesContractData
 from sysbrokers.IG.ig_orders import IgExecutionStackData
+from sysbrokers.IG.ig_futures_contract_price_data import IgFuturesContractPriceData
 
 from sysbrokers.broker_fx_handling import brokerFxHandlingData
 from sysbrokers.broker_static_data import brokerStaticData
@@ -72,7 +73,8 @@ class dataBroker(productionDataLayerGeneric):
         # TODO define this in config not code
         data.add_class_list([
             avFxPricesData,
-            BarchartFuturesContractPriceData,
+            #BarchartFuturesContractPriceData,
+            IgFuturesContractPriceData,
             #BarchartFuturesContractData,
             IgFuturesContractData,
             BarchartFuturesInstrumentData,
