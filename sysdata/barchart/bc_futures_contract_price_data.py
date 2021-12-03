@@ -116,7 +116,7 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
         return self._get_prices_at_frequency_for_contract_object_no_checking(contract_object, freq="D")
 
     def _get_prices_at_frequency_for_contract_object_no_checking(
-            self, contract_object: futuresContract, freq: str) -> futuresContractPrices:
+            self, contract_object: futuresContract, freq: Frequency) -> futuresContractPrices:
 
         """
         Get historical prices at a particular frequency
