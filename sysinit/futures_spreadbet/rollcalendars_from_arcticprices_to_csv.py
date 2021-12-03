@@ -1,8 +1,9 @@
+from syscore.genutils import true_if_answer_is_yes
 from syscore.objects import arg_not_supplied
+
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
-from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysobjects.roll_calendars import rollCalendar
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
@@ -61,14 +62,14 @@ def build_and_write_roll_calendar(
     # Will not work if an existing calendar exists
 
     if check_before_writing:
-        check_happy_to_write = input(
-            "Are you ok to write this csv to path %s/%s.csv? [might be worth writing and hacking manually] (yes/other)?" %
+        check_happy_to_write = true_if_answer_is_yes(
+            "Are you ok to write this csv to path %s/%s.csv? [might be worth writing and hacking manually]?" %
             (csv_roll_calendars.datapath, instrument_code)
         )
     else:
-        check_happy_to_write = "yes"
+        check_happy_to_write = True
 
-    if check_happy_to_write == "yes":
+    if check_happy_to_write:
         print("Adding roll calendar")
         csv_roll_calendars.add_roll_calendar(instrument_code, roll_calendar, ignore_duplication=True)
     else:
@@ -117,8 +118,23 @@ if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     #instrument_code = get_valid_instrument_code_from_user(source='single')
 
-    instrument_code = "STERLING3"
-    ## MODIFY DATAPATH IF REQUIRED
+    # instrument_code = "GOLD_fsb"
+    # instrument_code = "NASDAQ_fsb"
+    # instrument_code = "BUXL_fsb"
+    # instrument_code = "CARBON_fsb"
+    # instrument_code = "EUROSTX_fsb"
+    # instrument_code = "NIKKEI_fsb"
+    # instrument_code = "US30_fsb"
+    # instrument_code = "DAX_fsb"
+    # instrument_code = "HANG_fsb"
+    # instrument_code = "NZD_fsb"
+    # instrument_code = "CAD_fsb"
+    # instrument_code = "SOYOIL_fsb"
+    # instrument_code = "GILT_fsb" # maybe dodgy
+
+    instrument_code = "CRUDE_W_fsb"
+
+    # MODIFY DATAPATH IF REQUIRED
 
     build_and_write_roll_calendar(
         instrument_code,

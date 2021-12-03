@@ -85,18 +85,23 @@ def process_multiple_prices_single_instrument(
         csv_multiple_prices,
     ) = _get_data_inputs(csv_roll_data_path, csv_multiple_data_path)
 
-    roll_calendar = csv_roll_calendars.get_roll_calendar(instrument_code)
-    if adjust_calendar_to_prices:
-        roll_calendar = adjust_roll_calendar(instrument_code, roll_calendar)
-
     dict_of_futures_contract_prices = (
         arctic_individual_futures_prices.get_all_prices_for_instrument(instrument_code))
     dict_of_futures_contract_closing_prices = (
         dict_of_futures_contract_prices.final_prices()
     )
 
+    roll_calendar = csv_roll_calendars.get_roll_calendar(instrument_code)
+
+    # Add first phantom row so that the last calendar entry won't be consumed by adjust_roll_calendar()
     m = mongoRollParametersData()
     roll_parameters = m.get_roll_parameters(instrument_code)
+    roll_calendar = add_phantom_row(roll_calendar, dict_of_futures_contract_closing_prices, roll_parameters)
+
+    if adjust_calendar_to_prices:
+        roll_calendar = adjust_roll_calendar(instrument_code, roll_calendar)
+
+    # Second phantom row is needed in order to process the whole set of closing prices (and not stop after the last roll-over)
     roll_calendar = add_phantom_row(roll_calendar, dict_of_futures_contract_closing_prices, roll_parameters)
 
     multiple_prices = futuresMultiplePrices.create_from_raw_data(
@@ -121,8 +126,8 @@ def adjust_roll_calendar(instrument_code, roll_calendar):
     arctic_prices_per_contract = arcticFuturesContractPriceData()
     print("Getting prices to adjust roll calendar")
     dict_of_prices = arctic_prices_per_contract.get_all_prices_for_instrument(instrument_code)
-    final_prices = dict_of_prices.final_prices()
-    roll_calendar = adjust_to_price_series(roll_calendar, final_prices)
+    dict_of_futures_contract_prices = dict_of_prices.final_prices()
+    roll_calendar = adjust_to_price_series(roll_calendar, dict_of_futures_contract_prices)
 
     return roll_calendar
 

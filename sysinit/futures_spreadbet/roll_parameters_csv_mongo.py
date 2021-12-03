@@ -1,5 +1,5 @@
 """
-Populate a mongo DB collection with roll data from a csv
+Populate a mongo DB collection with futures spreadbet roll data from a csv file
 """
 
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
@@ -9,7 +9,7 @@ if __name__ == "__main__":
     input("Will overwrite existing data are you sure?! CTL-C to abort")
     # modify flags as required
 
-    data_out = mongoRollParametersData(collection_name='fsb_roll_parameters')
+    data_out = mongoRollParametersData()
     data_in = csvRollParametersData(datapath="data.futures_spreadbet.csvconfig.")
 
     instrument_list = data_in.get_list_of_instruments()
