@@ -75,11 +75,11 @@ class TestBarchart:
     def test_config(self):
         bc_futures_instr = BarchartFuturesInstrumentData()
 
-        assert len(bc_futures_instr.get_list_of_instruments()) == 72
-
         assert bc_futures_instr.get_brokers_instrument_code('GOLD') == 'GC'
+        assert bc_futures_instr.get_brokers_instrument_code('GOLD_fsb') == 'GC'
         assert bc_futures_instr.get_brokers_instrument_code('COPPER') == 'HG'
         assert bc_futures_instr.get_brokers_instrument_code('EUROSTX') == 'FX'
+        assert bc_futures_instr.get_brokers_instrument_code('EUROSTX_fsb') == 'FX'
         assert bc_futures_instr.get_brokers_instrument_code('PALLAD') == 'PA'
         with pytest.raises(Exception):
             bc_futures_instr.get_brokers_instrument_code('ABC')
