@@ -130,7 +130,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             # sometimes the IG epics for info and historical prices don't match. the logic here attempts to
             # prevent that scenario from messing up the data
             last_df_date = prices_df.index[-1]
-            hist_diff = abs((last_df_date - end_date).days)
+            hist_diff = abs((last_df_date - datetime.now()).days)
             if hist_diff <= 3:
                 self.log.msg(f"Found {prices_df.shape[0]} rows of data")
                 price_data = futuresContractPrices(prices_df)
