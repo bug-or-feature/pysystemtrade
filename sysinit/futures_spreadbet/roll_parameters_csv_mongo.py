@@ -1,16 +1,25 @@
 """
 Populate a mongo DB collection with futures spreadbet roll data from a csv file
 """
-
+import sys
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
-from sysdata.csv.csv_roll_parameters import csvRollParametersData
+from sysdata.csv.csv_roll_parameters import csvRollParametersData, ROLLS_CONFIG_FILE
+
+args = None
+if len(sys.argv) > 1:
+    args = sys.argv[1]
+
+if args is not None:
+    file_name = sys.argv[1]
+else:
+    file_name = ROLLS_CONFIG_FILE
 
 if __name__ == "__main__":
     input("Will overwrite existing data are you sure?! CTL-C to abort")
     # modify flags as required
 
     data_out = mongoRollParametersData()
-    data_in = csvRollParametersData(datapath="data.futures_spreadbet.csvconfig.")
+    data_in = csvRollParametersData(datapath="data.futures_spreadbet.csvconfig", datafile=file_name)
 
     instrument_list = data_in.get_list_of_instruments()
 

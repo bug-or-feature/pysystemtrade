@@ -1,15 +1,25 @@
 """
 Populate a mongo DB collection with futures spreadbet instrument data from CSV
 """
-
+import sys
 from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 
-INSTRUMENT_CONFIG_PATH = "data.futures_spreadbet.csvconfig"
+DEFAULT_CONFIG_PATH = "data.futures_spreadbet.csvconfig"
+DEFAULT_CONFIG_FILE = "instrumentconfig.csv"
+
+args = None
+if len(sys.argv) > 1:
+    args = sys.argv[1]
+
+if args is not None:
+    file_name = sys.argv[1]
+else:
+    file_name = DEFAULT_CONFIG_FILE
+
 
 data_out = mongoFuturesInstrumentData()
-#data_in = csvFuturesInstrumentData(datapath=INSTRUMENT_CONFIG_PATH, datafile='instrumentconfig.csv')
-data_in = csvFuturesInstrumentData(datapath=INSTRUMENT_CONFIG_PATH, datafile='instrumentconfig_futures.csv')
+data_in = csvFuturesInstrumentData(datapath=DEFAULT_CONFIG_PATH, datafile=file_name)
 print(data_in)
 instrument_list = data_in.get_list_of_instruments()
 
