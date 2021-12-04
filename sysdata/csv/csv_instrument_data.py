@@ -17,13 +17,18 @@ class csvFuturesInstrumentData(futuresInstrumentData):
 
     def __init__(
         self,
-        datapath=INSTRUMENT_CONFIG_PATH,
-        datafile=CONFIG_FILE_NAME,
+        datapath=arg_not_supplied,
+        filename=arg_not_supplied,
         log=logtoscreen("csvFuturesInstrumentData"),
     ):
 
         super().__init__(log=log)
-        config_file = get_filename_for_package(datapath, datafile)
+
+        if datapath is arg_not_supplied:
+            datapath = INSTRUMENT_CONFIG_PATH
+        if filename is arg_not_supplied:
+            filename = CONFIG_FILE_NAME
+        config_file = get_filename_for_package(datapath, filename)
         self._config_file = config_file
 
     @property
