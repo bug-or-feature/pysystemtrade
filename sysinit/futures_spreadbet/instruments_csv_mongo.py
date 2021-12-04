@@ -8,7 +8,8 @@ from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 INSTRUMENT_CONFIG_PATH = "data.futures_spreadbet.csvconfig"
 
 data_out = mongoFuturesInstrumentData()
-data_in = csvFuturesInstrumentData(datapath=INSTRUMENT_CONFIG_PATH)
+#data_in = csvFuturesInstrumentData(datapath=INSTRUMENT_CONFIG_PATH, datafile='instrumentconfig.csv')
+data_in = csvFuturesInstrumentData(datapath=INSTRUMENT_CONFIG_PATH, datafile='instrumentconfig_futures.csv')
 print(data_in)
 instrument_list = data_in.get_list_of_instruments()
 
