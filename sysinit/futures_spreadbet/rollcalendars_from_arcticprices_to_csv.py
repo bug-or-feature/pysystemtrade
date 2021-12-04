@@ -116,23 +116,7 @@ def check_saved_roll_calendar(
 
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    #instrument_code = get_valid_instrument_code_from_user(source='single')
-
-    # instrument_code = "GOLD_fsb"
-    # instrument_code = "NASDAQ_fsb"
-    # instrument_code = "BUXL_fsb"
-    # instrument_code = "CARBON_fsb"
-    # instrument_code = "EUROSTX_fsb"
-    # instrument_code = "NIKKEI_fsb"
-    # instrument_code = "US30_fsb"
-    # instrument_code = "DAX_fsb"
-    # instrument_code = "HANG_fsb"
-    # instrument_code = "NZD_fsb"
-    # instrument_code = "CAD_fsb"
-    # instrument_code = "SOYOIL_fsb"
-    # instrument_code = "GILT_fsb" # maybe dodgy
-
-    instrument_code = "CRUDE_W_fsb"
+    instrument_code = get_valid_instrument_code_from_user(source='single')
 
     # MODIFY DATAPATH IF REQUIRED
 
