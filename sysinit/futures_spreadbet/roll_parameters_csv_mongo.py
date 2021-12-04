@@ -19,7 +19,7 @@ if __name__ == "__main__":
     # modify flags as required
 
     data_out = mongoRollParametersData()
-    data_in = csvRollParametersData(datapath="data.futures_spreadbet.csvconfig", datafile=file_name)
+    data_in = csvRollParametersData(datapath="data.futures_spreadbet.csvconfig", filename=file_name)
 
     instrument_list = data_in.get_list_of_instruments()
 
