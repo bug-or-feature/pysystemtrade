@@ -16,6 +16,15 @@ import yaml
 FULL_ESTIMATES_ATTRS = ['forecast_scalars', 'forecast_weights', 'forecast_div_multiplier', 'forecast_mapping', 'instrument_weights', 'instrument_div_multiplier']
 SLIM_ESTIMATES_ATTRS = ['instrument_weights', 'instrument_div_multiplier']
 
+DEPOSIT_FACTOR_MAP = {
+    'Equity': 0.1,
+    'Bond': 0.2,
+    'FX': 0.05,
+    'Metals': 0.1,
+    'OilGas': 0.1,
+    'Ags': 0.1,
+}
+
 def run_system():
 
     do_fsb = True
@@ -33,10 +42,10 @@ def run_system():
             estimates = config_from_file("systems.futures_spreadbet.config_estimates.yaml")
             config_files.append(estimates)
         else:
-            config_files.append("systems.futures_spreadbet.config_empty_instruments.yaml")
+            #config_files.append("systems.futures_spreadbet.config_empty_instruments.yaml")
             #config_files.append("systems.futures_spreadbet.estimate_10_cheap.yaml")
             #config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
-            #config_files.append("systems.futures_spreadbet.config_fsb_system_v1.yaml")
+            config_files.append("systems.futures_spreadbet.config_fsb_system_v1.yaml")
             #config_files.append("systems.futures_spreadbet.config_fsb_system_v2.yaml")
         config = Config(config_files)
         system = fsb_system(config=config)
@@ -75,11 +84,12 @@ def run_system():
         min_bet_per_point = instr_obj.meta_data.Pointsize
         #multi = instr_obj.meta_data.Multiplier
         if do_fsb:
-            deposit_factor = instr_obj.meta_data.Margin
-            asset_subclass = instr_obj.meta_data.AssetSubclass
+            #deposit_factor = instr_obj.meta_data.Margin
+            deposit_factor = DEPOSIT_FACTOR_MAP[asset_class]
+            #asset_subclass = instr_obj.meta_data.AssetSubclass
         else:
             deposit_factor = "n/a"
-            asset_subclass = "n/a"
+            #asset_subclass = "n/a"
 
         # price
         price = system.rawdata.get_daily_prices(instr).iloc[-1]
@@ -97,9 +107,6 @@ def run_system():
         instr_val_vol = system.positionSize.get_instrument_value_vol(instr).iloc[-1]
         vol_scalar = system.positionSize.get_volatility_scalar(instr).iloc[-1]
         subsys_pos = system.positionSize.get_subsystem_position(instr).iloc[-1]
-
-        # sharpe
-        #sharpe = curve_group[instr].annual.sharpe()
 
         # portfolio
         pos_at_5 = calc_pos_for_fc(system, instr, 5.0)
@@ -120,7 +127,8 @@ def run_system():
         turnover = system.accounts.subsystem_turnover(instr)
         total_costs = system.accounts.get_SR_cost_given_turnover(instr, turnover)
         pandl = system.accounts.pandl_for_subsystem(instr)
-        #acc_curve_group = system.accounts.portfolio()
+        sharpe = portfolio[instr].annual.sharpe()
+        costs_as_percent = (total_costs / sharpe) * 100
 
         buffers = system.portfolio.get_buffers_for_position(instr)
         lower_buffer = buffers.iloc[-1].bot_pos
@@ -136,18 +144,22 @@ def run_system():
             {
                 'Instr': instr,
                 'Class': asset_class,
-                'Subclass': asset_subclass,
+                #'Subclass': asset_subclass,
                 'Spread': spread_in_points,
                 'MinBet': min_bet_per_point,
                 #'Deposit%': round(deposit_factor,2),
                 #'Multi': multi,
-                'Date': system.rawdata.get_daily_prices(instr).index[-1],
+                'Date start': system.rawdata.get_daily_prices(instr).index[0],
+                'Date end': system.rawdata.get_daily_prices(instr).index[-1],
                 'Price': round(price, 2),
                 'DailyVol%': round(system.rawdata.get_daily_percentage_volatility(instr).iloc[-1], 4),
                 'AnnVol%': round(system.rawdata.get_daily_percentage_volatility(instr).iloc[-1] * 16, 2),
                 'Turnover': round(turnover, 2),
+                'Sharpe': round(sharpe, 2),
                 'Costs': round(total_costs, 3),
-                #'Sharpe': round(sharpe, 2),
+                'Costs as %': round(costs_as_percent, 0),
+                #'P&L': round(pandl, 2),
+
 
                 'Forecast': round(comb_fc, 2),
                 'BlockVal': round(block_val, 2),
