@@ -54,7 +54,9 @@ class ConnectionIG(object):
         data = ig_service.fetch_accounts()
         data = data.loc[data["accountId"] == account]
         #data = data.loc[data["accountType"] == "SPREADBET"]
-        capital = float(data["balance"].loc[1])
+        balance = float(data["balance"].loc[1])
+        profitLoss = float(data["profitLoss"].loc[1])
+        capital = balance + profitLoss
         ig_service.logout()
 
         return capital
