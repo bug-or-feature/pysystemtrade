@@ -1,6 +1,5 @@
 
 from sysbrokers.IG.ig_connection import ConnectionIG
-from sysbrokers.IG.client.ig_accounting_client import IgAccountingClient
 from sysbrokers.broker_capital_data import brokerCapitalData
 
 from syscore.objects import arg_not_supplied
