@@ -116,9 +116,42 @@ def check_saved_roll_calendar(
 
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    instrument_code = get_valid_instrument_code_from_user(source='single')
+    #instrument_code = get_valid_instrument_code_from_user(source='single')
 
     # MODIFY DATAPATH IF REQUIRED
+    # instrument_code = 'COFFEE_fsb' x
+    # instrument_code = 'US10_fsb' x
+    # instrument_code = 'ASX_fsb' x
+    # instrument_code = 'EUR_fsb' x
+    # instrument_code = 'US5_fsb' x
+    # instrument_code = 'AEX_fsb' x
+    # instrument_code = 'DOLLAR_fsb' x
+    # instrument_code = 'PALLAD_fsb' x
+    # instrument_code = 'GASOLINE_fsb' x
+    # instrument_code = 'LIVECOW_fsb' x
+    # instrument_code = 'HEATOIL_fsb' x
+
+    # instrument_code = 'COPPER_fsb' # FAIL
+
+    # COTTON_fsb
+    # BTP_fsb
+    # CAC_fsb
+    # CHF_fsb
+    # PLAT_fsb
+    # GAS_US_fsb
+    # LEANHOG_fsb
+    # OAT_fsb
+    # FTSE_fsb
+    # JPY_fsb
+    # SILVER_fsb
+    # SOYMEAL_fsb
+    # JGB_fsb
+    # RUSSELL_fsb
+    # RICE_fsb
+    # COCOA_LDN_fsb
+    # OJ_fsb
+
+
 
     build_and_write_roll_calendar(
         instrument_code,
@@ -135,7 +168,7 @@ if __name__ == "__main__":
     # need further downloads due to missing data
     # SUGAR
 
-    # need to redownload, not enough overlap or due to roll cycle
+    # need to redownload
     # SUGAR_LDN
 
     # No september contracts available on BC since 2005

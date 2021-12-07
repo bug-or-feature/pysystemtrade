@@ -105,8 +105,9 @@ if __name__ == "__main__":
 
     #transfer_barchart_prices_to_arctic_single('NASDAQ_fsb', datapath)
 
-    #for instr in ["GOLD_fsb"]:
+    #for instr in ["LIVECOW_fsb"]:
     #for instr in ["BUXL_fsb", "CAD_fsb", "CARBON_fsb", "CRUDE_W_fsb", "DAX_fsb", "EUROSTX_fsb", "GILT_fsb", "HANG_fsb", "NIKKEI_fsb", "NZD_fsb", "SOYOIL_fsb", "US30_fsb"]:
+    #for instr in ['COFFEE_fsb','US10_fsb', 'ASX_fsb','EUR_fsb','COPPER_fsb','HEATOIL_fsb','LIVECOW_fsb','US5_fsb','AEX_fsb','DOLLAR_fsb','PALLAD_fsb','GASOLINE_fsb']:
     #    transfer_barchart_prices_to_arctic_single(instr, datapath)
 
     #for instr in ["US30", "USTB", "EURIBOR", "STERLING3", "EURGBP", "JGB", "CAD", "CHF", "DOLLAR", "BRENT_W", "GASOLINE", "HEATOIL", "GASOIL_LDN"]:
@@ -133,4 +134,4 @@ if __name__ == "__main__":
     #for contract_date in ['20110600', '20220200','20220400','20220600', ]:
     #    transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)
 
-    transfer_barchart_prices_to_arctic_single_contract('GILT_fsb', '20210900', datapath)
+    transfer_barchart_prices_to_arctic_single_contract('COPPER_fsb', '20210700', datapath)
