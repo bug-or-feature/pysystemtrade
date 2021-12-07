@@ -68,7 +68,7 @@ def show_optimals():
         if instr_code in MIN_BET_DEMO_OVERRIDES:
             min_bet = MIN_BET_DEMO_OVERRIDES[instr_code]
         delta = expiry - now
-        futures_price = data.db_futures_adjusted_prices.get_adjusted_prices(instr_code).values[-1]
+        price = data.db_futures_adjusted_prices.get_adjusted_prices(instr_code).values[-1]
         price_date = data.db_futures_adjusted_prices.get_adjusted_prices(instr_code).index[-1]
 
         if pos < lower:
@@ -86,7 +86,7 @@ def show_optimals():
         rows.append(
             {
                 'Instr': instr_code,
-                'Futures price': round(futures_price, 2),
+                'Price': round(price, 2),
                 'Price date': price_date.strftime('%Y-%m-%d %H:%M:%S'),
                 'Contract expiry': f"{expiry.strftime('%Y-%m-%d')} ({delta.days})",
                 #'FSB price': fsb_price,
