@@ -29,6 +29,8 @@ class BarchartFuturesInstrumentData(brokerFuturesInstrumentData):
         return "Barchart Futures per contract data"
 
     def get_brokers_instrument_code(self, instrument_code: str) -> str:
+        if instrument_code.endswith('_fsb'):
+            instrument_code = instrument_code[:-4]
         bc_futures_instrument = self.get_bc_futures_instrument(instrument_code)
         return bc_futures_instrument.bc_symbol
 
