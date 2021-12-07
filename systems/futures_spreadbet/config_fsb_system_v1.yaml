@@ -78,18 +78,18 @@ forecast_weights:
      carry: 0.50
 forecast_div_multiplier: 1.31
 
-instrument_div_multiplier: 2.22
-instrument_weights:
-  BUXL: 0.11
-  CARBON: 0.10
-  CRUDE_W: 0.10
-  DAX: 0.06
-  EUROSTX: 0.06
-  GILT: 0.076
-  GOLD: 0.15
-  HANG: 0.18
-  NASDAQ: 0.11
-  US30: 0.07
+instrument_div_multiplier: 2.5
+#instrument_weights:
+#  BUXL_fsb: 0.11
+#  CARBON_fsb: 0.10
+#  CRUDE_W_fsb: 0.10
+#  DAX_fsb: 0.06
+#  EUROSTX_fsb: 0.06
+#  GILT_fsb: 0.076
+#  GOLD_fsb: 0.15
+#  HANG_fsb: 0.18
+#  NASDAQ_fsb: 0.11
+#  US30_fsb: 0.07
 
 #ignore_instruments:
 
