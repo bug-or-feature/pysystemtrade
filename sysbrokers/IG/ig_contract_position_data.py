@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from sysbrokers.IG.client.ig_positions_client import IgPositionsClient
 from sysbrokers.IG.ig_connection import ConnectionIG
 from sysbrokers.IG.ig_instruments_data import IgFsbInstrumentData
+from sysbrokers.IG.ig_positions import from_ig_positions_to_dict
 from sysbrokers.broker_contract_position_data import brokerContractPositionData
 from syscore.objects import arg_not_supplied, missing_contract
 from sysdata.futures.contracts import futuresContractData
@@ -25,17 +25,9 @@ class IgContractPositionData(brokerContractPositionData):
     def igconnection(self) -> ConnectionIG:
         return self._igconnection
 
-    @property
-    def ig_client(self) -> IgPositionsClient:
-        client = getattr(self, "_ig_client", None)
-        if client is None:
-            client = IgPositionsClient(igconnection=self.igconnection,
-                                                   log = self.log)
-        return client
-
     def __repr__(self):
         return "IG Futures per contract position data %s" % str(
-            self.ig_client)
+            self.igconnection)
 
     @property
     def contract_data(self) -> futuresContractData:
@@ -83,8 +75,11 @@ class IgContractPositionData(brokerContractPositionData):
         return actual_expiry.strftime('%Y%m%d')
 
     def _get_all_futures_positions_as_raw_list(self, account_id: str = arg_not_supplied) -> list:
-        all_positions = self.ig_client.broker_get_positions(account_id=account_id)
-        positions = all_positions.get("FSB", [])
+        raw_positions = self.igconnection.get_positions()
+        dict_of_positions = from_ig_positions_to_dict(
+            raw_positions, account_id=account_id
+        )
+        positions = dict_of_positions.get("FSB", [])
 
         return positions
 

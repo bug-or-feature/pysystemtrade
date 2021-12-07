@@ -6,7 +6,7 @@ from sysbrokers.broker_capital_data import brokerCapitalData
 from syscore.objects import arg_not_supplied
 from sysdata.production.timed_storage import classStrWithListOfEntriesAsListOfDicts
 
-from sysobjects.spot_fx_prices import listOfCurrencyValues
+from sysobjects.spot_fx_prices import currencyValue, listOfCurrencyValues
 
 from syslogdiag.logger import logger
 from syslogdiag.log_to_screen import logtoscreen
@@ -21,19 +21,15 @@ class IgCapitalData(brokerCapitalData):
     def igconnection(self) -> ConnectionIG:
         return self._igconnection
 
-    @property
-    def ig_client(self) -> IgAccountingClient:
-        client = getattr(self, "_ig_client", None)
-        if client is None:
-            client = self._ig_client = IgAccountingClient(igconnection=self.igconnection, log = self.log)
-        return client
-
     def __repr__(self):
         return "IG capital data"
 
     def get_account_value_across_currency(self, account_id: str = arg_not_supplied) -> listOfCurrencyValues:
-        acc_val = self.ig_client.broker_get_account_value_across_currency(account_id=account_id)
-        return acc_val
+        list_of_values_per_currency = list(
+            [currencyValue(currency, self.igconnection.get_capital(account_id)) for currency in ["GBP"]]
+        )
+        list_of_values_per_currency = listOfCurrencyValues(list_of_values_per_currency)
+        return list_of_values_per_currency
 
     def _get_series_dict_with_data_class_for_args_dict(self, args_dict: dict) -> classStrWithListOfEntriesAsListOfDicts:
         pass
