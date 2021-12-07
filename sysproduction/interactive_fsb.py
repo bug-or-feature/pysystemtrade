@@ -4,7 +4,7 @@ import datetime
 
 from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
-from sysdata.mongodb.mongo_fsb_instruments import mongoFsbInstrumentData
+from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
 from sysexecution.strategies.classic_buffered_positions import orderGeneratorForBufferedPositions
@@ -27,7 +27,7 @@ def hello():
 def show_optimals():
 
     data = dataBlob()
-    data.add_class_object(mongoFsbInstrumentData)
+    data.add_class_object(mongoFuturesInstrumentData)
     data.add_class_object(mongoFuturesContractData)
     data.add_class_object(arcticFuturesAdjustedPricesData)
     broker = dataBroker(data=data)
@@ -63,7 +63,7 @@ def show_optimals():
 
         lower = round(lower_positions[instr_code], 2)
         upper = round(upper_positions[instr_code], 2)
-        instr_data = data.db_fsb_instrument.get_instrument_data(instr_code)
+        instr_data = data.db_futures_instrument.get_instrument_data(instr_code)
         min_bet = instr_data.as_dict()['Pointsize']
         if instr_code in MIN_BET_DEMO_OVERRIDES:
             min_bet = MIN_BET_DEMO_OVERRIDES[instr_code]
