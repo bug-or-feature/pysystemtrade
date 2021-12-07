@@ -21,7 +21,7 @@ from sysproduction.data.currency_data import dataCurrency
 from sysproduction.data.capital import dataCapital
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.positions import dataOptimalPositions
-from sysproduction.data.sim_fsb_data import get_sim_fsb_data_object_for_production
+from sysproduction.data.sim_data import get_sim_data_object_for_production
 
 from sysproduction.data.backtest import store_backtest_state
 
@@ -109,7 +109,7 @@ def production_classic_fsb_system(
 
     log_level = "on"
 
-    sim_data = get_sim_fsb_data_object_for_production(data)
+    sim_data = get_sim_data_object_for_production(data)
     config = set_up_config(data, config_filename)
 
     # Overwrite capital and base currency
