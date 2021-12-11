@@ -7,7 +7,9 @@ from sysdata.arctic.arctic_futures_per_contract_prices import (
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysobjects.roll_calendars import rollCalendar
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
+from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysproduction.data.prices import get_valid_instrument_code_from_user
+from syscore.pdutils import print_full
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
@@ -113,9 +115,27 @@ def check_saved_roll_calendar(
 
     return roll_calendar
 
+def show_expected_rolls_for_config(
+    instrument_code, input_datapath=arg_not_supplied, input_prices=arg_not_supplied
+):
+
+    rollparameters = csvRollParametersData(
+        datapath='data.futures_spreadbet.csvconfig',
+        filename='fsb_roll_config.csv')
+    roll_parameters_object = rollparameters.get_roll_parameters(instrument_code)
+    prices = arcticFuturesContractPriceData()
+    dict_of_all_futures_contract_prices = prices.get_all_prices_for_instrument(instrument_code)
+    dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
+    approx_roll_calendar = rollCalendar.create_approx_from_prices(
+        dict_of_futures_contract_prices, roll_parameters_object
+    )
+
+    print_full(approx_roll_calendar.tail(20))
+
+
 
 if __name__ == "__main__":
-    input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
     #instrument_code = get_valid_instrument_code_from_user(source='single')
 
     # MODIFY DATAPATH IF REQUIRED
@@ -153,9 +173,9 @@ if __name__ == "__main__":
 
 
 
-    build_and_write_roll_calendar(
-        instrument_code,
-        output_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_spreadbet/roll_calendars_csv')
+    # build_and_write_roll_calendar(
+    #     instrument_code,
+    #     output_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_spreadbet/roll_calendars_csv')
 
     # check_saved_roll_calendar("AUD",
     #     #input_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_bc/roll_calendars_csv',
@@ -174,5 +194,5 @@ if __name__ == "__main__":
     # No september contracts available on BC since 2005
     # WHEAT_LDN
 
-
+    show_expected_rolls_for_config(instrument_code='NASDAQ_fsb')
 
