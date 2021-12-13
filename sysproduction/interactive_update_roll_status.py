@@ -78,7 +78,7 @@ def get_rolling_master_function():
 class RollDataWithStateReporting(object):
     instrument_code: str
     original_roll_status: RollState
-    position_priced_contract: float # TODO AG position int -> float
+    position_priced_contract: float  # TODO AG position int -> float
     allowable_roll_states_as_list_of_str: list
     days_until_roll: int
     relative_volume: float
@@ -430,7 +430,7 @@ def setup_roll_data_with_state_reporting(
 
     contract = futuresContract(instrument_code, priced_contract_date)
 
-    #position_priced_contract = int(diag_positions.get_position_for_contract(contract))
+    # position_priced_contract = int(diag_positions.get_position_for_contract(contract))
     # TODO AG int -> float
     position_priced_contract = diag_positions.get_position_for_contract(contract)
 

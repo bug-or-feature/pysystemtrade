@@ -112,7 +112,7 @@ def _create_approx_calendar_from_earliest_contract(
 
         roll_calendar_as_list.append(new_row)
         current_contract = copy(next_contract)
-        #print(current_contract)
+        # print(current_contract)
 
     roll_calendar = roll_calendar_as_list.to_pd_df()
 
@@ -209,7 +209,7 @@ def adjust_to_price_series(
             # without requiring prices for carry contracts to be available (Even though carry
             # contract is present the price  might not necessarily be available on otherwise
             # suitable roll dates)
-            #_print_roll_date_carry_warning(local_row_data)
+            # _print_roll_date_carry_warning(local_row_data)
             adjusted_row = _adjust_row_of_approx_roll_calendar(
                 local_row_data, dict_of_futures_contract_prices, omit_carry=True
             )
@@ -450,6 +450,7 @@ def _find_best_matching_roll_date(
     adjusted_date = _find_closest_valid_date_to_approx_roll_date(valid_dates, roll_date)
 
     return adjusted_date
+
 
 # TODO ageach this is the function that puts possible sync dates side by
 # TODO side in a data frame

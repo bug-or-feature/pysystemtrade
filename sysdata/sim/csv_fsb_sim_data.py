@@ -17,13 +17,20 @@ class csvFsbSimData(genericBlobUsingFuturesSimData):
     """
     Uses default paths for .csv files, pass in dict of csv_data_paths to modify
     """
-    def __init__(self, csv_data_paths=arg_not_supplied, log=logtoscreen("csvFsbSimData")):
-        data = dataBlob(log=log,
-                        csv_data_paths=csv_data_paths,
-                        class_list=[csvFuturesAdjustedPricesData,
-                                    csvFuturesMultiplePricesData,
-                                    CsvFsbInstrumentData,
-                                    csvFxPricesData])
+
+    def __init__(
+        self, csv_data_paths=arg_not_supplied, log=logtoscreen("csvFsbSimData")
+    ):
+        data = dataBlob(
+            log=log,
+            csv_data_paths=csv_data_paths,
+            class_list=[
+                csvFuturesAdjustedPricesData,
+                csvFuturesMultiplePricesData,
+                CsvFsbInstrumentData,
+                csvFxPricesData,
+            ],
+        )
 
         super().__init__(data=data)
 

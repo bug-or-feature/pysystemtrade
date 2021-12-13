@@ -81,9 +81,9 @@ class rollCalendar(pd.DataFrame):
 
     @classmethod
     def create_approx_from_prices(
-            rollCalendar,
-            dict_of_futures_contract_prices: dictFuturesContractFinalPrices,
-            roll_parameters_object: rollParameters
+        rollCalendar,
+        dict_of_futures_contract_prices: dictFuturesContractFinalPrices,
+        roll_parameters_object: rollParameters,
     ):
         """
         :param dict_of_futures_contract_prices: dict, keys are contract date ids 'yyyymmdd'

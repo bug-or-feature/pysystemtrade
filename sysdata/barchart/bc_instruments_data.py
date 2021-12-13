@@ -8,7 +8,8 @@ from syscore.objects import missing_instrument, missing_file
 from sysdata.barchart.bc_instruments import BcInstrumentConfigData, BcFuturesInstrument
 
 BC_FUTURES_CONFIG_FILE = get_filename_for_package(
-    "sysdata.barchart.bc_config_futures.csv")
+    "sysdata.barchart.bc_config_futures.csv"
+)
 
 
 class BarchartConfig(pd.DataFrame):
@@ -21,7 +22,6 @@ def read_bc_config_from_file() -> BarchartConfig:
 
 
 class BarchartFuturesInstrumentData(brokerFuturesInstrumentData):
-
     def __init__(self, log=logtoscreen("bcFuturesInstrumentData")):
         super().__init__(log=log)
 
@@ -29,7 +29,7 @@ class BarchartFuturesInstrumentData(brokerFuturesInstrumentData):
         return "Barchart Futures per contract data"
 
     def get_brokers_instrument_code(self, instrument_code: str) -> str:
-        if instrument_code.endswith('_fsb'):
+        if instrument_code.endswith("_fsb"):
             instrument_code = instrument_code[:-4]
         bc_futures_instrument = self.get_bc_futures_instrument(instrument_code)
         return bc_futures_instrument.bc_symbol
@@ -64,12 +64,12 @@ class BarchartFuturesInstrumentData(brokerFuturesInstrumentData):
 
         config = self._get_bc_config()
         if config is missing_file:
-            new_log.warn(f"Can't get config for instrument {instr_code} as BC config file missing")
+            new_log.warn(
+                f"Can't get config for instrument {instr_code} as BC config file missing"
+            )
             return missing_instrument
 
-        instrument_object = get_instrument_object_from_config(
-            instr_code, config=config
-        )
+        instrument_object = get_instrument_object_from_config(instr_code, config=config)
 
         return instrument_object
 
@@ -112,15 +112,20 @@ class BarchartFuturesInstrumentData(brokerFuturesInstrumentData):
 
         return config_data
 
-    def _delete_instrument_data_without_any_warning_be_careful(self, instrument_code: str):
+    def _delete_instrument_data_without_any_warning_be_careful(
+        self, instrument_code: str
+    ):
         raise NotImplementedError("BC instrument config is read only")
 
-    def _add_instrument_data_without_checking_for_existing_entry(self, instrument_object):
+    def _add_instrument_data_without_checking_for_existing_entry(
+        self, instrument_object
+    ):
         raise NotImplementedError("BC instrument config is read only")
 
 
 def get_instrument_object_from_config(
-        instr_code: str, config: BarchartConfig = None) -> BcFuturesInstrument:
+    instr_code: str, config: BarchartConfig = None
+) -> BcFuturesInstrument:
 
     if config is None:
         config = read_bc_config_from_file()

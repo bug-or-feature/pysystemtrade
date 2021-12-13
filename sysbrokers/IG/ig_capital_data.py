@@ -1,4 +1,3 @@
-
 from sysbrokers.IG.ig_connection import ConnectionIG
 from sysbrokers.broker_capital_data import brokerCapitalData
 
@@ -23,20 +22,29 @@ class IgCapitalData(brokerCapitalData):
     def __repr__(self):
         return "IG capital data"
 
-    def get_account_value_across_currency(self, account_id: str = arg_not_supplied) -> listOfCurrencyValues:
+    def get_account_value_across_currency(
+        self, account_id: str = arg_not_supplied
+    ) -> listOfCurrencyValues:
         list_of_values_per_currency = list(
-            [currencyValue(currency, self.igconnection.get_capital(account_id)) for currency in ["GBP"]]
+            [
+                currencyValue(currency, self.igconnection.get_capital(account_id))
+                for currency in ["GBP"]
+            ]
         )
         list_of_values_per_currency = listOfCurrencyValues(list_of_values_per_currency)
         return list_of_values_per_currency
 
-    def _get_series_dict_with_data_class_for_args_dict(self, args_dict: dict) -> classStrWithListOfEntriesAsListOfDicts:
+    def _get_series_dict_with_data_class_for_args_dict(
+        self, args_dict: dict
+    ) -> classStrWithListOfEntriesAsListOfDicts:
         pass
 
-    def _write_series_dict_for_args_dict(self, args_dict: dict,
-            class_str_with_series_as_list_of_dicts: classStrWithListOfEntriesAsListOfDicts):
+    def _write_series_dict_for_args_dict(
+        self,
+        args_dict: dict,
+        class_str_with_series_as_list_of_dicts: classStrWithListOfEntriesAsListOfDicts,
+    ):
         pass
 
     def _get_list_of_args_dict(self) -> list:
         pass
-

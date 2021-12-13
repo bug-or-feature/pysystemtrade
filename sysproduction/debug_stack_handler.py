@@ -1,7 +1,11 @@
 from sysexecution.stack_handler.checks import stackHandlerChecks
-from sysexecution.stack_handler.spawn_children_from_instrument_orders import stackHandlerForSpawning
+from sysexecution.stack_handler.spawn_children_from_instrument_orders import (
+    stackHandlerForSpawning,
+)
 from sysexecution.stack_handler.roll_orders import stackHandlerForRolls
-from sysexecution.stack_handler.create_broker_orders_from_contract_orders import stackHandlerCreateBrokerOrders
+from sysexecution.stack_handler.create_broker_orders_from_contract_orders import (
+    stackHandlerCreateBrokerOrders,
+)
 
 
 def do_check_external_position_break():

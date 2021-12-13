@@ -1,7 +1,11 @@
 import pandas as pd
 from functools import lru_cache
 
-from sysbrokers.IB.ib_instruments import NOT_REQUIRED_FOR_IB, ibInstrumentConfigData, futuresInstrumentWithIBConfigData
+from sysbrokers.IB.ib_instruments import (
+    NOT_REQUIRED_FOR_IB,
+    ibInstrumentConfigData,
+    futuresInstrumentWithIBConfigData,
+)
 from sysbrokers.IB.ib_connection import connectionIB
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 
@@ -13,11 +17,12 @@ from sysobjects.instruments import futuresInstrument
 
 from syslogdiag.log_to_screen import logtoscreen
 
-IG_FSB_CONFIG_FILE = get_filename_for_package(
-    "sysbrokers.IG.ig_config_fsb.csv")
+IG_FSB_CONFIG_FILE = get_filename_for_package("sysbrokers.IG.ig_config_fsb.csv")
+
 
 class IGConfig(pd.DataFrame):
     pass
+
 
 # def read_ib_config_from_file() -> IGConfig:
 #     df = pd.read_csv(IG_FSB_CONFIG_FILE)
@@ -35,13 +40,13 @@ class IgFsbInstrumentData(brokerFuturesInstrumentData):
     def __repr__(self):
         return "IG Futures Spread Bet instrument data"
 
-    def get_brokers_instrument_code(self, instrument_code:str) -> str:
+    def get_brokers_instrument_code(self, instrument_code: str) -> str:
         raise NotImplementedError
 
     def get_instrument_code_from_broker_code(self, broker_code: str) -> str:
 
         dot_pos = self.find_char_instances(broker_code, ".")
-        code_base = broker_code[:dot_pos[2]]
+        code_base = broker_code[: dot_pos[2]]
 
         config_row = self.config[self.config.IGEpic == code_base]
         if len(config_row) == 0:

@@ -14,12 +14,12 @@ class tradeQuantity(list):
             trade_or_fill_qty = [trade_or_fill_qty]
 
         # TODO AG position int -> float
-        elif (isinstance(trade_or_fill_qty, float)):
-            #trade_or_fill_qty = [int(trade_or_fill_qty)]
+        elif isinstance(trade_or_fill_qty, float):
+            # trade_or_fill_qty = [int(trade_or_fill_qty)]
             trade_or_fill_qty = [round(trade_or_fill_qty, 2)]
         else:
             # must be a list
-            #trade_or_fill_qty = [int(trade) for trade in trade_or_fill_qty]
+            # trade_or_fill_qty = [int(trade) for trade in trade_or_fill_qty]
             trade_or_fill_qty = [round(trade, 2) for trade in trade_or_fill_qty]
 
         super().__init__(trade_or_fill_qty)

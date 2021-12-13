@@ -16,7 +16,9 @@ from sysproduction.data.prices import (
 )
 from sysproduction.data.broker import dataBroker
 from sysproduction.data.contracts import dataContracts
-from sysproduction.update_multiple_adjusted_prices import update_multiple_adjusted_prices
+from sysproduction.update_multiple_adjusted_prices import (
+    update_multiple_adjusted_prices,
+)
 from sysdata.futures.manual_price_checker import manual_price_checker
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 from sysobjects.contracts import futuresContract

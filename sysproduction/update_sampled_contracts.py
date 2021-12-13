@@ -41,8 +41,12 @@ def update_sampled_contracts(instrument_list=None):
     with dataBlob(log_name="Update-Sampled_Contracts") as data:
         if instrument_list is None:
             update_contracts_object = updateSampledContracts(data)
-            instrument_code = get_valid_instrument_code_from_user(allow_all=True, all_code=ALL_INSTRUMENTS)
-            update_contracts_object.update_sampled_contracts(instrument_code=instrument_code)
+            instrument_code = get_valid_instrument_code_from_user(
+                allow_all=True, all_code=ALL_INSTRUMENTS
+            )
+            update_contracts_object.update_sampled_contracts(
+                instrument_code=instrument_code
+            )
             if instrument_code is ALL_INSTRUMENTS:
                 return success
 
@@ -50,12 +54,15 @@ def update_sampled_contracts(instrument_list=None):
 
             while do_another:
                 EXIT_CODE = "EXIT"
-                instrument_code = get_valid_instrument_code_from_user(allow_exit=True,
-                                                                      exit_code=EXIT_CODE)
+                instrument_code = get_valid_instrument_code_from_user(
+                    allow_exit=True, exit_code=EXIT_CODE
+                )
                 if instrument_code is EXIT_CODE:
                     do_another = False
                 else:
-                    update_contracts_object.update_sampled_contracts(instrument_code=instrument_code)
+                    update_contracts_object.update_sampled_contracts(
+                        instrument_code=instrument_code
+                    )
 
         else:
             update_contracts_object = updateSampledContracts(data, instrument_list)
@@ -69,12 +76,18 @@ class updateSampledContracts(object):
 
     def update_sampled_contracts(self, instrument_code: str = ALL_INSTRUMENTS):
         if self._instrument_list is None:
-            update_active_contracts_with_data(self.data, instrument_code=instrument_code)
+            update_active_contracts_with_data(
+                self.data, instrument_code=instrument_code
+            )
         else:
-            update_active_contracts_with_data(self.data, instrument_list=self._instrument_list)
+            update_active_contracts_with_data(
+                self.data, instrument_list=self._instrument_list
+            )
 
 
-def update_active_contracts_with_data(data: dataBlob, instrument_code: str = ALL_INSTRUMENTS, instrument_list=None):
+def update_active_contracts_with_data(
+    data: dataBlob, instrument_code: str = ALL_INSTRUMENTS, instrument_list=None
+):
     diag_prices = diagPrices(data)
     if instrument_list is not None:
         list_of_codes = instrument_list

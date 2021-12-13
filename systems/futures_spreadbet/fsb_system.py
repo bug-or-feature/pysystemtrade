@@ -16,7 +16,12 @@ from systems.accounts.accounts_stage import Account
 from systems.rawdata import RawData
 
 
-def fsb_system(data=arg_not_supplied, config=arg_not_supplied, trading_rules=arg_not_supplied, log_level="on"):
+def fsb_system(
+    data=arg_not_supplied,
+    config=arg_not_supplied,
+    trading_rules=arg_not_supplied,
+    log_level="on",
+):
 
     """
     :param data: data object (defaults to reading from csv files)
@@ -48,10 +53,10 @@ def fsb_system(data=arg_not_supplied, config=arg_not_supplied, trading_rules=arg
             PositionSizing(),
             ForecastCombine(),
             ForecastScaleCap(),
-            rules
+            rules,
         ],
         data,
-        config
+        config,
     )
 
     system.set_logging_level(log_level)

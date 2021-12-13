@@ -54,8 +54,7 @@ class FsbPositionSizing(PositionSizing):
     @diagnostic()
     def get_block_value(self, instrument_code: str) -> pd.Series:
 
-        underlying_price = self.get_underlying_price(
-            instrument_code)
+        underlying_price = self.get_underlying_price(instrument_code)
         value_of_price_move = self.parent.data.get_value_of_block_price_move(
             instrument_code
         )
@@ -77,4 +76,3 @@ class FsbPositionSizing(PositionSizing):
     # def get_annual_percentage_vol(self, instrument_code: str) -> pd.Series:
     #     ann_risk = self.calculate_daily_percentage_vol(instrument_code) * ROOT_BDAYS_INYEAR
     #     return ann_risk
-

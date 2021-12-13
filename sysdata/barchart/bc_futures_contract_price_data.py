@@ -1,7 +1,9 @@
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from syscore.merge_data import spike_in_data
 from syscore.objects import missing_data, missing_contract
-from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData
+from sysdata.arctic.arctic_futures_per_contract_prices import (
+    arcticFuturesContractPriceData,
+)
 from sysdata.barchart.bc_connection import bcConnection
 from sysdata.barchart.bc_futures_contracts_data import BarchartFuturesContractData
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
@@ -58,11 +60,15 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
 
     def get_contracts_with_price_data(self):
         raise NotImplementedError(
-            "Do not use get_contracts_with_price_data() with Barchart")
+            "Do not use get_contracts_with_price_data() with Barchart"
+        )
 
-    def update_prices_for_contract(self, contract_object: futuresContract,
-                                   new_futures_per_contract_prices: futuresContractPrices,
-                                   check_for_spike: bool = True) -> int:
+    def update_prices_for_contract(
+        self,
+        contract_object: futuresContract,
+        new_futures_per_contract_prices: futuresContractPrices,
+        check_for_spike: bool = True,
+    ) -> int:
         """
         Reads existing data, merges with new_futures_prices, writes merged data
 
@@ -100,7 +106,9 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
                 new_log.msg("No existing or additional data")
                 return 0
             else:
-                new_log.msg(f"No additional Barchart data since {str(old_prices.index[-1])}")
+                new_log.msg(
+                    f"No additional Barchart data since {str(old_prices.index[-1])}"
+                )
             return 0
 
         # We have guaranteed no duplication
@@ -112,11 +120,16 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
 
         return rows_added
 
-    def _get_prices_for_contract_object_no_checking(self, contract_object: futuresContract) -> futuresContractPrices:
-        return self._get_prices_at_frequency_for_contract_object_no_checking(contract_object, freq="D")
+    def _get_prices_for_contract_object_no_checking(
+        self, contract_object: futuresContract
+    ) -> futuresContractPrices:
+        return self._get_prices_at_frequency_for_contract_object_no_checking(
+            contract_object, freq="D"
+        )
 
     def _get_prices_at_frequency_for_contract_object_no_checking(
-            self, contract_object: futuresContract, freq: Frequency) -> futuresContractPrices:
+        self, contract_object: futuresContract, freq: Frequency
+    ) -> futuresContractPrices:
 
         """
         Get historical prices at a particular frequency
@@ -129,20 +142,24 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
         :return: data
         """
 
-        contract_object_plus = self.futures_contract_data.get_contract_object_with_bc_data(
-                contract_object)
+        contract_object_plus = (
+            self.futures_contract_data.get_contract_object_with_bc_data(contract_object)
+        )
 
         if contract_object_plus is missing_contract:
             self.log.warn(f"Can't get data for {str(contract_object)}")
             return futuresContractPrices.create_empty()
 
         price_data = self._barchart.get_historical_futures_data_for_contract(
-            contract_object_plus, bar_freq=freq)
+            contract_object_plus, bar_freq=freq
+        )
 
         if price_data is missing_data:
-            self.log.warn(f"Problem getting Barchart price data for {str(contract_object)}",
-                          instrument_code=contract_object.instrument_code,
-                          contract_date=contract_object.contract_date.date_str)
+            self.log.warn(
+                f"Problem getting Barchart price data for {str(contract_object)}",
+                instrument_code=contract_object.instrument_code,
+                contract_date=contract_object.contract_date.date_str,
+            )
             price_data = futuresContractPrices.create_empty()
 
         elif len(price_data) == 0:
@@ -166,7 +183,8 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
         raise NotImplementedError("Barchart is a read only source of prices")
 
     def _delete_prices_for_contract_object_with_no_checks_be_careful(
-            self, contract_object: futuresContract):
+        self, contract_object: futuresContract
+    ):
         raise NotImplementedError("Barchart is a read only source of prices")
 
     def get_ticker_object_for_order(self, order: contractOrder) -> tickerObject:
@@ -175,12 +193,12 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
     def cancel_market_data_for_order(self, order: brokerOrder):
         raise NotImplementedError("Not implemented for Barchart, it is not a broker")
 
-    def get_recent_bid_ask_tick_data_for_contract_object(self,
-            contract_object: futuresContract) -> dataFrameOfRecentTicks:
+    def get_recent_bid_ask_tick_data_for_contract_object(
+        self, contract_object: futuresContract
+    ) -> dataFrameOfRecentTicks:
         raise NotImplementedError("Not implemented for Barchart, it is not a broker")
 
     def get_prices_at_frequency_for_potentially_expired_contract_object(
-            self,
-            contract: futuresContract,
-            freq: Frequency = DAILY_PRICE_FREQ) -> futuresContractPrices:
+        self, contract: futuresContract, freq: Frequency = DAILY_PRICE_FREQ
+    ) -> futuresContractPrices:
         raise NotImplementedError("Not implemented for Barchart")

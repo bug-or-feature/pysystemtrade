@@ -7,22 +7,27 @@ orders accordingly
 These are 'virtual' orders, because they are per instrument. We translate that to actual contracts downstream
 
 """
-from collections import  namedtuple
+from collections import namedtuple
 
 from sysdata.data_blob import dataBlob
 from sysdata.mongodb.mongo_fsb_instruments import mongoFsbInstrumentData
 
 from sysexecution.orders.instrument_orders import instrumentOrder, best_order_type
 from sysexecution.orders.list_of_orders import listOfOrders
-from sysexecution.strategies.classic_buffered_positions import orderGeneratorForBufferedPositions
+from sysexecution.strategies.classic_buffered_positions import (
+    orderGeneratorForBufferedPositions,
+)
 
-optimalPositions = namedtuple("optimalPositions",  [
-            "upper_positions",
-            "lower_positions",
-            "reference_prices",
-            "reference_contracts",
-            "ref_dates",
-        ])
+optimalPositions = namedtuple(
+    "optimalPositions",
+    [
+        "upper_positions",
+        "lower_positions",
+        "reference_prices",
+        "reference_contracts",
+        "ref_dates",
+    ],
+)
 
 
 class FsbOrderGenerator(orderGeneratorForBufferedPositions):
@@ -41,9 +46,9 @@ class FsbOrderGenerator(orderGeneratorForBufferedPositions):
 
 def get_fsb_trades_list(
     data: dataBlob,
-        strategy_name: str,
-        optimal_positions: optimalPositions,
-        actual_positions: dict
+    strategy_name: str,
+    optimal_positions: optimalPositions,
+    actual_positions: dict,
 ) -> listOfOrders:
 
     upper_positions = optimal_positions.upper_positions
@@ -62,10 +67,10 @@ def get_fsb_trades_list(
 
 def trade_fsb(
     data: dataBlob,
-        strategy_name: str,
-        instrument_code: str,
-        optimal_positions: optimalPositions,
-        actual_positions: dict
+    strategy_name: str,
+    instrument_code: str,
+    optimal_positions: optimalPositions,
+    actual_positions: dict,
 ) -> instrumentOrder:
 
     data.add_class_object(mongoFsbInstrumentData)
@@ -74,7 +79,7 @@ def trade_fsb(
     upper_for_instrument = optimal_positions.upper_positions[instrument_code]
     lower_for_instrument = optimal_positions.lower_positions[instrument_code]
     mid_for_instrument = (upper_for_instrument + lower_for_instrument) / 2
-    min_bet = instr_data.as_dict()['Pointsize']
+    min_bet = instr_data.as_dict()["Pointsize"]
 
     actual_for_instrument = actual_positions.get(instrument_code, 0.0)
 
@@ -117,15 +122,17 @@ def trade_fsb(
 
     log = order_required.log_with_attributes(data.log)
     log.msg(
-        "Upper %.2f, Lower %.2f, Min %.2f, Curr %.2f, Req pos %.2f, Req trade %.2f, Ref price %f, contract %s" %
-        (upper_for_instrument,
-         lower_for_instrument,
-         min_bet,
-         actual_for_instrument,
-         required_position,
-         trade_required,
-         reference_price,
-         reference_contract,
-         ))
+        "Upper %.2f, Lower %.2f, Min %.2f, Curr %.2f, Req pos %.2f, Req trade %.2f, Ref price %f, contract %s"
+        % (
+            upper_for_instrument,
+            lower_for_instrument,
+            min_bet,
+            actual_for_instrument,
+            required_position,
+            trade_required,
+            reference_price,
+            reference_contract,
+        )
+    )
 
     return order_required

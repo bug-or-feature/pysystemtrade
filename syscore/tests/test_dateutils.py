@@ -9,29 +9,28 @@ import pytest
 
 
 class TestDateUtils:
-
     def test_get_datetime_from_datestring(self):
 
-        result = get_datetime_from_datestring('201503')
+        result = get_datetime_from_datestring("201503")
         assert result.year == 2015
         assert result.month == 3
         assert result.day == 1
 
-        result = get_datetime_from_datestring('20150300')
+        result = get_datetime_from_datestring("20150300")
         assert result.year == 2015
         assert result.month == 3
         assert result.day == 1
 
-        result = get_datetime_from_datestring('20150305')
+        result = get_datetime_from_datestring("20150305")
         assert result.year == 2015
         assert result.month == 3
         assert result.day == 5
 
         with pytest.raises(Exception):
-            get_datetime_from_datestring('2015031')
+            get_datetime_from_datestring("2015031")
 
         with pytest.raises(Exception):
-            get_datetime_from_datestring('2015013')
+            get_datetime_from_datestring("2015013")
 
     def test_data(self):
         x = pd.DataFrame(

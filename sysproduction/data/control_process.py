@@ -386,6 +386,7 @@ class diagControlProcess(productionDataLayerGeneric):
     def get_key_value_from_control_config(self, item_name: str):
         return self.control_config.get_element_or_missing_data(item_name)
 
+
 def get_list_of_strategies_for_process(data: dataBlob, process_name: str) -> list:
     diag_config = diagControlProcess(data)
     list_of_strategies = diag_config.get_list_of_methods_for_process_name(process_name)

@@ -30,8 +30,8 @@ from syslogdiag.log_to_screen import logtoscreen
 from systems.futures_spreadbet.fsb_system import fsb_system
 from systems.basesystem import System
 
-class RunFsbSystemClassic(object):
 
+class RunFsbSystemClassic(object):
     def __init__(
         self,
         data: dataBlob,
@@ -46,7 +46,6 @@ class RunFsbSystemClassic(object):
         self.strategy_name = strategy_name
         self.backtest_config_filename = backtest_config_filename
 
-
     def run_backtest(self):
         strategy_name = self.strategy_name
         data = self.data
@@ -55,7 +54,8 @@ class RunFsbSystemClassic(object):
         data.log.msg(f"Capital: {notional_trading_capital}, currency: {base_currency}")
 
         system = self.system_method(
-            notional_trading_capital=notional_trading_capital, base_currency=base_currency
+            notional_trading_capital=notional_trading_capital,
+            base_currency=base_currency,
         )
 
         updated_buffered_positions(data, strategy_name, system)
@@ -71,8 +71,8 @@ class RunFsbSystemClassic(object):
         if notional_trading_capital is missing_data:
             # critical log will send email
             error_msg = (
-                "Capital data is missing for %s: can't run backtest" %
-                strategy_name)
+                "Capital data is missing for %s: can't run backtest" % strategy_name
+            )
             data.log.critical(error_msg)
             raise Exception(error_msg)
 
@@ -83,9 +83,9 @@ class RunFsbSystemClassic(object):
 
     # DO NOT CHANGE THE NAME OF THIS FUNCTION; IT IS HARDCODED INTO CONFIGURATION FILES
     # BECAUSE IT IS ALSO USED TO LOAD BACKTESTS
-    def system_method(self,
-                      notional_trading_capital: float=None,
-                      base_currency: str=None) -> System:
+    def system_method(
+        self, notional_trading_capital: float = None, base_currency: str = None
+    ) -> System:
         data = self.data
         backtest_config_filename = self.backtest_config_filename
 
@@ -94,7 +94,7 @@ class RunFsbSystemClassic(object):
             backtest_config_filename,
             log=data.log,
             notional_trading_capital=notional_trading_capital,
-            base_currency=base_currency
+            base_currency=base_currency,
         )
 
         return system
@@ -105,7 +105,8 @@ def production_classic_fsb_system(
     config_filename: str,
     log=logtoscreen("futures_spreadbet_system"),
     notional_trading_capital: float = arg_not_supplied,
-    base_currency: str = arg_not_supplied) -> System:
+    base_currency: str = arg_not_supplied,
+) -> System:
 
     log_level = "on"
 
@@ -113,7 +114,10 @@ def production_classic_fsb_system(
     config = set_up_config(data, config_filename)
 
     # Overwrite capital and base currency
-    if notional_trading_capital is not arg_not_supplied and notional_trading_capital is not None:
+    if (
+        notional_trading_capital is not arg_not_supplied
+        and notional_trading_capital is not None
+    ):
         config.notional_trading_capital = notional_trading_capital
 
     if base_currency is not arg_not_supplied and base_currency is not None:
@@ -126,22 +130,21 @@ def production_classic_fsb_system(
 
     return system
 
-def set_up_config(data: dataBlob,
-                  config_filename: str) -> Config:
+
+def set_up_config(data: dataBlob, config_filename: str) -> Config:
     production_config = data.config
     backtest_file_config = Config(config_filename)
 
     # 'later elements overwrite earlier ones'
-    config = Config([ production_config, backtest_file_config])
+    config = Config([production_config, backtest_file_config])
 
     ## this is also done by the system, but more transparent to do it here
     config.fill_with_defaults()
 
     return config
 
-def updated_buffered_positions(data: dataBlob,
-                               strategy_name: str,
-                               system: System):
+
+def updated_buffered_positions(data: dataBlob, strategy_name: str, system: System):
     log = data.log
 
     data_optimal_positions = dataOptimalPositions(data)
@@ -156,22 +159,22 @@ def updated_buffered_positions(data: dataBlob,
             system=system,
             instrument_code=instrument_code,
             lower_buffer=lower_buffer,
-            upper_buffer = upper_buffer
+            upper_buffer=upper_buffer,
         )
-        instrument_strategy = instrumentStrategy(instrument_code=instrument_code, strategy_name=strategy_name)
-        data_optimal_positions.update_optimal_position_for_instrument_strategy(instrument_strategy=instrument_strategy,
-                                                                               position_entry=position_entry)
+        instrument_strategy = instrumentStrategy(
+            instrument_code=instrument_code, strategy_name=strategy_name
+        )
+        data_optimal_positions.update_optimal_position_for_instrument_strategy(
+            instrument_strategy=instrument_strategy, position_entry=position_entry
+        )
         log.msg(
-            "New buffered positions %.3f %.3f" %
-            (position_entry.lower_position,
-             position_entry.upper_position),
+            "New buffered positions %.3f %.3f"
+            % (position_entry.lower_position, position_entry.upper_position),
             instrument_code=instrument_code,
         )
 
 
-
-def get_position_buffers_from_system(system: System,
-                                     instrument_code: str):
+def get_position_buffers_from_system(system: System, instrument_code: str):
     buffers = system.portfolio.get_buffers_for_position(
         instrument_code
     )  # get the upper and lower edges of the buffer
@@ -182,11 +185,12 @@ def get_position_buffers_from_system(system: System,
 
 
 def construct_position_entry(
-        data: dataBlob,
-        system: System,
-        instrument_code: str,
-        lower_buffer: float,
-        upper_buffer: float) -> bufferedOptimalPositions:
+    data: dataBlob,
+    system: System,
+    instrument_code: str,
+    lower_buffer: float,
+    upper_buffer: float,
+) -> bufferedOptimalPositions:
 
     diag_contracts = dataContracts(data)
     reference_price = system.rawdata.get_daily_prices(instrument_code).iloc[-1]

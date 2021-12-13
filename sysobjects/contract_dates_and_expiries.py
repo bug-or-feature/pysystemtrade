@@ -48,9 +48,7 @@ class expiryDate(datetime.datetime):
         try:
             as_date = datetime.datetime.strptime(date_as_str, format)
         except:
-            raise Exception(
-                "Expiry date %s not in format %s" % date_as_str, format
-            )
+            raise Exception("Expiry date %s not in format %s" % date_as_str, format)
 
         return expiryDate(as_date.year, as_date.month, as_date.day)
 

@@ -13,23 +13,25 @@ def introduction():
 
     print(data.get_instrument_raw_carry_data("GOLD").tail(6))
 
-    instrument_code = 'GOLD'
+    instrument_code = "GOLD"
     price = data.daily_prices(instrument_code)
     smac = calc_smac_forecast(price)
     print(smac.tail(5))
-    #smac.plot()
-    #show()
+    # smac.plot()
+    # show()
 
     account = pandl_for_instrument_forecast(forecast=smac, price=price)
     print(account.percent.stats())
 
-    print(f"account.sharpe(): {account.sharpe()}")  ## get the Sharpe Ratio (annualised), and any other statistic which is in the stats list
+    print(
+        f"account.sharpe(): {account.sharpe()}"
+    )  ## get the Sharpe Ratio (annualised), and any other statistic which is in the stats list
     account.curve().plot()  ## plot the cumulative account curve (equivalent to account.cumsum().plot() inicidentally)
     show()
-    #print(f"account.percent: {account.percent}")  ## gives a % curve
-    #account.percent.drawdown().plot()  ## see the drawdowns as a percentage
-    #print(f"account.weekly: {account.weekly}") ## weekly returns (also daily [default], monthly, annual)
-    #print(f"account.gross.ann_mean(): {account.gross.ann_mean()}")  ## annual mean for gross returns, also costs (there are none in this simple example)
+    # print(f"account.percent: {account.percent}")  ## gives a % curve
+    # account.percent.drawdown().plot()  ## see the drawdowns as a percentage
+    # print(f"account.weekly: {account.weekly}") ## weekly returns (also daily [default], monthly, annual)
+    # print(f"account.gross.ann_mean(): {account.gross.ann_mean()}")  ## annual mean for gross returns, also costs (there are none in this simple example)
 
 
 if __name__ == "__main__":

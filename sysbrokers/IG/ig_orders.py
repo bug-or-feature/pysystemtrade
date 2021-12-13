@@ -7,10 +7,14 @@ from sysbrokers.IG.ig_instruments_data import IgFsbInstrumentData
 from sysbrokers.IG.ig_fsb_contract_data import IgFuturesContractData
 from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData
 from sysbrokers.IB.ib_translate_broker_order_objects import (
-    create_broker_order_from_trade_with_contract, ibBrokerOrder
+    create_broker_order_from_trade_with_contract,
+    ibBrokerOrder,
 )
 from sysbrokers.IG.ig_connection import ConnectionIG
-from sysbrokers.IB.ib_translate_broker_order_objects import tradeWithContract, ibOrderCouldntCreateException
+from sysbrokers.IB.ib_translate_broker_order_objects import (
+    tradeWithContract,
+    ibOrderCouldntCreateException,
+)
 from sysbrokers.IB.client.ib_orders_client import ibOrdersClient
 from sysbrokers.broker_execution_stack import brokerExecutionStackData
 
@@ -25,11 +29,14 @@ from syslogdiag.log_to_screen import logtoscreen
 
 
 class ibOrderWithControls(orderWithControls):
-    def __init__(self, trade_with_contract_from_ib: tradeWithContract,
-                 ibclient: ibOrdersClient,
-                 broker_order: brokerOrder = None,
-                 instrument_code: str = None,
-                 ticker_object: tickerObject = None):
+    def __init__(
+        self,
+        trade_with_contract_from_ib: tradeWithContract,
+        ibclient: ibOrdersClient,
+        broker_order: brokerOrder = None,
+        instrument_code: str = None,
+        ticker_object: tickerObject = None,
+    ):
 
         if broker_order is None:
             # This might happen if for example we are getting the orders from
@@ -38,9 +45,11 @@ class ibOrderWithControls(orderWithControls):
                 trade_with_contract_from_ib, instrument_code
             )
 
-        super().__init__(control_object=trade_with_contract_from_ib,
-                         broker_order=broker_order,
-                         ticker_object=ticker_object)
+        super().__init__(
+            control_object=trade_with_contract_from_ib,
+            broker_order=broker_order,
+            ticker_object=ticker_object,
+        )
 
         self._ibclient = ibclient
 
@@ -50,8 +59,7 @@ class ibOrderWithControls(orderWithControls):
 
     @property
     def ibclient(self) -> ibOrdersClient:
-       return  self._ibclient
-
+        return self._ibclient
 
     def update_order(self):
         # Update the broker order using the control object
@@ -104,13 +112,15 @@ class IgExecutionStackData(brokerExecutionStackData):
 
     @property
     def traded_object_store(self) -> dict:
-        store = getattr(self, '_traded_object_store', None)
+        store = getattr(self, "_traded_object_store", None)
         if store is None:
             store = self._traded_object_store = {}
 
         return store
 
-    def _add_order_with_controls_to_store(self, order_with_controls: ibOrderWithControls):
+    def _add_order_with_controls_to_store(
+        self, order_with_controls: ibOrderWithControls
+    ):
         storage_key = order_with_controls.order.broker_tempid
         self.traded_object_store[storage_key] = order_with_controls
 
@@ -122,19 +132,31 @@ class IgExecutionStackData(brokerExecutionStackData):
     def futures_instrument_data(self) -> IgFsbInstrumentData:
         return IgFsbInstrumentData(log=self.log)
 
-    def get_list_of_broker_orders_with_account_id(self, account_id: str=arg_not_supplied) -> listOfOrders:
+    def get_list_of_broker_orders_with_account_id(
+        self, account_id: str = arg_not_supplied
+    ) -> listOfOrders:
 
         activities = []
         for item in self.igconnection.get_activity():
-            instr_code = self.futures_instrument_data.get_instrument_code_from_broker_code(item['epic'])
+            instr_code = (
+                self.futures_instrument_data.get_instrument_code_from_broker_code(
+                    item["epic"]
+                )
+            )
 
-            trans_date = datetime.strptime(f"{item['date']} {item['time']}", '%d/%m/%y %H:%M')
+            trans_date = datetime.strptime(
+                f"{item['date']} {item['time']}", "%d/%m/%y %H:%M"
+            )
 
-            activities.append(f"{trans_date.strftime('%Y-%m-%d %H:%M:%S')} {instr_code} ({item['expiry']}): size: {item['size']}, price: {item['level']}")
+            activities.append(
+                f"{trans_date.strftime('%Y-%m-%d %H:%M:%S')} {instr_code} ({item['expiry']}): size: {item['size']}, price: {item['level']}"
+            )
 
         return activities
 
-    def _get_dict_of_broker_control_orders(self, account_id: str=arg_not_supplied) -> dict:
+    def _get_dict_of_broker_control_orders(
+        self, account_id: str = arg_not_supplied
+    ) -> dict:
         control_order_list = self._get_list_of_broker_control_orders(
             account_id=account_id
         )
@@ -146,7 +168,9 @@ class IgExecutionStackData(brokerExecutionStackData):
         )
         return dict_of_control_orders
 
-    def _get_list_of_broker_control_orders(self, account_id: str=arg_not_supplied) -> list:
+    def _get_list_of_broker_control_orders(
+        self, account_id: str = arg_not_supplied
+    ) -> list:
         """
         Get list of broker orders from IB, and return as list of orders with controls
 
@@ -160,13 +184,17 @@ class IgExecutionStackData(brokerExecutionStackData):
             for broker_trade_object_results in list_of_raw_orders_as_trade_objects
         ]
 
-        broker_order_with_controls_list = [broker_order_with_controls for broker_order_with_controls
-                              in broker_order_with_controls_list
-                              if broker_order_with_controls is not missing_order]
+        broker_order_with_controls_list = [
+            broker_order_with_controls
+            for broker_order_with_controls in broker_order_with_controls_list
+            if broker_order_with_controls is not missing_order
+        ]
 
         return broker_order_with_controls_list
 
-    def _create_broker_control_order_object(self, trade_with_contract_from_ib: tradeWithContract):
+    def _create_broker_control_order_object(
+        self, trade_with_contract_from_ib: tradeWithContract
+    ):
         """
         Map from the data IB gives us to my broker order object, to order with controls
 
@@ -183,11 +211,16 @@ class IgExecutionStackData(brokerExecutionStackData):
             except:
                 raise ibOrderCouldntCreateException()
 
-            broker_order_with_controls = ibOrderWithControls(trade_with_contract_from_ib, ibclient=self.ib_client,
-                                                             instrument_code=instrument_code)
+            broker_order_with_controls = ibOrderWithControls(
+                trade_with_contract_from_ib,
+                ibclient=self.ib_client,
+                instrument_code=instrument_code,
+            )
         except ibOrderCouldntCreateException:
-            self.log.warn("Couldn't create order from ib returned order %s, usual behaviour for FX and equities trades" %
-                          str(trade_with_contract_from_ib))
+            self.log.warn(
+                "Couldn't create order from ib returned order %s, usual behaviour for FX and equities trades"
+                % str(trade_with_contract_from_ib)
+            )
             return missing_order
 
         return broker_order_with_controls
@@ -231,9 +264,11 @@ class IgExecutionStackData(brokerExecutionStackData):
         if trade_with_contract_from_ib is missing_order:
             return missing_order
 
-        placed_broker_order_with_controls = ibOrderWithControls(trade_with_contract_from_ib,
-                                                                ibclient=self.ib_client,
-                                                                broker_order=broker_order)
+        placed_broker_order_with_controls = ibOrderWithControls(
+            trade_with_contract_from_ib,
+            ibclient=self.ib_client,
+            broker_order=broker_order,
+        )
 
         placed_broker_order_with_controls.order.submit_datetime = order_time
 
@@ -263,9 +298,7 @@ class IgExecutionStackData(brokerExecutionStackData):
 
         contract_object = broker_order.futures_contract
         contract_object_with_ib_data = (
-            self.futures_contract_data.get_contract_object_with_IB_data(
-                contract_object
-            )
+            self.futures_contract_data.get_contract_object_with_IB_data(contract_object)
         )
 
         placed_broker_trade_object = self.ib_client.broker_submit_order(
@@ -284,7 +317,8 @@ class IgExecutionStackData(brokerExecutionStackData):
         return placed_broker_trade_object
 
     def match_db_broker_order_to_order_from_brokers(
-            self, broker_order_to_match: brokerOrder) -> brokerOrder:
+        self, broker_order_to_match: brokerOrder
+    ) -> brokerOrder:
         matched_control_order = (
             self.match_db_broker_order_to_control_order_from_brokers(
                 broker_order_to_match
@@ -336,7 +370,8 @@ class IgExecutionStackData(brokerExecutionStackData):
 
         log = broker_order.log_with_attributes(self.log)
         matched_control_order = (
-            self.match_db_broker_order_to_control_order_from_brokers(broker_order))
+            self.match_db_broker_order_to_control_order_from_brokers(broker_order)
+        )
         if matched_control_order is missing_order:
             log.warn("Couldn't cancel non existent order")
             return None
@@ -344,7 +379,9 @@ class IgExecutionStackData(brokerExecutionStackData):
         self.cancel_order_given_control_object(matched_control_order)
         log.msg("Sent cancellation for %s" % str(broker_order))
 
-    def cancel_order_given_control_object(self, broker_orders_with_controls: ibOrderWithControls):
+    def cancel_order_given_control_object(
+        self, broker_orders_with_controls: ibOrderWithControls
+    ):
         original_order_object = broker_orders_with_controls.control_object.trade.order
         self.ib_client.ib_cancel_order(original_order_object)
 
@@ -352,16 +389,19 @@ class IgExecutionStackData(brokerExecutionStackData):
 
     def check_order_is_cancelled(self, broker_order: brokerOrder) -> bool:
         matched_control_order = (
-            self.match_db_broker_order_to_control_order_from_brokers(broker_order))
+            self.match_db_broker_order_to_control_order_from_brokers(broker_order)
+        )
         if matched_control_order is missing_order:
             return failure
         cancellation_status = self.check_order_is_cancelled_given_control_object(
-            matched_control_order)
+            matched_control_order
+        )
 
         return cancellation_status
 
     def check_order_is_cancelled_given_control_object(
-            self, broker_order_with_controls: ibOrderWithControls) -> bool:
+        self, broker_order_with_controls: ibOrderWithControls
+    ) -> bool:
         status = self._get_status_for_control_object(broker_order_with_controls)
         cancellation_status = status == "Cancelled"
 
@@ -374,7 +414,9 @@ class IgExecutionStackData(brokerExecutionStackData):
         modification_status = status in ["Submitted"]
         return modification_status
 
-    def _get_status_for_control_object(self, broker_order_with_controls: ibOrderWithControls) -> str:
+    def _get_status_for_control_object(
+        self, broker_order_with_controls: ibOrderWithControls
+    ) -> str:
         original_trade_object = broker_order_with_controls.control_object.trade
         status = self._get_status_for_trade_object(original_trade_object)
 
@@ -385,8 +427,7 @@ class IgExecutionStackData(brokerExecutionStackData):
         return original_trade_object.orderStatus.status
 
     def modify_limit_price_given_control_object(
-        self, broker_order_with_controls: ibOrderWithControls,
-            new_limit_price: float
+        self, broker_order_with_controls: ibOrderWithControls, new_limit_price: float
     ) -> ibOrderWithControls:
         """
         NOTE this does not update the internal state of orders, which will retain the original order
@@ -400,8 +441,12 @@ class IgExecutionStackData(brokerExecutionStackData):
             broker_order_with_controls.control_object.ibcontract_with_legs
         )
 
-        _not_used_new_trade_object = self.ib_client.modify_limit_price_given_original_objects(
-            original_order_object, original_contract_object_with_legs, new_limit_price
+        _not_used_new_trade_object = (
+            self.ib_client.modify_limit_price_given_original_objects(
+                original_order_object,
+                original_contract_object_with_legs,
+                new_limit_price,
+            )
         )
 
         # we don't actually replace the trade object
@@ -413,11 +458,17 @@ class IgExecutionStackData(brokerExecutionStackData):
 
 
 def add_trade_info_to_broker_order(
-        broker_order: brokerOrder,
-        broker_order_from_trade_object: ibBrokerOrder) -> brokerOrder:
+    broker_order: brokerOrder, broker_order_from_trade_object: ibBrokerOrder
+) -> brokerOrder:
 
     new_broker_order = copy(broker_order)
-    keys_to_replace = ["broker_permid", "commission", "algo_comment", "broker_tempid", "leg_filled_price"]
+    keys_to_replace = [
+        "broker_permid",
+        "commission",
+        "algo_comment",
+        "broker_tempid",
+        "leg_filled_price",
+    ]
 
     for key in keys_to_replace:
         new_broker_order._order_info[key] = broker_order_from_trade_object._order_info[
@@ -436,8 +487,8 @@ def add_trade_info_to_broker_order(
 
 
 def match_control_order_on_permid(
-        dict_of_broker_control_orders: dict,
-        broker_order_to_match: brokerOrder):
+    dict_of_broker_control_orders: dict, broker_order_to_match: brokerOrder
+):
     list_of_broker_control_orders = list(dict_of_broker_control_orders.values())
     list_of_broker_orders = [
         control_order.order for control_order in list_of_broker_control_orders
@@ -459,8 +510,8 @@ def match_control_order_on_permid(
 
 
 def match_control_order_from_dict(
-        dict_of_broker_control_orders: dict,
-        broker_order_to_match: brokerOrder):
+    dict_of_broker_control_orders: dict, broker_order_to_match: brokerOrder
+):
 
     matched_control_order_from_dict = dict_of_broker_control_orders.get(
         broker_order_to_match.broker_tempid, missing_order

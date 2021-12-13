@@ -10,7 +10,9 @@ from sysbrokers.IB.ib_static_data import ibStaticData
 from sysbrokers.IB.ib_fx_handling import ibFxHandlingData
 
 from sysdata.alphavantage.av_spot_FX_data import avFxPricesData
-from sysdata.barchart.bc_futures_contract_price_data import BarchartFuturesContractPriceData
+from sysdata.barchart.bc_futures_contract_price_data import (
+    BarchartFuturesContractPriceData,
+)
 from sysdata.barchart.bc_futures_contracts_data import BarchartFuturesContractData
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from sysbrokers.IG.ig_capital_data import IgCapitalData
@@ -78,17 +80,19 @@ class dataBroker(productionDataLayerGeneric):
         # )
 
         # TODO define this in config not code
-        data.add_class_list([
-            avFxPricesData,
-            # BarchartFuturesContractPriceData,
-            IgFuturesContractPriceData,
-            # BarchartFuturesContractData,
-            IgFuturesContractData,
-            BarchartFuturesInstrumentData,
-            IgContractPositionData,
-            IgExecutionStackData,
-            IgStaticData,
-            IgCapitalData]
+        data.add_class_list(
+            [
+                avFxPricesData,
+                # BarchartFuturesContractPriceData,
+                IgFuturesContractPriceData,
+                # BarchartFuturesContractData,
+                IgFuturesContractData,
+                BarchartFuturesInstrumentData,
+                IgContractPositionData,
+                IgExecutionStackData,
+                IgStaticData,
+                IgCapitalData,
+            ]
         )
 
         return data
@@ -540,6 +544,8 @@ class dataBroker(productionDataLayerGeneric):
         return activities
 
     def get_list_of_recent_transactions(self) -> listOfOrders:
-        list_of_orders = self.broker_execution_stack_data.get_list_of_broker_orders_with_account_id()
+        list_of_orders = (
+            self.broker_execution_stack_data.get_list_of_broker_orders_with_account_id()
+        )
 
         return list_of_orders

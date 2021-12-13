@@ -4,7 +4,6 @@ from sysbrokers.broker_static_data import brokerStaticData
 
 
 class IgStaticData(brokerStaticData):
-
     def __init__(self, log=logtoscreen("IgStaticData")):
         self._igconnection = ConnectionIG()
         super().__init__(log=log)
@@ -24,5 +23,3 @@ class IgStaticData(brokerStaticData):
 
     def get_broker_clientid(self) -> int:
         pass
-
-

@@ -105,10 +105,10 @@ setup(
     test_suite="nose.collector",
     include_package_data=True,
     entry_points={
-        'console_scripts': [
+        "console_scripts": [
             #'pst = sysproduction.pst:pst',
             #'pstm = sysproduction.pst:main',
-            'fsb = sysproduction.interactive_fsb:show_optimals',
+            "fsb = sysproduction.interactive_fsb:show_optimals",
         ],
-    }
+    },
 )

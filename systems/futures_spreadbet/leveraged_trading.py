@@ -29,7 +29,7 @@ def lt_system(data=None, config=None, log_level="on"):
             Rules(),
         ],
         data,
-        config
+        config,
     )
 
     system.set_logging_level(log_level)

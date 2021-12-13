@@ -14,8 +14,7 @@ def extract_fx_balances_from_account_summary(account_summary) -> dict:
     return result
 
 
-def extract_currency_dict_for_tag_from_account_summary(
-        account_summary, relevant_tag):
+def extract_currency_dict_for_tag_from_account_summary(account_summary, relevant_tag):
     result = dict(
         [
             (summary_item.currency, summary_item.value)
@@ -31,7 +30,9 @@ class PositionsFromIG(dict):
     pass
 
 
-def from_ig_positions_to_dict(raw_positions, account_id = arg_not_supplied) -> PositionsFromIG:
+def from_ig_positions_to_dict(
+    raw_positions, account_id=arg_not_supplied
+) -> PositionsFromIG:
     """
 
     :param raw_positions: list of positions in form Position(...)
@@ -49,9 +50,7 @@ def from_ig_positions_to_dict(raw_positions, account_id = arg_not_supplied) -> P
         asset_class = "FSB"
         method = position_methods.get(asset_class, None)
         if method is None:
-            raise Exception(
-                "Can't find asset class %s in methods dict" %
-                asset_class)
+            raise Exception("Can't find asset class %s in methods dict" % asset_class)
 
         resolved_position = method(position)
         asset_class_list = resolved_positions_dict.get(asset_class, [])
@@ -66,12 +65,12 @@ def from_ig_positions_to_dict(raw_positions, account_id = arg_not_supplied) -> P
 def resolve_ig_fsb_position(position):
 
     return dict(
-        account=position['account'],
-        symbol=position['epic'],
-        expiry=position['expiry'],
-        currency=position['currency'],
-        position=position['size'],
-        dir=position['dir'],
+        account=position["account"],
+        symbol=position["epic"],
+        expiry=position["expiry"],
+        currency=position["currency"],
+        position=position["size"],
+        dir=position["dir"],
     )
 
 

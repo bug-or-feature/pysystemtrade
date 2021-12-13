@@ -171,7 +171,6 @@ class simData(baseData):
         """
         raise NotImplementedError("Need to inherit from simData")
 
-
     def get_instrument_list(self) -> list:
         """
         list of instruments in this data set

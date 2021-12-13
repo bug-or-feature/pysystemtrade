@@ -105,7 +105,7 @@ class dataBlob(object):
             mongo=self._add_mongo_class,
             barchart=self._add_alt_data_source_class,
             av=self._add_alt_data_source_class,
-            ig=self._add_ig_class
+            ig=self._add_ig_class,
         )
 
         method_to_add_with = class_dict.get(prefix, None)
@@ -174,13 +174,15 @@ class dataBlob(object):
     def _add_alt_data_source_class(self, class_object):
         log = self._get_specific_logger(class_object)
         try:
-            resolved_instance = class_object(log = log)
+            resolved_instance = class_object(log=log)
         except Exception as e:
             class_name = get_class_name(class_object)
             msg = (
-                    "Error %s couldn't evaluate %s(log = self.log.setup(component = %s)) \
+                "Error %s couldn't evaluate %s(log = self.log.setup(component = %s)) \
                     This might be because import is missing\
-                     or arguments don't follow pattern" % (str(e), class_name, class_name))
+                     or arguments don't follow pattern"
+                % (str(e), class_name, class_name)
+            )
             self._raise_and_log_error(msg)
 
         return resolved_instance
@@ -188,13 +190,15 @@ class dataBlob(object):
     def _add_ig_class(self, class_object):
         log = self._get_specific_logger(class_object)
         try:
-            resolved_instance = class_object(log = log)
+            resolved_instance = class_object(log=log)
         except Exception as e:
-                class_name = get_class_name(class_object)
-                msg = (
-                        "Error %s couldn't evaluate %s(self.ib_conn, log = self.log.setup(component = %s)) This might be because (a) import is missing \
-                         or (b) arguments don't follow pattern" % (str(e), class_name, class_name))
-                self._raise_and_log_error(msg)
+            class_name = get_class_name(class_object)
+            msg = (
+                "Error %s couldn't evaluate %s(self.ib_conn, log = self.log.setup(component = %s)) This might be because (a) import is missing \
+                         or (b) arguments don't follow pattern"
+                % (str(e), class_name, class_name)
+            )
+            self._raise_and_log_error(msg)
 
         return resolved_instance
 
@@ -374,7 +378,15 @@ class dataBlob(object):
         return log_name
 
 
-source_dict = dict(arctic="db", mongo="db", csv="db", ib="broker", barchart="broker", av="broker", ig="broker")
+source_dict = dict(
+    arctic="db",
+    mongo="db",
+    csv="db",
+    ib="broker",
+    barchart="broker",
+    av="broker",
+    ig="broker",
+)
 
 
 def identifying_name(split_up_name: list, keep_original_prefix=False) -> str:

@@ -129,7 +129,9 @@ class listOfPositions(list):
 
         # TODO AG position int -> float
         my_position = round(self.position_for_object(tradeable_object), 2)
-        other_position = round(other_list_of_positions.position_for_object(tradeable_object), 2)
+        other_position = round(
+            other_list_of_positions.position_for_object(tradeable_object), 2
+        )
         if my_position == other_position:
             return False
         else:

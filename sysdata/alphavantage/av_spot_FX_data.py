@@ -13,7 +13,6 @@ fxConfig = namedtuple("avFXConfig", ["ccy1", "ccy2", "invert"])
 
 
 class avFxPricesData(brokerFxPricesData):
-
     def __init__(self, log=logtoscreen("avFxPricesData")):
         super().__init__(log=log)
         self._avConnection = avConnection()
@@ -29,7 +28,8 @@ class avFxPricesData(brokerFxPricesData):
         config_data = self._get_fx_config()
         if config_data is missing_file:
             self.log.warn(
-                "Can't get list of FX codes for Alpha Vantage as config file missing")
+                "Can't get list of FX codes for Alpha Vantage as config file missing"
+            )
             return []
 
         list_of_codes = list(config_data.CODE)
@@ -40,20 +40,26 @@ class avFxPricesData(brokerFxPricesData):
         config_for_code = self._get_config_info_for_code(currency_code)
         if config_for_code is missing_instrument:
             self.log.warn(
-                "Can't get prices as missing config for %s" %
-                currency_code, fx_code=currency_code)
+                "Can't get prices as missing config for %s" % currency_code,
+                fx_code=currency_code,
+            )
             return fxPrices.create_empty()
 
         data = self._get_fx_prices_with_config(currency_code, config_for_code)
 
         return data
 
-    def _get_fx_prices_with_config(self, currency_code: str, config_for_code: fxConfig) ->fxPrices:
+    def _get_fx_prices_with_config(
+        self, currency_code: str, config_for_code: fxConfig
+    ) -> fxPrices:
         raw_fx_prices_as_series = self._get_raw_fx_prices(config_for_code)
 
         if len(raw_fx_prices_as_series) == 0:
-            self.log.warn("No available IB prices for %s %s" %
-                (currency_code, str(config_for_code)), fx_code = currency_code)
+            self.log.warn(
+                "No available IB prices for %s %s"
+                % (currency_code, str(config_for_code)),
+                fx_code=currency_code,
+            )
             return fxPrices.create_empty()
 
         if config_for_code.invert:
@@ -84,29 +90,31 @@ class avFxPricesData(brokerFxPricesData):
         config_data = self._get_fx_config()
         if config_data is missing_file:
             new_log.warn(
-                "Can't get AV FX config for %s as config file missing" %
-                currency_code, fx_code = currency_code)
+                "Can't get AV FX config for %s as config file missing" % currency_code,
+                fx_code=currency_code,
+            )
 
             return missing_instrument
 
         ccy1 = config_data[config_data.CODE == currency_code].CCY1.values[0]
         ccy2 = config_data[config_data.CODE == currency_code].CCY2.values[0]
-        invert = (config_data[config_data.CODE ==
-                              currency_code].INVERT.values[0] == "YES")
+        invert = (
+            config_data[config_data.CODE == currency_code].INVERT.values[0] == "YES"
+        )
 
         config_for_code = fxConfig(ccy1, ccy2, invert)
 
         return config_for_code
 
     # Configuration read in and cache
-    def _get_fx_config(self) ->pd.DataFrame:
+    def _get_fx_config(self) -> pd.DataFrame:
         config = getattr(self, "_config", None)
         if config is None:
             config = self._get_and_set_config_from_file()
 
         return config
 
-    def _get_and_set_config_from_file(self) ->pd.DataFrame:
+    def _get_and_set_config_from_file(self) -> pd.DataFrame:
 
         try:
             config_data = pd.read_csv(self._get_fx_config_filename())
@@ -124,14 +132,11 @@ class avFxPricesData(brokerFxPricesData):
     def add_fx_prices(self, *args, **kwargs):
         raise NotImplementedError("Alpha Vantage is a read only source of prices")
 
-    def _delete_fx_prices_without_any_warning_be_careful(
-            self, *args, **kwargs):
+    def _delete_fx_prices_without_any_warning_be_careful(self, *args, **kwargs):
         raise NotImplementedError("Alpha Vantage is a read only source of prices")
 
-    def _add_fx_prices_without_checking_for_existing_entry(
-            self, *args, **kwargs):
+    def _add_fx_prices_without_checking_for_existing_entry(self, *args, **kwargs):
         raise NotImplementedError("Alpha Vantage is a read only source of prices")
 
     def _get_fx_config_filename(self):
-        return get_filename_for_package(
-            "sysdata.alphavantage.av_config_spot_FX.csv")
+        return get_filename_for_package("sysdata.alphavantage.av_config_spot_FX.csv")

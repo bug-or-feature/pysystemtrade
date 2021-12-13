@@ -14,11 +14,17 @@ class mongoFsbInstrumentData(futuresInstrumentData):
     Read and write data class to get futures spreadbet instrument data
     """
 
-    def __init__(self, mongo_db=arg_not_supplied, log=logtoscreen(
-            "mongoFsbInstrumentData"), collection_name=INSTRUMENT_COLLECTION):
+    def __init__(
+        self,
+        mongo_db=arg_not_supplied,
+        log=logtoscreen("mongoFsbInstrumentData"),
+        collection_name=INSTRUMENT_COLLECTION,
+    ):
 
         super().__init__(log=log)
-        self._mongo_data = mongoDataWithSingleKey(collection_name, "instrument_code", mongo_db=mongo_db)
+        self._mongo_data = mongoDataWithSingleKey(
+            collection_name, "instrument_code", mongo_db=mongo_db
+        )
 
     def __repr__(self):
         return "mongoFsbInstrumentData %s" % str(self.mongo_data)
@@ -41,8 +47,7 @@ class mongoFsbInstrumentData(futuresInstrumentData):
 
         return instrument_object
 
-    def _delete_instrument_data_without_any_warning_be_careful(
-            self, instrument_code):
+    def _delete_instrument_data_without_any_warning_be_careful(self, instrument_code):
         self.mongo_data.delete_data_without_any_warning(instrument_code)
 
     def _add_instrument_data_without_checking_for_existing_entry(
@@ -50,4 +55,6 @@ class mongoFsbInstrumentData(futuresInstrumentData):
     ):
         instrument_object_dict = instrument_object.as_dict()
         instrument_code = instrument_object_dict.pop("instrument_code")
-        self.mongo_data.add_data(instrument_code, instrument_object_dict, allow_overwrite=True)
+        self.mongo_data.add_data(
+            instrument_code, instrument_object_dict, allow_overwrite=True
+        )
