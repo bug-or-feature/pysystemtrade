@@ -22,7 +22,7 @@ def get_system_defaults_dict(filename: str = arg_not_supplied) -> dict:
         filename = DEFAULT_FILENAME
     default_file = get_filename_for_package(filename)
     with open(default_file) as file_to_parse:
-        default_dict = yaml.load(file_to_parse, Loader=yaml.CLoader)
+        default_dict = yaml.load(file_to_parse, Loader=yaml.FullLoader)
 
     return default_dict
 
