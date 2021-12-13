@@ -1,8 +1,8 @@
+from syscore.pdutils import quantile_of_points_in_data_series
 from systems.forecast_scale_cap import *
-from statsmodels.distributions.empirical_distribution import ECDF
+
 
 class volAttenForecastScaleCap(ForecastScaleCap):
-
     @diagnostic()
     def get_vol_quantile_points(self, instrument_code):
         ## More properly this would go in raw data perhaps
@@ -36,7 +36,9 @@ class volAttenForecastScaleCap(ForecastScaleCap):
     @diagnostic()
     def get_raw_forecast(self, instrument_code, rule_variation_name):
         ## overriden methon this will be called downstream so don't change name
-        raw_forecast_before_atten = self.get_raw_forecast_before_attenuation(instrument_code, rule_variation_name)
+        raw_forecast_before_atten = self.get_raw_forecast_before_attenuation(
+            instrument_code, rule_variation_name
+        )
         use_attenuation = self.config.use_attenuation
         if rule_variation_name not in use_attenuation:
             return raw_forecast_before_atten
@@ -47,25 +49,12 @@ class volAttenForecastScaleCap(ForecastScaleCap):
 
             return attenuated_forecast
 
-def quantile_of_points_in_data_series(data_series):
-    results = [quantile_of_points_in_data_series_row(data_series, irow) for irow in range(len(data_series))]
-    results_series = pd.Series(results, index = data_series.index)
-
-    return results_series
-
 
 # this is a little slow so suggestions for speeding up are welcome
-def quantile_of_points_in_data_series_row(data_series, irow):
-    if irow<2:
-        return np.nan
-    historical_data = list(data_series[:irow].values)
-    current_value = data_series[irow]
-    ecdf_s = ECDF(historical_data)
 
-    return ecdf_s(current_value)
 
 def multiplier_function(vol_quantile):
     if np.isnan(vol_quantile):
         return 1.0
 
-    return 2 - 1.5*vol_quantile
+    return 2 - 1.5 * vol_quantile

@@ -91,15 +91,7 @@ def get_test_object_futures_with_portfolios():
     combobject = ForecastCombine()
     posobject = PositionSizing()
     portfolio = Portfolios()
-    return (
-        portfolio,
-        posobject,
-        combobject,
-        capobject,
-        rules,
-        rawdata,
-        data,
-        config)
+    return (portfolio, posobject, combobject, capobject, rules, rawdata, data, config)
 
 
 def get_test_object_futures_with_rules_and_capping_estimate():
@@ -127,34 +119,4 @@ def get_test_object_futures_with_pos_sizing_estimates():
     combobject = ForecastCombine()
     posobject = PositionSizing()
     account = Account()
-    return (
-        account,
-        posobject,
-        combobject,
-        capobject,
-        rules,
-        rawdata,
-        data,
-        config)
-
-
-def get_test_object_futures_spreadbet():
-    """
-    Returns some standard test data, for futures spreadbets
-    """
-    data = csvFuturesSimData(
-        csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_bc.csvconfig")
-    )
-    # data = csvFuturesSimData(
-    #     csv_data_paths=dict(
-    #         csvFuturesInstrumentData="data.futures_bc.csvconfig",
-    #         csvFuturesAdjustedPricesData="data.futures_bc.adjusted_prices_csv",
-    #         csvFuturesMultiplePricesData="data.futures_bc.multiple_prices_csv")
-    # )
-    rawdata = RawData()
-    config = Config("systems.provided.example.exampleconfig.yaml")
-    return rawdata, data, config
-
-
-
+    return (account, posobject, combobject, capobject, rules, rawdata, data, config)

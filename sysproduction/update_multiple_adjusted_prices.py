@@ -12,15 +12,21 @@ Two types of services:
 
 from syscore.objects import success
 
-from sysobjects.dict_of_named_futures_per_contract_prices import dictNamedFuturesContractFinalPrices, \
-    dictFuturesNamedContractFinalPricesWithContractID
+from sysobjects.dict_of_named_futures_per_contract_prices import (
+    dictNamedFuturesContractFinalPrices,
+    dictFuturesNamedContractFinalPricesWithContractID,
+)
 
 from sysobjects.adjusted_prices import no_update_roll_has_occured, futuresAdjustedPrices
 from sysobjects.multiple_prices import futuresMultiplePrices, setOfNamedContracts
 from sysobjects.contracts import futuresContract
 
 from sysdata.data_blob import dataBlob
-from sysproduction.data.prices import diagPrices, updatePrices, get_valid_instrument_code_from_user
+from sysproduction.data.prices import (
+    diagPrices,
+    updatePrices,
+    get_valid_instrument_code_from_user,
+)
 
 ALL_INSTRUMENTS = "ALL"
 
@@ -88,14 +94,17 @@ def update_multiple_adjusted_prices_with_data(
 
     for instrument_code in list_of_codes:
         try:
-            update_multiple_adjusted_prices_for_instrument(
-                instrument_code, data)
+            update_multiple_adjusted_prices_for_instrument(instrument_code, data)
         except Exception as e:
-            data.log.critical("Something went wrong with adjusted prices for %s! [%s]" %
-                              (instrument_code, str(e)))
+            data.log.critical(
+                "Something went wrong with adjusted prices for %s! [%s]"
+                % (instrument_code, str(e))
+            )
 
 
-def update_multiple_adjusted_prices_for_instrument(instrument_code: str, data: dataBlob):
+def update_multiple_adjusted_prices_for_instrument(
+    instrument_code: str, data: dataBlob
+):
     """
     Update for multiple and adjusted prices for a given instrument
 
@@ -107,14 +116,21 @@ def update_multiple_adjusted_prices_for_instrument(instrument_code: str, data: d
 
     data.log.label(instrument_code=instrument_code)
     updated_multiple_prices = calc_updated_multiple_prices(data, instrument_code)
-    updated_adjusted_prices = calc_update_adjusted_prices(data, instrument_code, updated_multiple_prices)
+    updated_adjusted_prices = calc_update_adjusted_prices(
+        data, instrument_code, updated_multiple_prices
+    )
 
-    update_with_new_prices(data, instrument_code, updated_adjusted_prices=updated_adjusted_prices,
-                           updated_multiple_prices= updated_multiple_prices)
+    update_with_new_prices(
+        data,
+        instrument_code,
+        updated_adjusted_prices=updated_adjusted_prices,
+        updated_multiple_prices=updated_multiple_prices,
+    )
 
 
-
-def calc_updated_multiple_prices(data: dataBlob, instrument_code: str) -> futuresMultiplePrices:
+def calc_updated_multiple_prices(
+    data: dataBlob, instrument_code: str
+) -> futuresMultiplePrices:
     diag_prices = diagPrices(data)
     # update multiple prices with new prices
     # (method in multiple prices object and possible in data socket)
@@ -126,14 +142,15 @@ def calc_updated_multiple_prices(data: dataBlob, instrument_code: str) -> future
         instrument_code, relevant_contracts, data
     )
     updated_multiple_prices = existing_multiple_prices.update_multiple_prices_with_dict(
-        new_prices_dict)
-
+        new_prices_dict
+    )
 
     return updated_multiple_prices
 
-def calc_update_adjusted_prices(data: dataBlob, instrument_code: str,
-                                updated_multiple_prices: futuresMultiplePrices)\
-        -> futuresAdjustedPrices:
+
+def calc_update_adjusted_prices(
+    data: dataBlob, instrument_code: str, updated_multiple_prices: futuresMultiplePrices
+) -> futuresAdjustedPrices:
 
     diag_prices = diagPrices(data)
     existing_adjusted_prices = diag_prices.get_adjusted_prices(instrument_code)
@@ -145,17 +162,19 @@ def calc_update_adjusted_prices(data: dataBlob, instrument_code: str,
     )
 
     if updated_adjusted_prices is no_update_roll_has_occured:
-        msg = "Can't update adjusted prices for %s as roll has occured but not registered properly" %\
-            instrument_code
-        data.log.critical(
-            msg)
+        msg = (
+            "Can't update adjusted prices for %s as roll has occured but not registered properly"
+            % instrument_code
+        )
+        data.log.critical(msg)
         raise Exception(msg)
 
     return updated_adjusted_prices
 
+
 def get_dict_of_new_prices_and_contractid(
-        instrument_code:str, contract_date_dict: setOfNamedContracts,
-        data: dataBlob) ->dictFuturesNamedContractFinalPricesWithContractID:
+    instrument_code: str, contract_date_dict: setOfNamedContracts, data: dataBlob
+) -> dictFuturesNamedContractFinalPricesWithContractID:
     """
 
     :param instrument_code: str
@@ -172,7 +191,9 @@ def get_dict_of_new_prices_and_contractid(
         price_series = diag_prices.get_prices_for_contract_object(contract)
         relevant_contract_prices[key] = price_series.return_final_prices()
 
-    relevant_contract_prices = dictNamedFuturesContractFinalPrices(relevant_contract_prices)
+    relevant_contract_prices = dictNamedFuturesContractFinalPrices(
+        relevant_contract_prices
+    )
 
     new_prices_dict = (
         dictFuturesNamedContractFinalPricesWithContractID.create_from_two_dicts(
@@ -182,9 +203,13 @@ def get_dict_of_new_prices_and_contractid(
 
     return new_prices_dict
 
-def update_with_new_prices(data, instrument_code: str,
-                           updated_multiple_prices: futuresMultiplePrices,
-                           updated_adjusted_prices: futuresAdjustedPrices):
+
+def update_with_new_prices(
+    data,
+    instrument_code: str,
+    updated_multiple_prices: futuresMultiplePrices,
+    updated_adjusted_prices: futuresAdjustedPrices,
+):
 
     update_prices = updatePrices(data)
 

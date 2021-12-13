@@ -3,13 +3,9 @@ from syslogdiag.log_entry import logEntry
 
 
 class logtoscreen(logger):
-
     def log_handle_caller(
-            self,
-            msglevel: int,
-            text: str,
-            attributes: dict,
-            log_id: int):
+        self, msglevel: int, text: str, attributes: dict, log_id: int
+    ):
         """
         >>> log=logtoscreen("base_system", log_level="off") ## this won't do anything
         >>> log.log("this wont print")
@@ -51,7 +47,7 @@ class logtoscreen(logger):
 
     def get_next_log_id(self) -> int:
         last_id = self.get_last_used_log_id()
-        next_id = last_id+1
+        next_id = last_id + 1
 
         self.update_log_id(next_id)
 
