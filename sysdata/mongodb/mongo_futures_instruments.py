@@ -12,7 +12,7 @@ class mongoFuturesInstrumentData(futuresInstrumentData):
     """
     Read and write data class to get instrument data
 
-    We'd inherit from this class for a specific implementation # TODO fix this comment
+    We'd inherit from this class for a specific implementation
 
     """
 
