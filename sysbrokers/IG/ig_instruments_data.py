@@ -1,16 +1,13 @@
 import pandas as pd
 from functools import lru_cache
 
-from sysbrokers.IB.ib_instruments import (
-    NOT_REQUIRED_FOR_IB,
-    ibInstrumentConfigData,
-    futuresInstrumentWithIBConfigData,
+from sysbrokers.IG.ig_instruments import (
+    IgInstrumentConfigData,
+    FsbInstrumentWithIgConfigData,
 )
-from sysbrokers.IB.ib_connection import connectionIB
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 
 from syscore.fileutils import get_filename_for_package
-from syscore.genutils import value_or_npnan
 from syscore.objects import missing_instrument, missing_file
 
 from sysobjects.instruments import futuresInstrument
@@ -24,11 +21,6 @@ class IGConfig(pd.DataFrame):
     pass
 
 
-# def read_ib_config_from_file() -> IGConfig:
-#     df = pd.read_csv(IG_FSB_CONFIG_FILE)
-#     return IGConfig(df)
-
-
 class IgFsbInstrumentData(brokerFuturesInstrumentData):
     """
     IG Futures Spread Bet instrument data
@@ -39,6 +31,19 @@ class IgFsbInstrumentData(brokerFuturesInstrumentData):
 
     def __repr__(self):
         return "IG Futures Spread Bet instrument data"
+
+    def get_ig_fsb_instrument(self, instr_code: str) -> FsbInstrumentWithIgConfigData:
+        new_log = self.log.setup(instrument_code=instr_code)
+
+        try:
+            assert instr_code in self.get_list_of_instruments()
+        except Exception:
+            new_log.warn(f"Instrument {instr_code} is not in IG config")
+            return missing_instrument
+
+        instrument_object = get_instrument_object_from_config(instr_code, config=self.config)
+
+        return instrument_object
 
     def get_brokers_instrument_code(self, instrument_code: str) -> str:
         raise NotImplementedError
@@ -84,7 +89,32 @@ class IgFsbInstrumentData(brokerFuturesInstrumentData):
             return IGConfig(df)
 
         except BaseException:
-            IgFsbInstrumentData.log.warn("Can't read file %s" % IG_FSB_CONFIG_FILE)
+            cls.log.warn("Can't read file %s" % IG_FSB_CONFIG_FILE)
             config_data = missing_file
 
         return config_data
+
+
+def get_instrument_object_from_config(
+        instrument_code: str, config: IGConfig = None
+) -> FsbInstrumentWithIgConfigData:
+
+    config_row = config[config.Instrument == instrument_code]
+    epic = config_row.IGEpic.values[0]
+    currency = config_row.IGCurrency.values[0]
+    multiplier = config_row.IGMultiplier.values[0]
+    inverse = config_row.IGInverse.values[0]
+
+    instrument = futuresInstrument(instrument_code)
+    ig_data = IgInstrumentConfigData(
+        epic=epic,
+        currency=currency,
+        ig_multiplier=multiplier,
+        ig_inverse=inverse
+    )
+
+    futures_instrument_with_ig_data = FsbInstrumentWithIgConfigData(
+        instrument, ig_data
+    )
+
+    return futures_instrument_with_ig_data

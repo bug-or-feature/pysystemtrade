@@ -194,6 +194,29 @@ class ConnectionIG(object):
             self.log.error(f"Problem getting historical data: {ex}")
             return missing_data
 
+    def get_expiry_date(self, futures_contract: futuresContract):
+        """
+        Get the actual expiry date for a given contract, according to IG
+        :param futures_contract:
+        :return: str
+        """
+
+        ig_service = self._create_ig_session()
+        epic = self.get_ig_epic(futures_contract)
+
+        try:
+            info = ig_service.fetch_market_by_epic(epic)
+            expiry = info["instrument"]["expiryDetails"]["lastDealingDate"]
+            print(expiry)
+
+        except Exception as exc:
+            self.log.error(f"Problem getting expiry date for '{futures_contract.key}': {exc}")
+            return None
+
+        ig_service.logout()
+
+        return expiry
+
     # TODO properly
     def get_ig_epic(self, futures_contract: futuresContract):
         """

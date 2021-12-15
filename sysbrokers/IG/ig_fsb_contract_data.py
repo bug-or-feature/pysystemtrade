@@ -3,35 +3,34 @@ from sysbrokers.broker_futures_contract_data import brokerFuturesContractData
 from sysobjects.contract_dates_and_expiries import expiryDate
 from sysobjects.contracts import futuresContract
 from syslogdiag.log_to_screen import logtoscreen
-from sysdata.barchart.bc_connection import bcConnection
-from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
+from sysbrokers.IG.ig_connection import ConnectionIG
+from sysbrokers.IG.ig_instruments_data import IgFsbInstrumentData
 from syscore.objects import missing_contract, missing_instrument
 from syscore.dateutils import get_datetime_from_datestring
 
 
 class IgFuturesContractData(brokerFuturesContractData):
-    def __init__(self, barchart=None, log=logtoscreen("IgFsbContractData")):
+    def __init__(self, log=logtoscreen("IgFsbContractData")):
         super().__init__(log=log)
-        if barchart is None:
-            barchart = bcConnection()
-        self._barchart = barchart
+        self._igconnection = ConnectionIG()
+        self._instrument_data = IgFsbInstrumentData(log=self.log)
 
     def __repr__(self):
-        return f"IG FSB per contract data: {self._barchart}"
+        return f"IG FSB per contract data: {self._igconnection}"
 
     @property
-    def barchart(self):
-        return self._barchart
+    def igconnection(self):
+        return self._igconnection
 
     @property
-    def barchart_futures_instrument_data(self) -> BarchartFuturesInstrumentData:
-        return BarchartFuturesInstrumentData(log=self.log)
+    def ig_instrument_data(self) -> IgFsbInstrumentData:
+        return self._instrument_data
 
     def get_actual_expiry_date_for_single_contract(
         self, futures_contract: futuresContract
     ) -> expiryDate:
         """
-        Get the actual expiry date of a contract from Barchart
+        Get the actual expiry date of a contract from IG
 
         :param futures_contract: type futuresContract
         :return: YYYYMMDD or None
@@ -48,7 +47,7 @@ class IgFuturesContractData(brokerFuturesContractData):
             log.warn("Can't find expiry for multiple leg contract here")
             return missing_contract
 
-        contract_object_with_bc_data = self.get_contract_object_with_bc_data(
+        contract_object_with_bc_data = self.get_contract_object_with_ig_data(
             futures_contract
         )
         if contract_object_with_bc_data is missing_contract:
@@ -58,11 +57,11 @@ class IgFuturesContractData(brokerFuturesContractData):
 
         return expiry_date
 
-    def get_contract_object_with_bc_data(
+    def get_contract_object_with_ig_data(
         self, futures_contract: futuresContract
     ) -> futuresContract:
         """
-        Return contract_object with BC config and correct expiry date added
+        Return contract_object with IG config and correct expiry date added
 
         :param futures_contract:
         :return: modified contract_object
@@ -85,7 +84,7 @@ class IgFuturesContractData(brokerFuturesContractData):
     ) -> futuresContract:
 
         futures_contract_plus = (
-            self.barchart_futures_instrument_data.get_bc_futures_instrument(
+            self.ig_instrument_data.get_ig_fsb_instrument(
                 contract_object.instrument_code
             )
         )
@@ -108,7 +107,7 @@ class IgFuturesContractData(brokerFuturesContractData):
             self.log.warn("Can't find expiry for multiple leg contract here")
             return missing_contract
 
-        expiry_date = self._barchart.get_expiry_date(futures_contract_plus)
+        expiry_date = self.igconnection.get_expiry_date(futures_contract_plus)
 
         if expiry_date is missing_contract or expiry_date is None:
             self.log.warn(
@@ -119,7 +118,7 @@ class IgFuturesContractData(brokerFuturesContractData):
                 datestring = datestring[:6] + "01"
             return expiryDate.from_str(datestring, format="%Y%m%d")
         else:
-            expiry_date = expiryDate.from_str(expiry_date, format="%m/%d/%y")
+            expiry_date = expiryDate.from_str(expiry_date, format="%Y-%m-%dT%H:%M")
 
         return expiry_date
 

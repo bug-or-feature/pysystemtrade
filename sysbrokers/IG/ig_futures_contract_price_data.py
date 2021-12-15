@@ -102,7 +102,11 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         """
 
         if contract_object is missing_contract:
-            self.log.warn(f"Can't get data for {str(contract_object)}")
+            self.log.warn(
+                f"Can't get data for {str(contract_object)}",
+                instrument_code=contract_object.instrument_code,
+                contract_date=contract_object.contract_date.date_str,
+            )
             return futuresContractPrices.create_empty()
 
         # calc dates and freq
@@ -115,7 +119,9 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             self.log.msg(
                 f"Appending IG data: last row of existing {last_index_date}, freq {freq}, "
                 f"start {start_date.strftime('%Y-%m-%d %H:%M:%S')}, "
-                f"end {end_date.strftime('%Y-%m-%d %H:%M:%S')}"
+                f"end {end_date.strftime('%Y-%m-%d %H:%M:%S')}",
+                instrument_code=contract_object.instrument_code,
+                contract_date=contract_object.contract_date.date_str,
             )
         else:
             freq = "D"
@@ -125,7 +131,9 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             self.log.msg(
                 f"New IG data: freq {freq}, "
                 f"start {start_date.strftime('%Y-%m-%d %H:%M:%S')}, "
-                f"end {end_date.strftime('%Y-%m-%d %H:%M:%S')}"
+                f"end {end_date.strftime('%Y-%m-%d %H:%M:%S')}",
+                instrument_code=contract_object.instrument_code,
+                contract_date=contract_object.contract_date.date_str,
             )
 
         prices_df = self.igconnection.get_historical_futures_data_for_contract(
@@ -144,7 +152,11 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             price_data = futuresContractPrices.create_empty()
 
         elif len(prices_df) == 0:
-            self.log.warn(f"No IG price data found for {str(contract_object)}")
+            self.log.warn(
+                f"No IG price data found for {str(contract_object)}",
+                instrument_code=contract_object.instrument_code,
+                contract_date=contract_object.contract_date.date_str,
+            )
             price_data = futuresContractPrices.create_empty()
         else:
             # sometimes the IG epics for info and historical prices don't match. the logic here attempts to
@@ -152,10 +164,18 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             last_df_date = prices_df.index[-1]
             hist_diff = abs((last_df_date - datetime.now()).days)
             if hist_diff <= 3:
-                self.log.msg(f"Found {prices_df.shape[0]} rows of data")
+                self.log.msg(
+                    f"Found {prices_df.shape[0]} rows of data",
+                    instrument_code=contract_object.instrument_code,
+                    contract_date=contract_object.contract_date.date_str,
+                )
                 price_data = futuresContractPrices(prices_df)
             else:
-                self.log.msg(f"Ignoring - IG epic/history config awaiting update")
+                self.log.msg(
+                    f"Ignoring - IG epic/history config awaiting update",
+                    instrument_code=contract_object.instrument_code,
+                    contract_date=contract_object.contract_date.date_str
+                )
                 price_data = futuresContractPrices.create_empty()
 
         # It's important that the data is in local time zone so that this works
