@@ -120,12 +120,10 @@ def check_saved_roll_calendar(
 
 
 def show_expected_rolls_for_config(
-    instrument_code, input_datapath=arg_not_supplied, input_prices=arg_not_supplied
+    instrument_code, path=arg_not_supplied, file=arg_not_supplied
 ):
 
-    rollparameters = csvRollParametersData(
-        datapath="data.futures_spreadbet.csvconfig", filename="fsb_roll_config.csv"
-    )
+    rollparameters = csvRollParametersData(datapath=path, filename=file)
     roll_parameters_object = rollparameters.get_roll_parameters(instrument_code)
     prices = arcticFuturesContractPriceData()
     dict_of_all_futures_contract_prices = prices.get_all_prices_for_instrument(
@@ -136,6 +134,7 @@ def show_expected_rolls_for_config(
         dict_of_futures_contract_prices, roll_parameters_object
     )
 
+    print(f"Approx roll calendar for: {instrument_code}")
     print_full(approx_roll_calendar.tail(20))
 
 
@@ -144,41 +143,19 @@ if __name__ == "__main__":
     # instrument_code = get_valid_instrument_code_from_user(source='single')
 
     # MODIFY DATAPATH IF REQUIRED
-    # instrument_code = 'COFFEE_fsb' x
-    # instrument_code = 'US10_fsb' x
-    # instrument_code = 'ASX_fsb' x
-    # instrument_code = 'EUR_fsb' x
-    # instrument_code = 'US5_fsb' x
-    # instrument_code = 'AEX_fsb' x
-    # instrument_code = 'DOLLAR_fsb' x
-    # instrument_code = 'PALLAD_fsb' x
-    # instrument_code = 'GASOLINE_fsb' x
-    # instrument_code = 'LIVECOW_fsb' x
-    # instrument_code = 'HEATOIL_fsb' x
+    instrument_code = 'CAD_fsb'
+    # instrument_code = 'CRUDE_W_fsb'
+    # instrument_code = 'DAX_fsb'
+    # instrument_code = 'GILT_fsb'
+    # instrument_code = 'NASDAQ_fsb'
+    # instrument_code = 'NIKKEI_fsb'
+    # instrument_code = 'NZD_fsb'
+    # instrument_code = 'SOYOIL_fsb'
+    # instrument_code = 'US30_fsb'
 
-    # instrument_code = 'COPPER_fsb' # FAIL
-
-    # COTTON_fsb
-    # BTP_fsb
-    # CAC_fsb
-    # CHF_fsb
-    # PLAT_fsb
-    # GAS_US_fsb
-    # LEANHOG_fsb
-    # OAT_fsb
-    # FTSE_fsb
-    # JPY_fsb
-    # SILVER_fsb
-    # SOYMEAL_fsb
-    # JGB_fsb
-    # RUSSELL_fsb
-    # RICE_fsb
-    # COCOA_LDN_fsb
-    # OJ_fsb
-
-    # build_and_write_roll_calendar(
-    #     instrument_code,
-    #     output_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_spreadbet/roll_calendars_csv')
+    build_and_write_roll_calendar(
+         instrument_code,
+         output_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_spreadbet/roll_calendars_csv')
 
     # check_saved_roll_calendar("AUD",
     #     #input_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_bc/roll_calendars_csv',
@@ -196,4 +173,5 @@ if __name__ == "__main__":
     # No september contracts available on BC since 2005
     # WHEAT_LDN
 
-    show_expected_rolls_for_config(instrument_code="NASDAQ_fsb")
+    #show_expected_rolls_for_config(instrument_code="US30_fsb",path="data.futures_spreadbet.csvconfig", file="fsb_roll_config.csv" )
+    #show_expected_rolls_for_config(instrument_code="CRUDE_W",path="data.futures.csvconfig", file="rollconfig.csv" )
