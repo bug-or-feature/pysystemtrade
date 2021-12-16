@@ -4,7 +4,9 @@ from sysobjects.contract_dates_and_expiries import expiryDate
 from sysobjects.contracts import futuresContract
 from syslogdiag.log_to_screen import logtoscreen
 from sysbrokers.IG.ig_connection import ConnectionIG
+from sysdata.barchart.bc_connection import bcConnection
 from sysbrokers.IG.ig_instruments_data import IgFsbInstrumentData
+from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from syscore.objects import missing_contract, missing_instrument
 from syscore.dateutils import get_datetime_from_datestring
 
@@ -13,7 +15,9 @@ class IgFuturesContractData(brokerFuturesContractData):
     def __init__(self, log=logtoscreen("IgFsbContractData")):
         super().__init__(log=log)
         self._igconnection = ConnectionIG()
+        self._barchart = bcConnection()
         self._instrument_data = IgFsbInstrumentData(log=self.log)
+        self._bc_instrument_data = BarchartFuturesInstrumentData(log=self.log)
 
     def __repr__(self):
         return f"IG FSB per contract data: {self._igconnection}"
@@ -23,14 +27,22 @@ class IgFuturesContractData(brokerFuturesContractData):
         return self._igconnection
 
     @property
+    def barchart(self):
+        return self._barchart
+
+    @property
     def ig_instrument_data(self) -> IgFsbInstrumentData:
         return self._instrument_data
+
+    @property
+    def bc_instrument_data(self) -> BarchartFuturesInstrumentData:
+        return self._bc_instrument_data
 
     def get_actual_expiry_date_for_single_contract(
         self, futures_contract: futuresContract
     ) -> expiryDate:
         """
-        Get the actual expiry date of a contract from IG
+        Get the actual expiry date of a contract
 
         :param futures_contract: type futuresContract
         :return: YYYYMMDD or None
@@ -47,21 +59,21 @@ class IgFuturesContractData(brokerFuturesContractData):
             log.warn("Can't find expiry for multiple leg contract here")
             return missing_contract
 
-        contract_object_with_bc_data = self.get_contract_object_with_ig_data(
+        contract_object_with_config_data = self.get_contract_object_with_config_data(
             futures_contract
         )
-        if contract_object_with_bc_data is missing_contract:
+        if contract_object_with_config_data is missing_contract:
             return missing_contract
 
-        expiry_date = contract_object_with_bc_data.expiry_date
+        expiry_date = contract_object_with_config_data.expiry_date
 
         return expiry_date
 
-    def get_contract_object_with_ig_data(
+    def get_contract_object_with_config_data(
         self, futures_contract: futuresContract
     ) -> futuresContract:
         """
-        Return contract_object with IG config and correct expiry date added
+        Return contract_object with config data and correct expiry date added
 
         :param futures_contract:
         :return: modified contract_object
@@ -83,11 +95,19 @@ class IgFuturesContractData(brokerFuturesContractData):
         self, contract_object: futuresContract
     ) -> futuresContract:
 
-        futures_contract_plus = (
-            self.ig_instrument_data.get_ig_fsb_instrument(
-                contract_object.instrument_code
+        if self._is_futures_spread_bet(contract_object):
+            futures_contract_plus = (
+                self.ig_instrument_data.get_ig_fsb_instrument(
+                    contract_object.instrument_code
+                )
             )
-        )
+        else:
+            futures_contract_plus = (
+                self.bc_instrument_data.get_bc_futures_instrument(
+                    contract_object.instrument_code
+                )
+            )
+
         if futures_contract_plus is missing_instrument:
             return missing_contract
 
@@ -107,7 +127,12 @@ class IgFuturesContractData(brokerFuturesContractData):
             self.log.warn("Can't find expiry for multiple leg contract here")
             return missing_contract
 
-        expiry_date = self.igconnection.get_expiry_date(futures_contract_plus)
+        date_format_str = "%Y-%m-%dT%H:%M"
+        if self._is_futures_spread_bet(futures_contract_plus):
+            expiry_date = self.igconnection.get_expiry_date(futures_contract_plus)
+        else:
+            expiry_date = self._barchart.get_expiry_date(futures_contract_plus)
+            date_format_str = "%m/%d/%y"
 
         if expiry_date is missing_contract or expiry_date is None:
             self.log.warn(
@@ -118,9 +143,13 @@ class IgFuturesContractData(brokerFuturesContractData):
                 datestring = datestring[:6] + "01"
             return expiryDate.from_str(datestring, format="%Y%m%d")
         else:
-            expiry_date = expiryDate.from_str(expiry_date, format="%Y-%m-%dT%H:%M")
+            expiry_date = expiryDate.from_str(expiry_date, format=date_format_str)
 
         return expiry_date
+
+    # TODO common
+    def _is_futures_spread_bet(self, contract_object: futuresContract):
+        return "_fsb" in contract_object.instrument_code
 
     def get_min_tick_size_for_contract(self, contract_object: futuresContract) -> float:
         raise NotImplementedError("Not implemented! build it now")

@@ -207,7 +207,6 @@ class ConnectionIG(object):
         try:
             info = ig_service.fetch_market_by_epic(epic)
             expiry = info["instrument"]["expiryDetails"]["lastDealingDate"]
-            print(expiry)
 
         except Exception as exc:
             self.log.error(f"Problem getting expiry date for '{futures_contract.key}': {exc}")
