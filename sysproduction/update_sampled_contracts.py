@@ -360,6 +360,14 @@ def update_expiry_for_contract(contract_object: futuresContract, data: dataBlob)
         )
     else:
         # Different!
+        # AG TODO remove once auto epic mapping is done
+        delta = abs(broker_expiry_date - db_expiry_date)
+        if delta.days > 45:
+            log.critical(
+                f"Large difference ({delta}) between broker and db expiry "
+                f"dates for {contract_object.key} - check config"
+            )
+
         update_contract_object_with_new_expiry_date(
             data=data,
             broker_expiry_date=broker_expiry_date,
