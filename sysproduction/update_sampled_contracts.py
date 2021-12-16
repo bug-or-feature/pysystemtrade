@@ -364,7 +364,7 @@ def update_expiry_for_contract(contract_object: futuresContract, data: dataBlob)
         delta = abs(broker_expiry_date - db_expiry_date)
         if delta.days > 45:
             log.critical(
-                f"Large difference ({delta}) between broker and db expiry "
+                f"Large difference ({delta.days}) between broker and db expiry "
                 f"dates for {contract_object.key} - check config"
             )
 

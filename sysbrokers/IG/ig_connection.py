@@ -1,5 +1,7 @@
 import logging
 from datetime import datetime
+import yaml
+from functools import cached_property
 
 import pandas as pd
 from pandas import json_normalize
@@ -11,6 +13,8 @@ from sysdata.config.production_config import get_production_config
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
+from syscore.fileutils import get_filename_for_package
+from syscore.objects import missing_contract
 
 
 class ConnectionIG(object):
@@ -22,9 +26,6 @@ class ConnectionIG(object):
         self._ig_acc_type = production_config.get_element_or_missing_data("ig_acc_type")
         self._ig_acc_number = production_config.get_element_or_missing_data(
             "ig_acc_number"
-        )
-        self._ig_config_map = production_config.get_element_or_missing_data(
-            "ig_epic_map"
         )
         self._log = log
         logging.basicConfig(level=logging.DEBUG)
@@ -50,6 +51,13 @@ class ConnectionIG(object):
     @property
     def service(self):
         return
+
+    @cached_property
+    def epic_map(self) -> dict:
+        epic_map_file = get_filename_for_package("sysbrokers.IG.epic_map.yaml")
+        with open(epic_map_file) as file_to_parse:
+            epic_map_dict = yaml.load(file_to_parse, Loader=yaml.FullLoader)
+        return epic_map_dict['ig_epic_map']
 
     def get_account_number(self):
         return self._ig_acc_number
@@ -200,21 +208,20 @@ class ConnectionIG(object):
         :param futures_contract:
         :return: str
         """
-
-        ig_service = self._create_ig_session()
         epic = self.get_ig_epic(futures_contract)
 
-        try:
-            info = ig_service.fetch_market_by_epic(epic)
-            expiry = info["instrument"]["expiryDetails"]["lastDealingDate"]
-
-        except Exception as exc:
-            self.log.error(f"Problem getting expiry date for '{futures_contract.key}': {exc}")
-            return None
-
-        ig_service.logout()
-
-        return expiry
+        if epic is not None:
+            ig_service = self._create_ig_session()
+            try:
+                info = ig_service.fetch_market_by_epic(epic)
+                expiry = info["instrument"]["expiryDetails"]["lastDealingDate"]
+            except Exception as exc:
+                self.log.error(f"Problem getting expiry date for '{futures_contract.key}': {exc}")
+                return missing_contract
+            ig_service.logout()
+            return expiry
+        else:
+            return missing_contract
 
     # TODO properly
     def get_ig_epic(self, futures_contract: futuresContract):
@@ -226,8 +233,8 @@ class ConnectionIG(object):
         :rtype: str
         """
 
-        if futures_contract.key in self._ig_config_map:
-            return self._ig_config_map[futures_contract.key]
+        if futures_contract.key in self.epic_map:
+            return self.epic_map[futures_contract.key]
         else:
             return None
 
@@ -283,4 +290,5 @@ class ConnectionIG(object):
         :return: whether IG knows about the contract
         :rtype: bool
         """
-        return futures_contract.key in self._ig_config_map
+        return futures_contract.key in self.epic_map
+
