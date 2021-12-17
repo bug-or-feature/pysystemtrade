@@ -169,14 +169,16 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
                     instrument_code=contract_object.instrument_code,
                     contract_date=contract_object.contract_date.date_str,
                 )
-                price_data = futuresContractPrices(prices_df)
             else:
-                self.log.msg(
-                    f"Ignoring - IG epic/history config awaiting update",
+                self.log.warn(
+                    f"IG epic/history config does not currently match. "
+                    f"Attempting to get snapshot price data instead",
                     instrument_code=contract_object.instrument_code,
                     contract_date=contract_object.contract_date.date_str
                 )
-                price_data = futuresContractPrices.create_empty()
+                prices_df = self.igconnection.get_snapshot_price_data_for_contract(contract_object)
+
+            price_data = futuresContractPrices(prices_df)
 
         # It's important that the data is in local time zone so that this works
         price_data = price_data.remove_future_data()

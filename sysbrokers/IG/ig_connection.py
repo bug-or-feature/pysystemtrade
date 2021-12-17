@@ -18,7 +18,7 @@ from syscore.objects import missing_contract
 
 
 class ConnectionIG(object):
-    def __init__(self, log=logtoscreen("ConnectionIG")):
+    def __init__(self, log=logtoscreen("ConnectionIG", log_level="on")):
         production_config = get_production_config()
         self._ig_username = production_config.get_element_or_missing_data("ig_username")
         self._ig_password = production_config.get_element_or_missing_data("ig_password")
@@ -200,6 +200,57 @@ class ConnectionIG(object):
 
         except Exception as ex:
             self.log.error(f"Problem getting historical data: {ex}")
+            return missing_data
+
+    def get_snapshot_price_data_for_contract(
+            self,
+            futures_contract: futuresContract,
+    ) -> pd.DataFrame:
+
+        epic = self.get_ig_epic(futures_contract)
+
+        if epic is not None:
+
+            self.log.msg(
+                f"Getting snapshot price data for {epic} ({futures_contract.key})"
+            )
+            ig_service = self._create_ig_session()
+            snapshot_rows = []
+            now = datetime.now()
+            try:
+                info = ig_service.fetch_market_by_epic(epic)
+                update_time = info["snapshot"]["updateTime"]
+                bid = info["snapshot"]["bid"]
+                offer = info["snapshot"]["offer"]
+                high = info["snapshot"]["high"]
+                low = info["snapshot"]["low"]
+                mid = (bid + offer) / 2
+                datetime_str = f"{now.strftime('%Y-%m-%d')}T{update_time}"
+
+                snapshot_rows.append(
+                    {
+                        "DateTime": datetime_str,
+                        "OPEN": mid,
+                        "HIGH": high,
+                        "LOW": low,
+                        "FINAL": mid,
+                        "VOLUME": 1
+                    }
+                )
+
+                df = pd.DataFrame(snapshot_rows)
+                df["Date"] = pd.to_datetime(df["DateTime"], format="%Y-%m-%dT%H:%M:%S")
+                df.set_index("Date", inplace=True)
+                df.index = df.index.tz_localize(tz=None)
+                new_cols = ["OPEN", "HIGH", "LOW", "FINAL", "VOLUME"]
+                df = df[new_cols]
+
+            except Exception as exc:
+                self.log.error(f"Problem getting expiry date for '{futures_contract.key}': {exc}")
+                return missing_data
+            ig_service.logout()
+            return df
+        else:
             return missing_data
 
     def get_expiry_date(self, futures_contract: futuresContract):
