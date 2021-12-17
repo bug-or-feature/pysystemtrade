@@ -11,7 +11,7 @@ from syscore.pdutils import print_full
 from sysdata.config.configdata import Config
 from sysdata.config.production_config import get_production_config
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
-from sysdata.igcsv.csv_fsb_contract_prices import CsvFsbContractPriceData
+from sysdata.csv.csv_fsb_contract_prices import CsvFsbContractPriceData
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysdata.sim.csv_fsb_sim_data import csvFsbSimData
 from sysdata.sim.db_fsb_sim_data import dbFsbSimData
