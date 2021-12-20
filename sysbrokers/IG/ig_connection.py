@@ -69,10 +69,11 @@ class ConnectionIG(object):
         # data = data.loc[data["accountType"] == "SPREADBET"]
         balance = float(data["balance"].loc[1])
         profitLoss = float(data["profitLoss"].loc[1])
-        capital = balance + profitLoss
+        tot_capital = balance + profitLoss
+        available_capital = tot_capital * 0.8 # leave 20% for margin
         ig_service.logout()
 
-        return capital
+        return available_capital
 
     def get_positions(self):
         ig_service = self._create_ig_session()
