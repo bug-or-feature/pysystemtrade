@@ -30,11 +30,11 @@ def run_status_report():
     )
 
 
-def run_roll_report():
+def run_roll_report(instrument_code=ALL_ROLL_INSTRUMENTS):
     run_solo_report(
         title="Roll report",
         function="sysproduction.reporting.roll_report.roll_info",
-        instrument_code=ALL_ROLL_INSTRUMENTS,
+        instrument_code=instrument_code,
     )
 
 
