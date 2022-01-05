@@ -6,8 +6,16 @@ from sysobjects.instruments import futuresInstrument
 class IgInstrumentConfigData:
     epic: str
     currency: str
-    ig_multiplier: float
-    ig_inverse: bool = False
+    multiplier: float
+    inverse: bool = False
+    period_str: str = ""
+    margin: float = 0.1
+
+    def epic_periods(self) -> []:
+        if self.period_str == "na":
+            return []
+        else:
+            return self.period_str.split("|")
 
 
 @dataclass
