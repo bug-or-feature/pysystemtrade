@@ -143,15 +143,15 @@ if __name__ == "__main__":
     # instrument_code = get_valid_instrument_code_from_user(source='single')
 
     # MODIFY DATAPATH IF REQUIRED
-    instrument_code = 'CAD_fsb'
-    # instrument_code = 'CRUDE_W_fsb'
-    # instrument_code = 'DAX_fsb'
-    # instrument_code = 'GILT_fsb'
-    # instrument_code = 'NASDAQ_fsb'
-    # instrument_code = 'NIKKEI_fsb'
-    # instrument_code = 'NZD_fsb'
-    # instrument_code = 'SOYOIL_fsb'
-    # instrument_code = 'US30_fsb'
+    # instrument_code = 'CAD_fsb' x
+    # instrument_code = 'CRUDE_W_fsb' x
+    # instrument_code = 'DAX_fsb' x
+    # instrument_code = 'GILT_fsb' x
+    # instrument_code = 'NASDAQ_fsb' x
+    # instrument_code = 'NIKKEI_fsb' x
+    # instrument_code = 'NZD_fsb' x
+    #instrument_code = 'US30_fsb' x
+    instrument_code = 'SOYOIL_fsb' # needs more data
 
     build_and_write_roll_calendar(
          instrument_code,
