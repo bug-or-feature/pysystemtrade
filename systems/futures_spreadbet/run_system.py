@@ -88,7 +88,7 @@ def run_system():
     for instr in instr_list:
 
         # config
-        instr_obj = system.data._get_instrument_object_with_cost_data(instr)
+        instr_obj = system.data.get_instrument_meta_data(instr)
         asset_class = instr_obj.meta_data.AssetClass
         spread_in_points = instr_obj.meta_data.Slippage * 2
         min_bet_per_point = instr_obj.meta_data.Pointsize
@@ -213,8 +213,8 @@ def run_system():
     print(f"\nSharpe: {system.accounts.portfolio().sharpe()}\n")
 
     # portfolio.curve().plot()
-    portfolio_percent.curve().plot()
-    show()
+    #portfolio_percent.curve().plot()
+    #show()
 
     if do_estimate:
         write_estimate_file(system)
