@@ -1,5 +1,5 @@
 import pandas as pd
-from functools import lru_cache
+from functools import cached_property
 
 from sysbrokers.IG.ig_instruments import (
     IgInstrumentConfigData,
@@ -80,8 +80,7 @@ class IgFsbInstrumentData(brokerFuturesInstrumentData):
         return [i for i, ltr in enumerate(search_str) if ltr == ch]
 
     @classmethod
-    @property
-    @lru_cache()
+    @cached_property
     def config(cls) -> IGConfig:
 
         try:
