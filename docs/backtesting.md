@@ -2315,7 +2315,7 @@ returns, volatility, and normalised returns (return over volatility).
 As we are trading futures the raw data class has some extra methods needed to calculate the carry
 rule for futures, and to expose the intermediate calculations.
 
-(Versions prior to 1.06 had a seperate FuturesRawData class)
+(Versions prior to 1.06 had a separate FuturesRawData class)
 
 <a name="vol_calc"> </a>
 
