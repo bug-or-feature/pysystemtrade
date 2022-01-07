@@ -19,7 +19,7 @@ else:
 
 
 data_out = mongoFuturesInstrumentData()
-data_in = csvFuturesInstrumentData(datapath=DEFAULT_CONFIG_PATH, filename=file_name)
+data_in = csvFuturesInstrumentData(datapath=DEFAULT_CONFIG_PATH)
 print(data_in)
 instrument_list = data_in.get_list_of_instruments()
 
