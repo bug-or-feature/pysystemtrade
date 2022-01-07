@@ -1,7 +1,3 @@
-import matplotlib
-
-matplotlib.use("TkAgg")
-
 from syscore.objects import arg_not_supplied
 
 # from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
@@ -55,3 +51,5 @@ def futures_system(
     system.set_logging_level("on")
 
     return system
+
+

@@ -54,9 +54,13 @@ class logToDb(logger):
     def add_log_record(self, log_entry):
         raise NotImplementedError
 
-    def email_user(self, log_entry):
+    def email_user(self, log_entry: logEntry):
         data = self.data
-        send_production_mail_msg(data, str(log_entry), "*CRITICAL ERROR*")
+        log_entry_text= str(log_entry.text)
+        subject_line = log_entry_text[:30]
+        send_production_mail_msg(data,
+                                 log_entry_text,
+                                 "*CRITICAL* ERROR: %s" % subject_line)
 
 
 class logData(baseData):
