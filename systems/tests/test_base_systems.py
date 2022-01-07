@@ -10,7 +10,6 @@ from sysdata.sim.sim_data import simData
 from sysdata.config.configdata import Config
 
 
-@unittest.SkipTest
 class Test(unittest.TestCase):
     def setUp(self):
         class testStage(SystemStage):
