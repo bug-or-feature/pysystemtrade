@@ -1,5 +1,5 @@
 Instrument,HoldRollCycle,RollOffsetDays,CarryOffset,PricedRollCycle,ExpiryOffset
-BUXL_fsb,HMUZ,-5,1,HMUZ,7
+BUXL_fsb,HMUZ,-1,1,HMUZ,7
 CAD_fsb,HMUZ,-5,1,HMUZ,16
 CRUDE_W_fsb,FGHJKMNQUVXZ,-5,-1,FGHJKMNQUVXZ,-10
 EUROSTX_fsb,HMUZ,-5,1,HMUZ,15
