@@ -48,17 +48,15 @@ class BarchartFuturesContractData(brokerFuturesContractData):
             log.warn("Can't find expiry for multiple leg contract here")
             return missing_contract
 
-        contract_object_with_bc_data = self.get_contract_object_with_bc_data(
-            futures_contract
-        )
-        if contract_object_with_bc_data is missing_contract:
+        contract_object_plus = self.get_contract_object_with_config_data(futures_contract)
+        if contract_object_plus is missing_contract:
             return missing_contract
 
-        expiry_date = contract_object_with_bc_data.expiry_date
+        expiry_date = contract_object_plus.expiry_date
 
         return expiry_date
 
-    def get_contract_object_with_bc_data(
+    def get_contract_object_with_config_data(
         self, futures_contract: futuresContract
     ) -> futuresContract:
         """

@@ -143,7 +143,7 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
         """
 
         contract_object_plus = (
-            self.futures_contract_data.get_contract_object_with_bc_data(contract_object)
+            self.futures_contract_data.get_contract_object_with_config_data(contract_object)
         )
 
         if contract_object_plus is missing_contract:
