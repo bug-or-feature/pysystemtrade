@@ -5,6 +5,7 @@ from sysbrokers.IG.ig_instruments import (
     IgInstrumentConfigData,
     FsbInstrumentWithIgConfigData,
 )
+from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 
 from syscore.fileutils import get_filename_for_package
@@ -21,16 +22,30 @@ class IGConfig(pd.DataFrame):
     pass
 
 
-class IgFsbInstrumentData(brokerFuturesInstrumentData):
+class IgFuturesInstrumentData(brokerFuturesInstrumentData):
     """
     IG Futures Spread Bet instrument data
     """
 
-    def __init__(self, log=logtoscreen("IgFsbInstrumentData")):
+    def __init__(self, broker_conn: IGConnection = None, log=logtoscreen("IgFsbInstrumentData")):
         super().__init__(log=log)
+        self._igconnection = broker_conn
 
     def __repr__(self):
         return "IG Futures Spread Bet instrument data"
+
+    @cached_property
+    def config(self) -> IGConfig:
+
+        try:
+            df = pd.read_csv(IG_FSB_CONFIG_FILE)
+            return IGConfig(df)
+
+        except BaseException:
+            self.log.warn("Can't read file %s" % IG_FSB_CONFIG_FILE)
+            config_data = missing_file
+
+        return config_data
 
     def get_ig_fsb_instrument(self, instr_code: str) -> FsbInstrumentWithIgConfigData:
         new_log = self.log.setup(instrument_code=instr_code)
@@ -79,37 +94,29 @@ class IgFsbInstrumentData(brokerFuturesInstrumentData):
     def find_char_instances(self, search_str, ch):
         return [i for i, ltr in enumerate(search_str) if ltr == ch]
 
-    @classmethod
-    @cached_property
-    def config(cls) -> IGConfig:
 
-        try:
-            df = pd.read_csv(IG_FSB_CONFIG_FILE)
-            return IGConfig(df)
-
-        except BaseException:
-            cls.log.warn("Can't read file %s" % IG_FSB_CONFIG_FILE)
-            config_data = missing_file
-
-        return config_data
 
 
 def get_instrument_object_from_config(
         instrument_code: str, config: IGConfig = None
 ) -> FsbInstrumentWithIgConfigData:
 
-    config_row = config[config.Instrument == instrument_code]
+    config_row = config[config.Instrument == f"{instrument_code}"]
     epic = config_row.IGEpic.values[0]
     currency = config_row.IGCurrency.values[0]
     multiplier = config_row.IGMultiplier.values[0]
     inverse = config_row.IGInverse.values[0]
+    source = config_row.Source.values[0]
+    bc_code = config_row.BarchartCode.values[0]
 
     instrument = futuresInstrument(instrument_code)
     ig_data = IgInstrumentConfigData(
         epic=epic,
         currency=currency,
-        ig_multiplier=multiplier,
-        ig_inverse=inverse
+        multiplier=multiplier,
+        inverse=inverse,
+        source=source,
+        bc_code=bc_code
     )
 
     futures_instrument_with_ig_data = FsbInstrumentWithIgConfigData(

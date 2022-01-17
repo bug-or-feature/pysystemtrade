@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from sysbrokers.IG.ig_connection import ConnectionIG
-from sysbrokers.IG.ig_instruments_data import IgFsbInstrumentData
+from sysbrokers.IG.ig_connection import IGConnection
+from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysbrokers.IG.ig_positions import from_ig_positions_to_dict
 from sysbrokers.broker_contract_position_data import brokerContractPositionData
 from syscore.objects import arg_not_supplied, missing_contract
@@ -15,13 +15,13 @@ from sysobjects.production.positions import contractPosition, listOfContractPosi
 
 
 class IgContractPositionData(brokerContractPositionData):
-    def __init__(self, log=logtoscreen("IgContractPositionData")):
-        self._igconnection = ConnectionIG()
+    def __init__(self, broker_conn: IGConnection, log=logtoscreen("IgContractPositionData")):
+        self._igconnection = broker_conn
         self._contract_data = mongoFuturesContractData()
         super().__init__(log=log)
 
     @property
-    def igconnection(self) -> ConnectionIG:
+    def igconnection(self) -> IGConnection:
         return self._igconnection
 
     def __repr__(self):
@@ -32,8 +32,8 @@ class IgContractPositionData(brokerContractPositionData):
         return self._contract_data
 
     @property
-    def futures_instrument_data(self) -> IgFsbInstrumentData:
-        return IgFsbInstrumentData(log=self.log)
+    def futures_instrument_data(self) -> IgFuturesInstrumentData:
+        return IgFuturesInstrumentData(self.igconnection, log=self.log)
 
     def get_all_current_positions_as_list_with_contract_objects(
         self, account_id=arg_not_supplied

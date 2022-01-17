@@ -17,7 +17,7 @@ from syscore.fileutils import get_filename_for_package
 from syscore.objects import missing_contract
 
 
-class ConnectionIG(object):
+class IGConnection(object):
     def __init__(self, log=logtoscreen("ConnectionIG", log_level="on")):
         production_config = get_production_config()
         self._ig_username = production_config.get_element_or_missing_data("ig_username")
@@ -29,6 +29,7 @@ class ConnectionIG(object):
         )
         self._log = log
         logging.basicConfig(level=logging.DEBUG)
+        self._session = self._create_ig_session()
 
     @property
     def log(self):
@@ -45,12 +46,13 @@ class ConnectionIG(object):
             acc_number=self._ig_acc_number,
             retryer=retryer,
         )
-        ig_service.create_session(version="3")
+        ig_service.create_session()
+        #ig_service.create_session(version="3")
         return ig_service
 
     @property
     def service(self):
-        return
+        return self._session
 
     @cached_property
     def epic_map(self) -> dict:
@@ -59,30 +61,30 @@ class ConnectionIG(object):
             epic_map_dict = yaml.load(file_to_parse, Loader=yaml.FullLoader)
         return epic_map_dict['ig_epic_map']
 
+    def logout(self):
+        self._session.logout()
+
     def get_account_number(self):
         return self._ig_acc_number
 
     def get_capital(self, account: str):
-        ig_service = self._create_ig_session()
-        data = ig_service.fetch_accounts()
+        data = self.service.fetch_accounts()
         data = data.loc[data["accountId"] == account]
         # data = data.loc[data["accountType"] == "SPREADBET"]
         balance = float(data["balance"].loc[1])
         profitLoss = float(data["profitLoss"].loc[1])
         tot_capital = balance + profitLoss
         available_capital = tot_capital * 0.8 # leave 20% for margin
-        ig_service.logout()
 
         return available_capital
 
     def get_positions(self):
-        ig_service = self._create_ig_session()
-        positions = ig_service.fetch_open_positions()
+        positions = self.service.fetch_open_positions()
         # print_full(positions)
         result_list = []
         for i in range(0, len(positions)):
             pos = dict()
-            pos["account"] = ig_service.ACC_NUMBER
+            pos["account"] = self.service.ACC_NUMBER
             pos["name"] = positions.iloc[i]["instrumentName"]
             pos["size"] = positions.iloc[i]["size"]
             pos["dir"] = positions.iloc[i]["direction"]
@@ -96,13 +98,10 @@ class ConnectionIG(object):
             pos["instrumentType"] = positions.iloc[i]["instrumentType"]
             result_list.append(pos)
 
-        ig_service.logout()
-
         return result_list
 
     def get_activity(self):
-        ig_service = self._create_ig_session()
-        activities = ig_service.fetch_account_activity_by_period(48 * 60 * 60 * 1000)
+        activities = self.service.fetch_account_activity_by_period(48 * 60 * 60 * 1000)
         test_epics = ["CS.D.GBPUSD.TODAY.IP", "IX.D.FTSE.DAILY.IP"]
         activities = activities.loc[~activities["epic"].isin(test_epics)]
 
@@ -120,8 +119,6 @@ class ConnectionIG(object):
             action["expiry"] = row["period"]
 
             result_list.append(action)
-
-        ig_service.logout()
 
         return result_list
 
@@ -171,14 +168,12 @@ class ConnectionIG(object):
             # if hasattr(contract_object.instrument, 'freq') and contract_object.instrument.freq:
             #     bar_freq = from_config_frequency_to_frequency(contract_object.instrument.freq)
 
-            ig_service = self._create_ig_session()
-
             self.log.msg(
                 f"Getting historic data for {epic} ('{start_date.strftime('%Y-%m-%dT%H:%M:%S')}' "
                 f"to '{end_date.strftime('%Y-%m-%dT%H:%M:%S')}')"
             )
             try:
-                response = ig_service.fetch_historical_prices_by_epic(
+                response = self.service.fetch_historical_prices_by_epic(
                     epic=epic,
                     resolution=bar_freq,
                     start_date=start_date.strftime("%Y-%m-%dT%H:%M:%S"),
@@ -194,8 +189,6 @@ class ConnectionIG(object):
                     == "error.public-api.exceeded-account-historical-data-allowance"
                 ):
                     self.log.error(f"No historic data allowance remaining, yikes!")
-
-            ig_service.logout()
 
             return df
 
@@ -215,11 +208,10 @@ class ConnectionIG(object):
             self.log.msg(
                 f"Getting snapshot price data for {epic} ({futures_contract.key})"
             )
-            ig_service = self._create_ig_session()
             snapshot_rows = []
             now = datetime.now()
             try:
-                info = ig_service.fetch_market_by_epic(epic)
+                info = self.service.fetch_market_by_epic(epic)
                 update_time = info["snapshot"]["updateTime"]
                 bid = info["snapshot"]["bid"]
                 offer = info["snapshot"]["offer"]
@@ -249,7 +241,6 @@ class ConnectionIG(object):
             except Exception as exc:
                 self.log.error(f"Problem getting expiry date for '{futures_contract.key}': {exc}")
                 return missing_data
-            ig_service.logout()
             return df
         else:
             return missing_data
@@ -263,14 +254,12 @@ class ConnectionIG(object):
         epic = self.get_ig_epic(futures_contract)
 
         if epic is not None:
-            ig_service = self._create_ig_session()
             try:
-                info = ig_service.fetch_market_by_epic(epic)
+                info = self.service.fetch_market_by_epic(epic)
                 expiry = info["instrument"]["expiryDetails"]["lastDealingDate"]
             except Exception as exc:
                 self.log.error(f"Problem getting expiry date for '{futures_contract.key}': {exc}")
                 return missing_contract
-            ig_service.logout()
             return expiry
         else:
             return missing_contract

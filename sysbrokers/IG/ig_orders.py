@@ -2,15 +2,13 @@ from ib_insync import Trade as ibTrade
 from datetime import datetime
 from copy import copy
 
-from sysbrokers.IB.ib_futures_contracts_data import ibFuturesContractData
-from sysbrokers.IG.ig_instruments_data import IgFsbInstrumentData
-from sysbrokers.IG.ig_fsb_contract_data import IgFuturesContractData
-from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData
+from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
+from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
 from sysbrokers.IB.ib_translate_broker_order_objects import (
     create_broker_order_from_trade_with_contract,
     ibBrokerOrder,
 )
-from sysbrokers.IG.ig_connection import ConnectionIG
+from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.IB.ib_translate_broker_order_objects import (
     tradeWithContract,
     ibOrderCouldntCreateException,
@@ -90,15 +88,17 @@ class ibOrderWithControls(orderWithControls):
 
 
 class IgExecutionStackData(brokerExecutionStackData):
-    def __init__(self, log=logtoscreen("IgExecutionStackData")):
+    def __init__(self, broker_conn: IGConnection, log=logtoscreen("IgExecutionStackData")):
         super().__init__(log=log)
-        self._igconnection = ConnectionIG()
+        self._igconnection = broker_conn
+        self._ig_futures_instrument_data = IgFuturesInstrumentData(broker_conn, log=self.log)
+        self._ig_futures_contract_data = IgFuturesContractData(broker_conn, log=self.log)
 
     def __repr__(self):
         return "IG orders %s" % str(self._igconnection)
 
     @property
-    def igconnection(self) -> ConnectionIG:
+    def igconnection(self) -> IGConnection:
         return self._igconnection
 
     # @property
@@ -126,11 +126,11 @@ class IgExecutionStackData(brokerExecutionStackData):
 
     @property
     def futures_contract_data(self) -> IgFuturesContractData:
-        return IgFuturesContractData(log=self.log)
+        return self._ig_futures_contract_data
 
     @property
-    def futures_instrument_data(self) -> IgFsbInstrumentData:
-        return IgFsbInstrumentData(log=self.log)
+    def futures_instrument_data(self) -> IgFuturesInstrumentData:
+        return self._ig_futures_instrument_data
 
     def get_list_of_broker_orders_with_account_id(
         self, account_id: str = arg_not_supplied

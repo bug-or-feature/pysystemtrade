@@ -4,7 +4,7 @@ import sys
 
 import pandas as pd
 
-from sysbrokers.IG.ig_connection import ConnectionIG
+from sysbrokers.IG.ig_connection import IGConnection
 from syscore.dateutils import ROOT_BDAYS_INYEAR
 from syscore.fileutils import get_filename_for_package
 from syscore.pdutils import print_full
@@ -42,7 +42,7 @@ INSTR_TARGET_RISK = 0.568  # 8-14 instruments
 
 CAPITAL_PER_INSTR = 8000.00
 
-conn = ConnectionIG()
+conn = IGConnection()
 
 # stop loss fraction
 STOP_LOSS_FRACTION = 0.5

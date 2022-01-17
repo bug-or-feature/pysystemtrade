@@ -3,20 +3,20 @@ from sysbrokers.broker_futures_contract_data import brokerFuturesContractData
 from sysobjects.contract_dates_and_expiries import expiryDate
 from sysobjects.contracts import futuresContract
 from syslogdiag.log_to_screen import logtoscreen
-from sysbrokers.IG.ig_connection import ConnectionIG
+from sysbrokers.IG.ig_connection import IGConnection
 from sysdata.barchart.bc_connection import bcConnection
-from sysbrokers.IG.ig_instruments_data import IgFsbInstrumentData
+from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from syscore.objects import missing_contract, missing_instrument
 from syscore.dateutils import get_datetime_from_datestring
 
 
 class IgFuturesContractData(brokerFuturesContractData):
-    def __init__(self, log=logtoscreen("IgFsbContractData")):
+    def __init__(self, broker_conn: IGConnection, log=logtoscreen("IgFuturesContractData")):
         super().__init__(log=log)
-        self._igconnection = ConnectionIG()
+        self._igconnection = broker_conn
         self._barchart = bcConnection()
-        self._instrument_data = IgFsbInstrumentData(log=self.log)
+        self._instrument_data = IgFuturesInstrumentData(broker_conn, log=self.log)
         self._bc_instrument_data = BarchartFuturesInstrumentData(log=self.log)
 
     def __repr__(self):
@@ -31,7 +31,7 @@ class IgFuturesContractData(brokerFuturesContractData):
         return self._barchart
 
     @property
-    def ig_instrument_data(self) -> IgFsbInstrumentData:
+    def ig_instrument_data(self) -> IgFuturesInstrumentData:
         return self._instrument_data
 
     @property
@@ -70,24 +70,27 @@ class IgFuturesContractData(brokerFuturesContractData):
         return expiry_date
 
     def get_contract_object_with_config_data(
-        self, futures_contract: futuresContract
+        self, futures_contract: futuresContract, requery_expiries: bool = True
     ) -> futuresContract:
         """
         Return contract_object with config data and correct expiry date added
 
         :param futures_contract:
         :return: modified contract_object
+        :param requery_expiries:
+        :type requery_expiries:
         """
 
         futures_contract_plus = self._get_contract_object_plus(futures_contract)
         if futures_contract_plus is missing_contract:
             return missing_contract
 
-        futures_contract_plus = (
-            futures_contract_plus.update_expiry_dates_one_at_a_time_with_method(
-                self._get_actual_expiry_date_given_single_contract_plus
+        if requery_expiries:
+            futures_contract_plus = (
+                futures_contract_plus.update_expiry_dates_one_at_a_time_with_method(
+                    self._get_actual_expiry_date_given_single_contract_plus
+                )
             )
-        )
 
         return futures_contract_plus
 

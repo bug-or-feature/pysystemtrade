@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 import pytz
 
-from sysbrokers.IG.ig_connection import ConnectionIG
+from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_futures_contract_price_data import brokerFuturesContractPriceData
+from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from syscore.objects import missing_contract, missing_data
 from sysdata.arctic.arctic_futures_per_contract_prices import (
@@ -20,13 +21,14 @@ from sysobjects.futures_per_contract_prices import futuresContractPrices
 
 
 class IgFuturesContractPriceData(brokerFuturesContractPriceData):
-    def __init__(self, log=logtoscreen("IgFuturesContractPriceData", log_level="on")):
+    def __init__(self, broker_conn: IGConnection, log=logtoscreen("IgFuturesContractPriceData", log_level="on")):
         super().__init__(log=log)
-        self._igconnection = ConnectionIG()
+        self._igconnection = broker_conn
         self._barchart = bcConnection()
         self._futures_contract_data = BarchartFuturesContractData(
             barchart=self._barchart, log=self.log
         )
+        self._fsb_contract_data = IgFuturesContractData(broker_conn, log=self.log)
         self._existing_prices = arcticFuturesContractPriceData()
         self._futures_instrument_data = BarchartFuturesInstrumentData(log=self.log)
 
@@ -34,12 +36,16 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         return "IG/Barchart Spreadbet Futures per contract price data"
 
     @property
-    def igconnection(self) -> ConnectionIG:
+    def igconnection(self) -> IGConnection:
         return self._igconnection
 
     @property
     def futures_contract_data(self) -> BarchartFuturesContractData:
         return self._futures_contract_data
+
+    @property
+    def fsb_contract_data(self) -> IgFuturesContractData:
+        return self._fsb_contract_data
 
     @property
     def barchart(self):
@@ -89,11 +95,11 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         :return: data
         """
         if self._is_futures_spread_bet(contract_object):
-            return self._get_ig_prices(contract_object)
+            return self._get_fsb_prices(contract_object, freq)
         else:
             return self._get_barchart_prices(contract_object, freq)
 
-    def _get_ig_prices(self, contract_object: futuresContract) -> futuresContractPrices:
+    def _get_fsb_prices(self, contract_object: futuresContract, freq: Frequency) -> futuresContractPrices:
         """
         Get historical IG prices at a particular frequency
 
@@ -108,6 +114,30 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
                 contract_date=contract_object.contract_date.date_str,
             )
             return futuresContractPrices.create_empty()
+
+        contract_object_plus = (
+            self.fsb_contract_data.get_contract_object_with_config_data(
+                contract_object, requery_expiries=False)
+        )
+
+        if contract_object_plus.instrument.source == "IG":
+            return self._get_ig_prices(contract_object)
+        elif contract_object_plus.instrument.source == "BC":
+            return self._get_barchart_prices(contract_object_plus, freq)
+        else:
+            self.log.warn(
+                f"Misconfigured instrument: {str(contract_object)}",
+                instrument_code=contract_object.instrument_code,
+            )
+
+
+    def _get_ig_prices(self, contract_object: futuresContract) -> futuresContractPrices:
+        """
+        Get historical IG prices at a particular frequency
+
+        :param contract_object:  futuresContract
+        :return: data
+        """
 
         # calc dates and freq
         existing = self.existing_prices.get_prices_for_contract_object(contract_object)
@@ -204,16 +234,12 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         :return: data
         """
 
-        contract_object_plus = (
-            self.futures_contract_data.get_contract_object_with_bc_data(contract_object)
-        )
-
-        if contract_object_plus is missing_contract:
+        if contract_object is missing_contract:
             self.log.warn(f"Can't get data for {str(contract_object)}")
             return futuresContractPrices.create_empty()
 
         price_data = self._barchart.get_historical_futures_data_for_contract(
-            contract_object_plus, bar_freq=freq
+            contract_object, bar_freq=freq
         )
 
         if price_data is missing_data:
@@ -236,6 +262,9 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         # Some contract data is marked to model, don't want this
         price_data = price_data.remove_zero_volumes()
 
+        # massage Barchart price data into IG format
+        price_data = self._do_price_massage(contract_object, price_data)
+
         return price_data
 
     def _is_futures_spread_bet(self, contract_object: futuresContract):
@@ -243,6 +272,24 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
 
     def _write_prices_for_contract_object_no_checking(self, *args, **kwargs):
         raise NotImplementedError("Read only source of prices")
+
+    def _do_price_massage(self, contract_object: futuresContract, prices):
+        instrument_code = contract_object.instrument_code
+        multiplier = contract_object.instrument.multiplier
+        inverse = bool(contract_object.instrument.inverse)
+        self.log.msg(
+            f"Massaging prices for IG: {instrument_code}, multiplier {multiplier}, "
+            f"inverse {inverse}",
+            instrument_code=instrument_code,
+        )
+        for col_name in ["OPEN", "HIGH", "LOW", "FINAL"]:
+            series = prices[col_name]
+            if inverse:
+                series = 1 / series
+            series *= multiplier
+            prices[col_name] = series
+
+        return prices
 
     def delete_prices_for_contract_object(self, *args, **kwargs):
         raise NotImplementedError("Read only source of prices")

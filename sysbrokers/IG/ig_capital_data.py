@@ -1,4 +1,4 @@
-from sysbrokers.IG.ig_connection import ConnectionIG
+from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_capital_data import brokerCapitalData
 
 from syscore.objects import arg_not_supplied
@@ -11,12 +11,12 @@ from syslogdiag.log_to_screen import logtoscreen
 
 
 class IgCapitalData(brokerCapitalData):
-    def __init__(self, log: logger = logtoscreen("IGCapitalData")):
+    def __init__(self, broker_conn: IGConnection, log: logger = logtoscreen("IGCapitalData")):
         super().__init__(log=log)
-        self._igconnection = ConnectionIG()
+        self._igconnection = broker_conn
 
     @property
-    def igconnection(self) -> ConnectionIG:
+    def igconnection(self) -> IGConnection:
         return self._igconnection
 
     def __repr__(self):

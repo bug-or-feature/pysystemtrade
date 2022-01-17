@@ -9,16 +9,12 @@ from sysbrokers.IB.ib_orders import ibExecutionStackData
 from sysbrokers.IB.ib_static_data import ibStaticData
 from sysbrokers.IB.ib_fx_handling import ibFxHandlingData
 
-from sysdata.alphavantage.av_spot_FX_data import avFxPricesData
-from sysdata.barchart.bc_futures_contract_price_data import (
-    BarchartFuturesContractPriceData,
-)
-from sysdata.barchart.bc_futures_contracts_data import BarchartFuturesContractData
-from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
+from sysdata.alphavantage.av_spot_FX_data import AvFxPricesData
+from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysbrokers.IG.ig_capital_data import IgCapitalData
 from sysbrokers.IG.ig_static_data import IgStaticData
 from sysbrokers.IG.ig_contract_position_data import IgContractPositionData
-from sysbrokers.IG.ig_fsb_contract_data import IgFuturesContractData
+from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
 from sysbrokers.IG.ig_orders import IgExecutionStackData
 from sysbrokers.IG.ig_futures_contract_price_data import IgFuturesContractPriceData
 
@@ -82,12 +78,10 @@ class dataBroker(productionDataLayerGeneric):
         # TODO define this in config not code
         data.add_class_list(
             [
-                avFxPricesData,
-                # BarchartFuturesContractPriceData,
+                AvFxPricesData,
                 IgFuturesContractPriceData,
-                # BarchartFuturesContractData,
                 IgFuturesContractData,
-                BarchartFuturesInstrumentData,
+                IgFuturesInstrumentData,
                 IgContractPositionData,
                 IgExecutionStackData,
                 IgStaticData,
