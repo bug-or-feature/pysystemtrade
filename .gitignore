@@ -31,3 +31,4 @@ env*/
 # backups
 data/backups_csv
 data/mongo_dump
+data/futures_spreadbet_backup
