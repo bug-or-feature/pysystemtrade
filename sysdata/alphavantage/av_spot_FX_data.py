@@ -12,7 +12,7 @@ from syscore.objects import missing_instrument, missing_file, missing_data
 fxConfig = namedtuple("avFXConfig", ["ccy1", "ccy2", "invert"])
 
 
-class avFxPricesData(brokerFxPricesData):
+class AvFxPricesData(brokerFxPricesData):
     def __init__(self, log=logtoscreen("avFxPricesData")):
         super().__init__(log=log)
         self._avConnection = avConnection()
