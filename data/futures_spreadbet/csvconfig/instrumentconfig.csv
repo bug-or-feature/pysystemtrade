@@ -1,45 +1,9 @@
 Instrument,Pointsize,PerTrade,AssetClass,PerBlock,Description,Percentage,Currency,Slippage
 BUXL_fsb,0.5,0.0,Bond,0.0,Buxl futures spread bet,0.0,GBP,2.0
-CAD_fsb,1.0,0.0,FX,0.0,USDCAD  futures spread bet,0.0,GBP,3.65
-CARBON_fsb,0.25,0.0,OilGas,0.0,Carbon Emissions futures spread bet,0.0,GBP,5.5
+CAD_fsb,1.0,0.0,FX,0.0,USDCAD futures spread bet,0.0,GBP,3.65
 CRUDE_W_fsb,1.0,0.0,OilGas,0.0,Crude oil futures spread bet,0.0,GBP,3.0
-DAX_fsb,0.5,0.0,Equity,0.0,DAX futures spread bet,0.0,GBP,3.0
 EUROSTX_fsb,1.0,0.0,Equity,0.0,EUROSTOXX futures spread bet,0.0,GBP,1.0
-GILT_fsb,0.5,0.0,Bond,0.0,UK Govt Bond futures spread bet,0.0,GBP,1.0
 GOLD_fsb,1.0,0.0,Metals,0.0,Gold futures spread bet,0.0,GBP,0.3
-HANG_fsb,0.2,0.0,Equity,0.0,Hang Seng futures spread bet,0.0,GBP,8.0
 NASDAQ_fsb,0.5,0.0,Equity,0.0,Nasdaq futures spread bet,0.0,GBP,1.5
-NIKKEI_fsb,0.5,0.0,Equity,0.0,Nikkei futures spread bet,0.0,GBP,10.0
 NZD_fsb,1.0,0.0,FX,0.0,NZDUSD futures spread bet,0.0,GBP,2.9
-SOYOIL_fsb,1.0,0.0,Ags,0.0,Soybean Oil futures spread bet,0.0,GBP,5.0
 US30_fsb,0.5,0.0,Bond,0.0,US Ultra Treasury Bond futures spread bet,0.0,GBP,2.0
-COFFEE_fsb,0.5,0.0,Ags,0.0,Coffee New York Arabica,0.0,GBP,20.0
-US10_fsb,0.5,0.0,Bond,0.0,US 10 year bond note,0.0,GBP,2.0
-ASX_fsb,2.0,0.0,Equity,0.0,Australian 200 Index ***,0.0,GBP,2.0
-EUR_fsb,0.5,0.0,FX,0.0,EURUSD currency,0.0,GBP,5.3
-COPPER_fsb,0.1,0.0,Metals,0.0,Copper,0.0,GBP,20.0
-HEATOIL_fsb,0.5,0.0,OilGas,0.0,Heating Oil,0.0,GBP,15.0
-LIVECOW_fsb,0.5,0.0,Ags,0.0,Live cattle,0.0,GBP,10.0
-US5_fsb,0.5,0.0,Bond,0.0,US 5 year bond note,0.0,GBP,1.0
-AEX_fsb,5.0,0.0,Equity,0.0,Netherlands equity index AEX,0.0,GBP,0.1
-DOLLAR_fsb,0.5,0.0,FX,0.0,USD/Basket global currencies,0.0,GBP,4.25
-PALLAD_fsb,2.0,0.0,Metals,0.0,Palladium,0.0,GBP,5.0
-GASOLINE_fsb,0.5,0.0,OilGas,0.0,Gasoline,0.0,GBP,15.0
-COTTON_fsb,0.5,0.0,Ags,0.0,Cotton,0.0,GBP,12.5
-BTP_fsb,0.5,0.0,Bond,0.0,Italian 10 year bond BTP,0.0,GBP,2.5
-CAC_fsb,1.0,0.0,Equity,0.0,French equity index CAC40,0.0,GBP,2.0
-CHF_fsb,1.0,0.0,FX,0.0,USDCHF currency,0.0,GBP,4.75
-PLAT_fsb,3.0,0.0,Metals,0.0,Platinum,0.0,GBP,1.25
-GAS_US_fsb,1.0,0.0,OilGas,0.0,Natural gas US,0.0,GBP,10.0
-LEANHOG_fsb,0.1,0.0,Ags,0.0,Lean hogs,0.0,GBP,7.5
-OAT_fsb,0.5,0.0,Bond,0.0,French 10 year bond OAT,0.0,GBP,2.5
-FTSE_fsb,0.5,0.0,Equity,0.0,UK FTSE Index,0.0,GBP,4.0
-JPY_fsb,1.0,0.0,FX,0.0,JPYUSD currency,0.0,GBP,10.0
-SILVER_fsb,1.0,0.0,Metals,0.0,NYMEX Silver Index,0.0,GBP,1.5
-SOYMEAL_fsb,0.25,0.0,Ags,0.0,Soybean meal,0.0,GBP,40.0
-JGB_fsb,0.5,0.0,Bond,0.0,Japanese Govt Bond,0.0,GBP,3.0
-RUSSELL_fsb,2.0,0.0,Equity,0.0,Russell 2000 Index,0.0,GBP,0.25
-RICE_fsb,0.5,0.0,Ags,0.0,Rough Rice,0.0,GBP,20.0
-COCOA_LDN_fsb,0.5,0.0,Ags,0.0,Cocoa London,0.0,GBP,2.0
-OJ_fsb,0.5,0.0,Ags,0.0,Orange Juice,0.0,GBP,20.0
-
