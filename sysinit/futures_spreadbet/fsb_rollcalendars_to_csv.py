@@ -1,3 +1,4 @@
+import sys
 from syscore.genutils import true_if_answer_is_yes
 from syscore.objects import arg_not_supplied
 from syscore.fileutils import get_filename_for_package
@@ -142,10 +143,17 @@ def show_expected_rolls_for_config(
 
 if __name__ == "__main__":
 
+    args = None
+    if len(sys.argv) > 1:
+        args = sys.argv[1]
+
+    if args is not None:
+        method = sys.argv[1]
+
     # TODO instrument codes
     # 'BUXL_fsb','CAD_fsb','CRUDE_W_fsb','EUROSTX_fsb','GOLD_fsb','NASDAQ_fsb','NZD_fsb','US30_fsb'
 
-    instr_code = "BUXL_fsb"
+    instr_code = "US30_fsb"
 
     prices = CsvFsbContractPriceData(
         datapath=get_filename_for_package(
@@ -154,21 +162,25 @@ if __name__ == "__main__":
         config=build_import_config(instr_code)
     )
 
-    build_and_write_roll_calendar(
-        instrument_code=instr_code.removesuffix("_fsb"),
-        output_datapath="data.futures_spreadbet.roll_calendars_csv",
-        input_prices=prices,
-        input_config=csvRollParametersData(datapath="data.futures_spreadbet.csvconfig")
-    )
+    if method == "build":
+        build_and_write_roll_calendar(
+            instrument_code=instr_code.removesuffix("_fsb"),
+            output_datapath="data.futures_spreadbet.roll_calendars_csv",
+            input_prices=prices,
+            check_before_writing=False,
+            input_config=csvRollParametersData(datapath="data.futures_spreadbet.csvconfig")
+        )
+    else:
+        show_expected_rolls_for_config(
+            instrument_code=instr_code,
+            path="data.futures_spreadbet.csvconfig"
+        )
 
     # check_saved_roll_calendar("AUD",
     #     #input_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_bc/roll_calendars_csv',
     #     input_datapath='sysinit.futures.tests.data.aud',
     #     input_prices=csvFuturesContractPriceData())
 
-    # show_expected_rolls_for_config(
-    #     instrument_code=instr_code,
-    #     path="data.futures_spreadbet.csvconfig"
-    # )
+
 
     #show_expected_rolls_for_config(instrument_code="CRUDE_W",path="data.futures.csvconfig", file="rollconfig.csv" )
