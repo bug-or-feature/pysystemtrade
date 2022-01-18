@@ -103,6 +103,7 @@ setup(
         "trading-ig",
         "beautifulsoup4>4.9",
         "ratelimit>=2.2",
+        "tenacity>=8.0",
     ],
     tests_require=["nose", "flake8"],
     extras_require=dict(),
