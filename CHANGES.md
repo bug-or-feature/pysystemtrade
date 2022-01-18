@@ -2,12 +2,15 @@
 
 This document describes changes to this fork. For upstream master, see [DONE_TO_DO](DONE_TO_DO.md)
 
+## Status
+
+- 
+
 ## TODO
 - TODO
 
 ## Dec 2021 - now
 - epic mapping as YAML config
-- support for separate FSB and Futures instrument and roll config
 - commandline fsb script
 - IG broker code updates
 
