@@ -29,6 +29,31 @@ class accountCosts(accountInputs):
 
         KEY OUTPUT
         """
+        transaction_cost = self.get_SR_transaction_cost_for_instrument_forecast(
+            instrument_code = instrument_code,
+            rule_variation_name = rule_variation_name
+        )
+        holding_cost = self.get_SR_holding_cost_only(instrument_code)
+
+        return transaction_cost + holding_cost
+
+    @diagnostic()
+    def get_SR_transaction_cost_for_instrument_forecast(
+        self, instrument_code: str, rule_variation_name: str
+    ) -> float:
+        """
+        Get the SR cost for a forecast/rule combination
+
+        :param instrument_code: instrument to get values for
+        :type instrument_code: str
+
+        :param rule_variation_name: rule to get values for
+        :type rule_variation_name: str
+
+        :returns: float
+
+        KEY OUTPUT
+        """
 
         use_pooled_costs = str2Bool(
             self.config.forecast_cost_estimates["use_pooled_costs"]
@@ -349,15 +374,6 @@ class accountCosts(accountInputs):
 
         return average_vol
 
-    @diagnostic()
-    def subsystem_turnover(self, instrument_code: str) -> float:
-        positions = self.get_subsystem_position(instrument_code)
-
-        average_position_for_turnover = self.get_volatility_scalar(instrument_code)
-
-        subsystem_turnover = turnover(positions, average_position_for_turnover)
-
-        return subsystem_turnover
 
     @property
     def use_SR_costs(self) -> float:

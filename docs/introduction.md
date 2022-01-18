@@ -181,6 +181,7 @@ account.weekly ## weekly returns (also daily [default], monthly, annual)
 account.gross.ann_mean() ## annual mean for gross returns, also costs (there are none in this simple example)
 ```
 
+[Here](notebooks/introduction_with_fxdata.ipynb) you can find a modified version of this example using IB data instead of pre-baked CSV data files.
 
 ## A simple system
 
@@ -344,6 +345,10 @@ Notice the differences from before:
 4. We access the `empty_rules` object via the `System`. The attribute names of different kinds of objects are fixed, and aren't affected by what the instance or class is called (it will always be `rules`, not `Rules` or `empty_rules`)
 
 *Note if you'd passed the dict of trading rules into Rules()* **and** *into the config, only the former would be used*
+
+Why do we have this alternative method of specifying trading rules? Indeed why the option of using config at all. The answer it's that's a much more robust method for defining system behaviour than having pages of scripts defining how the system behaves. This is especially true in a production system. Why do we need an empty instance of Rules()? Well effectively we build our System object up from building blocks like Rules. These are usually just empty instances of a given class with no arguments passed, which are controlled by the contents of the configuration object also passed to system.
+ 
+So in a sense passing Rules(dict(....)) is not the normal behaviour, it's just sometimes nice to be able to do this so I allow it.
 
 Now these trading rules aren't producing forecasts that are correctly scaled (with an average absolute value of 10), and they don't have the cap of 20 that I recommend. To fix this we need to add another *stage* to our system: forecast scaling and capping.
 Stages are added by including extra objects in the list which is the first argument passed to `System`. The order of these doesn't matter.
