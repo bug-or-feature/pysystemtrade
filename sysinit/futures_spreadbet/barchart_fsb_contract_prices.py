@@ -1,3 +1,5 @@
+from sysdata.config.production_config import get_production_config
+from syscore.fileutils import get_filename_for_package
 from sysdata.csv.csv_fsb_contract_prices import ConfigCsvFsbPrices
 from sysinit.futures_spreadbet.contract_prices_from_csv_to_arctic import (
     init_arctic_with_csv_futures_contract_prices_for_code,
@@ -42,10 +44,12 @@ def build_import_config(instr):
 
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    datapath = "/Users/ageach/Dev/work/pyhistprice/data/barchart"
+    datapath = get_filename_for_package(
+        get_production_config().get_element_or_missing_data("barchart_path")
+    )
 
     for instr in ["BUXL"]:
-        transfer_barchart_prices_to_arctic_single(instr, datapath)
+        transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
     # for instr in ["US30", "USTB", "EURIBOR", "STERLING3", "EURGBP", "JGB", "CAD", "CHF", "DOLLAR", "BRENT_W", "GASOLINE", "HEATOIL", "GASOIL_LDN"]:
     #    for contract_date in ['20200300', '20200600', '20200900', '20201200', '20210300', '20210600', '20210900', '20211200']:

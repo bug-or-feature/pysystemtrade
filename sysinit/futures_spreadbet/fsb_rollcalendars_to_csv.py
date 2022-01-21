@@ -177,7 +177,7 @@ if __name__ == "__main__":
         )
 
     # check_saved_roll_calendar("AUD",
-    #     #input_datapath='/Users/ageach/Dev/work/pysystemtrade3/data/futures_bc/roll_calendars_csv',
+    #     #input_datapath='data.futures_spreadbet.roll_calendars_csv',
     #     input_datapath='sysinit.futures.tests.data.aud',
     #     input_prices=csvFuturesContractPriceData())
 
