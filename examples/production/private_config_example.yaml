@@ -5,13 +5,6 @@
 
 ####################################################################################################
 #
-# MUST BE SET! Not in defaults.yaml
-#
-
-broker_account: 'UXXXXXX' # your account number at IB
-
-####################################################################################################
-#
 # OPTIONAL: Not in defaults.yaml
 #
 
@@ -28,14 +21,32 @@ email_server: 'the_outgoing_smtp_server' # the smtp server
 # OVERRIDES: In defaults.yaml and will override
 #
 
-# ib_data
-
-ib_ipaddress: 'localhost' # this changes if you set up elsewhere
-ib_port: 4001 # the default for the ib Gateway
-ib_idoffset: 1 # the default
-
 #Mongo db variables
 
 mongo_host: 'localhost' # can be elsewhere
 mongo_db: 'production' # fits with all the documentation
 
+####################################################################################################
+#
+# OPTIONAL: but required for pysystemtrade-fsb fork
+#
+
+# if you wish to import Barchart csv price data, or build roll calendars BEFORE importing the prices
+# into mongo, set this
+barchart_path: '/path/to/your/barchart/price/data'
+
+# if you wish to get free FX price updates from Alpha Vantage, set this
+alpha_vantage_api_key: 'ABC123XYZ987000000000'
+
+# IG connection params
+
+# account type, either 'demo' or 'live'
+ig_acc_type: 'demo'
+# your IG username. will be different for live and demo
+ig_username: 'iguser'
+# your IG password. will be different for live and demo
+ig_password: 's3cr3t1234'
+# your IG API key. will be different for live and demo
+ig_api_key: 'abcdefgh1234567890'
+# your IG account number. will be different for live and demo
+ig_acc_number: 'ABC123'
