@@ -7,7 +7,7 @@ from sysquant.optimisation.optimisers.handcraft import *
 from sysquant.estimators.estimates import Estimates, meanEstimates, stdevEstimates
 from sysquant.optimisation.shared import neg_SR
 from syscore.dateutils import WEEKS_IN_YEAR
-from systems.futures_spreadbet.fsb_system import fsb_system
+from systems.provided.futures_chapter15.basesystem import futures_system
 from systems.futures_spreadbet.run_system import calc_forecasts
 from syscore.fileutils import get_filename_for_package
 from sysdata.config.production_config import Config
@@ -24,7 +24,7 @@ def optimise():
     rules = config_from_file("systems.futures_spreadbet.rules2.yaml")
     capital = config_from_file("systems.futures_spreadbet.capital.yaml")
     config = Config([rules, capital, ignore])
-    system = fsb_system(config=config)
+    system = futures_system(config=config)
     system.set_logging_level("on")
 
     find_best_ordered_set_of_instruments(system, 50000)
