@@ -11,10 +11,8 @@ from syscore.pdutils import print_full
 from sysdata.config.configdata import Config
 from sysdata.config.production_config import get_production_config
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
-from sysdata.igcsv.csv_fsb_contract_prices import CsvFsbContractPriceData
+
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
-from sysdata.sim.csv_fsb_sim_data import csvFsbSimData
-from sysdata.sim.db_fsb_sim_data import dbFsbSimData
 from sysobjects.contracts import futuresContract
 from systems.accounts.account_forecast import pandl_for_instrument_forecast
 from systems.accounts.accounts_stage import Account
@@ -23,7 +21,8 @@ from systems.forecasting import Rules
 from systems.forecast_scale_cap import ForecastScaleCap
 from systems.futures_spreadbet.rawdata import FuturesSpreadbetRawData
 from systems.futures_spreadbet.rules import smac, rasmac
-from systems.futures_spreadbet.fsb_system import fsb_system
+from systems.provided.futures_chapter15.basesystem import futures_system
+from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
 
 # original account level target risk (%), when trading one instrument
 ORIG_TARGET_RISK = 0.12
@@ -58,20 +57,27 @@ def get_spreadbet_costs(source="db"):
     calculates spreadbet costs using formulas from Leveraged Trading
     """
 
-    config = Config("systems.futures_spreadbet.leveraged_trading_config.yaml")
+    #config = Config("systems.futures_spreadbet.leveraged_trading_config.yaml")
+    config = Config("systems.futures_spreadbet.simple_fsb_system_config.yaml")
 
     # ig_prices = CsvFsbContractPriceData()
 
-    data = dbFsbSimData()
+    #data = dbFsbSimData()
+    data = csvFuturesSimData(
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFxPricesData="data.futures.fx_prices_csv",
+            csvFuturesMultiplePricesData="data.futures_spreadbet.multiple_prices_csv",
+            csvFuturesAdjustedPricesData="data.futures_spreadbet.adjusted_prices_csv",
+        )
+    )
 
-    # system = System(
-    #     [
-    #         FuturesSpreadbetRawData(),
-    #         Rules(),
-    #         ForecastScaleCap()
-    #     ], data, config)
 
-    system = fsb_system()
+
+    system = futures_system(
+        data=data
+    )
 
     # roll_config = mongoRollParametersData()
 
@@ -80,12 +86,13 @@ def get_spreadbet_costs(source="db"):
 
     # for instr in system.data.get_instrument_list():
     list = system.get_instrument_list()
+    #for instr in system.get_instrument_list():
     for instr in system.get_instrument_list():
 
         # if instr not in ['GOLD']:
-        if instr not in ["GOLD", "BUND", "NZD", "SP500"]:
+        #if instr not in ["GOLD", "BUND", "NZD", "SP500"]:
             # if instr not in ["AEX","CAC","CORN","EUROSTX","GOLD","NASDAQ","PALLAD","PLAT","SMI","SOYBEAN","SP500","V2X","VIX","WHEAT"]:
-            continue
+            #continue
 
         # prices
         warn = ""
@@ -201,7 +208,7 @@ def get_spreadbet_costs(source="db"):
 
     # group, sort
     # cost_results = cost_results.sort_values(by='Instr') # Instr
-    cost_results = cost_results.sort_values(by="Ctotal")  # Ctotal, NMinCap
+    #cost_results = cost_results.sort_values(by="Ctotal")  # Ctotal, NMinCap
     # cost_results = cost_results.groupby('Class').apply(lambda x: x.sort_values(by='MinCap'))
     write_file(cost_results, "costs", write=False)
 
@@ -239,31 +246,31 @@ def get_current_position(instr, pos_list):
     return total
 
 
-def get_current_pandl(instr, pos_list, ig_prices: CsvFsbContractPriceData):
-
-    result = 0.0
-    filtered_list = [el for el in pos_list if el["instr"] == instr]
-
-    if len(filtered_list) > 0:
-        expiry_code = filtered_list[0]["expiry"]
-
-        expiry_code_date = datetime.strptime(f"01-{expiry_code}", "%d-%b-%y")
-        # filename = f"{instr}_{expiry_code_date.strftime('%Y%m')}00.csv"
-
-        contract = futuresContract(instr, expiry_code_date.strftime("%Y%m"))
-        prices = ig_prices._get_prices_for_contract_object_no_checking(contract)
-        last_price = prices.return_final_prices()[-1]
-
-        for pos in filtered_list:
-            size = pos["size"]
-            dir = pos["dir"]
-            level = pos["level"]
-            if dir == "BUY":
-                result += (last_price - level) * size
-            else:
-                result -= (last_price - level) * size
-
-    return result
+# def get_current_pandl(instr, pos_list, ig_prices: CsvFsbContractPriceData):
+#
+#     result = 0.0
+#     filtered_list = [el for el in pos_list if el["instr"] == instr]
+#
+#     if len(filtered_list) > 0:
+#         expiry_code = filtered_list[0]["expiry"]
+#
+#         expiry_code_date = datetime.strptime(f"01-{expiry_code}", "%d-%b-%y")
+#         # filename = f"{instr}_{expiry_code_date.strftime('%Y%m')}00.csv"
+#
+#         contract = futuresContract(instr, expiry_code_date.strftime("%Y%m"))
+#         prices = ig_prices._get_prices_for_contract_object_no_checking(contract)
+#         last_price = prices.return_final_prices()[-1]
+#
+#         for pos in filtered_list:
+#             size = pos["size"]
+#             dir = pos["dir"]
+#             level = pos["level"]
+#             if dir == "BUY":
+#                 result += (last_price - level) * size
+#             else:
+#                 result -= (last_price - level) * size
+#
+#     return result
 
 
 def check_price(price_date):

@@ -2,8 +2,9 @@ import logging
 import os
 import os.path
 
-from systems.futures_spreadbet.fsb_system import fsb_system
-from systems.futures.futures_system import futures_system
+from systems.provided.futures_chapter15.basesystem import futures_system
+from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
+
 import pandas as pd
 from syscore.pdutils import print_full
 from matplotlib.pyplot import show
@@ -55,21 +56,32 @@ def run_system():
             # config_files.append("systems.futures_spreadbet.config_empty_instruments.yaml")
             # config_files.append("systems.futures_spreadbet.estimate_10_cheap.yaml")
             # config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
-            config_files.append("systems.futures_spreadbet.config_fsb_system_v1.yaml")
+            config_files.append("systems.futures_spreadbet.config_fsb_system_v3.yaml")
             # config_files.append("systems.futures_spreadbet.config_fsb_system_v2.yaml")
+        data = csvFuturesSimData(
+            csv_data_paths=dict(
+                csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+                csvRollParametersData="data.futures_spreadbet.csvconfig",
+                csvFxPricesData="data.futures.fx_prices_csv",
+                csvFuturesMultiplePricesData="data.futures_spreadbet.multiple_prices_csv",
+                csvFuturesAdjustedPricesData="data.futures_spreadbet.adjusted_prices_csv",
+            )
+        )
         config = Config(config_files)
-        system = fsb_system(config=config)
-        # system = fsb_system()
         prod_label = "FSB"
         bet_label = "BetPerPoint"
         type_label = "estimate"
     else:
+        data = csvFuturesSimData()
         config = Config(config_files)
-        system = futures_system(config=config)
         prod_label = "FUT"
         bet_label = "NumContracts"
         type_label = "normal"
 
+    system = futures_system(
+        config=config,
+        data=data
+    )
     # curve_group = system.accounts.portfolio()
     # calc_forecasts(system)
     portfolio = system.accounts.portfolio()
