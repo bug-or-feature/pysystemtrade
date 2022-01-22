@@ -19,7 +19,6 @@ from systems.accounts.accounts_stage import Account
 from systems.basesystem import System
 from systems.forecasting import Rules
 from systems.forecast_scale_cap import ForecastScaleCap
-from systems.futures_spreadbet.rawdata import FuturesSpreadbetRawData
 from systems.futures_spreadbet.rules import smac, rasmac
 from systems.provided.futures_chapter15.basesystem import futures_system
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
