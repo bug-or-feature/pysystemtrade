@@ -44,24 +44,34 @@ base_currency: "GBP"
 #instruments: ["NASDAQ","EUROSTX","NIKKEI","US30","BUXL","CAD","NZD","GOLD","CRUDE_W","COPPER","SOYOIL"] #
 
 # new fsb with real IG prices
+#instruments: [
+#    "BUXL_fsb",
+#    "CARBON_fsb",
+#    "CRUDE_W_fsb",
+#    "DAX_fsb",
+#    "EUROSTX_fsb",
+#    "GILT_fsb",
+#    "GOLD_fsb",
+#    "HANG_fsb",
+#    "NASDAQ_fsb",
+#    "US30_fsb",
+#    "CAD_fsb",
+#    "NIKKEI_fsb",
+#    "NZD_fsb",
+#    "SOYOIL_fsb"
+#]
+
+# new fsb with Barchart prices massaged into IG format
 instruments: [
     "BUXL_fsb",
-    "CARBON_fsb",
-    "CRUDE_W_fsb",
-    "DAX_fsb",
-    "EUROSTX_fsb",
-    "GILT_fsb",
-    "GOLD_fsb",
-    "HANG_fsb",
-    "NASDAQ_fsb",
-    "US30_fsb",
-
     "CAD_fsb",
-    "NIKKEI_fsb",
+    "CRUDE_W_fsb",
+    "EUROSTX_fsb",
+    "GOLD_fsb",
+    "NASDAQ_fsb",
     "NZD_fsb",
-    "SOYOIL_fsb"
+    "US30_fsb",
 ]
-
 
 # all instruments with costs below 0.13
 #instruments: ["RUSSELL","NASDAQ","US30","DOW","SP500","BUXL","GOLD","DAX","AEX","USTB","SILVER","EUROSTX","HANG","NIKKEI","GILT","ASX","CARBON","CRUDE_W","COPPER","SMI","BUND","WHEAT","BRENT_W","CAC","PLAT","SOYOIL","CORN","SOYBEAN","FTSE","CAD","HEATOIL","NZD","GASOLINE","BTP","US5","LEANHOG","COFFEE","US10","SOYMEAL","GBP","OAT","PALLAD"]
