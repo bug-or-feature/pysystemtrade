@@ -51,7 +51,6 @@ class RunFsbSystemClassic(object):
         data = self.data
 
         base_currency, notional_trading_capital = self._get_currency_and_capital()
-        data.log.msg(f"Capital: {notional_trading_capital}, currency: {base_currency}")
 
         system = self.system_method(
             notional_trading_capital=notional_trading_capital,
@@ -84,9 +83,7 @@ class RunFsbSystemClassic(object):
     # DO NOT CHANGE THE NAME OF THIS FUNCTION; IT IS HARDCODED INTO CONFIGURATION FILES
     # BECAUSE IT IS ALSO USED TO LOAD BACKTESTS
     def system_method(
-            self,
-            notional_trading_capital: float = arg_not_supplied,
-            base_currency: str = arg_not_supplied
+        self, notional_trading_capital: float = arg_not_supplied, base_currency: str = arg_not_supplied
     ) -> System:
         data = self.data
         backtest_config_filename = self.backtest_config_filename
@@ -116,9 +113,7 @@ def production_classic_fsb_system(
     config = set_up_config(data, config_filename)
 
     # Overwrite capital and base currency
-    if (
-        notional_trading_capital is not arg_not_supplied
-    ):
+    if notional_trading_capital is not arg_not_supplied:
         config.notional_trading_capital = notional_trading_capital
 
     if base_currency is not arg_not_supplied:
