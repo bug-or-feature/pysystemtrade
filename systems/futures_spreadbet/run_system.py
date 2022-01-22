@@ -150,6 +150,7 @@ def run_system():
         total_costs = system.accounts.get_SR_cost_given_turnover(instr, turnover)
         pandl = system.accounts.pandl_for_subsystem(instr)
         sharpe = portfolio[instr].annual.sharpe()
+        below_speed_limit = total_costs < sharpe * 0.3333
         costs_as_percent = (total_costs / sharpe) * 100
 
         buffers = system.portfolio.get_buffers_for_position(instr)
@@ -183,8 +184,9 @@ def run_system():
                 ),
                 "Turnover": round(turnover, 2),
                 "Sharpe": round(sharpe, 2),
-                "Costs": round(total_costs, 3),
-                "Costs as %": round(costs_as_percent, 0),
+                "Costs SR": round(total_costs, 3),
+                "< SL": below_speed_limit,
+                "Costs%": round(costs_as_percent, 0),
                 #'P&L': round(pandl, 2),
                 "Forecast": round(comb_fc, 2),
                 "BlockVal": round(block_val, 2),
@@ -225,8 +227,8 @@ def run_system():
     print(f"\nSharpe: {system.accounts.portfolio().sharpe()}\n")
 
     # portfolio.curve().plot()
-    #portfolio_percent.curve().plot()
-    #show()
+    portfolio_percent.curve().plot()
+    show()
 
     if do_estimate:
         write_estimate_file(system)
