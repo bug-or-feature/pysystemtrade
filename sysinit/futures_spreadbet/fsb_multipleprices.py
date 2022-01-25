@@ -215,8 +215,8 @@ if __name__ == "__main__":
     #                                          csv_roll_data_path=csv_roll_data_path,
     #                                          ADD_TO_CSV=True)
 
-    instrument_code = get_valid_instrument_code_from_user(source="single")
-    #instrument_code = "US30_fsb"
+    #instrument_code = get_valid_instrument_code_from_user(source="single")
+    instrument_code = "US10_fsb"
 
     process_multiple_prices_single_instrument(
         instrument_code=instrument_code,

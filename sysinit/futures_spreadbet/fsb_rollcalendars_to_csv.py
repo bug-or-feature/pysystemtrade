@@ -123,12 +123,17 @@ def check_saved_roll_calendar(
 
 
 def show_expected_rolls_for_config(
-    instrument_code, path=arg_not_supplied
+    instrument_code,
+    path=arg_not_supplied,
+    input_prices=arg_not_supplied
 ):
 
     rollparameters = csvRollParametersData(datapath=path)
-    roll_parameters_object = rollparameters.get_roll_parameters(instrument_code)
-    prices = arcticFuturesContractPriceData()
+    roll_parameters_object = rollparameters.get_roll_parameters(instrument_code + "_fsb")
+    if input_prices is arg_not_supplied:
+        prices = arcticFuturesContractPriceData()
+    else:
+        prices = input_prices
     dict_of_all_futures_contract_prices = prices.get_all_prices_for_instrument(
         instrument_code
     )
@@ -151,14 +156,14 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # DONE
-    # 'BUXL_fsb','CAD_fsb','CRUDE_W_fsb','EUROSTX_fsb','GOLD_fsb','NASDAQ_fsb','NZD_fsb','US30_fsb'
+    # 'BUXL_fsb','CAD_fsb','CRUDE_W_fsb','EUROSTX_fsb','GOLD_fsb','NASDAQ_fsb','NZD_fsb','US10_fsb'
 
     # to be done
     # "NIKKEI_fsb", "EUR_fsb", "GILT_fsb", "EUA_fsb"
 
     # AEX_fsb,ASX_fsb,CAC_fsb,DAX_fsb,DOW_fsb,FTSE100_fsb,HANG_fsb,OAT_fsb,RUSSELL_fsb,SMI_fsb,SP500_fsb,
     # AUD_fsb,CHF_fsb,DX_fsb,EURGBP_fsb,GBP_fsb,JPY_fsb,
-    # BOBL_fsb,BTP_fsb,BUND_fsb,JGB_fsb,SHATZ_fsb,US2_fsb,US5_fsb,US10_fsb,USTB_fsb,
+    # BOBL_fsb,BTP_fsb,BUND_fsb,JGB_fsb,SHATZ_fsb,US2_fsb,US5_fsb,US30_fsb,USTB_fsb,
     # COCOA_LDN_fsb,COCOA_NY_fsb,COFFEE_fsb,CORN_fsb,COTTON_fsb,LEANHOG_fsb,LIVECOW_fsb,LUMBER_fsb,OATIES
     #     OJ_fsb,RICE_fsb,ROBUSTA_fsb,SOYBEAN_fsb,SOYMEAL_fsb,SOYOIL_fsb,SUGAR_fsb,SUGAR11_fsb,WHEAT_fsb,WHEAT_LDN
     # COPPER_fsb,PALLAD_fsb,PLAT_fsb,SILVER_fsb,
@@ -166,7 +171,7 @@ if __name__ == "__main__":
     # EDOLLAR_fsb,EURIBOR_fsb,STERLING3_fsb,
     # VIX_fsb,V2X_fsb
 
-    instr_code = "US30_fsb"
+    instr_code = "US10_fsb"
 
     prices = CsvFsbContractPriceData(
         datapath=get_filename_for_package(
@@ -185,8 +190,9 @@ if __name__ == "__main__":
         )
     else:
         show_expected_rolls_for_config(
-            instrument_code=instr_code,
-            path="data.futures_spreadbet.csvconfig"
+            instrument_code=instr_code.removesuffix("_fsb"),
+            path="data.futures_spreadbet.csvconfig",
+            input_prices=prices,
         )
 
     # check_saved_roll_calendar("AUD",
