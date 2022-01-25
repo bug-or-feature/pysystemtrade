@@ -15,7 +15,7 @@ from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 # from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysinit.futures.build_roll_calendars import adjust_to_price_series
-from sysinit.futures_spreadbet.barchart_fsb_contract_prices import build_import_config
+from sysinit.futures_spreadbet.fsb_contract_prices import build_import_config
 from sysobjects.contract_dates_and_expiries import contractDate
 from sysobjects.dict_of_futures_per_contract_prices import (
     dictFuturesContractFinalPrices,
@@ -215,8 +215,8 @@ if __name__ == "__main__":
     #                                          csv_roll_data_path=csv_roll_data_path,
     #                                          ADD_TO_CSV=True)
 
-    #instrument_code = get_valid_instrument_code_from_user(source="single")
-    instrument_code = "US30_fsb"
+    instrument_code = get_valid_instrument_code_from_user(source="single")
+    #instrument_code = "US30_fsb"
 
     process_multiple_prices_single_instrument(
         instrument_code=instrument_code,

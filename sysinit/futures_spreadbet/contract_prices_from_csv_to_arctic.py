@@ -27,12 +27,13 @@ def init_arctic_with_csv_futures_contract_prices(
 def init_arctic_with_csv_futures_contract_prices_for_code(
     instrument_code: str, datapath: str, csv_config=arg_not_supplied
 ):
-    print(instrument_code)
+    fut_instr_code = instrument_code.removesuffix("_fsb")
+    print(f"Futures: {fut_instr_code}, fsb: {instrument_code}")
     csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
     arctic_prices = arcticFuturesContractPriceData()
 
     print("Getting .csv prices may take some time")
-    csv_price_dict = csv_prices.get_all_prices_for_instrument(instrument_code)
+    csv_price_dict = csv_prices.get_all_prices_for_instrument(fut_instr_code)
 
     print("Have .csv prices for the following contracts:")
     print(str(csv_price_dict.keys()))
@@ -40,7 +41,7 @@ def init_arctic_with_csv_futures_contract_prices_for_code(
     for contract_date_str, prices_for_contract in csv_price_dict.items():
         print("Processing %s" % contract_date_str)
         print(".csv prices are \n %s" % str(prices_for_contract))
-        contract = futuresContract(instrument_code, contract_date_str)
+        contract = futuresContract.from_two_strings(instrument_code, contract_date_str)
         print("Contract object is %s" % str(contract))
         print("Writing to arctic")
         arctic_prices.write_prices_for_contract_object(
@@ -54,12 +55,13 @@ def init_arctic_with_csv_futures_contract_prices_for_code(
 def init_arctic_with_csv_futures_contract_prices_for_contract(
     instrument_code: str, date_str: str, datapath: str, csv_config=arg_not_supplied
 ):
-    print(instrument_code)
+    fut_instr_code = instrument_code.removesuffix("_fsb")
+    print(f"Futures: {fut_instr_code}, fsb: {instrument_code}")
     csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
     arctic_prices = arcticFuturesContractPriceData()
 
     print("Getting .csv prices may take some time")
-    csv_price_dict = csv_prices.get_all_prices_for_instrument(instrument_code)
+    csv_price_dict = csv_prices.get_all_prices_for_instrument(fut_instr_code)
 
     print("Have .csv prices for the following contracts:")
     print(str(csv_price_dict.keys()))
@@ -68,7 +70,7 @@ def init_arctic_with_csv_futures_contract_prices_for_contract(
         if contract_date_str == date_str:
             print("Processing %s" % contract_date_str)
             print(".csv prices are \n %s" % str(prices_for_contract))
-            contract = futuresContract(instrument_code, contract_date_str)
+            contract = futuresContract.from_two_strings(instrument_code, contract_date_str)
             print("Contract object is %s" % str(contract))
             print("Writing to arctic")
             arctic_prices.write_prices_for_contract_object(

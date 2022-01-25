@@ -12,7 +12,7 @@ from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.config.production_config import get_production_config
 from syscore.pdutils import print_full
-from sysinit.futures_spreadbet.barchart_fsb_contract_prices import build_import_config
+from sysinit.futures_spreadbet.fsb_contract_prices import build_import_config
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
@@ -33,7 +33,7 @@ def build_and_write_roll_calendar(
             "*** WARNING *** This will overwrite the provided roll calendar. Might be better to use a temporary directory!"
         )
     else:
-        print("Writing to %s" % output_datapath)
+        print(f"{instrument_code}: writing to {output_datapath}")
 
     if input_prices is arg_not_supplied:
         prices = arcticFuturesContractPriceData()
