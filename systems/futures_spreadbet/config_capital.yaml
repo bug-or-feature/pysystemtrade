@@ -70,7 +70,7 @@ instruments: [
     "GOLD_fsb",
     "NASDAQ_fsb",
     "NZD_fsb",
-    "US30_fsb",
+    "US10_fsb",
 ]
 
 # all instruments with costs below 0.13

@@ -209,7 +209,7 @@ def run_system():
 
     # create dataframe
     results = pd.DataFrame(rows)
-    results = results.sort_values(by="Costs")  # Ctotal, NMinCap
+    results = results.sort_values(by="Costs SR")  # Ctotal, NMinCap
     write_file(results, type_label, prod_label)
 
     print(f"\nTotal capital required: £{round(total_cap_req, 2)}\n")
