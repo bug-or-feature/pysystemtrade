@@ -46,8 +46,8 @@ class IGConnection(object):
             acc_number=self._ig_acc_number,
             retryer=retryer,
         )
-        #ig_service.create_session()
-        ig_service.create_session(version="3")
+        ig_service.create_session()
+        #ig_service.create_session(version="3")
         return ig_service
 
     @property
