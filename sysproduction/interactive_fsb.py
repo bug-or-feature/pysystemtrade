@@ -76,7 +76,7 @@ def show_optimals():
             -1
         ]
         fut_price = data.db_futures_adjusted_prices.get_adjusted_prices(
-            instr_code[:-4]
+            instr_code
         ).values[-1]
         price_date = data.db_futures_adjusted_prices.get_adjusted_prices(
             instr_code
