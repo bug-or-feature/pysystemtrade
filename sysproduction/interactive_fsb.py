@@ -33,7 +33,7 @@ def show_optimals():
     data.add_class_object(mongoFuturesContractData)
     data.add_class_object(arcticFuturesAdjustedPricesData)
     broker = dataBroker(data=data)
-    pos = orderGeneratorForBufferedPositions(data=data, strategy_name="fsb_strategy_v1")
+    pos = orderGeneratorForBufferedPositions(data=data, strategy_name="fsb_strategy_v3")
     now = datetime.datetime.now()
 
     optimals = pos.get_optimal_positions()
