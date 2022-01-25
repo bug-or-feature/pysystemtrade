@@ -48,8 +48,8 @@ if __name__ == "__main__":
         get_production_config().get_element_or_missing_data("barchart_path")
     )
 
-    for instr in ["BUXL_fsb"]:
-    #for instr in ["CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US30_fsb"]:
+    #for instr in ["BUXL_fsb"]:
+    for instr in ["BUXL_fsb","CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US30_fsb"]:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
     #for instr in ["BUXL_fsb"]:
