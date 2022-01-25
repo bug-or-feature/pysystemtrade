@@ -12,6 +12,7 @@ from sysexecution.strategies.classic_buffered_positions import (
 )
 
 MIN_BET_DEMO_OVERRIDES = {
+    "CAD_fsb": 0.5,
     "CARBON_fsb": 0.5,
     "CRUDE_W_fsb": 0.5,
     "EUROSTX_fsb": 0.5,
