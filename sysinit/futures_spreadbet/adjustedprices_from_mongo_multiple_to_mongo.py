@@ -70,10 +70,11 @@ if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # modify flags and datapath as required
 
-    instrument_code = get_valid_instrument_code_from_user(source="single")
-    process_adjusted_prices_single_instrument(
-        instrument_code,
-        ADD_TO_ARCTIC=True,
-        ADD_TO_CSV=True,
-        csv_adj_data_path="data.futures_spreadbet.adjusted_prices_csv",
-    )
+    #instrument_code = get_valid_instrument_code_from_user(source="single")
+    for instrument_code in ["BUXL_fsb","CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US10_fsb"]:
+        process_adjusted_prices_single_instrument(
+            instrument_code,
+            ADD_TO_ARCTIC=True,
+            ADD_TO_CSV=True,
+            csv_adj_data_path="data.futures_spreadbet.adjusted_prices_csv",
+        )

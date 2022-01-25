@@ -48,13 +48,13 @@ if __name__ == "__main__":
         get_production_config().get_element_or_missing_data("barchart_path")
     )
 
-    #for instr in ["BUXL_fsb"]:
-    #for instr in ["CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US30_fsb"]:
-    #    transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
-
     for instr in ["BUXL_fsb"]:
-        for contract_date in ['20220300', '20220600']:
-            transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)
+    #for instr in ["CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US30_fsb"]:
+        transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
+
+    #for instr in ["BUXL_fsb"]:
+    #    for contract_date in ['20220300', '20220600']:
+    #        transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)
 
     # for contract_date in ['DAX.20201200', 'DAX.20210300', 'DAX.20210600', 'DAX.20210900', 'DAX.20211200']:
     # for contract_date in ['20200100', '20200200', '20200300', '20200400','20200500', '20200600', '20200700', '20200800','20200900', '20201000', '20201100', '20201200','20210100', '20210200', '20210300', '20210400','20210500', '20210600', '20210700', '20210800','20210900', '20211000', '20211100', '20211200']:
