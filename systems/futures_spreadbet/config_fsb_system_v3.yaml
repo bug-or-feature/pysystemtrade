@@ -1,0 +1,199 @@
+# YAML
+forecast_post_ceiling_cost_SR: 0.13
+percentage_vol_target: 25.0
+notional_trading_capital: 50000
+base_currency: "GBP"
+
+trading_rules:
+  ewmac2_8:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+     forecast_scalar: 10.6
+  ewmac4_16:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+     forecast_scalar: 7.5
+  ewmac8_32:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+     forecast_scalar: 5.3
+  ewmac16_64:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+     forecast_scalar: 3.75
+  ewmac32_128:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+     forecast_scalar: 2.65
+  ewmac64_256:
+     function: systems.provided.futures_chapter15.rules.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+     forecast_scalar: 1.87
+  carry:
+     function: systems.provided.futures_chapter15.rules.carry2
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 90
+     forecast_scalar: 30
+forecast_cap: 20.0
+
+#
+# forecast combination
+#
+forecast_weights:
+     ewmac16_64: 0.21
+     ewmac32_128: 0.08
+     ewmac64_256: 0.21
+     carry: 0.50
+forecast_div_multiplier: 1.31
+
+instrument_div_multiplier: 2.22
+instrument_weights:
+  BUXL_fsb: 0.125
+  CAD_fsb: 0.125
+  CRUDE_W_fsb: 0.125
+  EUROSTX_fsb: 0.125
+  GOLD_fsb: 0.125
+  NASDAQ_fsb: 0.125
+  NZD_fsb: 0.125
+  US10_fsb: 0.125
+
+
+#ignore_instruments:
+
+#
+# duplicated/excluded instruments are ignored in backtests
+# we still collect price data for them in production, do rolls etc
+# this is to avoid double counting of basically the same instrument
+# anything in the 'exclude' list is ignored in backtests
+# we use the 'include section to match up for reporting when deciding which to trade
+# Be careful when swapping between instruments, a bit dangerous if a position is held...
+# You can override this by modifying the backtest config .yaml file used in either sim or production
+duplicate_instruments:
+  include:
+    copper: 'COPPER'
+    corn: 'CORN'
+    crude: 'CRUDE_W'
+    gas_us: 'GAS_US'
+    gasoline: 'GASOLINE'
+    gold: 'GOLD'
+    heatoil: 'HEATOIL'
+    jgb: 'JGB'
+    jpy: 'JPY'
+    kospi: 'KOSPI'
+    krwusd: 'KRWUSD'
+    nasdaq: 'NASDAQ'
+    silver: 'SILVER'
+    soybean: 'SOYBEAN'
+    sp500: 'SP500'
+    twd: 'TWD'
+    vix: 'VIX'
+    wheat: 'WHEAT'
+  exclude:
+    copper: 'COPPER-mini'
+    corn: 'CORN_mini'
+    crude: 'CRUDE_W_mini'
+    gas_us: 'GAS_US_mini'
+    gasoline: 'GASOLINE_mini'
+    gold: 'GOLD_micro'
+    heatoil: 'HEATOIL_mini'
+    jgb: ['JGB_mini', 'JGB-SGX-mini']
+    jpy: ['JPY_micro','JPY-SGX-TITAN', 'JPY-SGX']
+    kospi: 'KOSPI_mini'
+    krwusd: 'KRWUSD_mini'
+    nasdaq: 'NASDAQ_micro'
+    silver: 'SILVER_mini'
+    soybean: 'SOYBEAN_mini'
+    sp500: 'SP500_micro'
+    twd: 'TWD-mini'
+    vix: 'VIX_mini'
+    wheat: 'WHEAT_mini'
+exclude_instrument_lists:
+  # ignore_instruments are ignored in backtests
+  # we still collect price data for them in production, do rolls etc
+  # You can override this by modifying the backtest config .yaml file used in eithier sim or production
+  # If you want to ignore because a duplicate market, use duplicate_instruments
+  # If you want to include in sim data, but not actually trade, use trading_restrictions
+  ignore_instruments:
+    - 'KOSPI' # not supported on IG
+  #
+  # Here we put stuff we can't trade, but for which we still want to bring in prices in sim
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # NOTE: This will be regionally biased, you will probably want to override this in private_config.yaml
+  #
+  trading_restrictions:
+    - US-DISCRETE
+    - US-ENERGY
+    - US-FINANCE
+    - US-HEALTH
+    - US-INDUSTRY
+    - US-MATERIAL
+    - US-PROPERTY
+    - US-REALESTATE
+    - US-STAPLES
+    - US-TECH
+    - US-UTILS
+  # These are markets that are too expensive or illiquid to actually trade
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # Run interactive controls to get a list of suggested markets here
+  # To override this list, change in sim .yaml config (sim) and private_config.yaml (production)
+  bad_markets:
+    - ALUMINIUM
+    - BBCOMM
+    - CHEESE
+    - DJSTX-SMALL
+    - EU-BANKS
+    - EU-CHEM
+    - EU-CONSTRUCTION
+    - EU-DIV30
+    - EU-FOOD
+    - EU-HEALTH
+    - EU-INSURE
+    - EU-TRAVEL
+    - FTSEINDO
+    - INR
+    - KOSPI_mini
+    - KRWUSD
+    - MILK
+    - MILKDRY
+    - MSCIASIA
+    - NOK
+    - SGD
+    - US-DISCRETE
+    - US-REALESTATE
+    - USIRS5
