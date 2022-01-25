@@ -49,8 +49,8 @@ if __name__ == "__main__":
     )
 
     #for instr in ["BUXL_fsb"]:
-    #for instr in ["CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US30_fsb"]:
-    #    transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
+    for instr in ["CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US30_fsb"]:
+        transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
     for instr in ["BUXL_fsb"]:
         for contract_date in ['20220300', '20220600']:
