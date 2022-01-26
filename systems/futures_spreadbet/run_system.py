@@ -4,6 +4,7 @@ import os.path
 
 from systems.provided.futures_chapter15.basesystem import futures_system
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
+from sysdata.sim.db_futures_sim_data import dbFuturesSimData
 
 import pandas as pd
 from syscore.pdutils import print_full
@@ -38,6 +39,7 @@ def run_system():
 
     do_fsb = True
     do_estimate = False
+    use_csv = False
 
     capital = config_from_file("systems.futures_spreadbet.config_capital.yaml")
     # rules = config_from_file("systems.futures_spreadbet.config_rules.yaml")
@@ -58,21 +60,27 @@ def run_system():
             # config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
             config_files.append("systems.futures_spreadbet.config_fsb_system_v3.yaml")
             # config_files.append("systems.futures_spreadbet.config_fsb_system_v2.yaml")
-        data = csvFuturesSimData(
-            csv_data_paths=dict(
-                csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-                csvRollParametersData="data.futures_spreadbet.csvconfig",
-                csvFxPricesData="data.futures.fx_prices_csv",
-                csvFuturesMultiplePricesData="data.futures_spreadbet.multiple_prices_csv",
-                csvFuturesAdjustedPricesData="data.futures_spreadbet.adjusted_prices_csv",
+        if use_csv:
+            data = csvFuturesSimData(
+                csv_data_paths=dict(
+                    csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+                    csvRollParametersData="data.futures_spreadbet.csvconfig",
+                    csvFxPricesData="data.futures.fx_prices_csv",
+                    csvFuturesMultiplePricesData="data.futures_spreadbet.multiple_prices_csv",
+                    csvFuturesAdjustedPricesData="data.futures_spreadbet.adjusted_prices_csv",
+                )
             )
-        )
+        else:
+            data = dbFuturesSimData()
         config = Config(config_files)
         prod_label = "FSB"
         bet_label = "BetPerPoint"
         type_label = "estimate"
     else:
-        data = csvFuturesSimData()
+        if use_csv:
+            data = csvFuturesSimData()
+        else:
+            data = dbFuturesSimData()
         config = Config(config_files)
         prod_label = "FUT"
         bet_label = "NumContracts"
