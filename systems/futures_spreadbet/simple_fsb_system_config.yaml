@@ -22,7 +22,7 @@ forecast_weights:
 forecast_div_multiplier: 1.1
 instrument_weights:
      BUXL_fsb: .4
-     US30_fsb: .1
+     US10_fsb: .1
      GOLD_fsb: .3
      NASDAQ_fsb: .2
 instrument_div_multiplier: 1.5
