@@ -1,6 +1,6 @@
 from syscore.objects import arg_not_supplied
 
-from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
+from sysdata.csv.csv_fsb_contract_prices import CsvFsbContractPriceData
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
@@ -10,7 +10,7 @@ from sysobjects.contracts import futuresContract
 def init_arctic_with_csv_futures_contract_prices(
     datapath: str, csv_config=arg_not_supplied
 ):
-    csv_prices = csvFuturesContractPriceData(datapath)
+    csv_prices = CsvFsbContractPriceData(datapath)
     input(
         "WARNING THIS WILL ERASE ANY EXISTING ARCTIC PRICES WITH DATA FROM %s ARE YOU SURE?! (CTRL-C TO STOP)"
         % csv_prices.datapath
@@ -29,7 +29,7 @@ def init_arctic_with_csv_futures_contract_prices_for_code(
 ):
     fut_instr_code = instrument_code.removesuffix("_fsb")
     print(f"Futures: {fut_instr_code}, fsb: {instrument_code}")
-    csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
+    csv_prices = CsvFsbContractPriceData(datapath, config=csv_config)
     arctic_prices = arcticFuturesContractPriceData()
 
     print("Getting .csv prices may take some time")
@@ -57,7 +57,7 @@ def init_arctic_with_csv_futures_contract_prices_for_contract(
 ):
     fut_instr_code = instrument_code.removesuffix("_fsb")
     print(f"Futures: {fut_instr_code}, fsb: {instrument_code}")
-    csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
+    csv_prices = CsvFsbContractPriceData(datapath, config=csv_config)
     arctic_prices = arcticFuturesContractPriceData()
 
     print("Getting .csv prices may take some time")

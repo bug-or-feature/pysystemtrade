@@ -74,9 +74,12 @@ class CsvFsbContractPriceData(csvFuturesContractPriceData):
             return futuresContractPrices.create_empty()
 
         instrpricedata = instrpricedata.groupby(level=0).last()
-        if inverse:
-            instrpricedata = 1.0 / instrpricedata
-        instrpricedata = instrpricedata * multiplier
+        for col_name in ["OPEN", "HIGH", "LOW", "FINAL"]:
+            series = instrpricedata[col_name]
+            if inverse:
+                series = 1 / series
+            series *= multiplier
+            instrpricedata[col_name] = series.round(2)
 
         instrpricedata = futuresContractPrices(instrpricedata)
 
