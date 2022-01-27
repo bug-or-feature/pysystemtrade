@@ -63,7 +63,7 @@ class TestFsbExamples:
         my_system.rules.get_raw_forecast("BUXL_fsb", "ewmac32").tail(5)
 
         # we can estimate these ourselves
-        my_config.instruments = ["US30_fsb", "BUXL_fsb", "GOLD_fsb", "NASDAQ_fsb"]
+        my_config.instruments = ["US10_fsb", "BUXL_fsb", "GOLD_fsb", "NASDAQ_fsb"]
         my_config.use_forecast_scale_estimates = True
 
         fcs = ForecastScaleCap()
@@ -108,9 +108,9 @@ class TestFsbExamples:
         # this is a bit slow, better to know what's going on
         my_system.set_logging_level("on")
 
-        print(my_system.combForecast.get_forecast_weights("US30_fsb").tail(5))
+        print(my_system.combForecast.get_forecast_weights("US10_fsb").tail(5))
         print(
-            my_system.combForecast.get_forecast_diversification_multiplier("US30_fsb").tail(
+            my_system.combForecast.get_forecast_diversification_multiplier("US10_fsb").tail(
                 5
             )
         )
@@ -168,7 +168,7 @@ class TestFsbExamples:
         portfolio = Portfolios()
         my_config.use_instrument_weight_estimates = False
         my_config.use_instrument_div_mult_estimates = False
-        my_config.instrument_weights = dict(US30_fsb=0.1, BUXL_fsb=0.4, GOLD_fsb=0.3, NASDAQ_fsb=0.2)
+        my_config.instrument_weights = dict(US10_fsb=0.1, BUXL_fsb=0.4, GOLD_fsb=0.3, NASDAQ_fsb=0.2)
         my_config.instrument_div_multiplier = 1.5
 
         my_system = System(
@@ -192,7 +192,7 @@ class TestFsbExamples:
         my_config = Config(
             dict(
                 trading_rules=dict(ewmac8=ewmac_8, ewmac32=ewmac_32),
-                instrument_weights=dict(US30_fsb=0.1, BUXL_fsb=0.4, GOLD_fsb=0.3, NASDAQ_fsb=0.2),
+                instrument_weights=dict(US10_fsb=0.1, BUXL_fsb=0.4, GOLD_fsb=0.3, NASDAQ_fsb=0.2),
                 instrument_div_multiplier=1.5,
                 forecast_scalars=dict(ewmac8=5.3, ewmac32=2.65),
                 forecast_weights=dict(ewmac8=0.5, ewmac32=0.5),
