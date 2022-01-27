@@ -20,7 +20,7 @@ instruments: [
 ]
 
 #
-#use_forecast_scale_estimates: True
+use_forecast_scale_estimates: True
 #
 forecast_scalar_estimate:
    pool_instruments: True
