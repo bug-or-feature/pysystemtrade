@@ -40,10 +40,10 @@ def run_system():
     do_fsb = True
     do_estimate = False
     use_csv = False
+    write_config = True
 
     capital = config_from_file("systems.futures_spreadbet.config_capital.yaml")
-    # rules = config_from_file("systems.futures_spreadbet.config_rules.yaml")
-    rules = config_from_file("systems.futures_spreadbet.config_rules2.yaml")
+    rules = config_from_file("systems.futures_spreadbet.config_rules_v3.yaml")
     ignore = config_from_file("systems.futures_spreadbet.config_ignore.yaml")
 
     config_files = [rules, capital, ignore]
@@ -58,8 +58,9 @@ def run_system():
             # config_files.append("systems.futures_spreadbet.config_empty_instruments.yaml")
             # config_files.append("systems.futures_spreadbet.estimate_10_cheap.yaml")
             # config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
-            config_files.append("systems.futures_spreadbet.config_fsb_system_v3.yaml")
+            # config_files.append("systems.futures_spreadbet.config_fsb_system_v3.yaml")
             # config_files.append("systems.futures_spreadbet.config_fsb_system_v2.yaml")
+            config_files.append("systems.futures_spreadbet.estimate-2022-01-27.yaml")
         if use_csv:
             data = csvFuturesSimData(
                 csv_data_paths=dict(
@@ -241,6 +242,9 @@ def run_system():
     if do_estimate:
         write_estimate_file(system)
 
+    if write_config:
+        write_full_config_file(system)
+
     return system
 
 
@@ -259,8 +263,17 @@ def write_estimate_file(system):
     output_file = get_filename_for_package(
         f"systems.futures_spreadbet.estimate-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
     )
-    print(f"writing to: {output_file}")
+    print(f"writing estimate params to: {output_file}")
     sysdiag.yaml_config_with_estimated_parameters(output_file, FULL_ESTIMATES_ATTRS)
+
+
+def write_full_config_file(system):
+    now = datetime.now()
+    output_file = get_filename_for_package(
+        f"systems.futures_spreadbet.full_config-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
+    )
+    print(f"writing config to: {output_file}")
+    system.config.save(output_file)
 
 
 def write_file(df, run_type, product, write=True):
