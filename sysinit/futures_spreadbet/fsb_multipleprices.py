@@ -9,7 +9,7 @@ from sysdata.arctic.arctic_futures_per_contract_prices import (
 )
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
 from sysdata.config.production_config import get_production_config
-from sysdata.csv.csv_fsb_contract_prices import CsvFsbContractPriceData
+from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysdata.csv.csv_multiple_prices import csvFuturesMultiplePricesData
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 # from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
@@ -37,7 +37,7 @@ We then store those multiple prices in: (depending on options)
 """
 def _get_data_inputs(instr_code, csv_roll_data_path, csv_multiple_data_path):
     csv_roll_calendars = csvRollCalendarData(csv_roll_data_path)
-    csv_individual_fsb_prices = CsvFsbContractPriceData(
+    csv_individual_fsb_prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
             get_production_config().get_element_or_missing_data("barchart_path")
         ),

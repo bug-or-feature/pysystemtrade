@@ -5,7 +5,7 @@ from syscore.fileutils import get_filename_for_package
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
-from sysdata.csv.csv_fsb_contract_prices import CsvFsbContractPriceData
+from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysobjects.roll_calendars import rollCalendar
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
@@ -173,7 +173,7 @@ if __name__ == "__main__":
 
     instr_code = "US10_fsb"
 
-    prices = CsvFsbContractPriceData(
+    prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
             get_production_config().get_element_or_missing_data("barchart_path")
         ),

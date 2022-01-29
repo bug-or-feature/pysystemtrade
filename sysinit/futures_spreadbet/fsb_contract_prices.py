@@ -1,6 +1,6 @@
 from sysdata.config.production_config import get_production_config
 from syscore.fileutils import get_filename_for_package
-from sysdata.csv.csv_fsb_contract_prices import ConfigCsvFsbPrices
+from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysinit.futures_spreadbet.contract_prices_from_csv_to_arctic import (
     init_arctic_with_csv_futures_contract_prices_for_code,
     init_arctic_with_csv_futures_contract_prices_for_contract,
@@ -29,7 +29,7 @@ def transfer_barchart_prices_to_arctic_single_contract(instr, contract, datapath
 def build_import_config(instr):
     instr_data = IgFuturesInstrumentData()
     config_data = get_instrument_object_from_config(instr, config=instr_data.config)
-    return ConfigCsvFsbPrices(
+    return ConfigCsvFuturesPrices(
         input_date_index_name="Time",
         input_skiprows=0,
         input_skipfooter=0,
