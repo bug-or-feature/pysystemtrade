@@ -151,7 +151,6 @@ def get_instrument_object_from_config(
     currency = config_row.IGCurrency.values[0]
     multiplier = config_row.IGMultiplier.values[0]
     inverse = config_row.IGInverse.values[0]
-    source = config_row.Source.values[0]
     bc_code = config_row.BarchartCode.values[0]
     period_str = config_row.IGPeriods.values[0]
 
@@ -161,7 +160,6 @@ def get_instrument_object_from_config(
         currency=currency,
         multiplier=multiplier,
         inverse=inverse,
-        source=source,
         bc_code=bc_code,
         period_str=period_str
     )

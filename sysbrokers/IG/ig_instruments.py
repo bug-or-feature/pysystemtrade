@@ -7,7 +7,6 @@ class IgInstrumentConfigData:
     epic: str
     currency: str
     multiplier: float
-    source: str
     bc_code: str
     periods: list = field(init=False, repr=False)
     inverse: bool = False
@@ -33,10 +32,6 @@ class FsbInstrumentWithIgConfigData(object):
     @property
     def epic(self):
         return self.ig_data.epic
-
-    @property
-    def source(self):
-        return self.ig_data.source
 
     @property
     def multiplier(self):
