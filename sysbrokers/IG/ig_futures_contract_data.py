@@ -17,7 +17,6 @@ class IgFuturesContractData(brokerFuturesContractData):
         self._igconnection = broker_conn
         self._barchart = bcConnection()
         self._instrument_data = IgFuturesInstrumentData(broker_conn, log=self.log)
-        self._bc_instrument_data = BarchartFuturesInstrumentData(log=self.log)
 
     def __repr__(self):
         return f"IG FSB per contract data: {self._igconnection}"
@@ -33,10 +32,6 @@ class IgFuturesContractData(brokerFuturesContractData):
     @property
     def ig_instrument_data(self) -> IgFuturesInstrumentData:
         return self._instrument_data
-
-    @property
-    def bc_instrument_data(self) -> BarchartFuturesInstrumentData:
-        return self._bc_instrument_data
 
     def get_actual_expiry_date_for_single_contract(
         self, futures_contract: futuresContract
@@ -98,18 +93,11 @@ class IgFuturesContractData(brokerFuturesContractData):
         self, contract_object: futuresContract
     ) -> futuresContract:
 
-        if self._is_futures_spread_bet(contract_object):
-            futures_contract_plus = (
-                self.ig_instrument_data.get_ig_fsb_instrument(
-                    contract_object.instrument_code
-                )
+        futures_contract_plus = (
+            self.ig_instrument_data.get_ig_fsb_instrument(
+                contract_object.instrument_code
             )
-        else:
-            futures_contract_plus = (
-                self.bc_instrument_data.get_bc_futures_instrument(
-                    contract_object.instrument_code
-                )
-            )
+        )
 
         if futures_contract_plus is missing_instrument:
             return missing_contract
@@ -131,11 +119,11 @@ class IgFuturesContractData(brokerFuturesContractData):
             return missing_contract
 
         date_format_str = "%Y-%m-%dT%H:%M"
-        if self._is_futures_spread_bet(futures_contract_plus):
-            expiry_date = self.igconnection.get_expiry_date(futures_contract_plus)
+        if futures_contract_plus.key in self.ig_instrument_data.expiry_dates:
+            expiry_date = self.ig_instrument_data.expiry_dates[futures_contract_plus.key]
+            date_format_str = "%Y-%m-%d %H:%M:%S"
         else:
-            expiry_date = self._barchart.get_expiry_date(futures_contract_plus)
-            date_format_str = "%m/%d/%y"
+            expiry_date = missing_contract
 
         if expiry_date is missing_contract or expiry_date is None:
             self.log.warn(
@@ -149,10 +137,6 @@ class IgFuturesContractData(brokerFuturesContractData):
             expiry_date = expiryDate.from_str(expiry_date, format=date_format_str)
 
         return expiry_date
-
-    # TODO common
-    def _is_futures_spread_bet(self, contract_object: futuresContract):
-        return "_fsb" in contract_object.instrument_code
 
     def get_min_tick_size_for_contract(self, contract_object: futuresContract) -> float:
         raise NotImplementedError("Not implemented! build it now")

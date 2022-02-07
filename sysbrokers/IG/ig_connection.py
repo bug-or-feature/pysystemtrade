@@ -1,10 +1,7 @@
 import logging
 from datetime import datetime
-import yaml
-from functools import cached_property
 
 import pandas as pd
-from pandas import json_normalize
 from tenacity import Retrying, wait_exponential, retry_if_exception_type
 from trading_ig.rest import IGService, ApiExceededException
 
@@ -13,7 +10,6 @@ from sysdata.config.production_config import get_production_config
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
-from syscore.fileutils import get_filename_for_package
 from syscore.objects import missing_contract
 
 
@@ -53,13 +49,6 @@ class IGConnection(object):
     @property
     def service(self):
         return self._session
-
-    @cached_property
-    def epic_map(self) -> dict:
-        epic_map_file = get_filename_for_package("sysbrokers.IG.epic_map.yaml")
-        with open(epic_map_file) as file_to_parse:
-            epic_map_dict = yaml.load(file_to_parse, Loader=yaml.FullLoader)
-        return epic_map_dict['ig_epic_map']
 
     def logout(self):
         self._session.logout()
@@ -178,7 +167,7 @@ class IGConnection(object):
                     resolution=bar_freq,
                     start_date=start_date.strftime("%Y-%m-%dT%H:%M:%S"),
                     end_date=end_date.strftime("%Y-%m-%dT%H:%M:%S"),
-                    format=self.mid_prices,
+                    format=IGService.mid_prices,
                 )
                 df = response["prices"]
 
@@ -245,91 +234,22 @@ class IGConnection(object):
         else:
             return missing_data
 
-    def get_expiry_date(self, futures_contract: futuresContract):
+    def get_expiry_details(self, epic: str):
         """
         Get the actual expiry date for a given contract, according to IG
         :param futures_contract:
         :return: str
         """
-        epic = self.get_ig_epic(futures_contract)
 
         if epic is not None:
             try:
                 info = self.service.fetch_market_by_epic(epic)
-                expiry = info["instrument"]["expiryDetails"]["lastDealingDate"]
+                expiry_key = info["instrument"]["expiry"]
+                last_dealing = info["instrument"]["expiryDetails"]["lastDealingDate"]
+                last_dealing_date = datetime.strptime(last_dealing, '%Y-%m-%dT%H:%M')
             except Exception as exc:
-                self.log.error(f"Problem getting expiry date for '{futures_contract.key}': {exc}")
+                self.log.error(f"Problem getting expiry date for '{epic}': {exc}")
                 return missing_contract
-            return expiry
+            return (expiry_key, last_dealing_date.strftime("%Y-%m-%d %H:%M:%S"))
         else:
             return missing_contract
-
-    # TODO properly
-    def get_ig_epic(self, futures_contract: futuresContract):
-        """
-        Converts a contract identifier from internal format (GOLD/20200900), into IG format (MT.D.GC.MONTH1.IP)
-        :param futures_contract: the internal format identifier
-        :type futures_contract: futuresContract
-        :return: IG epic
-        :rtype: str
-        """
-
-        if futures_contract.key in self.epic_map:
-            return self.epic_map[futures_contract.key]
-        else:
-            return None
-
-    # TODO use the one from trading_ig, remember to rename cols
-    def mid_prices(self, prices, version):
-
-        """Format price data as a flat DataFrame, no hierarchy, mid prices"""
-
-        if len(prices) == 0:
-            raise (
-                Exception(
-                    "Converting historical data to pandas dataframe failed, none found"
-                )
-            )
-
-        df = json_normalize(prices)
-
-        df["Date"] = pd.to_datetime(df["snapshotTimeUTC"], format="%Y-%m-%dT%H:%M:%S")
-        df.set_index("Date", inplace=True)
-        df.index = df.index.tz_localize(tz="UTC")
-
-        df = df.drop(
-            columns=[
-                "snapshotTime",
-                "openPrice.lastTraded",
-                "closePrice.lastTraded",
-                "highPrice.lastTraded",
-                "lowPrice.lastTraded",
-            ]
-        )
-
-        df = df.rename(columns={"lastTradedVolume": "VOLUME"})
-
-        df["OPEN"] = df[["openPrice.bid", "openPrice.ask"]].mean(axis=1).round(2)
-        df["HIGH"] = df[["highPrice.bid", "highPrice.ask"]].mean(axis=1).round(2)
-        df["LOW"] = df[["lowPrice.bid", "lowPrice.ask"]].mean(axis=1).round(2)
-        df["FINAL"] = df[["closePrice.bid", "closePrice.ask"]].mean(axis=1).round(2)
-
-        new_cols = ["OPEN", "HIGH", "LOW", "FINAL", "VOLUME"]
-        df = df[new_cols]
-
-        df.index = df.index.tz_localize(tz=None)
-
-        return df
-
-    # TODO properly
-    def has_data_for_contract(self, futures_contract: futuresContract) -> bool:
-        """
-        Does IG have data for a given contract?
-
-        :param futures_contract: internal contract identifier
-        :type futures_contract: futuresContract
-        :return: whether IG knows about the contract
-        :rtype: bool
-        """
-        return futures_contract.key in self.epic_map
-

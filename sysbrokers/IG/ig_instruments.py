@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from sysobjects.instruments import futuresInstrument
 
 
@@ -9,15 +9,16 @@ class IgInstrumentConfigData:
     multiplier: float
     source: str
     bc_code: str
+    periods: list = field(init=False, repr=False)
     inverse: bool = False
-    period_str: str = ""
+    period_str: str = "na"
     margin: float = 0.1
 
-    def epic_periods(self) -> []:
-        if self.period_str == "na":
-            return []
+    def __post_init__(self):
+        if self.period_str != "na":
+            self.periods = self.period_str.split("|")
         else:
-            return self.period_str.split("|")
+            self.periods = []
 
 
 @dataclass
