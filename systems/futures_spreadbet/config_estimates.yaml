@@ -37,6 +37,7 @@ forecast_correlation_estimate:
 use_instrument_weight_estimates: True
 use_instrument_div_mult_estimates: True
 
-
+forecast_weight_estimate:
+   n_threads: 8
 
 
