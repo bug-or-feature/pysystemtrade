@@ -40,6 +40,7 @@ class UpdateEpicHistory(object):
             data = {}
             row = []
             col_headers = []
+            valid = True
             key = now.strftime('%Y-%m-%d %H:%M:%S')
 
             if len(config.ig_data.periods) == 0:
@@ -54,21 +55,25 @@ class UpdateEpicHistory(object):
                     expiry_key, expiry = self.data.broker_conn.get_expiry_details(epic)
                     row.append(f"{expiry_key} ({expiry})")
 
-                except Exception as e:
-                    if e.args[0] != 'error.service.marketdata.instrument.epic.unavailable':
-                        self.data.log.error(f"exception: '{e.args[0]}', type: '{type(e.args[0])}'")
+                except Exception:
                     row.append(np.nan)
+                    valid = False
 
-            data[key] = row
-            df = pd.DataFrame.from_dict(data, orient='index', columns=col_headers)
-            df.index.name = 'Date'
+            if valid:
+                data[key] = row
+                df = pd.DataFrame.from_dict(data, orient='index', columns=col_headers)
+                df.index.name = 'Date'
 
-            existing = self.data.db_fsb_epic_history.read_epic_history(instr)
-            existing.index.name = 'Date'
+                existing = self.data.db_fsb_epic_history.read_epic_history(instr)
+                existing.index.name = 'Date'
 
-            self.data.log.msg(f"Writing epic history for '{instr}'")
-            existing.loc[pd.to_datetime(key)] = row
-            self.data.db_fsb_epic_history.update_epic_history(instr, existing)
+                self.data.log.msg(f"Writing epic history for '{instr}'")
+                existing.loc[pd.to_datetime(key)] = row
+                self.data.db_fsb_epic_history.update_epic_history(instr, existing)
+            else:
+                msg = f"Problem updating epic data for instrument'{instr}' " \
+                      f"and periods {config.ig_data.periods} - check config"
+                self.data.log.critical(msg)
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
         return self.broker.broker_futures_instrument_data.get_ig_fsb_instrument(instr)
