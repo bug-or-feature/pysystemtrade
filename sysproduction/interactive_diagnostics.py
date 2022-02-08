@@ -1,12 +1,13 @@
-from syscore.dateutils import get_datetime_input, SECONDS_PER_HOUR
+from syscore.dateutils import get_datetime_input, SECONDS_PER_HOUR, openingTimes, listOfOpeningTimes
 from syscore.interactive import (
     get_and_convert,
     run_interactive_menu,
     print_menu_of_values_and_get_response,
     print_menu_and_get_response,
 )
+from syscore.genutils import progressBar
 from syscore.pdutils import set_pd_print_options
-from syscore.objects import user_exit, arg_not_supplied
+from syscore.objects import user_exit, arg_not_supplied, missing_contract
 from sysexecution.orders.list_of_orders import listOfOrders
 
 from sysdata.data_blob import dataBlob
@@ -604,18 +605,25 @@ def print_trading_hours_for_all_instruments(data=arg_not_supplied):
 
 
 def display_a_dict_of_trading_hours(all_trading_hours):
-    for key, trading_hour_entry in sorted(
+    for key, trading_hours_this_instrument in sorted(
         all_trading_hours.items(), key=lambda x: x[0]
     ):
         print(
             "%s: %s"
-            % ("{:20}".format(key), nice_print_trading_hours(trading_hour_entry))
+            % ("{:20}".format(key), nice_print_list_of_trading_hours(trading_hours_this_instrument)
+        )
         )
 
+MAX_WIDTH_OF_PRINTABLE_TRADING_HOURS = 3
+def nice_print_list_of_trading_hours(trading_hours: listOfOpeningTimes) -> str:
+    list_of_nice_str = [nice_print_trading_hours(trading_hour_entry)
+                        for trading_hour_entry in trading_hours[:MAX_WIDTH_OF_PRINTABLE_TRADING_HOURS]]
+    nice_string = " ".join(list_of_nice_str)
+    return nice_string
 
-def nice_print_trading_hours(trading_hour_entry) -> str:
-    start_datetime = trading_hour_entry[0]
-    end_datetime = trading_hour_entry[1]
+def nice_print_trading_hours(trading_hour_entry: openingTimes) -> str:
+    start_datetime = trading_hour_entry.opening_time
+    end_datetime = trading_hour_entry.closing_time
     diff_time = end_datetime - start_datetime
     hours_in_between = (diff_time.total_seconds()) / SECONDS_PER_HOUR
 
@@ -640,27 +648,41 @@ def get_trading_hours_for_all_instruments(data=arg_not_supplied):
     diag_prices = diagPrices(data)
     list_of_instruments = diag_prices.get_list_of_instruments_with_contract_prices()
 
+    p = progressBar(len(list_of_instruments))
     all_trading_hours = {}
     for instrument_code in list_of_instruments:
+        p.iterate()
         trading_hours = get_trading_hours_for_instrument(data, instrument_code)
+        if trading_hours is missing_contract:
+            print("*** NO EXPIRY FOR %s ***" % instrument_code)
+            continue
 
         ## will have several days use first one
-        trading_hours_this_instrument = trading_hours[0]
-        check_trading_hours(trading_hours_this_instrument, instrument_code)
-        all_trading_hours[instrument_code] = trading_hours_this_instrument
+        check_trading_hours(trading_hours, instrument_code)
+        all_trading_hours[instrument_code] = trading_hours
+
+    p.finished()
 
     return all_trading_hours
 
 
-def check_trading_hours(trading_hours_this_instrument, instrument_code):
-    if trading_hours_this_instrument[0] > trading_hours_this_instrument[1]:
+def check_trading_hours(trading_hours: listOfOpeningTimes,
+                        instrument_code: str):
+    for trading_hours_this_instrument in trading_hours:
+        check_trading_hours_one_day(trading_hours_this_instrument, instrument_code)
+
+def check_trading_hours_one_day(trading_hours_this_instrument: openingTimes,
+                        instrument_code: str):
+    if trading_hours_this_instrument.opening_time >= \
+            trading_hours_this_instrument.closing_time:
         print(
             "%s Trading hours appear to be wrong: %s"
             % (instrument_code, nice_print_trading_hours(trading_hours_this_instrument))
         )
 
 
-def get_trading_hours_for_instrument(data, instrument_code):
+def get_trading_hours_for_instrument(data: dataBlob,
+                                     instrument_code: str) -> listOfOpeningTimes:
 
     diag_contracts = dataContracts(data)
     contract_id = diag_contracts.get_priced_contract_id(instrument_code)
