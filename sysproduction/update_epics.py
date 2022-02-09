@@ -32,7 +32,8 @@ class UpdateEpicHistory(object):
     def update_epic_history(self):
 
         now = datetime.now()
-        for instr in self.data.db_fsb_epic_history.get_list_of_instruments():
+        list = self.data.db_fsb_epic_history.get_list_of_instruments()
+        for instr in sorted(list):
 
             self.data.log.msg(f"Starting processing for '{instr}'")
 
