@@ -56,7 +56,7 @@ class AvFxPricesData(brokerFxPricesData):
 
         if len(raw_fx_prices_as_series) == 0:
             self.log.warn(
-                "No available IB prices for %s %s"
+                "No available AlphaVantage prices for %s %s"
                 % (currency_code, str(config_for_code)),
                 fx_code=currency_code,
             )
