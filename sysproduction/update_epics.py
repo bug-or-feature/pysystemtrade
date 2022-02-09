@@ -61,18 +61,23 @@ class UpdateEpicHistory(object):
                     valid = False
 
             if valid:
-                data[key] = row
-                df = pd.DataFrame.from_dict(data, orient='index', columns=col_headers)
-                df.index.name = 'Date'
+                try:
+                    data[key] = row
+                    df = pd.DataFrame.from_dict(data, orient='index', columns=col_headers)
+                    df.index.name = 'Date'
 
-                existing = self.data.db_fsb_epic_history.read_epic_history(instr)
-                existing.index.name = 'Date'
+                    existing = self.data.db_fsb_epic_history.read_epic_history(instr)
+                    existing.index.name = 'Date'
 
-                self.data.log.msg(f"Writing epic history for '{instr}'")
-                existing.loc[pd.to_datetime(key)] = row
-                self.data.db_fsb_epic_history.update_epic_history(instr, existing)
+                    self.data.log.msg(f"Writing epic history for '{instr}'")
+                    existing.loc[pd.to_datetime(key)] = row
+                    self.data.db_fsb_epic_history.update_epic_history(instr, existing)
+                except Exception:
+                    msg = f"Problem updating epic data for instrument '{instr}' " \
+                          f"and periods {config.ig_data.periods} - check config"
+                    self.data.log.critical(msg)
             else:
-                msg = f"Problem updating epic data for instrument'{instr}' " \
+                msg = f"Problem getting expiry data for instrument '{instr}' " \
                       f"and periods {config.ig_data.periods} - check config"
                 self.data.log.critical(msg)
 
