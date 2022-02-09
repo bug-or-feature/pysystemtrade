@@ -31,7 +31,7 @@ def get_list_of_timer_functions_for_price_update():
 
     list_of_timer_names_and_functions = [
         ("update_fx_prices", fx_update_object),
-        ("update_epics", epic_update_object),
+        ("update_epic_history", epic_update_object),
         ("update_sampled_contracts", contracts_update_object),
         ("update_historical_prices", historical_update_object),
         ("update_multiple_adjusted_prices", multiple_update_object),
