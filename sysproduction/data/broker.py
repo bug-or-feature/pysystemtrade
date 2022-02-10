@@ -1,22 +1,13 @@
 from copy import copy
-from sysbrokers.IB.ib_capital_data import ibCapitalData
-from sysbrokers.IB.ib_Fx_prices_data import ibFxPricesData
-from sysbrokers.IB.ib_futures_contract_price_data import ibFuturesContractPriceData
-from sysbrokers.IB.ib_futures_contracts_data import ibFuturesContractData
-from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData
-from sysbrokers.IB.ib_contract_position_data import ibContractPositionData
-from sysbrokers.IB.ib_orders import ibExecutionStackData
-from sysbrokers.IB.ib_static_data import ibStaticData
-from sysbrokers.IB.ib_fx_handling import ibFxHandlingData
-
-from sysdata.alphavantage.av_spot_FX_data import AvFxPricesData
-from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysbrokers.IG.ig_capital_data import IgCapitalData
-from sysbrokers.IG.ig_static_data import IgStaticData
-from sysbrokers.IG.ig_contract_position_data import IgContractPositionData
-from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
-from sysbrokers.IG.ig_orders import IgExecutionStackData
+from sysdata.alphavantage.av_spot_FX_data import AvFxPricesData
 from sysbrokers.IG.ig_futures_contract_price_data import IgFuturesContractPriceData
+from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
+from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
+from sysbrokers.IG.ig_contract_position_data import IgContractPositionData
+from sysbrokers.IG.ig_orders import IgExecutionStackData
+from sysbrokers.IG.ig_static_data import IgStaticData
+#from sysbrokers.IB.ib_fx_handling import ibFxHandlingData
 
 from sysbrokers.broker_fx_handling import brokerFxHandlingData
 from sysbrokers.broker_static_data import brokerStaticData
@@ -61,19 +52,6 @@ class dataBroker(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
         ## Modify these to use another broker
         ## These will be aliased as self.data.broker_fx_prices, self.data.broker_futures_contract_price ... and so on
-        # data.add_class_list(
-        #     [
-        #         ibFxPricesData,
-        #         ibFuturesContractPriceData,
-        #         ibFuturesContractData,
-        #         ibContractPositionData,
-        #         ibExecutionStackData,
-        #         ibStaticData,
-        #         ibCapitalData,
-        #         ibFuturesInstrumentData,
-        #         ibFxHandlingData,
-        #     ]
-        # )
 
         # TODO define this in config not code
         data.add_class_list(
@@ -81,11 +59,12 @@ class dataBroker(productionDataLayerGeneric):
                 AvFxPricesData,
                 IgFuturesContractPriceData,
                 IgFuturesContractData,
-                IgFuturesInstrumentData,
                 IgContractPositionData,
                 IgExecutionStackData,
                 IgStaticData,
                 IgCapitalData,
+                IgFuturesInstrumentData,
+                #IgFxHandlingData,
             ]
         )
 
