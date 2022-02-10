@@ -84,8 +84,10 @@ def get_total_current_margin(data: dataBlob) -> float:
     total_margin = data_margin.get_current_total_margin()
 
     if total_margin is missing_data:
-        data.log.critical("Can't allocate strategy margin without total margin")
-        raise Exception()
+        # TODO temp disable
+        #data.log.critical("Can't allocate strategy margin without total margin")
+        #raise Exception()
+        total_margin = 0.0
 
     return total_margin
 
