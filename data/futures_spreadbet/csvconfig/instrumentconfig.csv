@@ -1,9 +1,17 @@
 Instrument,Pointsize,PerTrade,AssetClass,PerBlock,Description,Percentage,Currency,Slippage
-BUXL_fsb,0.5,0.0,Bond,0.0,Buxl futures spread bet,0.0,GBP,2.0
-CAD_fsb,1.0,0.0,FX,0.0,USDCAD futures spread bet,0.0,GBP,3.65
-CRUDE_W_fsb,1.0,0.0,OilGas,0.0,Crude oil futures spread bet,0.0,GBP,3.0
-EUROSTX_fsb,1.0,0.0,Equity,0.0,EUROSTOXX futures spread bet,0.0,GBP,1.0
-GOLD_fsb,1.0,0.0,Metals,0.0,Gold futures spread bet,0.0,GBP,0.3
-NASDAQ_fsb,0.5,0.0,Equity,0.0,Nasdaq futures spread bet,0.0,GBP,1.5
-NZD_fsb,1.0,0.0,FX,0.0,NZDUSD futures spread bet,0.0,GBP,2.9
+BTP_fsb,0.5,0.0,Bond,0.0,Italian 10 year bond BTP,0.0,GBP,2.5
+BUXL_fsb,0.5,0.0,Bond,0.0,German Buxl 15 to 30 year bond,0.0,GBP,2.0
+CAD_fsb,1.0,0.0,FX,0.0,USDCAD currency,0.0,GBP,3.65
+COFFEE_fsb,0.5,0.0,Ags,0.0,Coffee New York Arabica,0.0,GBP,25.0
+CRUDE_W_fsb,1.0,0.0,OilGas,0.0,Light sweet crude Winter,0.0,GBP,3.0
+DOW_fsb,0.2,0.0,Equity,0.0,Dow Jones Industrial Average Index,0.0,GBP,3.6
+EUR_fsb,1.0,0.0,FX,0.0,EURUSD currency,0.0,GBP,5.45
+EUROSTX_fsb,1.0,0.0,Equity,0.0,European equity index EUROSTOXX50,0.0,GBP,1.0
+GILT_fsb,0.5,0.0,Bond,0.0,UK 10 year bonds Long Gilt,0.0,GBP,1.5
+GOLD_fsb,1.0,0.0,Metals,0.0,Gold,0.0,GBP,0.3
+JPY_fsb,1.0,0.0,FX,0.0,JPYUSD currency,0.0,GBP,5.0
+NASDAQ_fsb,0.5,0.0,Equity,0.0,US equity index Nasdaq,0.0,GBP,1.5
+NIKKEI_fsb,0.5,0.0,Equity,0.0,Nikkei 225 equity index,0.0,GBP,10.0
+NZD_fsb,1.0,0.0,FX,0.0,NZDUSD currency,0.0,GBP,2.9
+SOYOIL_fsb,1.0,0.0,Ags,0.0,Soybean Oil,0.0,GBP,5.0
 US10_fsb,0.5,0.0,Bond,0.0,US 10 year bond note,0.0,GBP,2.0
