@@ -152,7 +152,7 @@ def process_multiple_prices_single_instrument(
 
 
 def adjust_roll_calendar(instrument_code, roll_calendar, prices):
-    print("Getting prices to adjust roll calendar")
+    print(f"Getting prices for '{instrument_code}' to adjust roll calendar")
     dict_of_prices = prices.get_all_prices_for_instrument(
         instrument_code
     )
