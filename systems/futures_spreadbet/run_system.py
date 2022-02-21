@@ -37,8 +37,7 @@ DEPOSIT_FACTOR_MAP = {
 
 def run_system():
 
-    do_fsb = True
-    do_estimate = False
+    do_estimate = True
     use_csv = False
     write_config = True
 
@@ -48,44 +47,34 @@ def run_system():
 
     config_files = [rules, capital, ignore]
 
-    if do_fsb:
-        if do_estimate:
-            estimates = config_from_file(
-                "systems.futures_spreadbet.config_estimates.yaml"
-            )
-            config_files.append(estimates)
-        else:
-            # config_files.append("systems.futures_spreadbet.config_empty_instruments.yaml")
-            # config_files.append("systems.futures_spreadbet.estimate_10_cheap.yaml")
-            # config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
-            # config_files.append("systems.futures_spreadbet.config_fsb_system_v3.yaml")
-            # config_files.append("systems.futures_spreadbet.config_fsb_system_v2.yaml")
-            config_files.append("systems.futures_spreadbet.estimate-2022-01-27.yaml")
-        if use_csv:
-            data = csvFuturesSimData(
-                csv_data_paths=dict(
-                    csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-                    csvRollParametersData="data.futures_spreadbet.csvconfig",
-                    csvFxPricesData="data.futures.fx_prices_csv",
-                    csvFuturesMultiplePricesData="data.futures_spreadbet.multiple_prices_csv",
-                    csvFuturesAdjustedPricesData="data.futures_spreadbet.adjusted_prices_csv",
-                )
-            )
-        else:
-            data = dbFuturesSimData()
-        config = Config(config_files)
-        prod_label = "FSB"
-        bet_label = "BetPerPoint"
-        type_label = "estimate"
+    if do_estimate:
+        estimates = config_from_file(
+            "systems.futures_spreadbet.config_estimates.yaml"
+        )
+        config_files.append(estimates)
     else:
-        if use_csv:
-            data = csvFuturesSimData()
-        else:
-            data = dbFuturesSimData()
-        config = Config(config_files)
-        prod_label = "FUT"
-        bet_label = "NumContracts"
-        type_label = "normal"
+        # config_files.append("systems.futures_spreadbet.config_empty_instruments.yaml")
+        # config_files.append("systems.futures_spreadbet.estimate_10_cheap.yaml")
+        # config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
+        # config_files.append("systems.futures_spreadbet.config_fsb_system_v3.yaml")
+        # config_files.append("systems.futures_spreadbet.config_fsb_system_v2.yaml")
+        config_files.append("systems.futures_spreadbet.estimate-2022-01-27.yaml")
+    if use_csv:
+        data = csvFuturesSimData(
+            csv_data_paths=dict(
+                csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+                csvRollParametersData="data.futures_spreadbet.csvconfig",
+                csvFxPricesData="data.futures.fx_prices_csv",
+                csvFuturesMultiplePricesData="data.futures_spreadbet.multiple_prices_csv",
+                csvFuturesAdjustedPricesData="data.futures_spreadbet.adjusted_prices_csv",
+            )
+        )
+    else:
+        data = dbFuturesSimData()
+    config = Config(config_files)
+    prod_label = "FSB"
+    bet_label = "BetPerPoint"
+    type_label = "estimate"
 
     system = futures_system(
         config=config,
@@ -114,13 +103,7 @@ def run_system():
         spread_in_points = instr_obj.meta_data.Slippage * 2
         min_bet_per_point = instr_obj.meta_data.Pointsize
         # multi = instr_obj.meta_data.Multiplier
-        if do_fsb:
-            # deposit_factor = instr_obj.meta_data.Margin
-            deposit_factor = DEPOSIT_FACTOR_MAP[asset_class]
-            # asset_subclass = instr_obj.meta_data.AssetSubclass
-        else:
-            deposit_factor = "n/a"
-            # asset_subclass = "n/a"
+        deposit_factor = DEPOSIT_FACTOR_MAP[asset_class]
 
         # price
         price = system.rawdata.get_daily_prices(instr).iloc[-1]

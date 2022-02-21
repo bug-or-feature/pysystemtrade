@@ -1,22 +1,20 @@
-#instruments: ['BUXL','CHF','DAX','CRUDE_W','GOLD','NASDAQ','EURGBP','US30','SOYOIL']
-#instruments: ['GOLD', 'CARBON', 'BUXL', 'EUROSTX', 'LEANHOG', 'CHF', 'OJ', 'COPPER', 'RUSSELL', 'COCOA_NY', 'CRUDE_W', 'EURGBP']
-#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","HANG","GILT","CRUDE_W","EUROSTX"]
-#instruments: ["NASDAQ","US30","GOLD","DAX","BUXL","CARBON","NIKKEI","GILT","CRUDE_W","LEANHOG"]
-#instruments: [
-#   "NASDAQ","EUROSTX","NIKKEI",
-#   "US30","BUXL","GILT",
-#   "CAD","NZD","GBP",
-#   "GOLD","CARBON","CRUDE_W","COPPER","SOYOIL"
-#]
 instruments: [
-    "BUXL_fsb",
-    "CAD_fsb",
-    "CRUDE_W_fsb",
-    "EUROSTX_fsb",
-    "GOLD_fsb",
-    "NASDAQ_fsb",
-    "NZD_fsb",
-    "US10_fsb",
+   "DOW_fsb",
+   "BTP_fsb",
+   "BUXL_fsb",
+   "CAD_fsb",
+   "COFFEE_fsb",
+   "CRUDE_W_fsb",
+   "EUR_fsb",
+   "EUROSTX_fsb",
+   "GILT_fsb",
+   "GOLD_fsb",
+   "JPY_fsb",
+   "NASDAQ_fsb",
+   "NIKKEI_fsb",
+   "NZD_fsb",
+   "SOYOIL_fsb",
+   "US10_fsb",
 ]
 
 #

@@ -129,4 +129,4 @@ trading_rules:
     other_args:
          Lfast: 4
 
-buffer_trade_to_edge: True
+#buffer_trade_to_edge: True
