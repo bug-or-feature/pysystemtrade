@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 
 import pandas as pd
+from pandas import json_normalize
 from tenacity import Retrying, wait_exponential, retry_if_exception_type
 from trading_ig.rest import IGService, ApiExceededException
 
@@ -253,3 +254,53 @@ class IGConnection(object):
             return (expiry_key, last_dealing_date.strftime("%Y-%m-%d %H:%M:%S"))
         else:
             return missing_contract
+
+    def get_recent_bid_ask_price_data(self, epic):
+
+        results = self.service.fetch_historical_prices_by_epic(
+            epic,
+            resolution="10Min",
+            numpoints=6,
+            format=self._flat_prices_tick_format,
+            wait=0
+        )
+
+        return results["prices"]
+
+    def _flat_prices_tick_format(self, prices, version):
+
+        """Format price data as a flat DataFrame, no hierarchy"""
+
+        if len(prices) == 0:
+            raise (Exception("Historical price data not found"))
+
+        df = json_normalize(prices)
+        df = df.set_index("snapshotTimeUTC")
+        df.index = pd.to_datetime(df.index, format="%Y-%m-%dT%H:%M:%S")
+        df.index.name = "DateTime"
+        df = df.rename(
+            columns={
+                "closePrice.bid": "priceBid",
+                "closePrice.ask": "priceAsk",
+                "lastTradedVolume": "sizeAsk"
+            }
+        )
+        df["sizeBid"] = df["sizeAsk"]
+        df = df.drop(
+            columns=[
+                "openPrice.bid",
+                "snapshotTime",
+                "openPrice.ask",
+                "highPrice.bid",
+                "highPrice.ask",
+                "lowPrice.bid",
+                "lowPrice.ask",
+                "openPrice.lastTraded",
+                "closePrice.lastTraded",
+                "highPrice.lastTraded",
+                "lowPrice.lastTraded"
+            ]
+        )
+        df = df[["priceBid", "priceAsk", "sizeAsk", "sizeBid"]]
+
+        return df

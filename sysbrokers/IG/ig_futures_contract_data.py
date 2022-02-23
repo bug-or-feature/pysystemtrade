@@ -6,7 +6,6 @@ from syslogdiag.log_to_screen import logtoscreen
 from sysbrokers.IG.ig_connection import IGConnection
 from sysdata.barchart.bc_connection import bcConnection
 from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
-from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from syscore.objects import missing_contract, missing_instrument
 from syscore.dateutils import get_datetime_from_datestring
 
@@ -142,7 +141,12 @@ class IgFuturesContractData(brokerFuturesContractData):
         raise NotImplementedError("Not implemented! build it now")
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
-        raise NotImplementedError("Not implemented! build it now")
+        #print(f"futures_contract: {futures_contract.key}")
+        #expiry_dates = self.ig_instrument_data.expiry_dates
+        #has_expiry = futures_contract.key in self.ig_instrument_data.expiry_dates
+        # TODO improve, eg trading hours etc
+        has_epic = futures_contract.key in self.ig_instrument_data.epic_mapping
+        return has_epic
 
     def is_contract_conservatively_okay_to_trade(
         self, futures_contract: futuresContract

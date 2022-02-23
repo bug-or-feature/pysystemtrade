@@ -173,7 +173,23 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
     def get_recent_bid_ask_tick_data_for_contract_object(
         self, contract_object: futuresContract
     ) -> dataFrameOfRecentTicks:
-        raise NotImplementedError("Not implemented")
+
+        new_log = contract_object.log(self.log)
+
+        contract_object_with_config_data = (
+            self.fsb_contract_data.get_contract_object_with_config_data(contract_object)
+        )
+        if contract_object_with_config_data is missing_contract:
+            new_log.warn("Can't get recent price data for %s" % str(contract_object))
+            return dataFrameOfRecentTicks.create_empty()
+
+        epic = self.futures_instrument_data.epic_mapping[contract_object.key]
+        price_data = self.igconnection.get_recent_bid_ask_price_data(epic)
+
+        if price_data is missing_contract:
+            return missing_data
+
+        return dataFrameOfRecentTicks(price_data)
 
     def get_prices_at_frequency_for_potentially_expired_contract_object(
         self, contract: futuresContract, freq: Frequency = DAILY_PRICE_FREQ
