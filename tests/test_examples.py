@@ -18,7 +18,7 @@ from systems.provided.futures_chapter15.basesystem import (
     futures_system as base_futures_system,
 )
 
-
+@pytest.mark.skip
 class TestExamples:
     def test_simple_trading_rule(self):
         """
