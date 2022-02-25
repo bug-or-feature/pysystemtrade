@@ -18,7 +18,6 @@ from systems.provided.futures_chapter15.basesystem import (
     futures_system as base_futures_system,
 )
 
-@pytest.mark.skip
 class TestExamples:
     def test_simple_trading_rule(self):
         """
@@ -86,6 +85,7 @@ class TestExamples:
         my_system.rules.get_raw_forecast("EDOLLAR", "ewmac32").tail(5)
 
         my_config = Config()
+        my_config.risk_overlay = dict()
         print(my_config)
 
         empty_rules = Rules()
@@ -231,6 +231,7 @@ class TestExamples:
                 percentage_vol_target=25.00,
                 notional_trading_capital=500000,
                 base_currency="GBP",
+                risk_overlay=dict(),
             )
         )
         print(my_config)

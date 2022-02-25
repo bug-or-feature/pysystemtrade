@@ -134,4 +134,5 @@ asset_classes:
       - MXP
     Other:
       - CORN
-
+# turn off risk overlay
+risk_overlay: {}

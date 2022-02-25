@@ -12,7 +12,7 @@ from systems.rawdata import RawData
 from systems.portfolio import Portfolios
 import pytest
 
-
+@pytest.mark.skip
 class TestFsbExamples:
 
     @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'

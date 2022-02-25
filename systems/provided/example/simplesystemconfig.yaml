@@ -26,3 +26,4 @@ instrument_weights:
      CORN: .3
      SP500: .2
 instrument_div_multiplier: 1.5
+risk_overlay: {}
