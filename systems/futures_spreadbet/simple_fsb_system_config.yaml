@@ -26,4 +26,3 @@ instrument_weights:
      GOLD_fsb: .3
      NASDAQ_fsb: .2
 instrument_div_multiplier: 1.5
-risk_overlay: {}
