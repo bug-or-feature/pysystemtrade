@@ -1,3 +1,4 @@
+from syscore.objects import arg_not_supplied
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
 from sysquant.estimators.vol import robust_vol_calc
 from systems.accounts.account_forecast import pandl_for_instrument_forecast
@@ -85,7 +86,7 @@ class TestExamples:
         my_system.rules.get_raw_forecast("EDOLLAR", "ewmac32").tail(5)
 
         my_config = Config()
-        my_config.risk_overlay = dict()
+        my_config.risk_overlay = arg_not_supplied
         print(my_config)
 
         empty_rules = Rules()
