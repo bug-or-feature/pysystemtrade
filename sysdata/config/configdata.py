@@ -37,7 +37,7 @@ class Config(object):
                         or a dict (which may nest many things)
                         or a list of strings or dicts or configs (build config from
                         multiple elements, latter elements will overwrite
-                        earlier oness)
+                        earlier ones)
 
         :type config_object: str or dict
 
