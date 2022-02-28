@@ -18,6 +18,7 @@ from systems.provided.futures_chapter15.basesystem import (
     futures_system as base_futures_system,
 )
 
+
 @pytest.fixture()
 def data():
     data = csvFuturesSimData()
@@ -36,9 +37,7 @@ def ewmac_8():
 
 @pytest.fixture()
 def ewmac_32():
-    return TradingRule(
-        dict(function=ewmac, other_args=dict(Lfast=32, Lslow=128))
-    )
+    return TradingRule(dict(function=ewmac, other_args=dict(Lfast=32, Lslow=128)))
 
 
 @pytest.fixture()
@@ -115,7 +114,9 @@ class TestExamples:
         my_system = System([my_rules, raw_data], data)
         my_system.rules.get_raw_forecast("EDOLLAR", "ewmac32").tail(5)
 
-    def test_simple_system_trading_rules_estimated(self, data, raw_data, ewmac_8, ewmac_32, fcs):
+    def test_simple_system_trading_rules_estimated(
+        self, data, raw_data, ewmac_8, ewmac_32, fcs
+    ):
 
         my_rules = Rules(dict(ewmac8=ewmac_8, ewmac32=ewmac_32))
         my_config = Config()
@@ -150,7 +151,9 @@ class TestExamples:
             my_system.forecastScaleCap.get_capped_forecast("EDOLLAR", "ewmac32").tail(5)
         )
 
-    def test_simple_system_combing_rules(self, data, raw_data, my_rules, my_config, fcs):
+    def test_simple_system_combing_rules(
+        self, data, raw_data, my_rules, my_config, fcs
+    ):
 
         # defaults
         combiner = ForecastCombine()
@@ -163,7 +166,9 @@ class TestExamples:
         )
 
     @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
-    def test_simple_system_combining_and_estimating(self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, account):
+    def test_simple_system_combining_and_estimating(
+        self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, account
+    ):
 
         # estimates:
         my_config.forecast_weight_estimate = dict(method="one_period")
@@ -199,7 +204,9 @@ class TestExamples:
         )  # no need for accounts if no estimation done
         my_system.combForecast.get_combined_forecast("EDOLLAR").tail(5)
 
-    def test_simple_system_position_sizing(self, data, raw_data, my_rules, my_config, fcs, combiner, possizer):
+    def test_simple_system_position_sizing(
+        self, data, raw_data, my_rules, my_config, fcs, combiner, possizer
+    ):
 
         # size positions
         my_config.percentage_vol_target = 25
@@ -219,7 +226,9 @@ class TestExamples:
         print(my_system.positionSize.get_subsystem_position("EDOLLAR").tail(5))
 
     @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
-    def test_simple_system_portfolio_estimated(self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, account):
+    def test_simple_system_portfolio_estimated(
+        self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, account
+    ):
 
         # portfolio - estimated
         portfolio = Portfolios()
@@ -241,7 +250,9 @@ class TestExamples:
         print(my_system.portfolio.get_instrument_weights().tail(5))
         print(my_system.portfolio.get_instrument_diversification_multiplier().tail(5))
 
-    def test_simple_system_portfolio_fixed(self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, portfolio):
+    def test_simple_system_portfolio_fixed(
+        self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, portfolio
+    ):
 
         # or fixed
         my_config.use_instrument_weight_estimates = False
@@ -257,7 +268,18 @@ class TestExamples:
 
         print(my_system.portfolio.get_notional_position("EDOLLAR").tail(5))
 
-    def test_simple_system_costs(self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, portfolio, account):
+    def test_simple_system_costs(
+        self,
+        data,
+        raw_data,
+        my_rules,
+        my_config,
+        fcs,
+        combiner,
+        possizer,
+        portfolio,
+        account,
+    ):
 
         my_config.forecast_weights = dict(ewmac8=0.5, ewmac32=0.5)
         my_config.instrument_weights = dict(US10=0.1, EDOLLAR=0.4, CORN=0.3, SP500=0.2)
@@ -292,7 +314,50 @@ class TestExamples:
                     ignore_instruments=["MILK"],
                     trading_restrictions=["BUTTER"],
                     bad_markets=["CHEESE"],
-                )
+                ),
+            )
+        )
+        print(my_config)
+        my_system = System(
+            [
+                Account(),
+                Portfolios(),
+                PositionSizing(),
+                ForecastCombine(),
+                ForecastScaleCap(),
+                Rules(),
+                RawData(),
+            ],
+            data,
+            my_config,
+        )
+        print(my_system.portfolio.get_notional_position("EDOLLAR").tail(5))
+
+    @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
+    def test_simple_system_risk_overlay(self, data, ewmac_8, ewmac_32):
+
+        my_config = Config(
+            dict(
+                trading_rules=dict(ewmac8=ewmac_8, ewmac32=ewmac_32),
+                instrument_weights=dict(US10=0.1, EDOLLAR=0.4, CORN=0.3, SP500=0.2),
+                instrument_div_multiplier=1.5,
+                forecast_scalars=dict(ewmac8=5.3, ewmac32=2.65),
+                forecast_weights=dict(ewmac8=0.5, ewmac32=0.5),
+                forecast_div_multiplier=1.1,
+                percentage_vol_target=25.00,
+                notional_trading_capital=500000,
+                base_currency="GBP",
+                risk_overlay=dict(
+                    max_risk_fraction_normal_risk=1.4,
+                    max_risk_fraction_stdev_risk=3.6,
+                    max_risk_limit_sum_abs_risk=3.4,
+                    max_risk_leverage=13.0,
+                ),
+                exclude_instrument_lists=dict(
+                    ignore_instruments=["MILK"],
+                    trading_restrictions=["BUTTER"],
+                    bad_markets=["CHEESE"],
+                ),
             )
         )
         print(my_config)

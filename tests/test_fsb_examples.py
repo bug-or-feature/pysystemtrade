@@ -41,9 +41,7 @@ def ewmac_8():
 
 @pytest.fixture()
 def ewmac_32():
-    return TradingRule(
-        dict(function=ewmac, other_args=dict(Lfast=32, Lslow=128))
-    )
+    return TradingRule(dict(function=ewmac, other_args=dict(Lfast=32, Lslow=128)))
 
 
 @pytest.fixture()
@@ -92,7 +90,6 @@ def portfolio():
 
 
 class TestFsbExamples:
-
     def test_fsb_system_rules(self, data, raw_data):
         """
         TODO
@@ -121,7 +118,8 @@ class TestFsbExamples:
         my_system.rules.get_raw_forecast("BUXL_fsb", "ewmac32").tail(5)
 
     def test_fsb_system_trading_rules_estimated(
-            self, data, raw_data, ewmac_8, ewmac_32, fcs):
+        self, data, raw_data, ewmac_8, ewmac_32, fcs
+    ):
 
         my_rules = Rules(dict(ewmac8=ewmac_8, ewmac32=ewmac_32))
         my_config = Config()
@@ -140,7 +138,9 @@ class TestFsbExamples:
         my_system = System([fcs, my_rules, raw_data], data, my_config)
         my_config.forecast_scalar_estimate["pool_instruments"] = False
         print(
-            my_system.forecastScaleCap.get_forecast_scalar("BUXL_fsb", "ewmac32").tail(5)
+            my_system.forecastScaleCap.get_forecast_scalar("BUXL_fsb", "ewmac32").tail(
+                5
+            )
         )
 
     def test_fsb_system_trading_rules_fixed(self, data, my_rules, fcs):
@@ -154,7 +154,9 @@ class TestFsbExamples:
 
         my_system = System([fcs, my_rules], data, my_config)
         print(
-            my_system.forecastScaleCap.get_capped_forecast("BUXL_fsb", "ewmac32").tail(5)
+            my_system.forecastScaleCap.get_capped_forecast("BUXL_fsb", "ewmac32").tail(
+                5
+            )
         )
 
     def test_fsb_system_combing_rules(self, data, raw_data, my_rules, my_config, fcs):
@@ -170,7 +172,9 @@ class TestFsbExamples:
         )
 
     @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
-    def test_fsb_system_combining_and_estimating(self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, account):
+    def test_fsb_system_combining_and_estimating(
+        self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, account
+    ):
 
         # estimates:
         my_config.forecast_weight_estimate = dict(method="one_period")
@@ -186,9 +190,9 @@ class TestFsbExamples:
 
         print(my_system.combForecast.get_forecast_weights("US10_fsb").tail(5))
         print(
-            my_system.combForecast.get_forecast_diversification_multiplier("US10_fsb").tail(
-                5
-            )
+            my_system.combForecast.get_forecast_diversification_multiplier(
+                "US10_fsb"
+            ).tail(5)
         )
 
     def test_fsb_system_combining_fixed(self, data, raw_data, my_config, fcs):
@@ -206,7 +210,9 @@ class TestFsbExamples:
         )  # no need for accounts if no estimation done
         my_system.combForecast.get_combined_forecast("BUXL_fsb").tail(5)
 
-    def test_fsb_system_position_sizing(self, data, raw_data, my_rules, my_config, fcs, combiner, possizer):
+    def test_fsb_system_position_sizing(
+        self, data, raw_data, my_rules, my_config, fcs, combiner, possizer
+    ):
 
         # size positions
         my_config.percentage_vol_target = 25
@@ -226,7 +232,9 @@ class TestFsbExamples:
         print(my_system.positionSize.get_subsystem_position("BUXL_fsb").tail(5))
 
     @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
-    def test_fsb_system_portfolio_estimated(self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, account):
+    def test_fsb_system_portfolio_estimated(
+        self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, account
+    ):
 
         # portfolio - estimated
         portfolio = Portfolios()
@@ -248,12 +256,16 @@ class TestFsbExamples:
         print(my_system.portfolio.get_instrument_weights().tail(5))
         print(my_system.portfolio.get_instrument_diversification_multiplier().tail(5))
 
-    def test_fsb_system_portfolio_fixed(self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, portfolio):
+    def test_fsb_system_portfolio_fixed(
+        self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, portfolio
+    ):
 
         # or fixed
         my_config.use_instrument_weight_estimates = False
         my_config.use_instrument_div_mult_estimates = False
-        my_config.instrument_weights = dict(US10_fsb=0.1, BUXL_fsb=0.4, GOLD_fsb=0.3, NASDAQ_fsb=0.2)
+        my_config.instrument_weights = dict(
+            US10_fsb=0.1, BUXL_fsb=0.4, GOLD_fsb=0.3, NASDAQ_fsb=0.2
+        )
         my_config.instrument_div_multiplier = 1.5
         my_config.forecast_weights = dict(ewmac8=0.5, ewmac32=0.5)
         my_config.use_forecast_weight_estimates = False
@@ -264,10 +276,23 @@ class TestFsbExamples:
 
         print(my_system.portfolio.get_notional_position("BUXL_fsb").tail(5))
 
-    def test_fsb_system_costs(self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, portfolio, account):
+    def test_fsb_system_costs(
+        self,
+        data,
+        raw_data,
+        my_rules,
+        my_config,
+        fcs,
+        combiner,
+        possizer,
+        portfolio,
+        account,
+    ):
 
         my_config.forecast_weights = dict(ewmac8=0.5, ewmac32=0.5)
-        my_config.instrument_weights = dict(US10_fsb=0.1, BUXL_fsb=0.4, GOLD_fsb=0.3, NASDAQ_fsb=0.2)
+        my_config.instrument_weights = dict(
+            US10_fsb=0.1, BUXL_fsb=0.4, GOLD_fsb=0.3, NASDAQ_fsb=0.2
+        )
 
         my_system = System(
             [fcs, my_rules, combiner, possizer, portfolio, account, raw_data],
@@ -286,7 +311,9 @@ class TestFsbExamples:
         my_config = Config(
             dict(
                 trading_rules=dict(ewmac8=ewmac_8, ewmac32=ewmac_32),
-                instrument_weights=dict(US10_fsb=0.1, BUXL_fsb=0.4, GOLD_fsb=0.3, NASDAQ_fsb=0.2),
+                instrument_weights=dict(
+                    US10_fsb=0.1, BUXL_fsb=0.4, GOLD_fsb=0.3, NASDAQ_fsb=0.2
+                ),
                 instrument_div_multiplier=1.5,
                 forecast_scalars=dict(ewmac8=5.3, ewmac32=2.65),
                 forecast_weights=dict(ewmac8=0.5, ewmac32=0.5),
@@ -299,7 +326,7 @@ class TestFsbExamples:
                     ignore_instruments=["MILK"],
                     trading_restrictions=["BUTTER"],
                     bad_markets=["CHEESE"],
-                )
+                ),
             )
         )
         print(my_config)
@@ -344,7 +371,9 @@ class TestFsbExamples:
         print(my_system.rules.get_raw_forecast("BUXL_fsb", "ewmac32").tail(5))
         print(my_system.rules.get_raw_forecast("BUXL_fsb", "ewmac8").tail(5))
         print(
-            my_system.forecastScaleCap.get_capped_forecast("BUXL_fsb", "ewmac32").tail(5)
+            my_system.forecastScaleCap.get_capped_forecast("BUXL_fsb", "ewmac32").tail(
+                5
+            )
         )
         print(my_system.forecastScaleCap.get_forecast_scalar("BUXL_fsb", "ewmac32"))
         print(my_system.combForecast.get_combined_forecast("BUXL_fsb").tail(5))
