@@ -33,7 +33,12 @@ def calc_portfolio_risk_series(
 
     risk_series = []
     common_index = list(portfolio_weights.index)
-    p = progressBar(len(common_index), show_timings=True, show_each_time=False)
+    p = progressBar(
+        len(common_index),
+        suffix="Calculating portfolio risk",
+        show_timings=True,
+        show_each_time=False
+    )
 
     for relevant_date in common_index:
         p.iterate()
