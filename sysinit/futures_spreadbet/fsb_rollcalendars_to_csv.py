@@ -165,6 +165,7 @@ if __name__ == "__main__":
     # "ASX_fsb","HANG_fsb","DX_fsb","GBP_fsb","JGB_fsb","US2_fsb","WHEAT_fsb","SOYBEAN_fsb","COPPER_fsb","SILVER_fsb",
     # "EUA_fsb","GAS_US_fsb","VIX_fsb","V2X_fsb"
 
+    # redo COFFEE_fsb, SOYOIL_fsb
 
     # AEX_fsb,CAC_fsb,DAX_fsb,FTSE100_fsb,IBXEX_fsb,JSE40_fsb,MSCISING_fsb,OAT_fsb,RUSSELL_fsb,SMI_fsb,SP500_fsb,SWE30_fsb
     # AUD_fsb,CHF_fsb,EURGBP_fsb
@@ -179,7 +180,7 @@ if __name__ == "__main__":
     # FTSE_Mid_250, FTSE_350_*, Techmark, Germany_Tech_30, Germany_Mid_Cap_50
 
 
-    instr_code = "V2X_fsb"
+    instr_code = "SOYOIL_fsb"
 
     prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
