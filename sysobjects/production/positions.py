@@ -12,7 +12,7 @@ class Position(object):
         self._position = position
 
     def __repr__(self):
-        float  # TODO AG position int -> float
+        # TODO AG position int -> float
         return "%s position %.2f" % (str(self._tradeable_object), self.position)
 
     @property
