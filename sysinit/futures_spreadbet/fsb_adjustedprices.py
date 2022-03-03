@@ -51,6 +51,7 @@ def process_adjusted_prices_single_instrument(
         arctic_adjusted_prices,
         csv_adjusted_prices,
     ) = _get_data_inputs(csv_mult_data_path, csv_adj_data_path)
+    print(f"Generating adjusted prices for {instrument_code}")
     multiple_prices = csv_multiple_prices.get_multiple_prices(instrument_code)
     adjusted_prices = futuresAdjustedPrices.stitch_multiple_prices(
         multiple_prices, forward_fill=True
