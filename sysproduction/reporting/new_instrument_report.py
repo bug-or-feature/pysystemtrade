@@ -7,12 +7,13 @@ from matplotlib.pyplot import show
 import pandas as pd
 
 DEPOSIT_FACTOR_MAP = {
-    "Equity": 0.1,
+    "Ags": 0.1,
     "Bond": 0.2,
+    "Equity": 0.1,
     "FX": 0.05,
     "Metals": 0.1,
     "OilGas": 0.1,
-    "Ags": 0.1,
+    "Vol": 0.2
 }
 
 
@@ -82,7 +83,10 @@ def run_new_instrument_report(instr_code, print=True):
 def multi_instrument_report():
     rows = []
     instr_list = ["BUXL_fsb","CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US10_fsb",
-                  "BTP_fsb","DOW_fsb","COFFEE_fsb","EUR_fsb","GILT_fsb","JPY_fsb","NIKKEI_fsb","SOYOIL_fsb"]
+                  "BTP_fsb","DOW_fsb","COFFEE_fsb","EUR_fsb","GILT_fsb","JPY_fsb","NIKKEI_fsb","SOYOIL_fsb",
+                  "ASX_fsb", "HANG_fsb", "DX_fsb", "GBP_fsb", "JGB_fsb", "US2_fsb", "WHEAT_fsb", "SOYBEAN_fsb",
+                  "COPPER_fsb", "SILVER_fsb", "EUA_fsb", "GAS_US_fsb", "VIX_fsb", "V2X_fsb"
+                  ]
 
     for instr in instr_list:
         rows.append(run_new_instrument_report(instr, print=False))
