@@ -102,6 +102,7 @@ def process_multiple_prices_single_instrument(
         csv_multiple_data_path
     )
 
+    print(f"Generating multiple prices for {instrument_code}")
     dict_of_futures_contract_prices = (
         csv_fsb_prices.get_all_prices_for_instrument(
             instrument_code.removesuffix("_fsb")
@@ -152,7 +153,7 @@ def process_multiple_prices_single_instrument(
 
 
 def adjust_roll_calendar(instrument_code, roll_calendar, prices):
-    print(f"Getting prices for '{instrument_code}' to adjust roll calendar")
+    print(f"Getting prices for '{instrument_code}_fsb' to adjust roll calendar")
     dict_of_prices = prices.get_all_prices_for_instrument(
         instrument_code
     )
@@ -218,7 +219,7 @@ if __name__ == "__main__":
     #instrument_code = get_valid_instrument_code_from_user(source="single")
     #instrument_code = "US10_fsb"
     #for instrument_code in ["EUROSTX_fsb"]:
-    for instrument_code in ["BUXL_fsb","CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US10_fsb"]:
+    for instrument_code in ["VIX_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,

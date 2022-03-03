@@ -155,32 +155,7 @@ if __name__ == "__main__":
     if args is not None:
         method = sys.argv[1]
 
-    # DONE batch 1
-    # 'BUXL_fsb','CAD_fsb','CRUDE_W_fsb','EUROSTX_fsb','GOLD_fsb','NASDAQ_fsb','NZD_fsb','US10_fsb'
-
-    # DONE batch 2
-    # "BTP_fsb","DOW_fsb","COFFEE_fsb","EUR_fsb","GILT_fsb","JPY_fsb","NIKKEI_fsb","SOYOIL_fsb"
-
-    # IN PROGRESS batch 3
-    # "ASX_fsb","HANG_fsb","DX_fsb","GBP_fsb","JGB_fsb","US2_fsb","WHEAT_fsb","SOYBEAN_fsb","COPPER_fsb","SILVER_fsb",
-    # "EUA_fsb","GAS_US_fsb","VIX_fsb","V2X_fsb"
-
-    # redo COFFEE_fsb, SOYOIL_fsb
-
-    # AEX_fsb,CAC_fsb,DAX_fsb,FTSE100_fsb,IBXEX_fsb,JSE40_fsb,MSCISING_fsb,OAT_fsb,RUSSELL_fsb,SMI_fsb,SP500_fsb,SWE30_fsb
-    # AUD_fsb,CHF_fsb,EURGBP_fsb
-    # BOBL_fsb,BUND_fsb,SHATZ_fsb,US5_fsb,US30_fsb,USTB_fsb,
-    # COCOA_LDN_fsb,COCOA_NY_fsb,CORN_fsb,COTTON_fsb,LEANHOG_fsb,LIVECOW_fsb,LUMBER_fsb,OATIES
-    #     OJ_fsb,RICE_fsb,ROBUSTA_fsb,SOYMEAL_fsb,SUGAR_fsb,SUGAR11_fsb,WHEAT_LDN
-    # PALLAD_fsb,PLAT_fsb,
-    # BRENT_W_fsb,GASOIL_fsb,GASOLINE_fsb,HEATOIL_fsb
-    # EURIBOR_fsb,EDOLLAR_fsb,STERLING3_fsb
-    #
-    # all the FXs with forwards
-    # FTSE_Mid_250, FTSE_350_*, Techmark, Germany_Tech_30, Germany_Mid_Cap_50
-
-
-    instr_code = "SOYOIL_fsb"
+    instr_code = "V2X_fsb"
 
     prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
@@ -208,7 +183,3 @@ if __name__ == "__main__":
     #     #input_datapath='data.futures_spreadbet.roll_calendars_csv',
     #     input_datapath='sysinit.futures.tests.data.aud',
     #     input_prices=csvFuturesContractPriceData())
-
-
-
-    #show_expected_rolls_for_config(instrument_code="CRUDE_W",path="data.futures.csvconfig", file="rollconfig.csv" )
