@@ -76,9 +76,6 @@ def show_optimals():
         price = data.db_futures_adjusted_prices.get_adjusted_prices(instr_code).values[
             -1
         ]
-        fut_price = data.db_futures_adjusted_prices.get_adjusted_prices(
-            instr_code
-        ).values[-1]
         price_date = data.db_futures_adjusted_prices.get_adjusted_prices(
             instr_code
         ).index[-1]
@@ -102,7 +99,6 @@ def show_optimals():
                 "Days": f"{delta.days}",
                 "FSB date": price_date.strftime("%Y-%m-%d %H:%M:%S"),
                 "FSB price": round(price, 2),
-                "Fut price": round(fut_price, 2),
                 "Current": pos,
                 "Lower": lower,
                 "Upper": upper,

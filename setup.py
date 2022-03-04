@@ -9,9 +9,10 @@ if StrictVersion(platform.python_version()) <= StrictVersion("3.7.0"):
     print("pysystemtrade requires Python 3.7.0 or later. Exiting.", file=sys.stderr)
     sys.exit(1)
 
-if StrictVersion(platform.python_version()) >= StrictVersion("3.9.0"):
+if StrictVersion(platform.python_version()) >= StrictVersion("3.10"):
+    print(f"python version: {platform.python_version()}")
     print(
-        "pysystemtrade requires Python 3.8.* or earlier (pandas issue). Exiting.",
+        "pysystemtrade requires Python 3.9.* or earlier (pandas issue). Exiting.",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -112,6 +113,7 @@ setup(
     entry_points={
         "console_scripts": [
             "fsb = sysproduction.interactive_fsb:show_optimals",
+            "pst = sysproduction.pst:pst",
         ],
     },
 )
