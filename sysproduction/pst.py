@@ -15,14 +15,8 @@ from sysproduction.interactive_fsb import show_optimals
 
 @click.group()
 def pst():
-    pass
-    # value = None
-    # while value != "exit":
-    #     # click.echo(pst)
-    #     value = click.prompt(
-    #         "\nSelect a command to run", type=click.Choice(list(pst.commands.keys()))
-    #     )
-    #     pst.commands[value](obj={}, standalone_mode=False)
+    click.clear()
+    #click.echo("outer")
 
 
 @pst.command(name="c")
@@ -49,7 +43,7 @@ def hist():
     interactive_manual_check_historical_prices()
 
 
-@pst.command(name="c")
+@pst.command(name="p")
 def cap():
     """Interactive update capital"""
     interactive_update_capital_manual()
@@ -65,15 +59,6 @@ def ord():
 def fsb():
     """Interactive FSB commands"""
     show_optimals()
-
-
-
-# def main():
-#     value = None
-#     while value != 'exit':
-#         #click.echo(pst)
-#         value = click.prompt('\nSelect a command to run', type=click.Choice(list(pst.commands.keys())))
-#         pst.commands[value](obj={}, standalone_mode=False)
 
 
 if __name__ == "__main__":
