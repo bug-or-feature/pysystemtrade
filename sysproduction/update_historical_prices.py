@@ -106,9 +106,13 @@ def update_historical_prices_for_instrument_and_contract(
         data, contract_object, frequency=intraday_frequency
     )
     if result is failure or intraday_frequency == daily_frequency:
-        # Skip daily data if intraday not working
-        # or if intraday frequency is daily
-        return None
+        # TODO allow intraday_frequency to be set PER INSTRUMENT in config
+        if contract_object.instrument_code in ["JGB_fsb"]:
+            data.log.warn(f"No intraday prices for {contract_object.instrument_code}, getting daily")
+        else:
+            # Skip daily data if intraday not working
+            # or if intraday frequency is daily
+            return None
 
     # Get daily data
     # we don't care about the result flag for this
