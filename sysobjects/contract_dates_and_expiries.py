@@ -40,6 +40,8 @@ EXPIRY_DATE_FORMAT = "%Y%m%d"
 
 
 class expiryDate(datetime.datetime):
+    source: str = "B"
+
     def as_tuple(self):
         return (self.year, self.month, self.day)
 

@@ -16,6 +16,7 @@ NO_ROLL_CYCLE_PASSED = object()
 @dataclass
 class parametersForFuturesContract:
     sampling: bool = False
+    expiry_source: str = "B"
 
     def as_dict(self) -> dict:
         keys = self.__dataclass_fields__.keys()
@@ -221,6 +222,7 @@ class futuresContract(object):
 
     def update_single_expiry_date(self, new_expiry_date: expiryDate):
         self.contract_date.update_single_expiry_date(new_expiry_date)
+        self.params.expiry_source = new_expiry_date.source
 
     def is_spread_contract(self):
         return self.contract_date.is_spread_contract

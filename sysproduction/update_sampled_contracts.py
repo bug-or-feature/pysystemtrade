@@ -333,7 +333,7 @@ def update_expiries_of_sampled_contracts(instrument_code: str, data: dataBlob):
 
 def update_expiry_for_contract(contract_object: futuresContract, data: dataBlob):
     """
-    Get an expiry from IB, check if same as database, otherwise update the database
+    Get an expiry from broker, check if same as database, otherwise update the database
 
     :param contract_object: contract object
     :param data: dataBlob
@@ -360,19 +360,15 @@ def update_expiry_for_contract(contract_object: futuresContract, data: dataBlob)
         )
     else:
         # Different!
-        # AG TODO remove once auto epic mapping is done
-        delta = abs(broker_expiry_date - db_expiry_date)
-        if delta.days > 45:
-            log.critical(
-                f"Large difference ({delta.days}) between broker and db expiry "
-                f"dates for {contract_object.key} - check config"
+        expiry_source = contract_object.params.expiry_source
+        if expiry_source == "E" and broker_expiry_date.source == "B":
+            log.msg(f"Not updating expiry for {contract_object.key}, new date is estimated")
+        else:
+            update_contract_object_with_new_expiry_date(
+                data=data,
+                broker_expiry_date=broker_expiry_date,
+                contract_object=contract_object,
             )
-
-        update_contract_object_with_new_expiry_date(
-            data=data,
-            broker_expiry_date=broker_expiry_date,
-            contract_object=contract_object,
-        )
 
 
 def get_contract_expiry_from_db(

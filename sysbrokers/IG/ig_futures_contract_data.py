@@ -130,10 +130,13 @@ class IgFuturesContractData(brokerFuturesContractData):
             )
             datestring = futures_contract_plus.date_str
             if datestring[6:8] == "00":
-                datestring = datestring[:6] + "01"
-            return expiryDate.from_str(datestring, format="%Y%m%d")
+                datestring = datestring[:6] + "28"
+            expiry_date = expiryDate.from_str(datestring, format="%Y%m%d")
+            expiry_date.source = "E"
+            return expiry_date
         else:
             expiry_date = expiryDate.from_str(expiry_date, format=date_format_str)
+            expiry_date.source = "B"
 
         return expiry_date
 
