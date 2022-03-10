@@ -35,10 +35,20 @@ def futures_system(
 
     system = System(
         [
-            Risk(),
-            accountForOptimisedStage(),
+            Risk(), # think OK as is. maybe change roundings?
+            accountForOptimisedStage(), # should be OK as is. maybe?
             optimisedPositions(),
+                # original_position_contracts_for_relevant_date()
+                #
             Portfolios(),
+                # get_position_contracts_for_relevant_date()
+                # get_per_contract_value()
+                # get_per_contract_value_as_proportion_of_capital_df()
+                # get_position_contracts_as_df()
+                # get_portfolio_weight_series_from_contract_positions()
+                # get_per_contract_value_as_proportion_of_capital()
+                # get_baseccy_value_per_contract()
+                # get_portfolio_weights_from_contract_positions()
             PositionSizing(),
             myFuturesRawData(),
             ForecastCombine(),
