@@ -124,14 +124,14 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         else:
             price_data = futuresContractPrices(price_data)
 
-        # It's important that the data is in local time zone so that this works
-        price_data = price_data.remove_future_data()
+            # It's important that the data is in local time zone so that this works
+            price_data = price_data.remove_future_data()
 
-        # Some contract data is marked to model, don't want this
-        price_data = price_data.remove_zero_volumes()
+            # Some contract data is marked to model, don't want this
+            price_data = price_data.remove_zero_volumes()
 
-        # massage Barchart price data into IG format
-        price_data = self._do_price_massage(contract_object, price_data)
+            # massage Barchart price data into IG format
+            price_data = self._do_price_massage(contract_object, price_data)
 
         return price_data
 
