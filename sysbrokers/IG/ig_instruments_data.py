@@ -63,13 +63,13 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
     @cached_property
     def epic_mapping(self) -> dict:
         if len(self._epic_mappings) == 0:
-            self._parse_ig_epic_history()
+            self._parse_epic_history_for_mappings()
         return self._epic_mappings
 
     @cached_property
     def expiry_dates(self) -> dict:
         if len(self._expiry_dates) == 0:
-            self._parse_ig_epic_history()
+            self._parse_epic_history_for_expiries()
         return self._expiry_dates
 
     def get_ig_fsb_instrument(self, instr_code: str) -> FsbInstrumentWithIgConfigData:
@@ -119,7 +119,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
     def find_char_instances(self, search_str, ch):
         return [i for i, ltr in enumerate(search_str) if ltr == ch]
 
-    def _parse_ig_epic_history(self):
+    def _parse_epic_history_for_mappings(self):
         for instr in self._epic_history.get_list_of_instruments():
             instr_map = self._epic_history.get_epic_history(instr)
             config = self.get_ig_fsb_instrument(instr)
@@ -133,13 +133,37 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
                 if self._validate_entry(period, instr_map):
                     expiry_code_date = datetime.strptime(f'01-{instr_map[period][0][:6]}', '%d-%b-%y')
                     self._epic_mappings[f"{instr}/{expiry_code_date.strftime('%Y%m')}00"] = f"{epic_base}.{period}.IP"
-                    self._expiry_dates[f"{instr}/{expiry_code_date.strftime('%Y%m')}00"] = instr_map[period][0][8:27]
                 else:
                     msg = f"No expiry info for instrument'{instr}' and period '{period}' - check config"
                     self.log.critical(msg)
 
+    def _parse_epic_history_for_expiries(self):
+        for instr in self._epic_history.get_list_of_instruments():
+            history_df = self._epic_history.get_epic_history_df(instr)
+            config = self.get_ig_fsb_instrument(instr)
+            if config is missing_instrument:
+                self.log.warn(f"Missing IG config for {instr}")
+                continue
+            epic_periods = config.ig_data.periods
+
+            for i in range(history_df.shape[0] - 1, -1, -1):
+                row_as_dict = history_df.iloc[i].to_dict()
+
+                for period in epic_periods:
+                    if self._validate_row(period, row_as_dict):
+                        expiry_code_date = datetime.strptime(f'01-{row_as_dict[period][:6]}', '%d-%b-%y')
+                        key = f"{instr}/{expiry_code_date.strftime('%Y%m')}00"
+                        if key not in self._expiry_dates:
+                            self._expiry_dates[key] = row_as_dict[period][8:27]
+                    else:
+                        msg = f"No expiry info for instrument '{instr}', row {i}, period '{period}' - check config"
+                        self.log.warn(msg)
+
     def _validate_entry(self, period, instr_map):
         return period in instr_map and isinstance(instr_map[period][0], str)
+
+    def _validate_row(self, period, instr_map):
+        return period in instr_map and isinstance(instr_map[period], str)
 
 
 def get_instrument_object_from_config(

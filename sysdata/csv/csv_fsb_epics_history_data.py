@@ -46,6 +46,10 @@ class CsvFsbEpicHistoryData(FsbHistoryData):
         del df['index']
         return df.to_dict()
 
+    def get_epic_history_df(self, instrument_code: str):
+        df = self.read_epic_history(instrument_code)
+        return df
+
     def update_epic_history(self, instrument_code: str, epic_history: FsbEpicHistory, remove_duplicates=True):
         filename = self._filename_given_instrument_code(instrument_code)
         if remove_duplicates:

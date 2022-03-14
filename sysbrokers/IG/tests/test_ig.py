@@ -15,6 +15,8 @@ class TestIg:
         )
         assert "BUXL_fsb/20220300" in instr_data.epic_mapping
         assert "BUXL_fsb/20220300" in instr_data.expiry_dates
+        assert "VIX_fsb/20210600" in instr_data.expiry_dates
+        assert "GOLD_fsb/20210800" in instr_data.expiry_dates
 
     def test_ig_epic_mapping_bad(self):
         instr_data = IgFuturesInstrumentData(
