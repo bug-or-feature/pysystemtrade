@@ -32,6 +32,7 @@ def fsb_static_system(
 
     if config is arg_not_supplied:
         config = Config("systems.futures_spreadbet.fsb_config.yaml")
+        config.risk_overlay = arg_not_supplied
 
     rules = Rules(trading_rules)
 
