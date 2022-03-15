@@ -360,8 +360,8 @@ def update_expiry_for_contract(contract_object: futuresContract, data: dataBlob)
         )
     else:
         # Different!
-        expiry_source = contract_object.params.expiry_source
-        if expiry_source == "E" and broker_expiry_date.source == "B":
+        existing_expiry_source = contract_object.params.expiry_source
+        if existing_expiry_source == "B" and broker_expiry_date.source == "E":
             log.msg(f"Not updating expiry for {contract_object.key}, new date is estimated")
         else:
             update_contract_object_with_new_expiry_date(
