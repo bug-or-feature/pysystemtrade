@@ -219,7 +219,7 @@ if __name__ == "__main__":
     #instrument_code = get_valid_instrument_code_from_user(source="single")
     #instrument_code = "US10_fsb"
     #for instrument_code in ["EUROSTX_fsb"]:
-    for instrument_code in ["EUA_fsb"]:
+    for instrument_code in ["DX_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,
