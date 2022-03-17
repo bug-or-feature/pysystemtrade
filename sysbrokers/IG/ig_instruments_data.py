@@ -15,6 +15,7 @@ from syscore.objects import missing_instrument, missing_file
 from sysobjects.instruments import futuresInstrument
 
 from syslogdiag.log_to_screen import logtoscreen
+from sysdata.csv.csv_fsb_epics_history_data import CsvFsbEpicHistoryData
 from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 
 IG_FSB_CONFIG_FILE = get_filename_for_package("sysbrokers.IG.ig_config_fsb.csv")
@@ -32,11 +33,15 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
     def __init__(
             self,
             broker_conn: IGConnection = None,
-            log=logtoscreen("IgFsbInstrumentData")
+            log=logtoscreen("IgFsbInstrumentData"),
+            epic_history_datapath=None
     ):
         super().__init__(log=log)
         self._igconnection = broker_conn
-        self._epic_history = ArcticFsbEpicHistoryData()
+        if epic_history_datapath is None:
+            self._epic_history = ArcticFsbEpicHistoryData()
+        else:
+            self._epic_history = CsvFsbEpicHistoryData(datapath=epic_history_datapath)
         self._epic_mappings = {}
         self._expiry_dates = {}
 
