@@ -5,7 +5,9 @@ from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 class TestIg:
 
     def test_ig_instrument_data(self):
-        instr_data = IgFuturesInstrumentData()
+        instr_data = IgFuturesInstrumentData(
+            epic_history_datapath="data.futures_spreadbets.epic_history_csv"
+        )
         instr_list = instr_data.get_list_of_instruments()
         assert len(instr_list) > 0
 
