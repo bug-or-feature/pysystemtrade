@@ -1,5 +1,5 @@
 import pandas as pd
 
 
-class FsbEpicHistory(pd.DataFrame):
+class FsbEpicsHistory(pd.DataFrame):
     pass

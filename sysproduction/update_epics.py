@@ -6,9 +6,10 @@ import pandas as pd
 from sysbrokers.IG.ig_instruments import (
     FsbInstrumentWithIgConfigData,
 )
-from sysdata.csv.csv_fsb_epics_history_data import CsvFsbEpicHistoryData
+from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
+from syscore.objects import success
 
 
 def update_epics():
@@ -17,12 +18,13 @@ def update_epics():
         update_epic_history = UpdateEpicHistory(data)
         update_epic_history.update_epic_history()
 
+    return success
 
 class UpdateEpicHistory(object):
 
     def __init__(self, data):
         self.data = data
-        self.data.add_class_object(CsvFsbEpicHistoryData)
+        self.data.add_class_object(ArcticFsbEpicHistoryData)
         self._broker = dataBroker(self.data)
 
     @property
@@ -66,15 +68,15 @@ class UpdateEpicHistory(object):
                     df = pd.DataFrame.from_dict(data, orient='index', columns=col_headers)
                     df.index.name = 'Date'
 
-                    existing = self.data.db_fsb_epic_history.read_epic_history(instr)
+                    existing = self.data.db_fsb_epic_history.get_epic_history(instr)
                     existing.index.name = 'Date'
 
                     self.data.log.msg(f"Writing epic history for '{instr}'")
                     existing.loc[pd.to_datetime(key)] = row
                     self.data.db_fsb_epic_history.update_epic_history(instr, existing)
-                except Exception:
+                except Exception as exc:
                     msg = f"Problem updating epic data for instrument '{instr}' " \
-                          f"and periods {config.ig_data.periods} - check config"
+                          f"and periods {config.ig_data.periods} - check config: {exc}"
                     self.data.log.critical(msg)
             else:
                 msg = f"Problem getting expiry data for instrument '{instr}' " \

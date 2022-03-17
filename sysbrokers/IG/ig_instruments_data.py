@@ -15,7 +15,7 @@ from syscore.objects import missing_instrument, missing_file
 from sysobjects.instruments import futuresInstrument
 
 from syslogdiag.log_to_screen import logtoscreen
-from sysdata.csv.csv_fsb_epics_history_data import CsvFsbEpicHistoryData
+from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 
 IG_FSB_CONFIG_FILE = get_filename_for_package("sysbrokers.IG.ig_config_fsb.csv")
 
@@ -32,15 +32,11 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
     def __init__(
             self,
             broker_conn: IGConnection = None,
-            log=logtoscreen("IgFsbInstrumentData"),
-            epic_history_datapath=None
+            log=logtoscreen("IgFsbInstrumentData")
     ):
         super().__init__(log=log)
         self._igconnection = broker_conn
-        if epic_history_datapath is None:
-            self._epic_history = CsvFsbEpicHistoryData()
-        else:
-            self._epic_history = CsvFsbEpicHistoryData(datapath=epic_history_datapath)
+        self._epic_history = ArcticFsbEpicHistoryData()
         self._epic_mappings = {}
         self._expiry_dates = {}
 
@@ -121,7 +117,11 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
     def _parse_epic_history_for_mappings(self):
         for instr in self._epic_history.get_list_of_instruments():
-            instr_map = self._epic_history.get_epic_history(instr)
+            df = self._epic_history.get_epic_history(instr)
+            df = df.tail(1)
+            df = df.reset_index()
+            del df['index']
+            instr_map = df.to_dict()
             config = self.get_ig_fsb_instrument(instr)
             if config is missing_instrument:
                 self.log.warn(f"Missing IG config for {instr}")
@@ -139,7 +139,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
     def _parse_epic_history_for_expiries(self):
         for instr in self._epic_history.get_list_of_instruments():
-            history_df = self._epic_history.get_epic_history_df(instr)
+            history_df = self._epic_history.get_epic_history(instr)
             config = self.get_ig_fsb_instrument(instr)
             if config is missing_instrument:
                 self.log.warn(f"Missing IG config for {instr}")
