@@ -1,4 +1,5 @@
 from datetime import datetime
+import logging
 
 import numpy as np
 import pandas as pd
@@ -13,6 +14,11 @@ from syscore.objects import success
 
 
 def update_epics():
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s %(levelname)s %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S')
 
     with dataBlob(log_name="Update-Epic-Mappings") as data:
         update_epic_history = UpdateEpicHistory(data)
