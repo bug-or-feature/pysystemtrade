@@ -25,8 +25,8 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
         return self._arctic
 
     def get_list_of_instruments(self) -> list:
-        return ["GOLD_fsb","EDOLLAR_fsb","VIX_fsb","V2X_fsb","ASX_fsb","AUD_fsb"]
-        #return self.arctic.get_keynames()
+        #return ["GOLD_fsb","EDOLLAR_fsb","VIX_fsb","V2X_fsb","ASX_fsb","AUD_fsb"]
+        return self.arctic.get_keynames()
 
     def get_epic_history(self, instrument_code: str) -> FsbEpicsHistory:
         data = self.arctic.read(instrument_code)
