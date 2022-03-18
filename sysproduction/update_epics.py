@@ -71,7 +71,6 @@ class UpdateEpicHistory(object):
                     existing = self.data.db_fsb_epic_history.get_epic_history(instr)
                     existing.index.name = 'Date'
 
-                    self.data.log.msg(f"Writing epic history for '{instr}'")
                     existing.loc[pd.to_datetime(key)] = row
                     self.data.db_fsb_epic_history.update_epic_history(instr, existing)
                 except Exception as exc:
