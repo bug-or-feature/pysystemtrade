@@ -52,6 +52,10 @@ class UpdateEpicHistory(object):
             valid = True
             key = now.strftime('%Y-%m-%d %H:%M:%S')
 
+            if not hasattr(config, 'ig_data'):
+                self.data.log.msg(f"Skipping {instr}, no IG config")
+                continue
+
             if len(config.ig_data.periods) == 0:
                 self.data.log.msg(f"Skipping {instr}, no epics defined")
                 continue
