@@ -34,7 +34,7 @@ class TestIg:
 
     def test_contract_ids(self):
 
-        contracts = IgFuturesContractData(broker_conn=IGConnection())
+        contracts = IgFuturesContractData(broker_conn=IGConnection(auto_connect=False))
 
         assert contracts.get_barchart_id(fc.from_two_strings("GOLD_fsb", "20210600")) == "GCM21"
 
