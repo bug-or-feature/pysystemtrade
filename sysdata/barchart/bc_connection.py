@@ -1,19 +1,17 @@
 import io
 import re
 import urllib.parse
-from datetime import datetime
 import time
 from functools import lru_cache
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup as Scraper
 
-from syscore.dateutils import Frequency, contract_month_from_number
+from syscore.dateutils import Frequency
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from syslogdiag.log_to_screen import logger, logtoscreen
 from sysobjects.contracts import futuresContract
 from syscore.objects import missing_data
-from syscore.dateutils import from_config_frequency_to_frequency
 
 BARCHART_URL = "https://www.barchart.com/"
 
@@ -115,12 +113,12 @@ class bcConnection(object):
             return None
 
     def get_historical_futures_data_for_contract(
-        self, contract_object: futuresContract, bar_freq: Frequency = Frequency.Day
+        self, instr_symbol: str, bar_freq: Frequency = Frequency.Day
     ) -> pd.DataFrame:
         """
         Get historical daily data
-        :param contract_object: contract (where instrument has barchart metadata)
-        :type contract_object: futuresContract
+        :param instr_symbol: contract (where instrument has barchart metadata)
+        :type instr_symbol: str
         :param bar_freq: frequency of price data requested
         :type bar_freq: Frequency, one of 'Day', 'Hour', 'Minutes_15', 'Minutes_5', 'Minute', 'Seconds_10'
         :return: df
@@ -134,18 +132,9 @@ class bcConnection(object):
                     f"Barchart supported data frequencies: {self._valid_freqs()}"
                 )
 
-            instr_symbol = self.get_barchart_id(contract_object)
             if instr_symbol is None:
-                self.log.warn(f"Can't convert contract ID {str(contract_object)}")
+                self.log.warn(f"get_historical_futures_data_for_contract() instr_symbol is required")
                 return missing_data
-
-            if (
-                hasattr(contract_object.instrument, "freq")
-                and contract_object.instrument.freq
-            ):
-                bar_freq = from_config_frequency_to_frequency(
-                    contract_object.instrument.freq
-                )
 
             # GET the futures quote chart page, scrape to get XSRF token
             # https://www.barchart.com/futures/quotes/GCM21/interactive-chart
@@ -248,21 +237,6 @@ class bcConnection(object):
         resp = self._session.get(url)
         self.log.msg(f"GET {url}, response {resp.status_code}")
         return resp
-
-    def get_barchart_id(self, futures_contract: futuresContract) -> str:
-        """
-        Converts a contract identifier from internal format (GOLD/20200900), into Barchart format (GCM20)
-        :param futures_contract: the internal format identifier
-        :type futures_contract: futuresContract
-        :return: Barchart format identifier
-        :rtype: str
-        """
-        date_obj = datetime.strptime(futures_contract.contract_date.date_str, "%Y%m00")
-        bc_symbol = self.barchart_futures_instrument_data.get_brokers_instrument_code(
-            futures_contract.instrument_code
-        )
-        symbol = f"{bc_symbol}{contract_month_from_number(int(date_obj.strftime('%m')))}{date_obj.strftime('%y')}"
-        return symbol
 
     @staticmethod
     def _valid_freqs():

@@ -45,8 +45,6 @@ class BarchartFuturesInstrumentData(brokerFuturesInstrumentData):
         if len(config_row) > 1:
             msg = f"BC symbol {bc_code} appears more than once, likely an FSB, picking first one"
             self.log.msg(msg)
-            # TODO total hack - to be fixed properly
-            return config_row.iloc[0].Instrument
 
         return config_row.iloc[0].Instrument
 

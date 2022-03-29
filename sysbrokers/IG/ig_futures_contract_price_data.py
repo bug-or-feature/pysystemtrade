@@ -106,8 +106,9 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             self.log.warn(f"Can't get data for {str(contract_object)}")
             return futuresContractPrices.create_empty()
 
+        barchart_id = self.fsb_contract_data.get_barchart_id(contract_object)
         price_data = self._barchart.get_historical_futures_data_for_contract(
-            contract_object, bar_freq=freq
+            barchart_id, bar_freq=freq
         )
 
         if price_data is missing_data:

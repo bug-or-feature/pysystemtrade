@@ -1,21 +1,31 @@
 import datetime
+from datetime import datetime
 from sysbrokers.broker_futures_contract_data import brokerFuturesContractData
 from sysobjects.contract_dates_and_expiries import expiryDate
 from sysobjects.contracts import futuresContract
 from syslogdiag.log_to_screen import logtoscreen
 from sysbrokers.IG.ig_connection import IGConnection
-from sysdata.barchart.bc_connection import bcConnection
-from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from syscore.objects import missing_contract, missing_instrument
-from syscore.dateutils import get_datetime_from_datestring
+from syscore.dateutils import contract_month_from_number
+from sysbrokers.IG.ig_instruments_data import (
+    IgFuturesInstrumentData,
+    get_instrument_object_from_config
+)
 
 
 class IgFuturesContractData(brokerFuturesContractData):
-    def __init__(self, broker_conn: IGConnection, log=logtoscreen("IgFuturesContractData")):
+    def __init__(
+            self,
+            broker_conn: IGConnection,
+            instr_data: IgFuturesInstrumentData = None,
+            log = logtoscreen("IgFuturesContractData")
+    ):
         super().__init__(log=log)
         self._igconnection = broker_conn
-        self._barchart = bcConnection()
-        self._instrument_data = IgFuturesInstrumentData(broker_conn, log=self.log)
+        if instr_data is None:
+            self._instrument_data = IgFuturesInstrumentData(broker_conn, log=self.log)
+        else:
+            self._instrument_data = instr_data
 
     def __repr__(self):
         return f"IG FSB per contract data: {self._igconnection}"
@@ -23,10 +33,6 @@ class IgFuturesContractData(brokerFuturesContractData):
     @property
     def igconnection(self):
         return self._igconnection
-
-    @property
-    def barchart(self):
-        return self._barchart
 
     @property
     def ig_instrument_data(self) -> IgFuturesInstrumentData:
@@ -41,12 +47,6 @@ class IgFuturesContractData(brokerFuturesContractData):
         :param futures_contract: type futuresContract
         :return: YYYYMMDD or None
         """
-
-        rough_expiry = get_datetime_from_datestring(futures_contract.date_str)
-        if rough_expiry < datetime.datetime(2000, 1, 1):
-            raise Exception(
-                "Cannot get expiry dates for older expired contracts from Barchart"
-            )
 
         log = futures_contract.specific_log(self.log)
         if futures_contract.is_spread_contract():
@@ -192,3 +192,21 @@ class IgFuturesContractData(brokerFuturesContractData):
         self, contract_object: futuresContract
     ):
         raise NotImplementedError("Consider implementing for consistent interface")
+
+    def get_barchart_id(self, futures_contract: futuresContract) -> str:
+        """
+        Converts a contract identifier from internal format (GOLD/20200900), into Barchart format (GCM20)
+        :param futures_contract: the internal format identifier
+        :type futures_contract: futuresContract
+        :return: Barchart format identifier
+        :rtype: str
+        """
+        date_obj = datetime.strptime(futures_contract.contract_date.date_str, "%Y%m00")
+
+        config_data = get_instrument_object_from_config(
+            futures_contract.instrument_code,
+            config=self.ig_instrument_data.config
+        )
+        #bc_symbol = config_data.bc_code
+        symbol = f"{config_data.bc_code}{contract_month_from_number(int(date_obj.strftime('%m')))}{date_obj.strftime('%y')}"
+        return symbol
