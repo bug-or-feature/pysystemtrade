@@ -113,8 +113,8 @@ def update_active_contracts_for_instrument(instrument_code: str, data: dataBlob)
     # Now to check if expiry dates are resolved
     update_expiries_of_sampled_contracts(instrument_code, data)
 
-    # mark expired as no longer sampling
-    stop_expired_contracts_sampling(instrument_code, data)
+    # mark expired or unchained contracts as no longer sampling
+    unsample_contracts(instrument_code, data)
 
 
 def get_contract_chain(data: dataBlob, instrument_code: str) -> listOfFuturesContracts:
@@ -408,29 +408,46 @@ def update_contract_object_with_new_expiry_date(
     )
 
 
-def stop_expired_contracts_sampling(instrument_code: str, data: dataBlob):
+def unsample_contracts(instrument_code: str, data: dataBlob):
     ## expiry dates will have been updated and are correct
     currently_sampling_contracts = get_list_of_currently_sampling_contracts_in_db(
         data, instrument_code
     )
 
     for contract in currently_sampling_contracts:
-        check_and_stop_expired_contract_sampling(contract=contract, data=data)
+
+        check_and_update_sampling_status(
+            contract=contract,
+            data=data,
+            contract_chain=get_contract_chain(data, instrument_code)
+        )
 
 
-def check_and_stop_expired_contract_sampling(contract: futuresContract, data: dataBlob):
+def check_and_update_sampling_status(
+        contract: futuresContract,
+        data: dataBlob,
+        contract_chain: listOfFuturesContracts
+):
 
     data_contracts = dataContracts(data)
     db_contract = data_contracts.get_contract_from_db(contract)
-    contract_expired = db_contract.expired()
-    contract_sampling = db_contract.currently_sampling
 
-    if contract_expired and contract_sampling:
+    if db_contract.expired():
+        unsample = True
+        reason = "has expired"
+    elif db_contract not in contract_chain:
+        unsample = True
+        reason = "not in chain"
+    else:
+        unsample = False
+        reason = ""
+
+    if unsample:
         # Mark it as stop sampling in the database
 
         data_contracts.mark_contract_as_not_sampling(contract)
         log = contract.specific_log(data.log)
         log.msg(
-            "Contract %s has expired so now stopped sampling" % str(contract),
+            "Contract %s %s so now stopped sampling" % (str(contract), reason),
             contract_date=contract.date_str,
         )
