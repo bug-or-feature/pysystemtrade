@@ -34,7 +34,12 @@ class TestIg:
 
     def test_contract_ids(self):
 
-        contracts = IgFuturesContractData(broker_conn=IGConnection(auto_connect=False))
+        contracts = IgFuturesContractData(
+            broker_conn=IGConnection(auto_connect=False),
+            instr_data=IgFuturesInstrumentData(
+                epic_history_datapath="data.futures_spreadbets.epic_history_csv"
+            )
+        )
 
         assert contracts.get_barchart_id(fc.from_two_strings("GOLD_fsb", "20210600")) == "GCM21"
 
