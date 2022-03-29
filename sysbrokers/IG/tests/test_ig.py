@@ -57,7 +57,7 @@ class TestIg:
     def test_expiry_dates(self):
 
         contracts = IgFuturesContractData(
-            broker_conn=IGConnection(),
+            broker_conn=IGConnection(auto_connect=False),
             instr_data=IgFuturesInstrumentData(
                 epic_history_datapath="sysbrokers.IG.tests.epic_history_csv_good"
             )

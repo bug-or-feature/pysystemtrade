@@ -15,7 +15,7 @@ from syscore.objects import missing_contract
 
 
 class IGConnection(object):
-    def __init__(self, log=logtoscreen("ConnectionIG", log_level="on")):
+    def __init__(self, log=logtoscreen("ConnectionIG", log_level="on"), auto_connect=True):
         production_config = get_production_config()
         self._ig_username = production_config.get_element_or_missing_data("ig_username")
         self._ig_password = production_config.get_element_or_missing_data("ig_password")
@@ -26,7 +26,8 @@ class IGConnection(object):
         )
         self._log = log
         logging.basicConfig(level=logging.DEBUG)
-        self._session = self._create_ig_session()
+        if auto_connect:
+            self._session = self._create_ig_session()
 
     @property
     def log(self):
