@@ -1,7 +1,7 @@
 import pandas as pd
 
 from syscore.fileutils import get_filename_for_package, files_with_extension_in_pathname
-from syscore.objects import arg_not_supplied, status
+from syscore.objects import arg_not_supplied, status, success
 from syscore.pdutils import pd_readcsv
 from sysdata.futures_spreadbet.fsb_epic_history_data import FsbEpicsHistoryData
 from syslogdiag.log_to_screen import logtoscreen
@@ -9,6 +9,7 @@ from sysobjects.epic_history import FsbEpicsHistory
 
 
 EPIC_HISTORY_DIRECTORY = "data.futures_spreadbet.epic_history_csv"
+DATE_INDEX_NAME = "Date"
 
 
 class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
@@ -34,14 +35,12 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
     #     return self.datapath
 
     def get_list_of_instruments(self) -> list:
+        # return ["BUXL_fsb", "CAD_fsb", "CRUDE_W_fsb", "EUROSTX_fsb", "GOLD_fsb", "NASDAQ_fsb", "NZD_fsb", "US10_fsb"]
         return files_with_extension_in_pathname(self._datapath, ".csv")
-        #return ["BUXL_fsb", "CAD_fsb", "CRUDE_W_fsb", "EUROSTX_fsb", "GOLD_fsb", "NASDAQ_fsb", "NZD_fsb", "US10_fsb"]
-        #return ["GOLD_fsb"]
-        #return ["GOLD_fsb", "BUXL_fsb"]
 
     def get_epic_history(self, instrument_code: str):
         df = self._read_epic_history(instrument_code)
-        return df
+        return FsbEpicsHistory(df)
 
     def update_epic_history(self, instrument_code: str, epic_history: FsbEpicsHistory, remove_duplicates=True):
         filename = self._filename_given_instrument_code(instrument_code)
@@ -58,18 +57,26 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
         filename = self._filename_given_instrument_code(instrument_code)
 
         try:
-            instr_all_price_data = pd_readcsv(filename, date_index_name="Date")
+            instr_all_price_data = pd_readcsv(filename, date_index_name=DATE_INDEX_NAME)
         except OSError:
             self.log.warn(
                 f"Can't find epic history file {filename} or error reading",
                 instrument_code=instrument_code,
             )
-            return FsbEpicsHistory()
+            return FsbEpicsHistory.create_empty()
 
         return instr_all_price_data
 
     def add_epics_history(self, instrument_code: str, epics_history: FsbEpicsHistory) -> status:
-        pass
+        filename = self._filename_given_instrument_code(instrument_code)
+        epics_history.to_csv(filename, index_label=DATE_INDEX_NAME)
+
+        self.log.msg(
+            "Written epic history prices for %s to %s" % (instrument_code, filename),
+            instrument_code=instrument_code,
+        )
+
+        return success
 
     def _filename_given_instrument_code(self, instrument_code: str):
         return get_filename_for_package(self._datapath, f"{instrument_code}.csv")

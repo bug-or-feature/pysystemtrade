@@ -23,6 +23,7 @@ from sysdata.csv.csv_optimal_position import csvOptimalPositionData
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 from sysdata.csv.csv_roll_state_storage import csvRollStateData
 from sysdata.csv.csv_spreads import csvSpreadsForInstrumentData
+from sysdata.csv.csv_fsb_epics_history_data import CsvFsbEpicHistoryData
 
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
@@ -31,6 +32,7 @@ from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesDat
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
 from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
 from sysdata.arctic.arctic_spreads import arcticSpreadsForInstrumentData
+from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 from sysdata.mongodb.mongo_position_by_contract import mongoContractPositionData
@@ -82,6 +84,7 @@ class backupArcticToCsv:
         backup_instrument_data(backup_data)
         backup_optimal_positions(backup_data)
         backup_roll_state_data(backup_data)
+        backup_epic_history_to_csv(backup_data)
         log.msg("Copying to backup directory")
         backup_csv_dump(self.data)
 
@@ -107,6 +110,7 @@ def get_data_and_create_csv_directories(logname):
         csvRollParametersData="roll_parameters",
         csvRollStateData="roll_state",
         csvSpreadsForInstrumentData="spreads",
+        CsvFsbEpicHistoryData="epic_history",
     )
 
     for class_name, path in class_paths.items():
@@ -136,6 +140,7 @@ def get_data_and_create_csv_directories(logname):
             csvRollStateData,
             csvFuturesContractData,
             csvSpreadsForInstrumentData,
+            CsvFsbEpicHistoryData
         ]
     )
 
@@ -146,6 +151,7 @@ def get_data_and_create_csv_directories(logname):
             arcticFuturesAdjustedPricesData,
             arcticFxPricesData,
             arcticSpreadsForInstrumentData,
+            ArcticFsbEpicHistoryData,
             mongoContractPositionData,
             mongoStrategyPositionData,
             mongoBrokerHistoricOrdersData,
@@ -492,6 +498,32 @@ def backup_contract_data(data):
         )
         data.log.msg("Backed up contract data for %s" % instrument_code)
 
+
+def backup_epic_history_to_csv(data):
+    instrument_list = data.arctic_fsb_epic_history.get_list_of_instruments()
+    for instrument_code in instrument_list:
+        backup_epic_history_to_csv_for_instrument(data, instrument_code)
+
+
+def backup_epic_history_to_csv_for_instrument(data, instrument_code: str):
+    arctic_data = data.arctic_fsb_epic_history.get_epic_history(
+        instrument_code
+    )
+    csv_data = data.csv_fsb_epic_history.get_epic_history(instrument_code)
+
+    if check_df_equals(arctic_data, csv_data):
+        data.log.msg("No epic history backup needed for %s" % instrument_code)
+        pass
+    else:
+        try:
+            data.csv_fsb_epic_history.add_epics_history(
+                instrument_code, arctic_data
+            )
+            data.log.msg("Written .csv backup epic history for %s" % instrument_code)
+        except BaseException as exc:
+            data.log.warn(
+                f"Problem writing .csv backup epic history for {instrument_code}: {exc}"
+            )
 
 def backup_csv_dump(data):
     source_path = get_csv_dump_dir()
