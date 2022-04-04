@@ -2,7 +2,6 @@ from collections import namedtuple
 
 import pandas as pd
 
-from syscore.dateutils import last_run_or_heartbeat_from_date_or_none
 from syscore.genutils import transfer_object_attributes
 from syscore.objects import missing_data
 from syscore.pdutils import make_df_from_list_of_named_tuple
@@ -70,9 +69,19 @@ uses_instruments = [
 uses_fx_codes = ["update_fx_prices"]
 
 
-def get_overrides_as_df(data):
+def get_overrides_in_db_as_df(data):
     diag_overrides = diagOverrides(data)
-    all_overrides = diag_overrides.get_dict_of_all_overrides()
+    all_overrides = diag_overrides.get_dict_of_all_overrides_in_db_with_reasons()
+    all_overrides_as_list = [
+        dataOverride(key, value) for key, value in all_overrides.items()
+    ]
+    pdf = make_df_from_list_of_named_tuple(dataOverride, all_overrides_as_list)
+
+    return pdf
+
+def get_all_overrides_as_df(data):
+    diag_overrides = diagOverrides(data)
+    all_overrides = diag_overrides.get_dict_of_all_overrides_with_reasons()
     all_overrides_as_list = [
         dataOverride(key, value) for key, value in all_overrides.items()
     ]
@@ -295,18 +304,15 @@ def get_control_data_for_single_ordinary_method(data, method_name_and_process):
     data_control = diagControlProcess(data)
 
     last_start = data_control.when_method_last_started(process_name, method)
-    last_start_as_str = last_run_or_heartbeat_from_date_or_none(last_start)
-
     last_end = data_control.when_method_last_ended(process_name, method)
-    last_end_as_str = last_run_or_heartbeat_from_date_or_none(last_end)
 
     currently_running = data_control.method_currently_running(process_name, method)
 
     data_for_method = dataForMethod(
         method_or_strategy=method,
         process_name=process_name,
-        last_start=last_start_as_str,
-        last_end=last_end_as_str,
+        last_start=last_start,
+        last_end=last_end,
         currently_running=str(currently_running),
     )
 
