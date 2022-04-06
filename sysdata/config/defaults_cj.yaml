@@ -1,0 +1,450 @@
+# YAML
+#
+#           PRODUCTION STUFF
+#
+#
+## Strategy configuration
+# This won't actually work unless you have a strategy called example.. so don't uncomment use as a template
+#strategy_list:
+#  example:
+#    load_backtests:
+#      object: sysproduction.strategy_code.run_system_classic.runSystemClassic
+#      function: system_method
+#    reporting_code:
+#      function: sysproduction.strategy_code.report_system_classic.report_system_classic
+#
+# Allocate capital to strategies
+# strategy_weights *must* be defined in private config
+strategy_capital_allocation:
+  function: sysproduction.strategy_code.strategy_allocation.weighted_strategy_allocation
+#  strategy_weights:
+#    example: 100.0
+#
+## Where do we save backtests
+backtest_store_directory: 'private'
+#
+# And backups
+csv_backup_directory: 'data.backups_csv'
+mongo_dump_directory: 'data.mongo_dump'
+echo_directory: 'data.echos'
+#
+# Interactive brokers
+ib_ipaddress: 127.0.0.1
+ib_port: 4001
+ib_idoffset: 100
+#
+# Mongo DB
+mongo_host: 127.0.0.1
+mongo_db: 'production'
+# DO NOT CHANGE THIS VALUE!!!! IT WILL SCREW UP ARCTIC. If you need to use a port other than 27017, use the url
+# format for mongo_host, eg mongodb://127.0.0.1:27018
+mongo_port: 27017
+#
+# Needs to be consistent with what you are using in crontab
+echo_extension: '.txt'
+# Spike checker
+max_price_spike: 8
+#
+# Price frequency (we collect daily data, and separately this frequency
+intraday_frequency: H
+#
+# Capital calculation
+production_capital_method: 'full'
+#
+#           BACKTESTING STUFF
+#
+# Raw data
+#
+volatility_calculation:
+  func: "sysquant.estimators.vol.mixed_vol_calc"
+  days: 35
+  min_periods: 10
+  slow_vol_years: 10
+  proportion_of_slow_vol: 0.3
+  vol_abs_min: 0.0000000001
+#
+# forecast capping and scaling
+# fixed values
+#
+forecast_scalar: 1.0
+#
+# with varying stuff
+#
+#
+instruments_with_threshold: []
+use_forecast_scale_estimates: False
+#
+forecast_scalar_estimate:
+   pool_instruments: True
+   func: "sysquant.estimators.forecast_scalar.forecast_scalar"
+   window: 250000
+   min_periods: 500
+   backfill: True
+#
+# capping
+forecast_cap: 20.0
+#
+average_absolute_forecast: 10.0
+#
+#
+# forecast combination
+#
+forecast_div_multiplier: 1.0
+#
+use_forecast_div_mult_estimates: False
+#
+forecast_correlation_estimate:
+   pool_instruments: True
+   func: sysquant.estimators.pooled_correlation.pooled_correlation_estimator
+   frequency: "W"
+   date_method: "expanding"
+   using_exponent: True
+   ew_lookback: 250
+   min_periods: 20
+   cleaning: True
+   rollyears: 20
+   floor_at_zero: True
+   forward_fill_data: True
+#
+forecast_div_mult_estimate:
+   func: sysquant.estimators.diversification_multipliers.diversification_multiplier_from_list
+   # this moving average is in business day space to smooth jumps
+   ewma_span: 125
+   dm_max: 2.5
+#
+use_forecast_weight_estimates: False
+#
+forecast_cost_estimates:
+   use_pooled_costs: False
+   use_pooled_turnover: True
+#
+# Smooth forecast weights; weights are in business days
+forecast_weight_ewma_span: 125
+#
+# Set this to 0.13 to enforce the speed limit even for fixed weights or
+#   regardless of what an estimator does
+forecast_post_ceiling_cost_SR: 999
+#
+forecast_weight_estimate:
+   func: sysquant.optimisation.generic_optimiser.genericOptimiser
+   pool_gross_returns: True
+   equalise_gross: False
+   cost_multiplier: 2.0
+   apply_cost_weight: False
+   ceiling_cost_SR: 9999
+   frequency: "W"
+   date_method: "expanding"
+   rollyears: 20
+   method: handcraft
+   cleaning: True
+   equalise_SR: False
+   ann_target_SR: 0.5
+   equalise_vols: True
+   shrinkage_SR: 0.9
+   shrinkage_corr: 0.5
+   correlation_estimate:
+     func: sysquant.estimators.correlation_estimator.correlationEstimator
+     using_exponent: True
+     ew_lookback: 50000
+     min_periods: 10
+     cleaning: False
+     floor_at_zero: False
+   mean_estimate:
+     func: sysquant.estimators.mean_estimator.meanEstimator
+     using_exponent: True
+     ew_lookback: 50000
+     min_periods: 5
+   vol_estimate:
+     func: sysquant.estimators.stdev_estimator.stdevEstimator
+     using_exponent: True
+     ew_lookback: 50000
+     min_periods: 5
+#
+# Capital correction
+#
+percentage_vol_target: 16.0
+notional_trading_capital: 1000000
+base_currency: "USD"
+capital_multiplier:
+   func: syscore.capital.fixed_capital
+#
+# Portfolio creation
+#
+instrument_div_multiplier: 1.0
+#
+use_instrument_div_mult_estimates: False
+#
+instrument_correlation_estimate:
+   func: sysquant.estimators.correlation_over_time.correlation_over_time_for_returns
+   frequency: "W"
+   date_method: "expanding"
+   using_exponent: True
+   ew_lookback: 250
+   min_periods: 20
+   cleaning: True
+   rollyears: 20
+   floor_at_zero: True
+   forward_fill_price_index: True
+#
+instrument_div_mult_estimate:
+   func: sysquant.estimators.diversification_multipliers.diversification_multiplier_from_list
+   # smooth IDM in daily space
+   ewma_span: 125
+   dm_max: 2.5
+#
+use_instrument_weight_estimates: False
+#
+# smooth weights they will are in daily space
+instrument_weight_ewma_span: 125
+#
+instrument_weight_estimate:
+   func: sysquant.optimisation.generic_optimiser.genericOptimiser
+   method: handcraft
+   frequency: "W"
+   equalise_gross: False
+   cost_multiplier: 1.0
+   apply_cost_weight: False
+   date_method: "expanding"
+   rollyears: 20
+   cleaning: True
+   equalise_SR: True
+   ann_target_SR: 0.5
+   equalise_vols: True
+   shrinkage_mean: 1.00
+   shrinkage_corr: 0.50
+   monte_runs: 100
+   correlation_estimate:
+     func: sysquant.estimators.correlation_estimator.correlationEstimator
+     using_exponent: True
+     ew_lookback: 500000
+     min_periods: 10
+     floor_at_zero: True
+     cleaning: False
+   mean_estimate:
+     func: sysquant.estimators.mean_estimator.meanEstimator
+     using_exponent: True
+     ew_lookback: 50000
+     min_periods: 5
+   vol_estimate:
+     func: sysquant.estimators.stdev_estimator.stdevEstimator
+     using_exponent: True
+     ew_lookback: 50000
+     min_periods: 5
+#
+# buffering / position inertia
+buffer_method: position
+buffer_size: 0.10
+buffer_trade_to_edge: False
+# costs and accounting
+use_SR_costs: False
+vol_normalise_currency_costs: True
+#
+# risk overlay - make these numbers smaller to use
+risk_overlay:
+  max_risk_fraction_normal_risk: 99999
+  max_risk_fraction_stdev_risk: 99999
+  max_risk_limit_sum_abs_risk: 99999
+  max_risk_leverage: 99999
+#
+instrument_returns_correlation:
+  func: sysquant.estimators.correlation_over_time.correlation_over_time_for_returns
+  interval_frequency: "W"
+  frequency: "7D"
+  date_method: "rolling"
+  using_exponent: True
+  ew_lookback: 75
+  min_periods: 10
+  cleaning: True
+  offdiag: 0.0
+  rollyears: 5
+  floor_at_zero: False
+  forward_fill_price_index: True
+  clip: 0.90
+  shrinkage_parameter: 0.5
+# small system optimisation
+small_system:
+  shadow_cost: 250
+  cost_multiplier: 1.0
+  tracking_error_buffer: 0.0125
+#
+# duplicated/excluded instruments are ignored in backtests
+# we still collect price data for them in production, do rolls etc
+# this is to avoid double counting of basically the same instrument
+# anything in the 'exclude' list is ignored in backtests
+# we use the 'include section to match up for reporting when deciding which to trade
+# Be careful when swapping between instruments, a bit dangerous if a position is held...
+# You can override this by modifying the backtest config .yaml file used in either sim or production
+duplicate_instruments:
+  include:
+    aud: 'AUD'
+    cnh: 'CNH'
+    copper: 'COPPER'
+    corn: 'CORN'
+    crude: 'CRUDE_W_mini'
+    ether: 'ETHEREUM'
+    eu-chem: 'EU-CHEM'
+    eu-finance: 'EU-FINANCE'
+    eu-food: 'EU-FOOD'
+    eu-health: 'EU-HEALTH'
+    eu-insure: 'EU-INSURE'
+    eu-media: 'EU-MEDIA'
+    eu-oil: 'EU-OIL'
+    eu-retail: 'EU-RETAIL'
+    eu-tech: 'EU-TECH'
+    eu-utils: 'EU-UTILS'
+    gas_us: 'GAS_US_mini'
+    gasoiline: 'GASOILINE'
+    gold: 'GOLD_micro'
+    heatoil: 'HEATOIL'
+    inr: 'INR'
+    jgb: 'JGB'
+    jpy: 'JPY'
+    kospi: 'KOSPI'
+    krwusd: 'KRWUSD'
+    nasdaq: 'NASDAQ_micro'
+    nikkei: 'NIKKEI'
+    r1000: 'R1000'
+    silver: 'SILVER'
+    soybean: 'SOYBEAN'
+    sp500: 'SP500_micro'
+    twd: 'TWD'
+    vix: 'VIX'
+    wheat: 'WHEAT'
+  exclude:
+    aud: 'AUD-SGX'
+    cnh: 'CNH-onshore'
+    copper: 'COPPER-mini'
+    corn: 'CORN_mini'
+    crude: 'CRUDE_W'
+    ether: 'ETHER-micro'
+    eu-chem: 'EU-DJ-CHEM'
+    eu-finance: 'EU-DJ-FINANCE'
+    eu-food: 'EU-DJ-FOOD'
+    eu-health: 'EU-DJ-HEALTH'
+    eu-insure: 'EU-DJ-INSURE'
+    eu-media: 'EU-DJ-MEDIA'
+    eu-oil: 'EU-DJ-OIL'
+    eu-retail: 'EU-DJ-RETAIL'
+    eu-tech: 'EU-DJ-TECH'
+    eu-utils: 'EU-DJ-UTIL'
+    gas_us: 'GAS_US'
+    gasoiline: 'GASOILINE_mini'
+    gold: 'GOLD'
+    heatoil: 'HEATOIL_mini'
+    inr: ['INR-mini','INR-SGX']
+    jgb: ['JGB_mini', 'JGB-SGX-mini']
+    jpy: ['JPY_micro','JPY-SGX-TITAN', 'JPY-SGX']
+    kospi: 'KOSPI_mini'
+    krwusd: 'KRWUSD_mini'
+    nasdaq: 'NASDAQ'
+    nikkei: 'NIKKEI-JPY'
+    r1000: 'R1000mini'
+    silver: 'SILVER_mini'
+    soybean: 'SOYBEAN_mini'
+    sp500: 'SP500'
+    twd: 'TWD-mini'
+    vix: 'VIX_mini'
+    wheat: 'WHEAT_mini'
+exclude_instrument_lists:
+  # ignore_instruments are ignored in backtests
+  # we still collect price data for them in production, do rolls etc
+  # You can override this by modifying the backtest config .yaml file used in either sim or production
+  # If you want to ignore because a duplicate market, use duplicate_instruments
+  # If you want to include in sim data, but not actually trade, use trading_restrictions
+  #
+  # BEST FOR INSTRUMENTS THAT LOOK EXPENSIVE, BUT WHERE WE HAVEN'T GOT ACCURATE DATA YET
+  #
+  # REVIEW REGULARLY AND CHECK THESE INSTRUMENTS AREN'T BETTER ELSEWHERE...
+  ignore_instruments:
+    - 'EURIBOR'
+    - 'SGX'
+    - 'BRENT'
+    - 'CLP'
+  #
+  # Here we put stuff we can't trade, but for which we still want to bring in prices in sim
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # NOTE: This will be regionally biased, you will probably want to override this in private_config.yaml
+  #
+  trading_restrictions:
+
+
+  # These are markets that are too expensive or illiquid to actually trade
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # Run interactive controls to get a list of suggested markets here
+  # To override this list, change in sim .yaml config (sim) and private_config.yaml (production)
+  bad_markets:
+    - ALUMINIUM
+    - BBCOMM
+    - BEL20
+    - BOVESPA
+    - BUTTER
+    - CH10
+    - CHEESE
+    - CNH-onshore
+    #- COPPER-mini
+    - CZK
+    - DJSTX-SMALL
+    - EDOLLAR
+    - ETHANOL
+    - ETHER-micro
+    - ETHEREUM
+    - EU-BANKS
+    - EU-CHEM
+    - EU-CONSTRUCTION
+    - EU-DJ-OIL
+    - EU-DJ-TECH
+    - EU-DJ-TELECOM
+    - EU-DJ-UTIL
+    - EU-FOOD
+    - EU-HOUSE
+    - EU-INSURE
+    - EU-MEDIA
+    - EU-MID
+    - EU-REALESTATE
+    - EU-RETAIL
+    - EU-UTILS
+    - EURCHF
+    - EURIBOR
+    - EUROSTX
+    - EUROSTX-LARGE
+    - EUROSTX-SMALL
+    - EUROSTX200-LARGE
+    - FTSEINDO
+    - IRS
+    - JGB
+    - JGB-SGX-mini
+    - JP-REALESTATE
+    - KOSPI_mini
+    - KR3
+    - KRWUSD
+    #- LUMBER
+    #- MILK
+    - MILKDRY
+    - MILKWET
+    - NOK
+    - OATIES
+    - OMX
+    - R1000
+    - RICE
+    - SEK
+    - SGX
+    #- SHATZ
+    - SMI-MID
+    #- US2
+    - US-DISCRETE
+    - US-ENERGY
+    - US-FINANCE
+    - US-HEALTH
+    - US-INDUSTRY
+    - US-MATERIAL
+    - US-PROPERTY
+    - US-REALESTATE
+    - US-STAPLES
+    - US-TECH
+    - US-UTILS
+    - USIRS5
+    - VNKI
