@@ -31,3 +31,5 @@ env/
 # jupyter
 *.ipynb
 
+/notes
+
