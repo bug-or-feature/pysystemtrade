@@ -50,32 +50,8 @@ def report_system_classic_no_header_or_footer(
     :param backtest: dataBacktest object populated with a specific backtest
     :return: list of report format type objects
     """
-
-    unweighted_forecasts_df = get_forecast_matrix(
-        backtest, stage_name="forecastScaleCap", method_name="get_capped_forecast"
-    )
-    unweighted_forecasts_df_rounded = unweighted_forecasts_df.round(1)
-    unweighted_forecasts_table = table(
-        "Unweighted forecasts", unweighted_forecasts_df_rounded
-    )
-    format_output.append(unweighted_forecasts_table)
-
-    # Forecast weights
-    forecast_weights_df = get_forecast_matrix_over_code(
-        backtest, stage_name="combForecast", method_name="get_forecast_weights"
-    )
-    forecast_weights_df_as_perc = forecast_weights_df * 100
-    forecast_weights_df_as_perc_rounded = forecast_weights_df_as_perc.round(1)
-    forecast_weights_table = table(
-        "Forecast weights", forecast_weights_df_as_perc_rounded
-    )
-    format_output.append(forecast_weights_table)
-
-    # Weighted forecast
-    weighted_forecasts_df = forecast_weights_df * unweighted_forecasts_df
-    weighted_forecast_rounded = weighted_forecasts_df.round(1)
-    weighted_forecast_table = table("Weighted forecasts", weighted_forecast_rounded)
-    format_output.append(weighted_forecast_table)
+    risk_scaling_str = risk_scaling_string(backtest)
+    format_output.append(body_text(risk_scaling_str))
 
     # Cash target
     cash_target_dict = backtest.system.positionSize.get_vol_target_dict()
@@ -168,6 +144,33 @@ def report_system_classic_no_header_or_footer(
     )
 
     format_output.append(versus_buffers_and_positions_table)
+
+    # Forecast weights
+    forecast_weights_df = get_forecast_matrix_over_code(
+        backtest, stage_name="combForecast", method_name="get_forecast_weights"
+    )
+    forecast_weights_df_as_perc = forecast_weights_df * 100
+    forecast_weights_df_as_perc_rounded = forecast_weights_df_as_perc.round(1)
+    forecast_weights_table = table(
+        "Forecast weights", forecast_weights_df_as_perc_rounded
+    )
+    format_output.append(forecast_weights_table)
+
+    unweighted_forecasts_df = get_forecast_matrix(
+        backtest, stage_name="forecastScaleCap", method_name="get_capped_forecast"
+    )
+
+    # Weighted forecast
+    weighted_forecasts_df = forecast_weights_df * unweighted_forecasts_df
+    weighted_forecast_rounded = weighted_forecasts_df.round(1)
+    weighted_forecast_table = table("Weighted forecasts", weighted_forecast_rounded)
+    format_output.append(weighted_forecast_table)
+
+    unweighted_forecasts_df_rounded = unweighted_forecasts_df.round(1)
+    unweighted_forecasts_table = table(
+        "Unweighted forecasts", unweighted_forecasts_df_rounded
+    )
+    format_output.append(unweighted_forecasts_table)
 
     return format_output
 
@@ -490,3 +493,25 @@ def calc_position_diags(portfolio_positions_df, subystem_positions_df):
     average_position = idm * instr_weight * vol_scalar
 
     return average_position
+
+def risk_scaling_string(backtest) -> str:
+    backtest_system_portfolio_stage = backtest.system.portfolio
+    normal_risk_final = backtest_system_portfolio_stage.get_portfolio_risk_for_original_positions().iloc[-1]*100.0
+    shocked_vol_risk_final = backtest_system_portfolio_stage.get_portfolio_risk_for_original_positions_with_shocked_vol().iloc[-1]*100.0
+    sum_abs_risk_final = backtest_system_portfolio_stage.get_sum_annualised_risk_for_original_positions().iloc[-1]*100.0
+    leverage_final = backtest_system_portfolio_stage.get_leverage_for_original_position().iloc[-1]
+    percentage_vol_target = backtest_system_portfolio_stage.get_percentage_vol_target()
+    risk_scalar_final = backtest_system_portfolio_stage.get_risk_scalar().iloc[-1]
+    risk_overlay_config = backtest_system_portfolio_stage.config.get_element_or_arg_not_supplied('risk_overlay')
+
+    scaling_str = "Risk overlay \n Config %s \n Percentage vol target %.1f \n Normal risk %.1f Shocked risk %.1f \n Sum abs risk %.1f Leverage %.2f \n Risk scalar %.2f" % \
+                    (str(risk_overlay_config),
+                    percentage_vol_target,
+                     normal_risk_final,
+                     shocked_vol_risk_final,
+                     sum_abs_risk_final,
+                     leverage_final,
+                     risk_scalar_final)
+
+    return scaling_str
+
