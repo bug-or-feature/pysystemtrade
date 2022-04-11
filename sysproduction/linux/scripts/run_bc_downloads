@@ -1,0 +1,4 @@
+#!/bin/bash -l
+#. ~/.bashrc
+. p sysproduction.run_downloads.do_downloads
+

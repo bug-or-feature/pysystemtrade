@@ -99,6 +99,7 @@ setup(
         "Flask>=2.0.1",
         "Werkzeug>=2.0.1",
         "statsmodels==0.12.2",
+        "bc-utils>=0.1",
     ],
     tests_require=["nose", "flake8"],
     extras_require=dict(),
