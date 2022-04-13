@@ -421,11 +421,6 @@ def unsample_contracts(instrument_code: str, data: dataBlob):
             contract_chain=get_contract_chain(data, instrument_code)
         )
 
-        check_and_update_sampling_status(
-            contract=contract,
-            data=data,
-            contract_chain=get_contract_chain(data, instrument_code)
-        )
 
 def check_and_update_sampling_status(
     contract: futuresContract,
