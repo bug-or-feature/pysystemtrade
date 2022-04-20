@@ -74,7 +74,11 @@ informing clients of the changes so thats something you will need to take note o
 
 ### IG API rate limits
 
-TODO
+The IG APIs have rate limits; you can only make a certain number of requests during a certain time period
+(eg minute, hour, week etc) depending on the request type. The limits for the LIVE environment are published 
+[here](https://labs.ig.com/faq), but the limits for DEMO are lower, and have been known to change randomly and 
+without notice. The limits, as well as the epic recycling described above, mean that it is not practical to get 
+useful historical prices from the IG APIs
 
 ### pysystemtrade is a futures trading system
 
