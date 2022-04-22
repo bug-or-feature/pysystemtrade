@@ -64,6 +64,32 @@ def run_risk_report():
     )
 
 
+def run_instrument_risk_report():
+    run_solo_report(
+        title="Instrument Risk report",
+        function="sysproduction.reporting.instrument_risk_report.instrument_risk_report"
+    )
+
+
+def run_min_capital_report():
+    run_solo_report(
+        title="Minimum Capital report",
+        function="sysproduction.reporting.minimum_capital_report.minimum_capital_report"
+    )
+
+
+def run_slippage_report():
+    pass
+
+
+def run_duplicate_market_report():
+    pass
+
+
+def run_remove_markets_report():
+    pass
+
+
 if __name__ == "__main__":
 
     # costs_report:
