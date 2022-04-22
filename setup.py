@@ -9,10 +9,9 @@ if StrictVersion(platform.python_version()) <= StrictVersion("3.7.0"):
     print("pysystemtrade requires Python 3.7.0 or later. Exiting.", file=sys.stderr)
     sys.exit(1)
 
-if StrictVersion(platform.python_version()) >= StrictVersion("3.10"):
-    print(f"python version: {platform.python_version()}")
+if StrictVersion(platform.python_version()) >= StrictVersion("3.9.0"):
     print(
-        "pysystemtrade requires Python 3.9.* or earlier (pandas issue). Exiting.",
+        "pysystemtrade requires Python 3.8.* or earlier (pandas issue). Exiting.",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -93,9 +92,10 @@ setup(
         "PyYAML>==5.4",
         "numpy>=1.19.4",
         "scipy>=1.0.0",
-        "pymongo>=3.9.0",
+        "pymongo==3.9.0",
         "arctic==1.79.2",
-        "psutil==5.8.0",
+        "psutil==5.6.6",
+        "ib-insync==0.9.70",
         "pytest>6.2",
         "Flask>=2.0.1",
         "Werkzeug>=2.0.1",
