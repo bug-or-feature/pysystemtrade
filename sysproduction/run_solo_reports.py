@@ -7,7 +7,13 @@ from sysproduction.reporting.roll_report import ALL_ROLL_INSTRUMENTS
 from sysproduction.reporting.report_configs import reportConfig
 
 
-def run_solo_report(format="console", title=None, function=None, instrument_code=None):
+def run_solo_report(
+        format="console",
+        title=None,
+        function=None,
+        instrument_code=None,
+        use_db=True,
+):
 
     if instrument_code is None:
         config = reportConfig(title=title, function=function, output=format)
@@ -19,7 +25,14 @@ def run_solo_report(format="console", title=None, function=None, instrument_code
             output=format,
         )
     pandas_display_for_reports()
-    with dataBlob(log_name="Solo-Report") as data:
+    if use_db:
+        my_data = dataBlob(log_name="Solo-Report")
+    else:
+        my_data = dataBlob(
+            log_name="Solo-Report-CSV",
+            class_list=[],
+        )
+    with my_data as data:
         run_report_with_data_blob(config, data)
 
 

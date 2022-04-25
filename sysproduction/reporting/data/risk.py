@@ -1,6 +1,7 @@
 from copy import copy
 import numpy as np
 import pandas as pd
+from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
 
 from syscore.dateutils import ROOT_BDAYS_INYEAR, BUSINESS_DAYS_IN_YEAR
 from syscore.genutils import progressBar
@@ -8,6 +9,7 @@ from syscore.objects import missing_data, resolve_function
 from syscore.pdutils import prices_to_daily_prices
 
 from sysobjects.production.tradeable_object import instrumentStrategy
+from sysobjects.multiple_prices import price_name
 from sysproduction.reporting.data.constants import RISK_TARGET_ASSUMED, INSTRUMENT_WEIGHT_ASSUMED, IDM_ASSUMED, \
     MIN_CONTRACTS_HELD
 
@@ -28,6 +30,8 @@ from sysproduction.data.positions import diagPositions
 from sysproduction.data.prices import diagPrices, get_list_of_instruments
 
 DAILY_RISK_CALC_LOOKBACK = int(BUSINESS_DAYS_IN_YEAR * 2)
+
+USE_DB = False
 
 ## only used for reporting purposes
 
@@ -111,6 +115,16 @@ def from_risk_table_to_min_capital(instrument_risk_table: pd.DataFrame,
                               'IDM',
                               'minimum_capital'
                               ]
+    # min_capital_pd.columns = ['min_bet',
+    #                           'price',
+    #                           'annual_perc_stdev',
+    #                           'risk_target',
+    #                           'min_capital_min_bet',
+    #                           'min_position_avg_fc',
+    #                           'instrument_weight',
+    #                           'IDM',
+    #                           'min_capital'
+    #                           ]
 
     return min_capital_pd
 
@@ -119,7 +133,7 @@ def get_instrument_risk_table(data, only_held_instruments=True):
     if only_held_instruments:
         instrument_list = get_instruments_with_positions_all_strategies(data)
     else:
-        instrument_list = get_list_of_instruments()
+        instrument_list = get_list_of_instruments(use_db=USE_DB)
 
     p = progressBar(len(instrument_list))
     risk_data_list = []
@@ -618,10 +632,15 @@ def get_exposure_per_contract_base_currency(data, instrument_code):
 
 
 def get_base_currency_point_size_per_contract(data, instrument_code):
-    diag_instruments = diagInstruments(data)
-    point_size_base_currency = diag_instruments.get_point_size_base_currency(
-        instrument_code
-    )
+    if USE_DB:
+        diag_instruments = diagInstruments(data)
+        point_size_base_currency = diag_instruments.get_point_size_base_currency(
+            instrument_code
+        )
+    else:
+        data = csvFuturesSimData()
+        instr_data = data.db_futures_instrument_data.get_instrument_data(instrument_code)
+        point_size_base_currency = instr_data.meta_data.Pointsize
 
     return point_size_base_currency
 
@@ -671,17 +690,29 @@ def get_daily_current_price_series(data, instrument_code):
 
 
 def get_price_series(data, instrument_code):
-    diag_prices = diagPrices(data)
-    price_series = diag_prices.get_adjusted_prices(instrument_code)
+
+    if USE_DB:
+        diag_prices = diagPrices(data)
+        price_series = diag_prices.get_adjusted_prices(instrument_code)
+    else:
+        price_data = csvFuturesSimData()
+        price_series = price_data.get_backadjusted_futures_price(instrument_code)
 
     return price_series
 
 
 def get_current_price_series(data, instrument_code):
-    diag_prices = diagPrices(data)
-    return diag_prices.get_current_priced_contract_prices_for_instrument(
-        instrument_code
-    )
+    if USE_DB:
+        diag_prices = diagPrices(data)
+        current_price_series = diag_prices.get_current_priced_contract_prices_for_instrument(
+            instrument_code
+        )
+    else:
+        price_data = csvFuturesSimData()
+        price_series = price_data.get_multiple_prices(instrument_code)
+        current_price_series = price_series[price_name]
+
+    return current_price_series
 
 
 def sorted_clean_df(df_of_risk, sortby="risk"):

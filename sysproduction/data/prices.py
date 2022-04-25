@@ -33,7 +33,7 @@ from sysdata.futures.adjusted_prices import futuresAdjustedPricesData
 from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
 
 from sysdata.data_blob import dataBlob
-
+from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
 from sysobjects.multiple_prices import price_name
 from sysobjects.contract_dates_and_expiries import listOfContractDateStr
 
@@ -309,15 +309,22 @@ def get_valid_instrument_code_from_user(
 
 
 def get_list_of_instruments(
-    data: dataBlob = arg_not_supplied, source="multiple"
+        data: dataBlob = arg_not_supplied,
+        source="multiple",
+        use_db=True,
 ) -> list:
-    price_data = diagPrices(data)
-    if source == "multiple":
-        instrument_list = price_data.get_list_of_instruments_in_multiple_prices()
-    elif source == "single":
-        instrument_list = price_data.get_list_of_instruments_with_contract_prices()
+    if use_db:
+        price_data = diagPrices(data)
+        if source == "multiple":
+            instrument_list = price_data.get_list_of_instruments_in_multiple_prices()
+        elif source == "single":
+            instrument_list = price_data.get_list_of_instruments_with_contract_prices()
+        else:
+            raise Exception("%s not recognised must be multiple or single" % source)
     else:
-        raise Exception("%s not recognised must be multiple or single" % source)
+        price_data = csvFuturesSimData()
+        instrument_list = price_data.get_instrument_list()
+        #instrument_list = ["GOLD"]
 
     instrument_list.sort()
 

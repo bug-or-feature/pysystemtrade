@@ -11,6 +11,16 @@ def nice_format_min_capital_table(min_capital_pd: pd.DataFrame) -> pd.DataFrame:
     min_capital_pd.IDM = min_capital_pd.IDM.round(2)
     min_capital_pd.minimum_capital = min_capital_pd.minimum_capital.astype(int)
 
+    # min_capital_pd.min_bet = min_capital_pd.min_bet.round(1)
+    # min_capital_pd.price = min_capital_pd.price.round(3)
+    # min_capital_pd.annual_perc_stdev = min_capital_pd.annual_perc_stdev.round(1)
+    # min_capital_pd.risk_target = min_capital_pd.risk_target.round(3)
+    # min_capital_pd.min_capital_min_bet  = min_capital_pd.min_capital_min_bet.astype(int)
+    # min_capital_pd.min_position_avg_fc = min_capital_pd.min_position_avg_fc.astype(int)
+    # min_capital_pd.instrument_weight = min_capital_pd.instrument_weight.round(2)
+    # min_capital_pd.IDM = min_capital_pd.IDM.round(2)
+    # min_capital_pd.min_capital = min_capital_pd.min_capital.astype(int)
+
     return min_capital_pd
 
 def nice_format_roll_table(roll_table: pd.DataFrame) -> pd.DataFrame:

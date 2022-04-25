@@ -16,6 +16,20 @@ HEADER_TEXT = body_text("The following report calculates the minimum capital for
                         'I- minimum_capital: Minimum capital within a portfolio, allowing for minimum position = E * F / ( G * H) \n'
                         )
 
+# HEADER_TEXT = body_text(
+#     "The following report calculates the minimum capital as follows:\n" +
+#     'A- min_bet: Minimum bet in account currency \n' +
+#     'B- price: Price\n' +
+#     'C- annual_perc_stdev: Annual standard deviation in percentage terms (20 = 20%) \n' +
+#     'D- risk_target: Risk target in percentage terms (20 = 20%) \n' +
+#     'E- min_capital_min_bet: Minimum capital to take the minimum bet = A * B * C / D \n' +
+#     'F- min_position_avg_fc: Minimum position we want to hold for an average sized forecast \n' +
+#     'G- instrument_weight: Proportion of capital allocated to instrument \n' +
+#     'H- IDM: Instrument diversification multiplier \n' +
+#     'I- min_capital: Minimum capital within a portfolio, allowing for minimum position = E * F / ( G * H) \n'
+# )
+
+
 def minimum_capital_report(
     data: dataBlob = arg_not_supplied,
 
