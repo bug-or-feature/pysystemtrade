@@ -5,6 +5,7 @@ from sysdata.sim.db_futures_sim_data import dbFuturesSimData
 import matplotlib
 from matplotlib.pyplot import show
 import pandas as pd
+from syscore.dateutils import ROOT_BDAYS_INYEAR, BUSINESS_DAYS_IN_YEAR
 
 DEPOSIT_FACTOR_MAP = {
     "Ags": 0.1,
@@ -17,7 +18,7 @@ DEPOSIT_FACTOR_MAP = {
 }
 
 
-def run_new_instrument_report(instr_code, print=True):
+def run_new_instrument_report(instr_code, do_print=True):
 
     system = fsb_static_system()
     #system = fsb_static_system(data=dbFuturesSimData())
@@ -34,12 +35,19 @@ def run_new_instrument_report(instr_code, print=True):
     min_bet = metadata.meta_data.Pointsize
     asset_class = metadata.meta_data.AssetClass
     deposit_factor = DEPOSIT_FACTOR_MAP[asset_class]
-    min_capital = min_bet * raw_price * deposit_factor
 
     #system.rules.get_raw_forecast("DOW_fsb", "ewmac64_256").plot()
     #system.rules.get_raw_forecast("DOW_fsb", "carry").plot()
     #system.combForecast.get_combined_forecast("DOW_fsb").plot()
     #system.positionSize.get_subsystem_position("DOW_fsb").plot()
+
+    daily_vol = system.rawdata.get_daily_percentage_volatility(instr_code).iloc[-1]
+    ann_std_dev = daily_vol * ROOT_BDAYS_INYEAR
+
+    min_exposure = min_bet * raw_price.iloc[-1]
+    min_capital = min_exposure * (ann_std_dev / 100)
+
+    #stddev = system.rawdata.get_annual_percentage_volatility(instr_code)
 
     vol_scalar = system.positionSize.get_volatility_scalar(instr_code)
 
@@ -59,10 +67,12 @@ def run_new_instrument_report(instr_code, print=True):
         Instrument=instr_code,
         Asset_class=asset_class,
         Price=round(raw_price.iloc[-1], 2),
+        AnnStdDev=round(ann_std_dev, 2),
         Spread=spread,
         Min_bet=min_bet,
         Deposit_factor=deposit_factor,
-        Capital_required=round(min_capital.iloc[-1], 2),
+        MinExposure=round(min_exposure, 2),
+        Capital_required=round(min_capital, 2),
         Volatility_scalar=round(vol_scalar.iloc[-1], 2),
         Cost_per_trade=round(cost_per_trade, 4),
         Turnover=round(turnover, 2),
@@ -72,7 +82,7 @@ def run_new_instrument_report(instr_code, print=True):
         Below_speed_limit=below_speed_limit,
     )
 
-    if print:
+    if do_print:
         print(f"New instrument report for {instr_code}\n\n")
         for key, value in results.items():
             print(f"{key}: {value}")
@@ -89,15 +99,17 @@ def multi_instrument_report():
                   ]
 
     for instr in instr_list:
-        rows.append(run_new_instrument_report(instr, print=False))
+        rows.append(run_new_instrument_report(instr, do_print=False))
 
     results = pd.DataFrame(rows)
-    results = results.sort_values(by="Costs_percent")  # Ctotal, NMinCap
+    #results = results.sort_values(by="Capital_required")
+    #results = results.sort_values(by="Cost_per_trade")
+    results = results.sort_values(by="Costs_percent")
 
     print(f"\n{print_full(results)}\n")
 
 
 if __name__ == "__main__":
-    #run_new_instrument_report("JPY_fsb")
+    #run_new_instrument_report("GOLD_fsb")
 
     multi_instrument_report()
