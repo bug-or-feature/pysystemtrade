@@ -9,20 +9,6 @@ from sysproduction.reporting.data.risk_fsb import (
 
 class ReportingApiFsb(reportingApi):
 
-    # def __init__(
-    #         self,
-    #         data: dataBlob,
-    #         calendar_days_back: int = 250,
-    #         end_date: datetime.datetime = arg_not_supplied,
-    #         start_date: datetime.datetime = arg_not_supplied
-    # ):
-    #     super().__init__(
-    #         data,
-    #         calendar_days_back,
-    #         end_date,
-    #         start_date
-    #     )
-
     # MINIMUM CAPITAL
     def table_of_minimum_capital_fsb(self) -> table:
         min_capital = minimum_capital_table(
@@ -37,6 +23,43 @@ class ReportingApiFsb(reportingApi):
         min_capital_table = table("Minimum capital in base currency", min_capital)
 
         return min_capital_table
+
+    def table_of_risk_all_fsb_instruments(
+            self,
+            table_header="Risk of all instruments with data - sorted by annualised % standard deviation",
+            sort_by='annual_perc_stdev'
+    ):
+        instrument_risk_all = self.instrument_risk_data_all_instruments()
+        instrument_risk_all = instrument_risk_all.rename(columns={
+            "point_size_base": "min_bet",
+            "contract_exposure": "exposure",
+            "annual_risk_per_contract": "annual_risk_min_bet",
+        })
+        instrument_risk_sorted = instrument_risk_all.sort_values(sort_by)
+        instrument_risk_sorted = instrument_risk_sorted[
+            [
+                'daily_price_stdev', 'annual_price_stdev', 'price', 'daily_perc_stdev',
+                'annual_perc_stdev', 'min_bet', 'exposure', 'annual_risk_min_bet'
+            ]
+        ]
+        instrument_risk_sorted = instrument_risk_sorted.round(
+            {
+                'daily_price_stdev': 2,
+                'annual_price_stdev': 2,
+                'price': 2,
+                'daily_perc_stdev': 3,
+                'annual_perc_stdev': 1,
+                'min_bet': 2,
+                'exposure': 0,
+                'annual_risk_min_bet': 0
+            }
+        )
+        instrument_risk_sorted_table = table(
+            table_header,
+            instrument_risk_sorted
+        )
+
+        return instrument_risk_sorted_table
 
 
 def nice_format_min_capital_table(df: pd.DataFrame) -> pd.DataFrame:

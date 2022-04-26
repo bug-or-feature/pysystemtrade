@@ -108,7 +108,7 @@ slippage_report_config = reportConfig(
 
 instrument_risk_report_config = reportConfig(title="Instrument risk report",
     function=
-    "sysproduction.reporting.instrument_risk_report.instrument_risk_report",
+    "sysproduction.reporting.instrument_risk_fsb_report.instrument_risk_fsb_report",
                                              output="email"
                                              )
 

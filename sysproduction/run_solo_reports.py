@@ -84,6 +84,12 @@ def run_instrument_risk_report():
     )
 
 
+def run_instrument_risk_fsb_report():
+    run_solo_report(
+        title="Instrument Risk FSB report",
+        function="sysproduction.reporting.instrument_risk_fsb_report.instrument_risk_fsb_report"
+    )
+
 def run_min_capital_report():
     run_solo_report(
         title="Minimum Capital report",
