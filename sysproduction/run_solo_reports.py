@@ -91,6 +91,13 @@ def run_min_capital_report():
     )
 
 
+def run_min_capital_fsb_report():
+    run_solo_report(
+        title="Minimum Capital FSB report",
+        function="sysproduction.reporting.minimum_capital_fsb_report.minimum_capital_fsb_report"
+    )
+
+
 def run_slippage_report():
     pass
 
