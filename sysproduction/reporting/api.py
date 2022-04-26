@@ -193,9 +193,8 @@ class reportingApi(object):
 
     ### MINIMUM CAPITAL
     def table_of_minimum_capital(self) -> table:
-        min_capital = minimum_capital_table(self.data, only_held_instruments=False)
+        min_capital = minimum_capital_table(self.data)
         min_capital = min_capital.sort_values('minimum_capital')
-        #min_capital = min_capital.sort_values('min_capital')
 
         min_capital = nice_format_min_capital_table(min_capital)
         min_capital_table = table("Minimum capital in base currency",
