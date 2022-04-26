@@ -114,7 +114,7 @@ instrument_risk_report_config = reportConfig(title="Instrument risk report",
 
 min_capital_report_config= reportConfig(title="Minimum capital report",
     function=
-    "sysproduction.reporting.minimum_capital_report.minimum_capital_report",
+    "sysproduction.reporting.minimum_capital_fsb_report.minimum_capital_fsb_report",
                                         output="email"
                                         )
 
