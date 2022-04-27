@@ -5,7 +5,6 @@ numpy>1.19.4
 scipy>=1.0.0
 pymongo==3.9.0
 arctic==1.79.2
-ib-insync==0.9.70
 psutil==5.6.6
 pytest>6.2
 Flask>=2.0.1
@@ -16,3 +15,4 @@ trading-ig
 beautifulsoup4>4.9
 ratelimit>=2.2
 tenacity>=8.0
+munch>=2.5
