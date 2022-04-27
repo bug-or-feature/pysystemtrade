@@ -268,6 +268,9 @@ class IGConnection(object):
 
         return results["prices"]
 
+    def broker_fx_balances(self, account_id: str):
+        return 0.0
+
     def _flat_prices_tick_format(self, prices, version):
 
         """Format price data as a flat DataFrame, no hierarchy"""

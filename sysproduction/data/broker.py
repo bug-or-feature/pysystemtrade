@@ -7,7 +7,7 @@ from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysbrokers.IG.ig_contract_position_data import IgContractPositionData
 from sysbrokers.IG.ig_orders import IgExecutionStackData
 from sysbrokers.IG.ig_static_data import IgStaticData
-#from sysbrokers.IB.ib_fx_handling import ibFxHandlingData
+from sysbrokers.IG.ig_fx_handling import IgFxHandlingData
 
 from sysbrokers.broker_fx_handling import brokerFxHandlingData
 from sysbrokers.broker_static_data import brokerStaticData
@@ -65,7 +65,7 @@ class dataBroker(productionDataLayerGeneric):
                 IgStaticData,
                 IgCapitalData,
                 IgFuturesInstrumentData,
-                #IgFxHandlingData,
+                IgFxHandlingData,
             ]
         )
 
