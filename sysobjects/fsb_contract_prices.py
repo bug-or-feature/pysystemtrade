@@ -14,7 +14,7 @@ PRICE_DATA_COLUMNS = sorted([
     "Close.bid", "Close.ask",
     "Volume"
 ])
-FINAL_COLUMN = "FINAL" # TODO
+FINAL_COLUMN = "Close.ask" # TODO
 VOLUME_COLUMN = "Volume"
 
 
@@ -77,7 +77,7 @@ class FsbContractPrices(pd.DataFrame):
         self,
         new_futures_per_contract_prices,
         only_add_rows=True,
-        check_for_spike=True,
+        check_for_spike=False,
         keep_older: bool = True,
     ):
         """
@@ -120,7 +120,7 @@ class FsbContractPrices(pd.DataFrame):
         merged_data = full_merge_of_existing_data(
             self,
             new_futures_per_contract_prices,
-            check_for_spike=check_for_spike, # TODO don't check for spike
+            check_for_spike=check_for_spike,
             column_to_check=FINAL_COLUMN,
             keep_older=keep_older,
         )

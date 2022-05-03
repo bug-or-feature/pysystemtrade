@@ -17,6 +17,7 @@ NO_ROLL_CYCLE_PASSED = object()
 class parametersForFuturesContract:
     sampling: bool = False
     expiry_source: str = "B"
+    data_source: str = "Barchart"
 
     def as_dict(self) -> dict:
         keys = self.__dataclass_fields__.keys()

@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+import pytz
+
 from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
 from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
@@ -5,12 +8,14 @@ from sysbrokers.broker_futures_contract_price_data import brokerFuturesContractP
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from syscore.objects import missing_contract, missing_data
 from sysdata.barchart.bc_connection import bcConnection
+from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
 from sysexecution.orders.broker_orders import brokerOrder
 from sysexecution.orders.contract_orders import contractOrder
 from sysexecution.tick_data import dataFrameOfRecentTicks, tickerObject
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
+from sysobjects.fsb_contract_prices import FsbContractPrices
 
 
 class IgFuturesContractPriceData(brokerFuturesContractPriceData):
@@ -20,6 +25,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         self._barchart = bcConnection()
         self._fsb_contract_data = IgFuturesContractData(broker_conn, log=self.log)
         self._futures_instrument_data = IgFuturesInstrumentData(broker_conn, log=self.log)
+        self._existing_prices = ArcticFsbContractPriceData()
 
     def __repr__(self):
         return "IG/Barchart Spreadbet Futures per contract price data"
@@ -39,6 +45,10 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
     @property
     def futures_instrument_data(self) -> IgFuturesInstrumentData:
         return self._futures_instrument_data
+
+    @property
+    def existing_prices(self) -> ArcticFsbContractPriceData:
+        return self._existing_prices
 
     def has_data_for_contract(self, futures_contract: futuresContract) -> bool:
         return futures_contract.key in self.futures_instrument_data.epic_mapping
@@ -85,7 +95,10 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
                 contract_object, requery_expiries=False)
         )
 
-        return self._get_barchart_prices(contract_object_plus, freq)
+        if contract_object.params.data_source == "Barchart":
+            return self._get_barchart_prices(contract_object_plus, freq)
+        else:
+            return self._get_ig_prices(contract_object_plus)
 
     def _get_barchart_prices(
         self, contract_object: futuresContract, freq: Frequency
@@ -103,7 +116,10 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         """
 
         if contract_object is missing_contract:
-            self.log.warn(f"Can't get data for {str(contract_object)}")
+            self.log.warn(f"Can't get data for {str(contract_object)}",
+                          instrument_code=contract_object.instrument_code,
+                          contract_date=contract_object.contract_date.date_str,
+            )
             return futuresContractPrices.create_empty()
 
         barchart_id = self.fsb_contract_data.get_barchart_id(contract_object)
@@ -120,7 +136,10 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             price_data = futuresContractPrices.create_empty()
 
         elif len(price_data) == 0:
-            self.log.warn(f"No Barchart price data found for {str(contract_object)}")
+            self.log.warn(f"No Barchart price data found for {str(contract_object)}",
+                          instrument_code=contract_object.instrument_code,
+                          contract_date=contract_object.contract_date.date_str,
+            )
             price_data = futuresContractPrices.create_empty()
         else:
             price_data = futuresContractPrices(price_data)
@@ -147,6 +166,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             f"Massaging prices for IG: {instrument_code}, multiplier {multiplier}, "
             f"inverse {inverse}",
             instrument_code=instrument_code,
+            contract_date=contract_object.contract_date.date_str,
         )
         for col_name in ["OPEN", "HIGH", "LOW", "FINAL"]:
             series = prices[col_name]
@@ -201,3 +221,93 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         raise NotImplementedError(
             "Do not use get_contracts_with_price_data() with multibroker"
         )
+
+    def _get_ig_prices(self, contract_object: futuresContract) -> futuresContractPrices:
+        """
+        Get historical IG prices
+
+        :param contract_object:  futuresContract
+        :return: data
+        """
+
+        if contract_object is missing_contract:
+            self.log.warn(f"Can't get IG data for {str(contract_object)}",
+                          instrument_code=contract_object.instrument_code,
+                          contract_date=contract_object.contract_date.date_str,
+            )
+            return FsbContractPrices.create_empty()
+
+        if contract_object.key not in self.futures_instrument_data.epic_mapping:
+            self.log.warn(f"No epic mapped for {str(contract_object.key)}",
+                          instrument_code=contract_object.instrument_code,
+                          contract_date=contract_object.contract_date.date_str,
+            )
+            return FsbContractPrices.create_empty()
+
+        # calc dates and freq
+        existing = self.existing_prices.get_prices_for_contract_object(contract_object)
+        end_date = datetime.now().astimezone(tz=pytz.utc)
+        if existing.shape[0] > 0:
+            last_index_date = existing.index[-1]
+            # TODO switch to 4H or 3H?
+            freq = '4H'
+            start_date = last_index_date + timedelta(minutes=1)
+            self.log.msg(f"Appending IG data: last row of existing {last_index_date}, freq {freq}, "
+                         f"start {start_date.strftime('%Y-%m-%d %H:%M:%S')}, "
+                         f"end {end_date.strftime('%Y-%m-%d %H:%M:%S')}",
+                         instrument_code=contract_object.instrument_code,
+                         contract_date=contract_object.contract_date.date_str
+            )
+        else:
+            freq = 'D'
+            start_date = end_date - timedelta(days=30)  # TODO review. depends on instrument?
+            self.log.msg(f"New IG data: freq {freq}, "
+                         f"start {start_date.strftime('%Y-%m-%d %H:%M:%S')}, "
+                         f"end {end_date.strftime('%Y-%m-%d %H:%M:%S')}",
+                         instrument_code=contract_object.instrument_code,
+                         contract_date=contract_object.contract_date.date_str
+            )
+
+        epic = self.futures_instrument_data.epic_mapping[contract_object.key]
+        prices_df = self.igconnection.get_historical_fsb_data_for_epic(
+            epic=epic,
+            bar_freq=freq,
+            start_date=start_date,
+            end_date=end_date)
+
+        if prices_df is missing_data:
+            self.log.warn(f"Problem getting IG price data for {str(contract_object)}",
+                          instrument_code=contract_object.instrument_code,
+                          contract_date=contract_object.contract_date.date_str)
+            price_data = FsbContractPrices.create_empty()
+
+        elif len(prices_df) == 0:
+            self.log.warn(f"No IG price data found for {str(contract_object)}",
+                          instrument_code=contract_object.instrument_code,
+                          contract_date=contract_object.contract_date.date_str
+            )
+            price_data = FsbContractPrices.create_empty()
+        else:
+            # sometimes the IG epics for info and historical prices don't match. the logic here attempts to
+            # prevent that scenario from messing up the data
+            last_df_date = prices_df.index[-1]
+            last_df_date = last_df_date.replace(tzinfo=pytz.UTC)
+            hist_diff = abs((last_df_date - end_date).days)
+            if hist_diff <= 3:
+                self.log.msg(f"Found {prices_df.shape[0]} rows of data",
+                             instrument_code=contract_object.instrument_code,
+                             contract_date=contract_object.contract_date.date_str
+                )
+                price_data = FsbContractPrices(prices_df)
+            else:
+                self.log.msg(f"Ignoring - IG epic/history config awaiting update")
+                price_data = FsbContractPrices.create_empty()
+
+        # It's important that the data is in local time zone so that this works
+        price_data = price_data.remove_future_data()
+
+        # Some contract data is marked to model, don't want this
+        # TODO review this - dunno if applicable for fsb
+        # price_data = price_data.remove_zero_volumes()
+
+        return price_data

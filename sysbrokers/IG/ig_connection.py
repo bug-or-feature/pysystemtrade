@@ -10,7 +10,7 @@ from syscore.objects import missing_data
 from sysdata.config.production_config import get_production_config
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contracts import futuresContract
-from sysobjects.futures_per_contract_prices import futuresContractPrices
+from sysobjects.fsb_contract_prices import FsbContractPrices
 from syscore.objects import missing_contract
 
 
@@ -113,9 +113,9 @@ class IGConnection(object):
 
         return result_list
 
-    def get_historical_futures_data_for_contract(
+    def get_historical_fsb_data_for_epic(
         self,
-        contract_object: futuresContract,
+        epic: str,
         bar_freq: str = "D",
         start_date: datetime = None,
         end_date: datetime = None,
@@ -124,8 +124,8 @@ class IGConnection(object):
         """
         Get historical daily data
 
-        :param contract_object:
-        :type contract_object:
+        :param epic:
+        :type str:
         :param bar_freq:
         :type bar_freq:
         :param start_date:
@@ -136,7 +136,7 @@ class IGConnection(object):
         :rtype:
         """
 
-        df = futuresContractPrices.create_empty()
+        df = FsbContractPrices.create_empty()
 
         try:
 
@@ -144,17 +144,6 @@ class IGConnection(object):
                 raise NotImplementedError(
                     f"IG supported data frequencies: 'D', '4H'"
                 )  # TODO add 4H, 3H
-
-            epic = self.get_ig_epic(contract_object)
-            if epic is None:
-                self.log.warn(
-                    f"There is no IG epic for contract ID {str(contract_object)}"
-                )
-                return missing_data
-            else:
-                self.log.msg(
-                    f"Contract ID {str(contract_object)} maps to IG epic {epic}"
-                )
 
             # if hasattr(contract_object.instrument, 'freq') and contract_object.instrument.freq:
             #     bar_freq = from_config_frequency_to_frequency(contract_object.instrument.freq)
@@ -169,7 +158,7 @@ class IGConnection(object):
                     resolution=bar_freq,
                     start_date=start_date.strftime("%Y-%m-%dT%H:%M:%S"),
                     end_date=end_date.strftime("%Y-%m-%dT%H:%M:%S"),
-                    format=IGService.mid_prices,
+                    format=self._flat_prices_bid_ask_format,
                 )
                 df = response["prices"]
 
@@ -306,5 +295,50 @@ class IGConnection(object):
             ]
         )
         df = df[["priceBid", "priceAsk", "sizeAsk", "sizeBid"]]
+
+        return df
+
+    def _flat_prices_bid_ask_format(self, prices, version):
+
+        """Format price data as a flat DataFrame, no hierarchy, with bid/ask OHLC prices"""
+
+        if len(prices) == 0:
+            raise (Exception("Historical price data not found"))
+
+        df = json_normalize(prices)
+        df = df.set_index("snapshotTimeUTC")
+        df.index = pd.to_datetime(df.index, format="%Y-%m-%dT%H:%M:%S")
+        df.index.name = "Date"
+        df = df.rename(
+            columns={
+                "openPrice.bid": "Open.bid",
+                "openPrice.ask": "Open.ask",
+                "highPrice.bid": "High.bid",
+                "highPrice.ask": "High.ask",
+                "lowPrice.bid": "Low.bid",
+                "lowPrice.ask": "Low.ask",
+                "closePrice.bid": "Close.bid",
+                "closePrice.ask": "Close.ask",
+                "lastTradedVolume": "Volume"
+            }
+        )
+        df = df.drop(
+            columns=[
+                "snapshotTime",
+                "openPrice.lastTraded",
+                "closePrice.lastTraded",
+                "highPrice.lastTraded",
+                "lowPrice.lastTraded"
+            ]
+        )
+        df = df[
+            [
+                "Open.bid", "Open.ask",
+                "High.bid", "High.ask",
+                "Low.bid", "Low.ask",
+                "Close.bid", "Close.ask",
+                "Volume"
+            ]
+        ]
 
         return df

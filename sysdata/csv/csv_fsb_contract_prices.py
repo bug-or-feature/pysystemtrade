@@ -1,16 +1,24 @@
 from syscore.dateutils import Frequency
-from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
-from sysobjects.futures_per_contract_prices import futuresContractPrices
-from sysobjects.fsb_contract_prices import FsbContractPrices, PRICE_DATA_COLUMNS
-from sysobjects.contracts import futuresContract
-
+from syscore.objects import arg_not_supplied
 from syscore.pdutils import pd_readcsv
+from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
+from syslogdiag.log_to_screen import logtoscreen
+from sysobjects.contracts import futuresContract
+from sysobjects.fsb_contract_prices import FsbContractPrices, PRICE_DATA_COLUMNS
+from sysobjects.futures_per_contract_prices import futuresContractPrices
 
 
 class CsvFsbContractPriceData(csvFuturesContractPriceData):
     """
     Class to read / write individual FSB contract price data to and from csv files
     """
+
+    def __init__(
+        self,
+        datapath=arg_not_supplied,
+        log=logtoscreen("CsvFsbContractPriceData"),
+    ):
+        super().__init__(log=log, datapath=datapath)
 
     def __repr__(self):
         return "CsvFsbContractPriceData accessing %s" % self._datapath

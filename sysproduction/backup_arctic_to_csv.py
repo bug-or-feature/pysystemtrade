@@ -24,6 +24,7 @@ from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 from sysdata.csv.csv_roll_state_storage import csvRollStateData
 from sysdata.csv.csv_spreads import csvSpreadsForInstrumentData
 from sysdata.csv.csv_fsb_epics_history_data import CsvFsbEpicHistoryData
+from sysdata.csv.csv_fsb_contract_prices import CsvFsbContractPriceData
 
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
@@ -33,6 +34,7 @@ from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesDat
 from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
 from sysdata.arctic.arctic_spreads import arcticSpreadsForInstrumentData
 from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
+from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
 
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 from sysdata.mongodb.mongo_position_by_contract import mongoContractPositionData
@@ -85,6 +87,7 @@ class backupArcticToCsv:
         backup_optimal_positions(backup_data)
         backup_roll_state_data(backup_data)
         backup_epic_history_to_csv(backup_data)
+        backup_fsb_contract_prices_to_csv(backup_data)
         log.msg("Copying to backup directory")
         backup_csv_dump(self.data)
 
@@ -111,6 +114,7 @@ def get_data_and_create_csv_directories(logname):
         csvRollStateData="roll_state",
         csvSpreadsForInstrumentData="spreads",
         CsvFsbEpicHistoryData="epic_history",
+        CsvFsbContractPriceData="fsb_contract_prices",
     )
 
     for class_name, path in class_paths.items():
@@ -140,7 +144,8 @@ def get_data_and_create_csv_directories(logname):
             csvRollStateData,
             csvFuturesContractData,
             csvSpreadsForInstrumentData,
-            CsvFsbEpicHistoryData
+            CsvFsbEpicHistoryData,
+            CsvFsbContractPriceData
         ]
     )
 
@@ -152,6 +157,7 @@ def get_data_and_create_csv_directories(logname):
             arcticFxPricesData,
             arcticSpreadsForInstrumentData,
             ArcticFsbEpicHistoryData,
+            ArcticFsbContractPriceData,
             mongoContractPositionData,
             mongoStrategyPositionData,
             mongoBrokerHistoricOrdersData,
@@ -524,6 +530,60 @@ def backup_epic_history_to_csv_for_instrument(data, instrument_code: str):
             data.log.warn(
                 f"Problem writing .csv backup epic history for {instrument_code}: {exc}"
             )
+
+
+# Futures spread bet price data
+def backup_fsb_contract_prices_to_csv(data):
+    instrument_list = (
+        data.arctic_fsb_contract_price.get_list_of_instrument_codes_with_price_data()
+    )
+    for instrument_code in instrument_list:
+        backup_fsb_contract_prices_for_instrument_to_csv(data, instrument_code)
+
+
+def backup_fsb_contract_prices_for_instrument_to_csv(
+    data: dataBlob, instrument_code: str
+):
+    list_of_contracts = data.arctic_fsb_contract_price.contracts_with_price_data_for_instrument_code(
+        instrument_code
+    )
+
+    for futures_contract in list_of_contracts:
+        backup_fsb_contract_prices_for_contract_to_csv(data, futures_contract)
+
+
+def backup_fsb_contract_prices_for_contract_to_csv(
+        data: dataBlob, futures_contract: futuresContract
+        ):
+        if futures_contract.days_since_expiry() > CALENDAR_DAYS_IN_YEAR:
+            # Almost certainly expired, skip
+            data.log.msg("Skipping expired contract %s" % str(futures_contract))
+
+            return None
+
+        arctic_data = data.arctic_fsb_contract_price.get_prices_for_contract_object(
+            futures_contract
+        )
+
+        csv_data = data.csv_fsb_contract_price.get_prices_for_contract_object(
+            futures_contract
+        )
+
+        if check_df_equals(arctic_data, csv_data):
+            # No update needed, move on
+            data.log.msg("No FSB prices backup needed for %s" % str(futures_contract))
+        else:
+            # Write backup
+            try:
+                data.csv_fsb_contract_price.write_prices_for_contract_object(
+                    futures_contract,
+                    arctic_data,
+                    ignore_duplication=True,
+                )
+                data.log.msg("Written backup .csv of FSB prices for %s" % str(futures_contract))
+            except BaseException as be:
+                data.log.warn(f"Problem writing .csv of FSB prices for {str(futures_contract)}: {be}")
+
 
 def backup_csv_dump(data):
     source_path = get_csv_dump_dir()

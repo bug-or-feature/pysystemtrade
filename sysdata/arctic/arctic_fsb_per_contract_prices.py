@@ -8,9 +8,10 @@ from sysdata.futures.futures_per_contract_prices import (
     listOfFuturesContracts,
 )
 from sysobjects.fsb_contract_prices import FsbContractPrices
-from sysobjects.contracts import futuresContract, get_code_and_id_from_contract_key
+from sysobjects.contracts import futuresContract
 from syslogdiag.log_to_screen import logtoscreen
-
+from syscore.merge_data import merge_newer_data
+from syscore.merge_data import spike_in_data
 import pandas as pd
 
 CONTRACT_COLLECTION = "fsb_contract_prices"
@@ -131,6 +132,97 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
             % (futures_contract_object.key, str(self))
         )
 
+    def update_prices_for_contract(
+        self,
+        contract_object: futuresContract,
+        new_futures_per_contract_prices: FsbContractPrices,
+        check_for_spike: bool = True,
+    ) -> int:
+        """
+        Reads existing data, merges with new_futures_prices, writes merged data
+
+        :param new_futures_prices:
+        :return: int, number of rows
+        """
+        new_log = contract_object.log(self.log)
+
+        if len(new_futures_per_contract_prices) == 0:
+            new_log.msg("No new data")
+            return 0
+
+        old_prices = self.get_prices_for_contract_object(contract_object)
+        merged_prices = old_prices.add_rows_to_existing_data(
+            new_futures_per_contract_prices, check_for_spike=check_for_spike
+        )
+
+        if merged_prices is spike_in_data:
+            new_log.msg(
+                "Price has moved too much - will need to manually check - no price update done"
+            )
+            return spike_in_data
+
+        rows_added = len(merged_prices) - len(old_prices)
+
+        if rows_added < 0:
+            new_log.critical("Can't remove prices something gone wrong!")
+            return 0
+
+        elif rows_added == 0:
+            if len(old_prices) == 0:
+                new_log.msg("No existing or additional data")
+                return 0
+            else:
+                new_log.msg("No additional data since %s " % str(old_prices.index[-1]))
+            return 0
+
+        # We have guaranteed no duplication
+        self.write_prices_for_contract_object(
+            contract_object, merged_prices, ignore_duplication=True
+        )
+
+        new_log.msg("Added %d additional rows of data" % rows_added)
+
+        return rows_added
+
+    def add_rows_to_existing_data(
+        self, new_futures_per_contract_prices, check_for_spike=True
+    ):
+        """
+        Merges self with new data.
+        Only newer data will be added
+
+        :param new_futures_per_contract_prices: another futures per contract prices object
+
+        :return: merged futures_per_contract object
+        """
+
+        merged_futures_prices = merge_newer_data(
+            pd.DataFrame(self),
+            new_futures_per_contract_prices,
+            check_for_spike=False,
+        )
+
+        if merged_futures_prices is spike_in_data:
+            return spike_in_data
+
+        merged_futures_prices = FsbContractPrices(merged_futures_prices)
+
+        return merged_futures_prices
+
+    def get_prices_for_contract_object(self, contract_object: futuresContract):
+        """
+        get all prices without worrying about frequency
+
+        :param contract_object:  futuresContract
+        :return: data
+        """
+
+        if self.has_data_for_contract(contract_object):
+            prices = self._get_prices_for_contract_object_no_checking(contract_object)
+        else:
+            prices = FsbContractPrices.create_empty()
+
+        return prices
 
 def from_key_to_tuple(keyname):
     return keyname.split(".")

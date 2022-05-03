@@ -75,7 +75,7 @@ def init_arctic_with_csv_futures_contract_prices_for_code(
 def init_arctic_with_csv_fsb_contract_prices_for_code(
     instrument_code: str, datapath: str, csv_config=arg_not_supplied
 ):
-    csv_prices = CsvFsbContractPriceData(datapath, config=csv_config)
+    csv_prices = CsvFsbContractPriceData(datapath)
     arctic_prices = ArcticFsbContractPriceData()
 
     print("Getting FSB .csv prices may take some time")
