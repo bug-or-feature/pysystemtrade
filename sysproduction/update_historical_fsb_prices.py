@@ -12,11 +12,11 @@ from sysproduction.data.fsb_prices import UpdateFsbPrices
 from sysproduction.data.prices import diagPrices
 
 
-def update_historical_fsb_prices(instrument_list=None):
+def update_historical_fsb_prices():
     """
     Do a daily update for FSB contract prices, using IG historical data
 
-    :return: success, failure
+    :return: Nothing
     """
 
     logging.basicConfig(
@@ -24,6 +24,25 @@ def update_historical_fsb_prices(instrument_list=None):
         format='%(asctime)s %(levelname)s %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S')
 
+    with dataBlob(log_name="Update-Historical-FSB-Prices") as data:
+        price_data = diagPrices(data)
+        list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
+        update_historical_fsb_prices = updateHistoricalFsbPrices(data, list_of_codes_all)
+        update_historical_fsb_prices.update_prices()
+    return success
+
+
+def update_historical_fsb_prices_single(instrument_list=None):
+    """
+    Do a daily update for FSB contract prices, using IG historical data
+
+    :return: Nothing
+    """
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s %(levelname)s %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S')
 
     with dataBlob(log_name="Update-Historical-FSB-Prices") as data:
         update_historical_fsb_prices = updateHistoricalFsbPrices(data, instrument_list)
