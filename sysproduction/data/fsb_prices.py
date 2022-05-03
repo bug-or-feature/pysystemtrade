@@ -13,6 +13,40 @@ from sysdata.data_blob import dataBlob
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
 
 
+class diagFsbPrices(productionDataLayerGeneric):
+    def _add_required_classes_to_data(self, data) -> dataBlob:
+        data.add_class_list(
+            [
+                ArcticFsbContractPriceData,
+                mongoFuturesContractData,
+            ]
+        )
+        return data
+
+    def get_prices_for_contract_object(
+        self, contract_object: futuresContract
+    ) -> FsbContractPrices:
+        prices = self.db_fsb_contract_price_data.get_prices_for_contract_object(
+            contract_object
+        )
+
+        return prices
+
+    # def get_spreads(self, instrument_code: str) -> spreadsForInstrument:
+    #     return self.db_spreads_for_instrument_data.get_spreads(instrument_code)
+    #
+    # def get_list_of_instruments_with_spread_data(self) -> list:
+    #     return self.db_spreads_for_instrument_data.get_list_of_instruments()
+
+    @property
+    def db_fsb_contract_price_data(self) -> futuresContractPriceData:
+        return self.data.db_fsb_contract_price
+
+    # @property
+    # def db_spreads_for_instrument_data(self) -> spreadsForInstrumentData:
+    #     return self.data.db_spreads_for_instrument
+
+
 class UpdateFsbPrices(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(

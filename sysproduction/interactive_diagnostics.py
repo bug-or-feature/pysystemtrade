@@ -33,7 +33,7 @@ from sysproduction.data.prices import get_valid_instrument_code_from_user, diagP
 from sysproduction.data.strategies import get_valid_strategy_name_from_user
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.broker import dataBroker
-
+from sysproduction.data.fsb_prices import diagFsbPrices
 
 from syslogdiag.email_via_db_interface import retrieve_and_delete_stored_messages
 from sysproduction.reporting.reporting_functions import run_report
@@ -105,6 +105,7 @@ nested_menu_of_options = {
         32: "Adjusted prices",
         33: "FX prices",
         34: "Spreads",
+        35: "Individual FSB contract prices",
     },
     4: {
         40: "Capital for an individual strategy",
@@ -422,6 +423,16 @@ def spreads(data):
 
     return None
 
+def individual_fsb_prices(data):
+    contract = get_valid_contract_object_from_user(
+        data, only_include_priced_contracts=True
+    )
+    diag_prices = diagFsbPrices(data)
+    prices = diag_prices.get_prices_for_contract_object(contract)
+
+    print(prices)
+
+    return None
 
 def capital_strategy(data):
     data_capital = dataCapital(data)
@@ -750,6 +761,7 @@ dict_of_functions = {
     32: adjusted_prices,
     33: fx_prices,
     34: spreads,
+    35: individual_fsb_prices,
     40: capital_strategy,
     41: total_current_capital,
     50: optimal_positions,
