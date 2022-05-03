@@ -1,7 +1,7 @@
 from syscore.dateutils import Frequency
 from syscore.objects import arg_not_supplied
 from syscore.pdutils import pd_readcsv
-from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
+from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData, ConfigCsvFuturesPrices
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contracts import futuresContract
 from sysobjects.fsb_contract_prices import FsbContractPrices, PRICE_DATA_COLUMNS
@@ -17,8 +17,9 @@ class CsvFsbContractPriceData(csvFuturesContractPriceData):
         self,
         datapath=arg_not_supplied,
         log=logtoscreen("CsvFsbContractPriceData"),
+        config: ConfigCsvFuturesPrices = arg_not_supplied,
     ):
-        super().__init__(log=log, datapath=datapath)
+        super().__init__(log=log, datapath=datapath, config=config)
 
     def __repr__(self):
         return "CsvFsbContractPriceData accessing %s" % self._datapath
