@@ -1,7 +1,7 @@
 ### These are only used for reporting purposes and are not what is in the backtest!
 
 RISK_TARGET_ASSUMED = 25 ## 20 = 20%
-INSTRUMENT_WEIGHT_ASSUMED = 0.01
+INSTRUMENT_WEIGHT_ASSUMED = 0.04
 IDM_ASSUMED = 2.5
 MIN_CONTRACTS_HELD = 4.0
 MAX_SR_COST = 0.01
@@ -11,3 +11,4 @@ MAX_VS_AVERAGE_FORECAST = 2
 RAW_MAX_LEVERAGE = 1
 MAX_POSITION_TRADED_DAILY = 0.33
 MAX_RISK_EXPOSURE_ONE_INSTRUMENT = 0.20
+BAD_THRESHOLD = 0.3 ## Allows 30% leeway before suggesting add/remove market
