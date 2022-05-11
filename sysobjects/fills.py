@@ -2,12 +2,13 @@ from collections import namedtuple
 
 import pandas as pd
 
-from syscore.objects import missing_order
+from syscore.objects import missing_order, named_object
 from sysexecution.orders.list_of_orders import listOfOrders
 from sysexecution.orders.base_orders import Order
 
 Fill = namedtuple("Fill", ["date", "qty", "price"])
 
+NOT_FILLED = named_object('not filled')
 
 class listOfFills(list):
     def __init__(self, list_of_fills):
@@ -31,14 +32,14 @@ class listOfFills(list):
 
     @classmethod
     def from_position_series_and_prices(
-        listOfFills, positions: pd.Series, price: pd.Series
+        cls, positions: pd.Series, price: pd.Series
     ):
 
         list_of_fills = _list_of_fills_from_position_series_and_prices(
             positions=positions, price=price
         )
 
-        return list_of_fills
+        return cls(list_of_fills)
 
 
 def _list_of_fills_from_position_series_and_prices(

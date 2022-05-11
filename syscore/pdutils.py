@@ -501,15 +501,27 @@ def intraday_date_rows_in_pd_object(pd_object):
         ]
     ]
 
+def get_intraday_df_at_frequency(df: pd.DataFrame, frequency="H"):
+    intraday_only_df = intraday_date_rows_in_pd_object(df)
+    intraday_df = intraday_only_df.resample(frequency).last()
+    intraday_df_clean = intraday_df.dropna()
+
+    return intraday_df_clean
+
 
 def sumup_business_days_over_pd_series_without_double_counting_of_closing_data(
     pd_series,
 ):
-    closing_data = closing_date_rows_in_pd_object(pd_series)
-    closing_data_summed = closing_data.resample("1B").sum()
     intraday_data = intraday_date_rows_in_pd_object(pd_series)
+    if len(intraday_data)==0:
+        return pd_series
+
     intraday_data_summed = intraday_data.resample("1B").sum()
     intraday_data_summed.name = "intraday"
+
+    closing_data = closing_date_rows_in_pd_object(pd_series)
+    closing_data_summed = closing_data.resample("1B").sum()
+
     both_sets_of_data = pd.concat([intraday_data_summed, closing_data_summed], axis=1)
     both_sets_of_data[both_sets_of_data == 0] = np.nan
     joint_data = both_sets_of_data.ffill(axis=1)
