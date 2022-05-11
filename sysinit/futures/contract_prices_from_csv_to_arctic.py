@@ -51,6 +51,34 @@ def init_arctic_with_csv_futures_contract_prices_for_code(
         print("Read back prices are \n %s" % str(written_prices))
 
 
+def init_arctic_with_csv_futures_contract_prices_for_contract(
+    instrument_code: str, date_str: str, datapath: str, csv_config=arg_not_supplied
+):
+
+    print(f"Instrument code: {instrument_code}")
+    csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
+    arctic_prices = arcticFuturesContractPriceData()
+
+    print("Getting .csv prices may take some time")
+    csv_price_dict = csv_prices.get_all_prices_for_instrument(instrument_code)
+
+    print("Have .csv prices for the following contracts:")
+    print(str(csv_price_dict.keys()))
+
+    for contract_date_str, prices_for_contract in csv_price_dict.items():
+        if contract_date_str == date_str:
+            print("Processing %s" % contract_date_str)
+            print(".csv prices are \n %s" % str(prices_for_contract))
+            contract = futuresContract.from_two_strings(instrument_code, contract_date_str)
+            print("Contract object is %s" % str(contract))
+            print("Writing to arctic")
+            arctic_prices.write_prices_for_contract_object(
+                contract, prices_for_contract, ignore_duplication=True
+            )
+            print("Reading back prices from arctic to check")
+            written_prices = arctic_prices.get_prices_for_contract_object(contract)
+            print("Read back prices are \n %s" % str(written_prices))
+
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # modify flags as required
