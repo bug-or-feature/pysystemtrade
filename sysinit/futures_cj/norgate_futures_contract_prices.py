@@ -257,8 +257,8 @@ def transfer_norgate_prices_to_arctic(datapath):
 
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    #datapath = "/Users/ageach/Dev/work/pyhistprice/data/norgate"
-    #datapath = "/Users/ageach/Dev/work/pyhistprice/data/norgate_conv"
+    #datapath = "/home/caleb/pysystemtrade/data/Norgate/Futures"
+    #datapath = "/home/caleb/pysystemtrade/data/Norgate/Future_conv"
     datapath = get_filename_for_package(
         get_production_config().get_element_or_missing_data("norgate_path")
     )
