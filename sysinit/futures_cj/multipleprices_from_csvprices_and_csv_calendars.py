@@ -9,8 +9,8 @@ from sysdata.config.production_config import get_production_config
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysdata.csv.csv_multiple_prices import csvFuturesMultiplePricesData
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
-from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysinit.futures.build_roll_calendars import adjust_to_price_series
+from sysinit.futures_cj.norgate_futures_contract_prices import NORGATE_CONFIG
 
 from sysobjects.contract_dates_and_expiries import contractDate
 from sysobjects.dict_of_futures_per_contract_prices import (
@@ -35,17 +35,9 @@ def _get_data_inputs(csv_roll_data_path, csv_multiple_data_path):
     csv_roll_calendars = csvRollCalendarData(csv_roll_data_path)
     csv_individual_prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
-            get_production_config().get_element_or_missing_data("barchart_path")
+            get_production_config().get_element_or_missing_data("norgate_path")
         ),
-        config=ConfigCsvFuturesPrices(
-            input_date_index_name="Time",
-            input_skiprows=0,
-            input_skipfooter=0,
-            input_date_format="%Y-%m-%dT%H:%M:%S%z",
-            input_column_mapping=dict(
-                OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
-            )
-        )
+        config=NORGATE_CONFIG
     )
     arctic_multiple_prices = arcticFuturesMultiplePricesData()
     csv_multiple_prices = csvFuturesMultiplePricesData(csv_multiple_data_path)
@@ -213,13 +205,15 @@ if __name__ == "__main__":
     # where to read roll calendars from
     csv_roll_data_path = "data.futures_cj.roll_calendars_csv"
 
-    instrument_code = "SP500"
+    # instrument_code = "SP500"
+    # ['BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']
 
-    process_multiple_prices_single_instrument(
-        instrument_code=instrument_code,
-        adjust_calendar_to_prices=True,
-        csv_multiple_data_path=csv_multiple_data_path,
-        csv_roll_data_path=csv_roll_data_path,
-        ADD_TO_ARCTIC=True,
-        ADD_TO_CSV=True,
-    )
+    for instrument_code in ['STERLING3']:
+        process_multiple_prices_single_instrument(
+            instrument_code=instrument_code,
+            adjust_calendar_to_prices=True,
+            csv_multiple_data_path=csv_multiple_data_path,
+            csv_roll_data_path=csv_roll_data_path,
+            ADD_TO_ARCTIC=True,
+            ADD_TO_CSV=True,
+        )

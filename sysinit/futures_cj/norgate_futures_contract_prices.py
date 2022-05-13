@@ -49,6 +49,7 @@ def rename_files(pathname, norgate_instr_code=None, dry_run=True):
 
     """
 
+    mapped = []
     unmapped = []
     misconfigured = []
     no_roll_config = []
@@ -74,15 +75,18 @@ def rename_files(pathname, norgate_instr_code=None, dry_run=True):
             instr_config = instr_config_src._get_instrument_data_without_checking(instrument)
             if isnan(instr_config.meta_data.PerBlock) or isnan(instr_config.meta_data.Slippage):
                 misconfigured.append(f"{identifier} ({instrument})")
+                continue
 
             if not roll_config_src.is_code_in_data(instrument):
                 no_roll_config.append(f"{identifier} ({instrument})")
+                continue
 
             datecode = str(year) + "{0:02d}".format(month)
             new_file_name = f"{instrument}_{datecode}00.csv"
             new_full_name = os.path.join(resolved_pathname + "_conv", new_file_name)
             old_full_name = os.path.join(resolved_pathname, filename + ".csv")
 
+            mapped.append(instrument)
             if dry_run:
                 print(f"NOT renaming {old_full_name} to {new_full_name}, as dry_run")
             else:
@@ -92,6 +96,7 @@ def rename_files(pathname, norgate_instr_code=None, dry_run=True):
         else:
             unmapped.append(identifier)
 
+    print(f"Successfully mapped: {dedupe_and_sort(mapped)}")
     print(f"Unmapped: {dedupe_and_sort(unmapped)}")
     print(f"Not properly configured in pysystemtrade: {dedupe_and_sort(misconfigured)}")
     print(f"No roll config in pysystemtrade: {dedupe_and_sort(no_roll_config)}")
@@ -197,8 +202,10 @@ market_map = {
     'SJB': 'JGB-mini',
     #'SNK': 'Nikkei 225 (SGX)',
     #'SNK4': 'XXXX',
+    #'SO3': '3-Month SONIA',
     #'SP': 'XXXX',
     #'SP1': 'XXXX',
+    #'SR3': '3-Month SOFR',
     'SSG': 'MSCISING',
     #'SSG4': 'XXXX',
     #'SXF': 'S&P/TSX 60 Index',
@@ -265,7 +272,7 @@ if __name__ == "__main__":
 
     # rename/move files, just for one (Norgate style) instrument code. Operates in 'dry_run' mode by default
     # to actually do the rename, set dry_run=False
-    rename_files(datapath, "GC")
+    # rename_files(datapath, "GC")
     # rename_files(datapath, "GC", dry_run=False)
 
     # rename/move all files. Operates in 'dry_run' mode by default
@@ -274,14 +281,17 @@ if __name__ == "__main__":
     # rename_files(datapath, dry_run=False)
 
     # import just one contract file
-    #transfer_norgate_prices_to_arctic_single_contract("GOLD", "20211200", datapath=datapath)
+    # transfer_norgate_prices_to_arctic_single_contract("GOLD", "20211200", datapath=datapath)
 
     # import all contract files for one instrument
-    # transfer_norgate_prices_to_arctic_single("GOLD", datapath=datapath)
+    #transfer_norgate_prices_to_arctic_single(instrument_code, datapath=datapath)
 
     # import all contract files for more than one instrument
     # for instr in ["GOLD", "SP500"]:
-    #     transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
+
+    # for instrument_code in ['STERLING3']
+    for instr in ['BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
+         transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
 
     # import all contract files for all instruments
     # transfer_norgate_prices_to_arctic(datapath=datapath)

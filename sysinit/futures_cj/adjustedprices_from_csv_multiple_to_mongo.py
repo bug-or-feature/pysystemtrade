@@ -5,11 +5,9 @@ We then store those adjusted prices in arctic and/or csv
 
 """
 from syscore.objects import arg_not_supplied
-from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
 from sysdata.csv.csv_multiple_prices import csvFuturesMultiplePricesData
 from sysdata.csv.csv_adjusted_prices import csvFuturesAdjustedPricesData
-from sysproduction.data.prices import get_valid_instrument_code_from_user
 
 from sysobjects.adjusted_prices import futuresAdjustedPrices
 
@@ -74,7 +72,10 @@ def process_adjusted_prices_single_instrument(
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
-    for instrument_code in ['SP500']:
+    # for instrument_code in ['SP500']:
+    for instrument_code in ['BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
+    # for instrument_code in ['STERLING3']
+
         process_adjusted_prices_single_instrument(
             instrument_code,
             ADD_TO_ARCTIC=True,

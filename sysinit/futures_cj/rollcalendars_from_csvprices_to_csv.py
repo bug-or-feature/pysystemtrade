@@ -1,4 +1,4 @@
-from syscore.genutils import true_if_answer_is_yes
+from syscore.interactive import true_if_answer_is_yes
 from syscore.objects import arg_not_supplied
 
 from sysdata.arctic.arctic_futures_per_contract_prices import (
@@ -9,8 +9,8 @@ from sysobjects.roll_calendars import rollCalendar
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from syscore.fileutils import get_filename_for_package
-from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysdata.config.production_config import get_production_config
+from sysinit.futures_cj.norgate_futures_contract_prices import NORGATE_CONFIG
 
 
 """
@@ -125,24 +125,20 @@ if __name__ == "__main__":
 
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
-    instrument_code = "SP500"
+    # done
+    # ["SP500"]
+    # ['BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']
+
+    instrument_code = 'STERLING3' # TODO
 
     build_and_write_roll_calendar(
         instrument_code=instrument_code,
         output_datapath="data.futures_cj.roll_calendars_csv",
         input_prices=csvFuturesContractPriceData(
             datapath=get_filename_for_package(
-                get_production_config().get_element_or_missing_data("barchart_path")
+                get_production_config().get_element_or_missing_data("norgate_path")
             ),
-            config=ConfigCsvFuturesPrices(
-                input_date_index_name="Time",
-                input_skiprows=0,
-                input_skipfooter=0,
-                input_date_format="%Y-%m-%dT%H:%M:%S%z",
-                input_column_mapping=dict(
-                    OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
-                )
-            )
+            config=NORGATE_CONFIG
         ),
         check_before_writing=True,
     )
