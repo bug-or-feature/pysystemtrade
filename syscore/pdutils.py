@@ -265,9 +265,6 @@ def pd_readcsv(
     if input_column_mapping is None:
         return ans
 
-    # TODO HACK temp fill Volume with -1
-    ans["Volume"] = -1
-
     # Have to remap
     new_ans = pd.DataFrame(index=ans.index)
     for new_col_name, old_col_name in input_column_mapping.items():
