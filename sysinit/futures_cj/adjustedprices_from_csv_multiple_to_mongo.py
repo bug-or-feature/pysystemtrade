@@ -73,8 +73,8 @@ if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # for instrument_code in ['SP500']:
-    for instrument_code in ['BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
-    # for instrument_code in ['STERLING3']
+    # for instrument_code in ['BOBL', 'BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
+    for instrument_code in ['STERLING3']:
 
         process_adjusted_prices_single_instrument(
             instrument_code,

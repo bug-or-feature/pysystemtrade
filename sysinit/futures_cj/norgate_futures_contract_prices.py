@@ -289,8 +289,8 @@ if __name__ == "__main__":
     # import all contract files for more than one instrument
     # for instr in ["GOLD", "SP500"]:
 
-    # for instrument_code in ['STERLING3']
-    for instr in ['BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
+    for instr in ['STERLING3']:
+    #for instr in ['BOBL', 'BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
          transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
 
     # import all contract files for all instruments
