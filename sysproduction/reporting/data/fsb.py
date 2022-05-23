@@ -1,4 +1,6 @@
+import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib.pyplot import show
 
 from syscore.pdutils import print_full
 from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
@@ -47,9 +49,9 @@ def fsb_correlation_data(
     price_corr = sliced_prices.corr()
     returns_corr = sliced_returns.corr()
 
-    # if draw:
-    #     do_plot(contract_obj, sliced_prices, sliced_returns, price_corr, returns_corr)
-        #print(f"Correlations: price :\n {price_corr.iloc[0, 1]}, returns: {returns_corr.iloc[0, 1]}")
+    if draw:
+        do_plot(contract_obj, sliced_prices, sliced_returns, price_corr, returns_corr)
+        print(f"Correlations: price :\n {price_corr.iloc[0, 1]}, returns: {returns_corr.iloc[0, 1]}")
 
     results = dict(
         Contract=contract_obj.key,
@@ -60,25 +62,25 @@ def fsb_correlation_data(
     return results
 
 
-# def do_plot(contract_obj, prices, returns, price_corr, returns_corr):
-#     fig = plt.figure(figsize=(12, 8))
-#     ax = fig.add_subplot(211)
-#     ax.set_title(f"Prices for {contract_obj.key}")
-#     ax.plot(prices["Future"], linestyle="-", label="Future", color='black', linewidth=2.0)
-#     ax.plot(prices["FSB"], linestyle="--", label="FSB", color='red', linewidth=2.0)
-#     #ax.text(2, 6, f"Correlation: {price_corr.iloc[0,1]}", fontsize=15)
-#     ax.legend()
-#     ax.grid(True)
-#
-#     ax = fig.add_subplot(212)
-#     ax.set_title(f"Returns for {contract_obj.key}")
-#     ax.plot(returns["Future"], linestyle="-", label="Future", color='black', linewidth=2.0)
-#     ax.plot(returns["FSB"], linestyle="--", label="FSB", color='red', linewidth=2.0)
-#     #ax.text(2, 6, f"Correlation: {returns_corr.iloc[0,1]}", fontsize=15)
-#     #ax.figtext(0.5, 0.5, "Correlation: wank")
-#     ax.legend()
-#     ax.grid(True)
-#     show()
+def do_plot(contract_obj, prices, returns, price_corr, returns_corr):
+    fig = plt.figure(figsize=(12, 8))
+    ax = fig.add_subplot(211)
+    ax.set_title(f"Prices for {contract_obj.key}")
+    ax.plot(prices["Future"], linestyle="-", label="Future", color='black', linewidth=2.0)
+    ax.plot(prices["FSB"], linestyle="--", label="FSB", color='red', linewidth=2.0)
+    #ax.text(2, 6, f"Correlation: {price_corr.iloc[0,1]}", fontsize=15)
+    ax.legend()
+    ax.grid(True)
+
+    ax = fig.add_subplot(212)
+    ax.set_title(f"Returns for {contract_obj.key}")
+    ax.plot(returns["Future"], linestyle="-", label="Future", color='black', linewidth=2.0)
+    ax.plot(returns["FSB"], linestyle="--", label="FSB", color='red', linewidth=2.0)
+    #ax.text(2, 6, f"Correlation: {returns_corr.iloc[0,1]}", fontsize=15)
+    #ax.figtext(0.5, 0.5, "Correlation: wank")
+    ax.legend()
+    ax.grid(True)
+    show()
 
 
 def currently_sampling_report():
@@ -117,10 +119,10 @@ if __name__ == "__main__":
     #run_fsb_report(fc.from_key("BTP_fsb/20210300"), plot=True)
     #run_fsb_report(fc("CRUDE_W_fsb", "20210700"), draw=True) # CRUDE_W_fsb/20220400
     #run_fsb_report(fc("ASX_fsb", "20211200"), draw=True) # ASX_fsb/20211200
-    #run_fsb_report(contract_key("NZD_fsb/20220600"), draw=True)
+    fsb_correlation_data(contract_key("DX_fsb/20220900"), draw=True)
 
     # all correlations
-    currently_sampling_report()
+    #currently_sampling_report()
 
     # view contract mappings and expiries
     #mappings_and_expiries()

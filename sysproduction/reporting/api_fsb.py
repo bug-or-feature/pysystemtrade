@@ -1,4 +1,5 @@
 import pandas as pd
+from functools import cached_property
 
 from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.IG.ig_futures_contract_price_data import IgFuturesContractPriceData
@@ -69,25 +70,25 @@ class ReportingApiFsb(reportingApi):
 
         return instrument_risk_sorted_table
 
-    # FSB correlations
+    # all FSB correlations
+    def table_of_problem_fsb_correlations(
+            self,
+            min_price_corr=0.8,
+            min_returns_corr=0.6
+    ) -> table:
+
+        df = pd.DataFrame(self.correlation_data)
+        df.set_index('Contract', inplace=True)
+        df.Price = df.Price.round(2)
+        df.Returns = df.Returns.round(2)
+        df = df.loc[(df['Price'] < min_price_corr) | (df['Returns'] < min_returns_corr)]
+        df = df.sort_values("Returns")
+
+        return table("Problem FSB Correlations", df)
+
+    # all FSB correlations
     def table_of_fsb_correlations(self) -> table:
-        futures_prices = arcticFuturesContractPriceData()
-        fsb_prices = ArcticFsbContractPriceData()
-
-        rows = []
-        with dataBlob(log_name="FSB-Report") as data:
-            price_data = diagPrices(data)
-            diag_contracts = dataContracts(data)
-
-            for instr_code in price_data.get_list_of_instruments_in_multiple_prices():
-                all_contracts_list = diag_contracts.get_all_contract_objects_for_instrument_code(
-                    instr_code
-                )
-                for contract in all_contracts_list.currently_sampling():
-                    if futures_prices.has_data_for_contract(contract) and fsb_prices.has_data_for_contract(contract):
-                        rows.append(fsb_correlation_data(contract, futures_prices, fsb_prices))
-
-        df = pd.DataFrame(rows)
+        df = pd.DataFrame(self.correlation_data)
         df.set_index('Contract', inplace=True)
         df.Price = df.Price.round(2)
         df.Returns = df.Returns.round(2)
@@ -113,6 +114,25 @@ class ReportingApiFsb(reportingApi):
         results.set_index("Contract", inplace=True)
 
         return table(table_header, results)
+
+    @cached_property
+    def correlation_data(self):
+        futures_prices = arcticFuturesContractPriceData()
+        fsb_prices = ArcticFsbContractPriceData()
+
+        rows = []
+        with dataBlob(log_name="FSB-Report") as data:
+            price_data = diagPrices(data)
+            diag_contracts = dataContracts(data)
+
+            for instr_code in price_data.get_list_of_instruments_in_multiple_prices():
+                all_contracts_list = diag_contracts.get_all_contract_objects_for_instrument_code(
+                    instr_code
+                )
+                for contract in all_contracts_list.currently_sampling():
+                    if futures_prices.has_data_for_contract(contract) and fsb_prices.has_data_for_contract(contract):
+                        rows.append(fsb_correlation_data(contract, futures_prices, fsb_prices))
+        return rows
 
 
 def nice_format_min_capital_table(df: pd.DataFrame) -> pd.DataFrame:
