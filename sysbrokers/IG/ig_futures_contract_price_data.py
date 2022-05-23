@@ -250,7 +250,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         if existing.shape[0] > 0:
             last_index_date = existing.index[-1]
             # TODO switch to 4H or 3H?
-            freq = '4H'
+            freq = '3H'
             start_date = last_index_date + timedelta(minutes=1)
             self.log.msg(f"Appending IG data: last row of existing {last_index_date}, freq {freq}, "
                          f"start {start_date.strftime('%Y-%m-%d %H:%M:%S')}, "
