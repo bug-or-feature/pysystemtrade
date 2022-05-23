@@ -14,7 +14,7 @@ PRICE_DATA_COLUMNS = sorted([
     "Close.bid", "Close.ask",
     "Volume"
 ])
-FINAL_COLUMN = "Close.ask" # TODO
+CLOSE_COLUMNS = ["Close.bid", "Close.ask"]
 VOLUME_COLUMN = "Volume"
 
 
@@ -41,19 +41,18 @@ class FsbContractPrices(pd.DataFrame):
         data = pd.DataFrame(columns=PRICE_DATA_COLUMNS)
         return FsbContractPrices(data)
 
-    @classmethod
-    def create_from_final_prices_only(
-            cls, price_data_as_series: pd.Series
-    ):
-        price_data_as_series = pd.DataFrame(
-            price_data_as_series, columns=[FINAL_COLUMN]
-        )
-        price_data_as_series = price_data_as_series.reindex(columns=PRICE_DATA_COLUMNS)
-        return FsbContractPrices(price_data_as_series)
+    # @classmethod
+    # def create_from_final_prices_only(
+    #         cls, price_data_as_series: pd.Series
+    # ):
+    #     price_data_as_series = pd.DataFrame(
+    #         price_data_as_series, columns=[FINAL_COLUMN]
+    #     )
+    #     price_data_as_series = price_data_as_series.reindex(columns=PRICE_DATA_COLUMNS)
+    #     return FsbContractPrices(price_data_as_series)
 
     def return_final_prices(self):
-        data = self[FINAL_COLUMN]
-
+        data = self[CLOSE_COLUMNS].mean(axis=1)
         return FsbContractFinalPrices(data)
 
     def _raw_volumes(self) -> pd.Series:
@@ -121,7 +120,7 @@ class FsbContractPrices(pd.DataFrame):
             self,
             new_futures_per_contract_prices,
             check_for_spike=check_for_spike,
-            column_to_check=FINAL_COLUMN,
+            column_to_check=CLOSE_COLUMNS[0],
             keep_older=keep_older,
         )
 
@@ -135,7 +134,7 @@ class FsbContractPrices(pd.DataFrame):
         return FsbContractPrices(new_data)
 
     def remove_zero_prices_if_zero_volumes(self):
-        drop_it = (self[VOLUME_COLUMN] == 0) & (self[FINAL_COLUMN] == 0.0)
+        drop_it = (self[VOLUME_COLUMN] == 0) & (self[CLOSE_COLUMNS[0]] == 0.0)
         new_data = self[~drop_it]
         return FsbContractPrices(new_data)
 
@@ -160,7 +159,7 @@ class FsbContractPrices(pd.DataFrame):
             pd.DataFrame(self),
             new_futures_per_contract_prices,
             check_for_spike=check_for_spike,
-            column_to_check=FINAL_COLUMN,
+            column_to_check=CLOSE_COLUMNS[0],
         )
 
         if merged_futures_prices is spike_in_data:
@@ -173,7 +172,7 @@ class FsbContractPrices(pd.DataFrame):
 
 class FsbContractFinalPrices(pd.Series):
     """
-    Just the final prices from a futures contract
+    Just the final prices from a FSB contract
     """
 
     def __init__(self, data):
