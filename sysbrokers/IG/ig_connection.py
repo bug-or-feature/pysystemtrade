@@ -15,6 +15,9 @@ from syscore.objects import missing_contract
 
 
 class IGConnection(object):
+
+    PRICE_RESOLUTIONS = ["D", "4H", "3H", "2H", "1H"]
+
     def __init__(self, log=logtoscreen("ConnectionIG", log_level="on"), auto_connect=True):
         production_config = get_production_config()
         self._ig_username = production_config.get_element_or_missing_data("ig_username")
@@ -140,10 +143,10 @@ class IGConnection(object):
 
         try:
 
-            if bar_freq not in ["D", "4H"]:
+            if bar_freq not in self.PRICE_RESOLUTIONS:
                 raise NotImplementedError(
-                    f"IG supported data frequencies: 'D', '4H'"
-                )  # TODO add 4H, 3H
+                    f"IG supported data frequencies: {self.PRICE_RESOLUTIONS}"
+                )
 
             # if hasattr(contract_object.instrument, 'freq') and contract_object.instrument.freq:
             #     bar_freq = from_config_frequency_to_frequency(contract_object.instrument.freq)

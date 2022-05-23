@@ -16,6 +16,7 @@ from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 from sysobjects.fsb_contract_prices import FsbContractPrices
+# from sysproduction.data.allowance import DataHistoricAllowance
 
 
 class IgFuturesContractPriceData(brokerFuturesContractPriceData):
@@ -26,6 +27,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         self._fsb_contract_data = IgFuturesContractData(broker_conn, log=self.log)
         self._futures_instrument_data = IgFuturesInstrumentData(broker_conn, log=self.log)
         self._existing_prices = ArcticFsbContractPriceData()
+        # self._hist_allowance = DataHistoricAllowance()
 
     def __repr__(self):
         return "IG/Barchart Spreadbet Futures per contract price data"
@@ -299,6 +301,9 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
                              contract_date=contract_object.contract_date.date_str
                 )
                 price_data = FsbContractPrices(prices_df)
+
+                # TODO update allowance data
+
             else:
                 self.log.msg(f"Ignoring - IG epic/history config awaiting update")
                 price_data = FsbContractPrices.create_empty()
