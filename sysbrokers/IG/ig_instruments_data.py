@@ -53,7 +53,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
         try:
             df = pd.read_csv(IG_FSB_CONFIG_FILE)
-            return IGConfig(df)
+            config_data = IGConfig(df)
 
         except BaseException:
             self.log.warn("Can't read file %s" % IG_FSB_CONFIG_FILE)
