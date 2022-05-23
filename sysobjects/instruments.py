@@ -1,3 +1,4 @@
+from copy import copy
 from syscore.objects import arg_not_supplied
 from syscore.genutils import flatten_list
 from dataclasses import dataclass
@@ -221,6 +222,16 @@ class instrumentCosts(object):
                 self.value_of_pertrade_commission,
             )
         )
+
+    def commission_only(self):
+        new_costs = instrumentCosts(
+            price_slippage = 0.0,
+            value_of_block_commission= self.value_of_block_commission,
+            percentage_cost = self.percentage_cost,
+            value_of_pertrade_commission = self.value_of_pertrade_commission
+        )
+
+        return new_costs
 
     @property
     def price_slippage(self):
