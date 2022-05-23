@@ -104,6 +104,13 @@ def run_min_capital_fsb_report():
     )
 
 
+def run_fsb_report():
+    run_solo_report(
+        title="FSB report",
+        function="sysproduction.reporting.fsb_report.do_fsb_report"
+    )
+
+
 def run_slippage_report():
     pass
 
@@ -140,10 +147,16 @@ if __name__ == "__main__":
     # run_solo_report(title="Trade report", function="sysproduction.reporting.trades_report.trades_info")
 
     # strategy_report:
-    run_solo_report(
-        title="Strategy report",
-        function="sysproduction.reporting.strategies_report.strategy_report",
-    )
+    # run_solo_report(
+    #     title="Strategy report",
+    #     function="sysproduction.reporting.strategies_report.strategy_report",
+    # )
 
     # risk_report:
     # run_solo_report(title="Risk report", function="sysproduction.reporting.risk_report.risk_report")
+
+    # run_min_capital_fsb_report:
+    #run_min_capital_fsb_report()
+
+    # fsb report
+    run_fsb_report()
