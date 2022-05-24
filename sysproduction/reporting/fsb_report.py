@@ -1,5 +1,5 @@
 from sysdata.data_blob import dataBlob
-from syscore.objects import header, table, arg_not_supplied, body_text
+from syscore.objects import arg_not_supplied, body_text
 from sysproduction.reporting.api_fsb import ReportingApiFsb
 
 ALL_CORR_HEADER_TEXT = body_text(
@@ -15,6 +15,7 @@ BELOW_MIN_CORR_HEADER_TEXT = body_text(
     "Showing only those with Price < 0.8 or Returns < 0.6, sorted by Returns"
 )
 
+
 def do_fsb_report(
     data: dataBlob = arg_not_supplied,
 ):
@@ -26,13 +27,13 @@ def do_fsb_report(
     )
     formatted_output = []
 
-    # problem correlations for currently sampled contracts
     formatted_output.append(reporting_api_fsb.std_header("FSB report"))
+
+    # problem correlations for currently sampled contracts
     formatted_output.append(BELOW_MIN_CORR_HEADER_TEXT)
     formatted_output.append(reporting_api_fsb.table_of_problem_fsb_correlations())
 
     # price and returns correlation for currently sampled contracts
-    formatted_output.append(reporting_api_fsb.std_header("FSB report"))
     formatted_output.append(ALL_CORR_HEADER_TEXT)
     formatted_output.append(reporting_api_fsb.table_of_fsb_correlations())
 
