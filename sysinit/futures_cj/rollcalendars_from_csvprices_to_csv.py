@@ -128,8 +128,13 @@ if __name__ == "__main__":
     # done
     # ["SP500"]
     # ['BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']
+    # ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']
 
-    instrument_code = 'STERLING3' # TODO
+    # TODO
+    # ["STERLING3"]
+
+
+    instrument_code = 'VIX'
 
     build_and_write_roll_calendar(
         instrument_code=instrument_code,
