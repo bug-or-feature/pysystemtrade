@@ -55,8 +55,8 @@ from sysproduction.reporting.report_configs import (
     instrument_risk_report_config,
     min_capital_report_config,
     duplicate_market_report_config,
-    remove_markets_report_config
-
+    remove_markets_report_config,
+    fsb_report_config
 )
 
 
@@ -138,6 +138,7 @@ nested_menu_of_options = {
         71: "Minimum capital required",
         72: "Duplicate markets",
         73: "Remove markets",
+        74: "FSB report",
     }
 
 }
@@ -263,6 +264,10 @@ def duplicate_market_report(data):
 
 def remove_markets_report(data):
     report_config = email_or_print_or_file(remove_markets_report_config)
+    run_report(report_config, data=data)
+
+def fsb_report(data):
+    report_config = email_or_print_or_file(fsb_report_config)
     run_report(report_config, data=data)
 
 
@@ -789,6 +794,7 @@ dict_of_functions = {
     71: min_capital_report,
     72: duplicate_market_report,
     73: remove_markets_report,
+    74: fsb_report,
 
 }
 
