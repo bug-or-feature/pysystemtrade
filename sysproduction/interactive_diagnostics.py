@@ -24,6 +24,9 @@ from sysproduction.data.contracts import (
     get_valid_instrument_code_and_contractid_from_user,
     get_valid_contract_object_from_user,
 )
+from sysproduction.data.fsb_contracts import (
+    get_valid_fsb_contract_object_from_user,
+)
 from sysproduction.data.currency_data import dataCurrency, get_valid_fx_code_from_user
 from sysproduction.data.instruments import diagInstruments
 from sysproduction.data.logs import diagLogs
@@ -424,7 +427,7 @@ def spreads(data):
     return None
 
 def individual_fsb_prices(data):
-    contract = get_valid_contract_object_from_user(
+    contract = get_valid_fsb_contract_object_from_user(
         data, only_include_priced_contracts=True
     )
     diag_prices = diagFsbPrices(data)

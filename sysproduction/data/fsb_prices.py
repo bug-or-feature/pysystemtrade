@@ -11,7 +11,7 @@ from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
 from sysdata.data_blob import dataBlob
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
-
+from sysobjects.contract_dates_and_expiries import listOfContractDateStr
 
 class diagFsbPrices(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
@@ -45,6 +45,15 @@ class diagFsbPrices(productionDataLayerGeneric):
     # @property
     # def db_spreads_for_instrument_data(self) -> spreadsForInstrumentData:
     #     return self.data.db_spreads_for_instrument
+
+    def contract_dates_with_price_data_for_instrument_code(
+        self, instrument_code: str
+    ) -> listOfContractDateStr:
+        list_of_contract_date_str = self.db_fsb_contract_price_data.contract_dates_with_price_data_for_instrument_code(
+            instrument_code
+        )
+
+        return list_of_contract_date_str
 
 
 class UpdateFsbPrices(productionDataLayerGeneric):
