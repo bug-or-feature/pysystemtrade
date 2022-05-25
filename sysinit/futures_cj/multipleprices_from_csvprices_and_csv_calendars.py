@@ -201,7 +201,7 @@ def add_phantom_row(
 
 
 if __name__ == "__main__":
-    input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # where to write multiple prices CSV
     csv_multiple_data_path = "data.futures_cj.multiple_prices_csv"
@@ -217,13 +217,12 @@ if __name__ == "__main__":
     # ['CANOLA', 'COCOA', 'COFFEE', 'COPPER', 'CORN', 'COTTON', 'CRUDE_W', 'FEEDCOW', 'GASOIL', 'GASOILINE', 'GAS_US',
     # 'GOLD', 'GOLD_micro', 'HEATOIL', 'LEANHOG', 'LIVECOW', 'LUMBER', 'MILK', 'OATIES', 'OJ', 'PALLAD', 'PLAT',
     # 'REDWHEAT', 'RICE', 'ROBUSTA', 'SILVER', 'SILVER-mini', 'SOYBEAN', 'SOYMEAL', 'SOYOIL', 'SUGAR11', 'WHEAT']
-
     # failed: SILVER
 
-    for instrument_code in ['CANOLA', 'COCOA', 'COFFEE', 'COPPER', 'CORN', 'COTTON', 'CRUDE_W', 'FEEDCOW', 'GASOIL',
-                            'GASOILINE', 'GAS_US', 'GOLD', 'GOLD_micro', 'HEATOIL', 'LEANHOG', 'LIVECOW', 'LUMBER',
-                            'MILK', 'OATIES', 'OJ', 'PALLAD', 'PLAT','REDWHEAT', 'RICE', 'ROBUSTA', 'SILVER-mini',
-                            'SOYBEAN', 'SOYMEAL', 'SOYOIL', 'SUGAR11', 'WHEAT']:
+    # ['AUD', 'BITCOIN', 'CAD', 'CHF', 'DX', 'EUR', 'GBP', 'JPY', 'MXP', 'NZD']
+    # failed ['DX', 'EUR', 'GBP', 'NZD']
+
+    for instrument_code in ['AUD', 'BITCOIN', 'CAD', 'CHF', 'JPY', 'MXP']:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,
