@@ -75,7 +75,12 @@ if __name__ == "__main__":
     # for instrument_code in ['SP500']:
     # for instrument_code in ['BOBL', 'BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
     #for instrument_code in ['STERLING3']:
-    for instrument_code in ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']:
+    #for instrument_code in ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']:
+    #for instrument_code in ['SILVER']:
+    for instrument_code in ['CANOLA', 'COCOA', 'COFFEE', 'COPPER', 'CORN', 'COTTON', 'CRUDE_W', 'FEEDCOW', 'GASOIL',
+                            'GASOILINE', 'GAS_US', 'GOLD', 'GOLD_micro', 'HEATOIL', 'LEANHOG', 'LIVECOW', 'LUMBER',
+                            'MILK', 'OATIES', 'OJ', 'PALLAD', 'PLAT', 'REDWHEAT', 'RICE', 'ROBUSTA', 'SILVER-mini',
+                            'SOYBEAN', 'SOYMEAL', 'SOYOIL', 'SUGAR11', 'WHEAT']:
         process_adjusted_prices_single_instrument(
             instrument_code,
             ADD_TO_ARCTIC=True,

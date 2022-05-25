@@ -177,7 +177,7 @@ market_map = {
     'LLG': 'GILT',
     'LRC': 'ROBUSTA',
     'LSS': 'STERLING3',
-    #'LSU': 'white sugar',
+    'LSU': 'SUGAR',
     #'LWB': 'Feed wheat',
     #'MHI': 'Hang Seng Index - Mini',
     #'MWE': 'Hard Red Spring Wheat',

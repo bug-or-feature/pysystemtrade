@@ -132,6 +132,10 @@ def process_multiple_prices_single_instrument(
         roll_calendar, dict_of_futures_contract_closing_prices
     )
 
+
+    pd.set_option("display.max_columns", None)
+    pd.set_option("display.width", 2000)
+    pd.set_option("display.max_colwidth", None)
     print(multiple_prices)
 
     if ADD_TO_ARCTIC:
@@ -210,7 +214,16 @@ if __name__ == "__main__":
     # ['STERLING3']
     # ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']
 
-    for instrument_code in ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']:
+    # ['CANOLA', 'COCOA', 'COFFEE', 'COPPER', 'CORN', 'COTTON', 'CRUDE_W', 'FEEDCOW', 'GASOIL', 'GASOILINE', 'GAS_US',
+    # 'GOLD', 'GOLD_micro', 'HEATOIL', 'LEANHOG', 'LIVECOW', 'LUMBER', 'MILK', 'OATIES', 'OJ', 'PALLAD', 'PLAT',
+    # 'REDWHEAT', 'RICE', 'ROBUSTA', 'SILVER', 'SILVER-mini', 'SOYBEAN', 'SOYMEAL', 'SOYOIL', 'SUGAR11', 'WHEAT']
+
+    # failed: SILVER
+
+    for instrument_code in ['CANOLA', 'COCOA', 'COFFEE', 'COPPER', 'CORN', 'COTTON', 'CRUDE_W', 'FEEDCOW', 'GASOIL',
+                            'GASOILINE', 'GAS_US', 'GOLD', 'GOLD_micro', 'HEATOIL', 'LEANHOG', 'LIVECOW', 'LUMBER',
+                            'MILK', 'OATIES', 'OJ', 'PALLAD', 'PLAT','REDWHEAT', 'RICE', 'ROBUSTA', 'SILVER-mini',
+                            'SOYBEAN', 'SOYMEAL', 'SOYOIL', 'SUGAR11', 'WHEAT']:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,

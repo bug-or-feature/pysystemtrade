@@ -123,7 +123,7 @@ def check_saved_roll_calendar(
 
 if __name__ == "__main__":
 
-    input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # done
     # ["SP500"]
@@ -133,8 +133,12 @@ if __name__ == "__main__":
     # TODO
     # ["STERLING3"]
 
+    # ['CANOLA', 'COCOA', 'COFFEE', 'COPPER', 'CORN', 'COTTON', 'CRUDE_W', 'FEEDCOW', 'GASOIL', 'GASOILINE', 'GAS_US',
+    # 'GOLD', 'GOLD_micro', 'HEATOIL', 'LEANHOG', 'LIVECOW', 'LUMBER', 'MILK', 'OATIES', 'OJ', 'PALLAD', 'PLAT',
+    # 'REDWHEAT', 'RICE', 'ROBUSTA', 'SILVER', 'SILVER-mini', 'SOYBEAN', 'SOYMEAL', 'SOYOIL', 'SUGAR11', 'WHEAT']
 
-    instrument_code = 'VIX'
+
+    instrument_code = 'WHEAT'
 
     build_and_write_roll_calendar(
         instrument_code=instrument_code,
@@ -145,5 +149,5 @@ if __name__ == "__main__":
             ),
             config=NORGATE_CONFIG
         ),
-        check_before_writing=True,
+        check_before_writing=False,
     )
