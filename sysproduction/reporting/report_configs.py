@@ -132,7 +132,7 @@ remove_markets_report_config = reportConfig(title="Remove markets report",
 fsb_report_config = reportConfig(
     title="Futures spread bet report",
     function = "sysproduction.reporting.fsb_report.do_fsb_report",
-    output="email"
+    output="emailfile"
 )
 
 ## The reports will be run in this order
