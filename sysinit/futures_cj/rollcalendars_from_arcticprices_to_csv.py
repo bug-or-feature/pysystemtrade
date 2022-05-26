@@ -1,4 +1,4 @@
-from syscore.genutils import true_if_answer_is_yes
+from syscore.interactive import true_if_answer_is_yes
 from syscore.objects import arg_not_supplied
 
 from sysdata.arctic.arctic_futures_per_contract_prices import (
@@ -119,8 +119,15 @@ def check_saved_roll_calendar(
 
 
 if __name__ == "__main__":
-    input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    instrument_code = get_valid_instrument_code_from_user(source="single")
+    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    #instrument_code = get_valid_instrument_code_from_user(source="single")
     ## MODIFY DATAPATH IF REQUIRED
     # build_and_write_roll_calendar(instrument_code, output_datapath=arg_not_supplied)
-    build_and_write_roll_calendar(instrument_code, output_datapath="/home/caleb/pysystemtrade/sysinit/futures/tmp")
+
+    #for instr in ['DX', 'EUR', 'GBP', 'NZD']:
+    instrument_code = 'NZD'
+    build_and_write_roll_calendar(
+        instrument_code,
+        output_datapath="data.futures_cj.roll_calendars_csv",
+        check_before_writing=False
+    )

@@ -121,6 +121,9 @@ def process_multiple_prices_single_instrument(
         roll_calendar, dict_of_futures_contract_closing_prices
     )
 
+    pd.set_option("display.max_columns", None)
+    pd.set_option("display.width", 2000)
+    pd.set_option("display.max_colwidth", None)
     print(multiple_prices)
 
     if ADD_TO_ARCTIC:
@@ -189,13 +192,23 @@ def add_phantom_row(
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # change if you want to write elsewhere
-    csv_multiple_data_path = arg_not_supplied
+    csv_multiple_data_path = "data.futures_cj.multiple_prices_csv"
 
     # only change if you have written the files elsewhere
-    csv_roll_data_path = arg_not_supplied
+    csv_roll_data_path = "data.futures_cj.roll_calendars_csv"
 
     # modify flags as required
-    process_multiple_prices_all_instruments(
-        csv_multiple_data_path=csv_multiple_data_path,
-        csv_roll_data_path=csv_roll_data_path,
-    )
+    # process_multiple_prices_all_instruments(
+    #     csv_multiple_data_path=csv_multiple_data_path,
+    #     csv_roll_data_path=csv_roll_data_path,
+    # )
+
+    for instr in ['DX', 'EUR', 'GBP', 'NZD']:
+        process_multiple_prices_single_instrument(
+            instrument_code=instr,
+            adjust_calendar_to_prices=True,
+            csv_multiple_data_path=csv_multiple_data_path,
+            csv_roll_data_path=csv_roll_data_path,
+            ADD_TO_ARCTIC=True,
+            ADD_TO_CSV=True,
+        )

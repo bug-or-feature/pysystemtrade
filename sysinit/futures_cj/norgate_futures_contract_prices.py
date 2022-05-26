@@ -15,6 +15,7 @@ from sysinit.futures.contract_prices_from_csv_to_arctic import (
     init_arctic_with_csv_futures_contract_prices_for_code,
     init_arctic_with_csv_futures_contract_prices_for_contract,
 )
+from sysinit.futures_cj.barchart_futures_contract_prices_single import transfer_barchart_prices_to_arctic_single
 from numpy import isnan
 
 NORGATE_CONFIG = ConfigCsvFuturesPrices(
@@ -27,6 +28,15 @@ NORGATE_CONFIG = ConfigCsvFuturesPrices(
     )
 )
 
+BARCHART_CONFIG = ConfigCsvFuturesPrices(
+    input_date_index_name="Time",
+    input_skiprows=0,
+    input_skipfooter=0,
+    input_date_format="%Y-%m-%dT%H:%M:%S%z",
+    input_column_mapping=dict(
+        OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
+    )
+)
 
 def rename_files(pathname, norgate_instr_code=None, dry_run=True):
 
@@ -262,12 +272,18 @@ def transfer_norgate_prices_to_arctic(datapath):
     )
 
 
+def transfer_barchart_prices_to_arctic_single_contract(instr, contract, datapath):
+    init_arctic_with_csv_futures_contract_prices_for_contract(
+        instr, contract, datapath, csv_config=BARCHART_CONFIG
+    )
+
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     #datapath = "/home/caleb/pysystemtrade/data/Norgate/Futures"
     #datapath = "/home/caleb/pysystemtrade/data/Norgate/Future_conv"
     datapath = get_filename_for_package(
         get_production_config().get_element_or_missing_data("norgate_path")
+        #get_production_config().get_element_or_missing_data("barchart_path")
     )
 
     # rename/move files, just for one (Norgate style) instrument code. Operates in 'dry_run' mode by default
@@ -277,7 +293,7 @@ if __name__ == "__main__":
 
     # rename/move all files. Operates in 'dry_run' mode by default
     # to actually do the rename, set dry_run=False
-    rename_files(datapath)
+    # rename_files(datapath)
     # rename_files(datapath, dry_run=False)
 
     # import just one contract file
@@ -293,7 +309,13 @@ if __name__ == "__main__":
     #for instr in ['BOBL', 'BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
     #for instr in # ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']:
     #for instr in ['AUD', 'BITCOIN', 'CAD', 'CHF', 'JPY', 'MXP']:
-    #     transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
+    for instr in ['DX', 'EUR', 'GBP', 'NZD']:
+         transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
+         #transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
     # import all contract files for all instruments
     # transfer_norgate_prices_to_arctic(datapath=datapath)
+
+    # for instr in ["NZD"]:
+    #     for contract_date in ['20130900']:
+    #         transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)
