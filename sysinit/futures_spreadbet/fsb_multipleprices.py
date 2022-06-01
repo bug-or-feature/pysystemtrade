@@ -4,9 +4,6 @@ import pandas as pd
 
 from syscore.fileutils import get_filename_for_package
 from syscore.objects import arg_not_supplied
-from sysdata.arctic.arctic_futures_per_contract_prices import (
-    arcticFuturesContractPriceData,
-)
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
 from sysdata.config.production_config import get_production_config
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
@@ -16,13 +13,13 @@ from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysinit.futures.build_roll_calendars import adjust_to_price_series
 from sysinit.futures_spreadbet.fsb_contract_prices import build_import_config
+from sysinit.futures_spreadbet.fsb_rollcalendars_to_csv import remove_the_suffix
 from sysobjects.contract_dates_and_expiries import contractDate
 from sysobjects.dict_of_futures_per_contract_prices import (
     dictFuturesContractFinalPrices,
 )
 from sysobjects.multiple_prices import futuresMultiplePrices
 from sysobjects.rolls import rollParameters, contractDateWithRollParameters
-from sysproduction.data.prices import get_valid_instrument_code_from_user
 
 """
 We create multiple prices using:
@@ -105,7 +102,7 @@ def process_multiple_prices_single_instrument(
     print(f"Generating multiple prices for {instrument_code}")
     dict_of_futures_contract_prices = (
         csv_fsb_prices.get_all_prices_for_instrument(
-            instrument_code.removesuffix("_fsb")
+            remove_the_suffix(instrument_code, "_fsb")
         )
     )
     dict_of_futures_contract_closing_prices = (
@@ -124,7 +121,7 @@ def process_multiple_prices_single_instrument(
 
     if adjust_calendar_to_prices:
         roll_calendar = adjust_roll_calendar(
-            instrument_code.removesuffix("_fsb"),
+            remove_the_suffix(instrument_code, "_fsb"),
             roll_calendar,
             csv_fsb_prices
         )
@@ -219,7 +216,7 @@ if __name__ == "__main__":
     #instrument_code = get_valid_instrument_code_from_user(source="single")
     #instrument_code = "US10_fsb"
     #for instrument_code in ["EUROSTX_fsb"]:
-    for instrument_code in ["DX_fsb"]:
+    for instrument_code in ["SOYOIL_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,

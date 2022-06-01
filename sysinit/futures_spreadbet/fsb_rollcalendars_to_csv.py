@@ -1,5 +1,5 @@
 import sys
-from syscore.genutils import true_if_answer_is_yes
+from syscore.interactive import true_if_answer_is_yes
 from syscore.objects import arg_not_supplied
 from syscore.fileutils import get_filename_for_package
 from sysdata.arctic.arctic_futures_per_contract_prices import (
@@ -146,6 +146,13 @@ def show_expected_rolls_for_config(
     print_full(approx_roll_calendar.tail(20))
 
 
+def remove_the_suffix(word, suffix):
+    if word.endswith(suffix):
+        word = word[:-len(suffix)]
+    return word
+
+
+
 if __name__ == "__main__":
 
     args = None
@@ -155,7 +162,7 @@ if __name__ == "__main__":
     if args is not None:
         method = sys.argv[1]
 
-    instr_code = "EUA_fsb"
+    instr_code = "SOYOIL_fsb"
 
     prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
@@ -166,7 +173,7 @@ if __name__ == "__main__":
 
     if method == "build":
         build_and_write_roll_calendar(
-            instrument_code=instr_code.removesuffix("_fsb"),
+            instrument_code=remove_the_suffix(instr_code, "_fsb"),
             output_datapath="data.futures_spreadbet.roll_calendars_csv",
             input_prices=prices,
             check_before_writing=False,
@@ -174,7 +181,7 @@ if __name__ == "__main__":
         )
     else:
         show_expected_rolls_for_config(
-            instrument_code=instr_code.removesuffix("_fsb"),
+            instrument_code=remove_the_suffix(instr_code, "_fsb"),
             path="data.futures_spreadbet.csvconfig",
             input_prices=prices,
         )
