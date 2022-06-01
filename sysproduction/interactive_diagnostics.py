@@ -6,7 +6,7 @@ from syscore.interactive import (
     print_menu_and_get_response,
 )
 from syscore.genutils import progressBar
-from syscore.pdutils import set_pd_print_options
+from syscore.pdutils import set_pd_print_options, print_full
 from syscore.objects import user_exit, arg_not_supplied, missing_contract, ALL_ROLL_INSTRUMENTS
 from sysexecution.orders.list_of_orders import listOfOrders
 
@@ -37,6 +37,7 @@ from sysproduction.data.strategies import get_valid_strategy_name_from_user
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.broker import dataBroker
 from sysproduction.data.fsb_prices import diagFsbPrices
+from sysproduction.data.fsb_epics import DiagFsbEpics
 
 from syslogdiag.email_via_db_interface import retrieve_and_delete_stored_messages
 from sysproduction.reporting.reporting_functions import run_report
@@ -58,7 +59,6 @@ from sysproduction.reporting.report_configs import (
     remove_markets_report_config,
     fsb_report_config
 )
-
 
 def interactive_diagnostics():
     print("\n\n INTERACTIVE DIAGONSTICS\n\n")
@@ -99,6 +99,7 @@ nested_menu_of_options = {
         10: "View instrument configuration data",
         11: "View contract configuration data",
         12: "View trading hours for all instruments",
+        13: "View FSB epic history",
     },
 
     2: {20: "View stored emails", 21: "View errors", 22: "View logs"},
@@ -751,6 +752,17 @@ def get_trading_hours_for_instrument(data: dataBlob,
     return trading_hours
 
 
+def view_fsb_epic_history(data):
+    instrument_code = get_valid_instrument_code_from_user(data)
+    diag_epic_history = DiagFsbEpics(data)
+    history = diag_epic_history.get_epic_history(instrument_code)
+
+    print_full(history)
+    print("")
+
+    return None
+
+
 dict_of_functions = {
     1: backtest_python,
     2: backtest_plot,
@@ -760,6 +772,7 @@ dict_of_functions = {
     10: view_instrument_config,
     11: view_contract_config,
     12: print_trading_hours_for_all_instruments,
+    13: view_fsb_epic_history,
 
     20: retrieve_emails,
     21: view_errors,
@@ -798,5 +811,14 @@ dict_of_functions = {
 
 }
 
+
+def interactive_diag_function(function_id):
+    with dataBlob(log_name="Interactive-Diagnostic-Function") as data:
+        method_chosen = dict_of_functions[function_id]
+        method_chosen(data)
+
 if __name__ == "__main__":
     interactive_diagnostics()
+
+    #interactive_diag_function(30) # individual contract prices
+    #interactive_diag_function(13)  # FSB history
