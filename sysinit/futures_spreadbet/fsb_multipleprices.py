@@ -13,7 +13,7 @@ from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysinit.futures.build_roll_calendars import adjust_to_price_series
 from sysinit.futures_spreadbet.fsb_contract_prices import build_import_config
-from sysinit.futures_spreadbet.fsb_rollcalendars_to_csv import remove_the_suffix
+from sysinit.futures_spreadbet.contract_prices_from_csv_to_arctic import remove_suffix
 from sysobjects.contract_dates_and_expiries import contractDate
 from sysobjects.dict_of_futures_per_contract_prices import (
     dictFuturesContractFinalPrices,
@@ -102,7 +102,7 @@ def process_multiple_prices_single_instrument(
     print(f"Generating multiple prices for {instrument_code}")
     dict_of_futures_contract_prices = (
         csv_fsb_prices.get_all_prices_for_instrument(
-            remove_the_suffix(instrument_code, "_fsb")
+            remove_suffix(instrument_code, "_fsb")
         )
     )
     dict_of_futures_contract_closing_prices = (
@@ -121,7 +121,7 @@ def process_multiple_prices_single_instrument(
 
     if adjust_calendar_to_prices:
         roll_calendar = adjust_roll_calendar(
-            remove_the_suffix(instrument_code, "_fsb"),
+            remove_suffix(instrument_code, "_fsb"),
             roll_calendar,
             csv_fsb_prices
         )

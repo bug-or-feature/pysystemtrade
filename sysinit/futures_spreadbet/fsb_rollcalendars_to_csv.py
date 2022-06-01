@@ -13,6 +13,7 @@ from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.config.production_config import get_production_config
 from syscore.pdutils import print_full
 from sysinit.futures_spreadbet.fsb_contract_prices import build_import_config
+from sysinit.futures_spreadbet.contract_prices_from_csv_to_arctic import remove_suffix
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
@@ -146,13 +147,6 @@ def show_expected_rolls_for_config(
     print_full(approx_roll_calendar.tail(20))
 
 
-def remove_the_suffix(word, suffix):
-    if word.endswith(suffix):
-        word = word[:-len(suffix)]
-    return word
-
-
-
 if __name__ == "__main__":
 
     args = None
@@ -173,7 +167,7 @@ if __name__ == "__main__":
 
     if method == "build":
         build_and_write_roll_calendar(
-            instrument_code=remove_the_suffix(instr_code, "_fsb"),
+            instrument_code=remove_suffix(instr_code, "_fsb"),
             output_datapath="data.futures_spreadbet.roll_calendars_csv",
             input_prices=prices,
             check_before_writing=False,
@@ -181,7 +175,7 @@ if __name__ == "__main__":
         )
     else:
         show_expected_rolls_for_config(
-            instrument_code=remove_the_suffix(instr_code, "_fsb"),
+            instrument_code=remove_suffix(instr_code, "_fsb"),
             path="data.futures_spreadbet.csvconfig",
             input_prices=prices,
         )

@@ -11,7 +11,6 @@ from sysdata.arctic.arctic_fsb_per_contract_prices import (
 )
 from sysobjects.contracts import futuresContract
 
-
 def init_arctic_with_csv_futures_contract_prices(
     datapath: str, csv_config=arg_not_supplied
 ):
@@ -48,7 +47,7 @@ def init_arctic_with_csv_fsb_contract_prices(
 def init_arctic_with_csv_futures_contract_prices_for_code(
     instrument_code: str, datapath: str, csv_config=arg_not_supplied
 ):
-    fut_instr_code = instrument_code.removesuffix("_fsb")
+    fut_instr_code = remove_suffix(instrument_code, "_fsb")
     print(f"Futures: {fut_instr_code}, fsb: {instrument_code}")
     csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
     arctic_prices = arcticFuturesContractPriceData()
@@ -108,7 +107,7 @@ def remove_suffix(input_str: str, suffix: str):
 def init_arctic_with_csv_futures_contract_prices_for_contract(
     instrument_code: str, date_str: str, datapath: str, csv_config=arg_not_supplied
 ):
-    fut_instr_code = instrument_code.removesuffix("_fsb")
+    fut_instr_code = remove_suffix(instrument_code, "_fsb")
     print(f"Futures: {fut_instr_code}, fsb: {instrument_code}")
     csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
     arctic_prices = arcticFuturesContractPriceData()
