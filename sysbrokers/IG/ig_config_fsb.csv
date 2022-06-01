@@ -60,7 +60,7 @@ SMI_fsb,IX.D.SMI,GBP,1.0,False,MONTH1|MONTH2,0.1,SZ
 STERLING3_fsb,IR.D.FSS,GBP,100.0,False,Month2|Month3|Month4|Month6|Month7|Month8|Month10|Month11|MONTHC,0.2,L
 SOYBEAN_fsb,CO.D.S,GBP,1.0,False,Month1|Month2,0.1,ZS
 SOYMEAL_fsb,CO.D.SM,GBP,100.0,False,Month1|Month2,0.1,ZM
-SOYOIL_fsb,CO.D.BO,GBP,100.0,False,Month1|Month2|Month4,0.1,ZL
+SOYOIL_fsb,CO.D.BO,GBP,100.0,False,Month1|Month2|Month3|Month4,0.1,ZL
 SP500_fsb,IX.D.SPTRD,GBP,1.0,False,MONTH1|MONTH2,0.05,ES
 SUGAR_fsb,CO.D.LSU,GBP,1.0,False,Month1|Month2|Month3|Month4|Month5|Month6,0.1,SW
 SUGAR11_fsb,CO.D.SB,GBP,100.0,False,Month1|Month2|Month3|Month4|Month5|Month6|Month7|Month8,0.1,SB
