@@ -170,6 +170,9 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
     def _validate_row(self, period, instr_map):
         return period in instr_map and isinstance(instr_map[period], str)
 
+    def _get_instrument_data_without_checking(self, instrument_code: str):
+        return get_instrument_object_from_config(instrument_code, config=self.config)
+
 
 def get_instrument_object_from_config(
         instrument_code: str, config: IGConfig = None
