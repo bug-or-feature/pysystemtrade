@@ -632,10 +632,10 @@ def view_instrument_config(data):
     instrument_code = get_valid_instrument_code_from_user(data)
     diag_instruments = diagInstruments(data)
     meta_data = diag_instruments.get_meta_data(instrument_code)
-    print(meta_data)
+    print(f"{meta_data}\n")
     data_broker = dataBroker(data)
     instrument_broker_data = data_broker.get_brokers_instrument_with_metadata(instrument_code)
-    print(instrument_broker_data)
+    print(f"{instrument_broker_data}\n")
 
 
 
@@ -822,3 +822,4 @@ if __name__ == "__main__":
 
     #interactive_diag_function(30) # individual contract prices
     #interactive_diag_function(13)  # FSB history
+    #interactive_diag_function(10)  # view_instrument_config
