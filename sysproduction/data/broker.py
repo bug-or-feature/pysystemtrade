@@ -1,14 +1,9 @@
 from copy import copy
-from sysbrokers.IG.ig_capital_data import IgCapitalData
-from sysdata.alphavantage.av_spot_FX_data import AvFxPricesData
-from sysbrokers.IG.ig_futures_contract_price_data import IgFuturesContractPriceData
-from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
-from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
-from sysbrokers.IG.ig_contract_position_data import IgContractPositionData
-from sysbrokers.IG.ig_orders import IgExecutionStackData
-from sysbrokers.IG.ig_static_data import IgStaticData
-from sysbrokers.IG.ig_fx_handling import IgFxHandlingData
 
+try:
+    from sysbrokers.broker_factory import get_broker_class_list
+except:
+    pass
 from sysbrokers.broker_fx_handling import brokerFxHandlingData
 from sysbrokers.broker_static_data import brokerStaticData
 from sysbrokers.broker_execution_stack import brokerExecutionStackData
@@ -51,24 +46,12 @@ from sysproduction.data.generic_production_data import productionDataLayerGeneri
 
 class dataBroker(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
-        ## Modify these to use another broker
-        ## These will be aliased as self.data.broker_fx_prices, self.data.broker_futures_contract_price ... and so on
 
-        # TODO define this in config not code
-        data.add_class_list(
-            [
-                AvFxPricesData,
-                IgFuturesContractPriceData,
-                IgFuturesContractData,
-                IgContractPositionData,
-                IgExecutionStackData,
-                IgStaticData,
-                IgCapitalData,
-                IgFuturesInstrumentData,
-                IgFxHandlingData,
-            ]
-        )
+        # Add a list of broker specific classes that will be aliased as self.data.broker_fx_prices,
+        # self.data.broker_futures_contract_price ... and so on
 
+        broker_class_list = get_broker_class_list()
+        data.add_class_list(broker_class_list)
         return data
 
     @property
