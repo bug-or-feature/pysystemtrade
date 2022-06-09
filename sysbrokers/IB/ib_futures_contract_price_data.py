@@ -187,7 +187,12 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
         :param freq: str; one of D, H, 15M, 5M, M, 10S, S
         :return: data
         """
-        new_log = contract_object.log(self.log)
+        new_log = contract_object.log(
+            self.log.setup(
+                instrument_code=contract_object.instrument_code,
+                contract_date=contract_object.date_str
+            )
+        )
 
         contract_object_with_ib_broker_config = (
             self.futures_contract_data.get_contract_object_with_IB_data(
@@ -213,7 +218,12 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
         allow_expired: bool = False,
     ) -> futuresContractPrices:
 
-        new_log = contract_object_with_ib_broker_config.log(self.log)
+        new_log = contract_object_with_ib_broker_config.log(
+            self.log.setup(
+                instrument_code=contract_object_with_ib_broker_config.instrument_code,
+                contract_date=contract_object_with_ib_broker_config.date_str
+            )
+        )
 
         price_data = self.ib_client.broker_get_historical_futures_data_for_contract(
             contract_object_with_ib_broker_config,
