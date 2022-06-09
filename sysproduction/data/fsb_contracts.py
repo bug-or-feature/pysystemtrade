@@ -12,7 +12,7 @@ from sysobjects.contract_dates_and_expiries import (
 )
 from sysobjects.contracts import futuresContract
 from sysproduction.data.contracts import dataContracts
-from sysproduction.data.fsb_prices import diagFsbPrices
+from sysproduction.data.fsb_prices import DiagFsbPrices
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
 from sysproduction.data.prices import get_valid_instrument_code_from_user
 
@@ -129,7 +129,7 @@ def get_dates_to_choose_from(
 ) -> listOfContractDateStr:
 
     diag_contracts = DataFsbContracts(data)
-    diag_prices = diagFsbPrices(data)
+    diag_prices = DiagFsbPrices(data)
     if only_priced_contracts:
         dates_to_choose_from = (
             diag_prices.contract_dates_with_price_data_for_instrument_code(

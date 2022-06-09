@@ -36,7 +36,7 @@ from sysproduction.data.prices import get_valid_instrument_code_from_user, diagP
 from sysproduction.data.strategies import get_valid_strategy_name_from_user
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.broker import dataBroker
-from sysproduction.data.fsb_prices import diagFsbPrices
+from sysproduction.data.fsb_prices import get_valid_fsb_instrument_code_from_user, DiagFsbPrices
 from sysproduction.data.fsb_epics import DiagFsbEpics
 
 from syslogdiag.email_via_db_interface import retrieve_and_delete_stored_messages
@@ -432,11 +432,12 @@ def spreads(data):
 
     return None
 
+
 def individual_fsb_prices(data):
     contract = get_valid_fsb_contract_object_from_user(
         data, only_include_priced_contracts=True
     )
-    diag_prices = diagFsbPrices(data)
+    diag_prices = DiagFsbPrices(data)
     prices = diag_prices.get_prices_for_contract_object(contract)
 
     print(prices)
@@ -753,7 +754,7 @@ def get_trading_hours_for_instrument(data: dataBlob,
 
 
 def view_fsb_epic_history(data):
-    instrument_code = get_valid_instrument_code_from_user(data)
+    instrument_code = get_valid_fsb_instrument_code_from_user(data, source="fsb")
     diag_epic_history = DiagFsbEpics(data)
     history = diag_epic_history.get_epic_history(instrument_code)
 
