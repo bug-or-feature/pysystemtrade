@@ -33,3 +33,8 @@ env/
 
 /notes
 
+data/Norgate
+data/backups_csv
+data/barchart
+data/mongo_dump
+
