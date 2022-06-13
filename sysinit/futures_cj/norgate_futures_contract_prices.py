@@ -252,6 +252,16 @@ market_map = {
 }
 
 
+norgate_multiplier_map = {
+    'JPY': 0.01,
+    'OJ': 0.01,
+    'COFFEE': 0.01,
+    'SUGAR11': 0.01,
+    'COPPER': 0.01,
+    'RICE': 0.01
+}
+
+
 def transfer_norgate_prices_to_arctic_single_contract(instr, contract, datapath):
     init_arctic_with_csv_futures_contract_prices_for_contract(
         instr, contract, datapath, csv_config=NORGATE_CONFIG
@@ -262,7 +272,7 @@ def transfer_norgate_prices_to_arctic_single(instr, datapath):
     init_arctic_with_csv_futures_contract_prices_for_code(
         instr,
         datapath,
-        csv_config=NORGATE_CONFIG
+        csv_config=build_import_config(instr)
     )
 
 
@@ -275,6 +285,25 @@ def transfer_norgate_prices_to_arctic(datapath):
 def transfer_barchart_prices_to_arctic_single_contract(instr, contract, datapath):
     init_arctic_with_csv_futures_contract_prices_for_contract(
         instr, contract, datapath, csv_config=BARCHART_CONFIG
+    )
+
+
+def build_import_config(instr):
+    if instr in norgate_multiplier_map:
+        multiplier = norgate_multiplier_map[instr]
+    else:
+        multiplier = 1.0
+
+    return ConfigCsvFuturesPrices(
+        input_date_index_name="Date",
+        input_skiprows=0,
+        input_skipfooter=0,
+        input_date_format="%Y%m%d",
+        input_column_mapping=dict(
+            OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
+        ),
+        apply_multiplier=multiplier,
+
     )
 
 if __name__ == "__main__":
@@ -309,7 +338,8 @@ if __name__ == "__main__":
     #for instr in ['BOBL', 'BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
     #for instr in # ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']:
     #for instr in ['AUD', 'BITCOIN', 'CAD', 'CHF', 'JPY', 'MXP']:
-    for instr in ['DX', 'EUR', 'GBP', 'NZD']:
+    #for instr in ['JPY', 'OJ', 'COFFEE', 'SUGAR11', 'COPPER', 'RICE']:
+    for instr in ['JPY']:
          transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
          #transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
