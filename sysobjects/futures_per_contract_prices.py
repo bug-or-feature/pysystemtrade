@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+from copy import copy
 
 from syscore.merge_data import spike_in_data
 from syscore.pdutils import (
@@ -11,6 +12,7 @@ PRICE_DATA_COLUMNS = sorted(["OPEN", "HIGH", "LOW", "FINAL", "VOLUME"])
 FINAL_COLUMN = "FINAL"
 VOLUME_COLUMN = "VOLUME"
 
+VERY_BIG_NUMBER = 999999.0
 
 class futuresContractPrices(pd.DataFrame):
     """
@@ -26,6 +28,12 @@ class futuresContractPrices(pd.DataFrame):
         _validate_price_data(price_data_as_df)
         price_data_as_df.index.name = "index"  # for arctic compatibility
         super().__init__(price_data_as_df)
+
+        self._as_df = price_data_as_df
+
+    def __copy__(self):
+        return futuresContractPrices(copy(self._as_df))
+
 
     @classmethod
     def create_empty(futuresContractPrices):
@@ -132,11 +140,17 @@ class futuresContractPrices(pd.DataFrame):
         return futuresContractPrices(merged_data)
 
     def remove_zero_volumes(self):
-        new_data = self[self[VOLUME_COLUMN] > 0]
+        drop_it = self[VOLUME_COLUMN] == 0
+        new_data = self[~drop_it]
         return futuresContractPrices(new_data)
 
-    def remove_zero_prices_if_zero_volumes(self):
-        drop_it = (self[VOLUME_COLUMN] ==0) & (self[FINAL_COLUMN]==0.0)
+    def remove_zero_prices(self):
+        drop_it = self[FINAL_COLUMN]==0.0
+        new_data = self[~drop_it]
+        return futuresContractPrices(new_data)
+
+    def remove_negative_prices(self):
+        drop_it = self[FINAL_COLUMN]<0.0
         new_data = self[~drop_it]
         return futuresContractPrices(new_data)
 
@@ -147,7 +161,8 @@ class futuresContractPrices(pd.DataFrame):
         return new_data
 
     def add_rows_to_existing_data(
-        self, new_futures_per_contract_prices, check_for_spike=True
+        self, new_futures_per_contract_prices, check_for_spike=True,
+            max_price_spike: float = VERY_BIG_NUMBER
     ):
         """
         Merges self with new data.
@@ -162,6 +177,7 @@ class futuresContractPrices(pd.DataFrame):
             pd.DataFrame(self),
             new_futures_per_contract_prices,
             check_for_spike=check_for_spike,
+            max_spike = max_price_spike,
             column_to_check=FINAL_COLUMN,
         )
 

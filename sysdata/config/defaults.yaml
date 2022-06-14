@@ -33,6 +33,9 @@ ib_ipaddress: 127.0.0.1
 ib_port: 4001
 ib_idoffset: 100
 #
+# Broker class list resolution function
+broker_factory_func: 'sysbrokers.broker_factory.get_ib_class_list'
+#
 # Mongo DB
 mongo_host: 127.0.0.1
 mongo_db: 'production'
@@ -43,10 +46,17 @@ mongo_port: 27017
 # Needs to be consistent with what you are using in crontab
 echo_extension: '.txt'
 # Spike checker
-max_price_spike: 8
+max_price_spike: 8.0
+# Behaviour of price filtering
+ignore_future_prices: True
+ignore_prices_with_zero_volumes: True
+ignore_zero_prices: True
+ignore_negative_prices: False
 #
 # Price frequency (we collect daily data, and separately this frequency
 intraday_frequency: H
+#
+dont_sample_daily_if_intraday_fails: True
 #
 # Capital calculation
 production_capital_method: 'full'

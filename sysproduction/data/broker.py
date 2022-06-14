@@ -1,14 +1,6 @@
 from copy import copy
-from sysbrokers.IB.ib_capital_data import ibCapitalData
-from sysbrokers.IB.ib_Fx_prices_data import ibFxPricesData
-from sysbrokers.IB.ib_futures_contract_price_data import ibFuturesContractPriceData
-from sysbrokers.IB.ib_futures_contracts_data import ibFuturesContractData
-from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData
-from sysbrokers.IB.ib_contract_position_data import ibContractPositionData
-from sysbrokers.IB.ib_orders import ibExecutionStackData
-from sysbrokers.IB.ib_static_data import ibStaticData
-from sysbrokers.IB.ib_fx_handling import ibFxHandlingData
 
+from sysbrokers.broker_factory import get_broker_class_list
 from sysbrokers.broker_fx_handling import brokerFxHandlingData
 from sysbrokers.broker_static_data import brokerStaticData
 from sysbrokers.broker_execution_stack import brokerExecutionStackData
@@ -23,11 +15,12 @@ from syscore.objects import (
     arg_not_supplied,
     missing_order,
     missing_contract,
-    missing_data,
+    missing_data
 )
-from syscore.dateutils import Frequency, listOfOpeningTimes, openingTimes
+from syscore.dateutils import Frequency, listOfOpeningTimes
 
 from sysdata.data_blob import dataBlob
+from sysdata.tools.cleaner import apply_price_cleaning
 
 from sysexecution.orders.broker_orders import brokerOrder
 from sysexecution.orders.list_of_orders import listOfOrders
@@ -51,22 +44,12 @@ from sysproduction.data.generic_production_data import productionDataLayerGeneri
 
 class dataBroker(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
-        ## Modify these to use another broker
-        ## These will be aliased as self.data.broker_fx_prices, self.data.broker_futures_contract_price ... and so on
-        data.add_class_list(
-            [
-                ibFxPricesData,
-                ibFuturesContractPriceData,
-                ibFuturesContractData,
-                ibContractPositionData,
-                ibExecutionStackData,
-                ibStaticData,
-                ibCapitalData,
-                ibFuturesInstrumentData,
-                ibFxHandlingData,
-            ]
-        )
 
+        # Add a list of broker specific classes that will be aliased as self.data.broker_fx_prices,
+        # self.data.broker_futures_contract_price ... and so on
+
+        broker_class_list = get_broker_class_list()
+        data.add_class_list(broker_class_list)
         return data
 
     @property
@@ -131,12 +114,28 @@ class dataBroker(productionDataLayerGeneric):
                 "%s %s is not recognised by broker - try inverting" % (ccy1, ccy2)
             )
 
+    def get_cleaned_prices_at_frequency_for_contract_object(
+        self, contract_object: futuresContract, frequency: Frequency,
+            cleaning_config = arg_not_supplied
+    ) -> futuresContractPrices:
+
+        broker_prices_raw = \
+                self.get_prices_at_frequency_for_contract_object(contract_object=contract_object,
+                                                         frequency = frequency)
+
+        broker_prices = apply_price_cleaning(data = self.data,
+                                             broker_prices_raw = broker_prices_raw,
+                                             cleaning_config = cleaning_config)
+
+        return broker_prices
+
     def get_prices_at_frequency_for_contract_object(
         self, contract_object: futuresContract, frequency: Frequency
     ) -> futuresContractPrices:
 
         return self.broker_futures_contract_price_data.get_prices_at_frequency_for_contract_object(
-            contract_object, frequency
+            contract_object, frequency,
+            return_empty=False ##want to return a failure if no prices available
         )
 
     def get_recent_bid_ask_tick_data_for_contract_object(
@@ -536,3 +535,5 @@ class dataBroker(productionDataLayerGeneric):
         )
 
         return total_account_value_in_base_currency
+
+
