@@ -2,18 +2,24 @@
 Update historical data per contract from interactive brokers data, dump into mongodb
 """
 
-from syscore.objects import success, failure
+from copy import copy
+from syscore.objects import success, failure, arg_not_supplied
 from syscore.merge_data import spike_in_data
-
 from syscore.dateutils import DAILY_PRICE_FREQ, Frequency
 
-from sysobjects.contracts import futuresContract
-
 from sysdata.data_blob import dataBlob
+from sysdata.tools.manual_price_checker import manual_price_checker
+
+from syslogdiag.email_via_db_interface import send_production_mail_msg
+
+from sysobjects.contracts import futuresContract
+from sysobjects.futures_per_contract_prices import futuresContractPrices
+
 from sysproduction.data.prices import diagPrices, updatePrices
 from sysproduction.data.broker import dataBroker
+from sysdata.tools.cleaner import priceFilterConfig, get_config_for_price_filtering
 from sysproduction.data.contracts import dataContracts
-from syslogdiag.email_via_db_interface import send_production_mail_msg
+
 
 
 def update_historical_prices(instrument_list=None):
@@ -37,7 +43,10 @@ class updateHistoricalPrices(object):
         update_historical_prices_with_data(self.data, self._instrument_list)
 
 
-def update_historical_prices_with_data(data: dataBlob, instrument_list=None):
+def update_historical_prices_with_data(data: dataBlob,
+        interactive_mode: bool = False,
+        instrument_list=None):
+    cleaning_config = get_config_for_price_filtering(data)
     price_data = diagPrices(data)
     if instrument_list is None:
         list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
@@ -45,10 +54,18 @@ def update_historical_prices_with_data(data: dataBlob, instrument_list=None):
         list_of_codes_all = instrument_list
     for instrument_code in list_of_codes_all:
         data.log.label(instrument_code=instrument_code)
-        update_historical_prices_for_instrument(instrument_code, data)
+        update_historical_prices_for_instrument(
+            instrument_code,
+            data,
+            cleaning_config = cleaning_config,
+            interactive_mode = interactive_mode
+        )
 
 
-def update_historical_prices_for_instrument(instrument_code: str, data: dataBlob):
+def update_historical_prices_for_instrument(instrument_code: str,
+                                            data: dataBlob,
+                                            cleaning_config: priceFilterConfig = arg_not_supplied,
+                                            interactive_mode: bool = False):
     """
     Do a daily update for futures contract prices, using IB historical data
 
@@ -68,81 +85,95 @@ def update_historical_prices_for_instrument(instrument_code: str, data: dataBlob
 
     for contract_object in contract_list:
         data.log.label(contract_date=contract_object.date_str)
-        update_historical_prices_for_instrument_and_contract(contract_object, data)
+        update_historical_prices_for_instrument_and_contract(contract_object, data, cleaning_config = cleaning_config,
+                                                             interactive_mode=interactive_mode)
 
     return success
 
 
 def update_historical_prices_for_instrument_and_contract(
-    contract_object: futuresContract, data: dataBlob
+    contract_object: futuresContract, data: dataBlob,
+        cleaning_config: priceFilterConfig = arg_not_supplied,
+        interactive_mode: bool = False
 ):
-    """
-    Do a daily update for futures contract prices, using IB historical data
 
-    There are two different calls, the first using intraday frequency, the second daily.
-    So in a typical session we'd get the hourly intraday prices for a given instrument,
-    and then if that instrument has closed we'd also get a new end of day price.
-    The end of day prices are given the artifical datetime stamp of 23:00:00
-    (because I never collect data round that time).
-
-    If the intraday call fails, we don't want to get daily data.
-    Otherwise we wouldn't be able to subsequently backfill hourly prices that occured
-    before the daily close being added (the code doesn't allow you to add prices that have
-    a timestamp which is before the last timestamp in the existing data).
-
-    That's why the result of the first call matters, and is used to abort the function prematurely before we get to daily data.
-    We don't care about the second call succeeding or failing, and so the result of that is ignored.
-
-    :param contract_object: futuresContract
-    :param data: data blob
-    :return: None
-    """
     diag_prices = diagPrices(data)
     intraday_frequency = diag_prices.get_intraday_frequency_for_historical_download()
     daily_frequency = DAILY_PRICE_FREQ
 
     # Get *intraday* data (defaults to hourly)
     result = get_and_add_prices_for_frequency(
-        data, contract_object, frequency=intraday_frequency
+        data,
+        contract_object,
+        frequency=intraday_frequency,
+        cleaning_config=cleaning_config,
+        interactive_mode = interactive_mode
     )
-    if result is failure or intraday_frequency == daily_frequency:
-        # TODO allow intraday_frequency to be set PER INSTRUMENT in config
-        if contract_object.instrument_code in ["JGB_fsb"]:
-            data.log.warn(f"No intraday prices for {contract_object.instrument_code}, getting daily")
+    # if result is failure or intraday_frequency == daily_frequency:
+    # if contract_object.instrument_code in ["JGB_fsb"]:
+    if result is failure:
+        # Skip daily data if intraday not working
+        if cleaning_config.dont_sample_daily_if_intraday_fails:
+            data.log.msg("Had a problem samping intraday, skipping daily to avoid price gaps")
+            return failure
         else:
-            # Skip daily data if intraday not working
-            # or if intraday frequency is daily
-            return None
+            data.log.warn("Had a problem samping intraday, but **NOT** skipping daily - may be price gaps")
 
     # Get daily data
     # we don't care about the result flag for this
-    get_and_add_prices_for_frequency(data, contract_object, frequency=daily_frequency)
+    get_and_add_prices_for_frequency(data, contract_object,
+                                     frequency=daily_frequency,
+                                     cleaning_config=cleaning_config,
+                                     interactive_mode = interactive_mode)
+
+    return success
 
 
 def get_and_add_prices_for_frequency(
     data: dataBlob,
     contract_object: futuresContract,
     frequency: Frequency = DAILY_PRICE_FREQ,
+    cleaning_config: priceFilterConfig = arg_not_supplied,
+    interactive_mode: bool = False
 ):
     broker_data_source = dataBroker(data)
-    db_futures_prices = updatePrices(data)
 
-    broker_prices = broker_data_source.get_prices_at_frequency_for_contract_object(
-        contract_object, frequency
+    broker_prices = broker_data_source.get_cleaned_prices_at_frequency_for_contract_object(
+        contract_object, frequency, cleaning_config = cleaning_config
     )
 
-    if len(broker_prices) == 0:
-        data.log.msg("No prices from broker for %s" % str(contract_object))
+    if broker_prices is failure:
+        print("Something went wrong with getting prices for %s to check" % str(contract_object))
         return failure
 
     data.log.msg(f"broker_prices latest price {broker_prices.index[-1]}")
+    if len(broker_prices) == 0:
+        print("No broker prices found for %s nothing to check" % str(contract_object))
+        return success
 
-    error_or_rows_added = db_futures_prices.update_prices_for_contract(
-        contract_object, broker_prices, check_for_spike=True
-    )
+    if interactive_mode:
+        print("\n\n Manually checking prices for %s \n\n" % str(contract_object))
+        price_data = diagPrices(data)
+        old_prices = price_data.get_prices_for_contract_object(contract_object)
+        new_prices_checked = manual_price_checker(
+            old_prices,
+            broker_prices,
+            column_to_check="FINAL",
+            delta_columns=["OPEN", "HIGH", "LOW"],
+            type_new_data=futuresContractPrices,
+        )
+        check_for_spike = False
+    else:
+        new_prices_checked = copy(broker_prices)
+        check_for_spike = True
 
-    if error_or_rows_added is spike_in_data:
-        report_price_spike(data, contract_object)
+    error_or_rows_added = price_updating_or_errors(data = data,
+                                                   contract_object=contract_object,
+                                                   new_prices_checked = new_prices_checked,
+                                                   check_for_spike=check_for_spike,
+                                                   cleaning_config=cleaning_config
+                                                   )
+    if error_or_rows_added is failure:
         return failure
 
     data.log.msg(
@@ -151,6 +182,29 @@ def get_and_add_prices_for_frequency(
     )
     return success
 
+def price_updating_or_errors(data: dataBlob,
+                             contract_object: futuresContract,
+                             new_prices_checked: futuresContractPrices,
+                             check_for_spike: bool = True,
+                             cleaning_config: priceFilterConfig = arg_not_supplied):
+
+    price_updater = updatePrices(data)
+
+    error_or_rows_added = price_updater.update_prices_for_contract(
+            contract_object, new_prices_checked, check_for_spike=check_for_spike,
+            max_price_spike = cleaning_config.max_price_spike
+        )
+
+    if error_or_rows_added is spike_in_data:
+        report_price_spike(data, contract_object)
+        return failure
+
+    if error_or_rows_added is failure:
+        data.log.warn("Something went wrong when adding rows")
+        return failure
+
+
+    return error_or_rows_added
 
 def report_price_spike(data: dataBlob, contract_object: futuresContract):
     # SPIKE
