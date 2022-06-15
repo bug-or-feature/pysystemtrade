@@ -60,13 +60,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         list_of_instruments = self.futures_instrument_data.get_list_of_instruments()
         return list_of_instruments
 
-    def get_prices_at_frequency_for_contract_object(
-        self, contract_object: futuresContract, freq: Frequency = DAILY_PRICE_FREQ
-    ):
-        return self._get_prices_at_frequency_for_contract_object_no_checking(
-            contract_object, freq=freq
-        )
-
     def _get_prices_for_contract_object_no_checking(
         self, contract_object: futuresContract
     ) -> futuresContractPrices:
