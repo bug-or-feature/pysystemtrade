@@ -134,7 +134,7 @@ market_map = {
     'CC': 'COCOA',
     'CGB': 'CAD10',
     'CL': 'CRUDE_W',
-    'CT': 'COTTON',
+    'CT': 'COTTON2',
     'DC': 'MILK',
     'DV': 'V2X',
     'DX': 'DX',
@@ -340,7 +340,8 @@ if __name__ == "__main__":
     #for instr in ['AUD', 'BITCOIN', 'CAD', 'CHF', 'JPY', 'MXP']:
     #for instr in ['JPY', 'OJ', 'COFFEE', 'SUGAR11', 'COPPER', 'RICE']:
     #for instr in ['JPY', 'OJ', 'COFFEE', 'SUGAR11', 'COPPER', 'RICE']:
-    for instr in ["BOBL", "BTP", "BUND", "BUXL", "CAC", "CANOLA", "COTTON", "EURIBOR", "EUROSTX", "DAX", "FTSE100", "GASOIL", "NIKKEI", "OAT", "ROBUSTA", "SHATZ", "SMI", "VIX"]:
+    #for instr in ["BOBL", "BTP", "BUND", "BUXL", "CAC", "CANOLA", "COTTON", "EURIBOR", "EUROSTX", "DAX", "FTSE100", "GASOIL", "NIKKEI", "OAT", "ROBUSTA", "SHATZ", "SMI", "VIX"]:
+    for instr in ['COTTON2']:
          transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
          #transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
@@ -350,3 +351,8 @@ if __name__ == "__main__":
     # for instr in ["NZD"]:
     #     for contract_date in ['20130900']:
     #         transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)
+
+    # bash rename COTTON_YYYYMMDD.csv to COTTON2_YYYYMMDD.csv
+    # for i in *-doc-*.txt; do mv "$i" "${i/*-doc-/doc-}"; done
+    # for i in COTTON_*.csv; do mv "$i" "${i/COTTON_/COTTON2_}"; done
+
