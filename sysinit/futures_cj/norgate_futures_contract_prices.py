@@ -323,8 +323,8 @@ if __name__ == "__main__":
 
     # rename/move all files. Operates in 'dry_run' mode by default
     # to actually do the rename, set dry_run=False
-    # rename_files(datapath)
-    # rename_files(datapath, dry_run=False)
+    #rename_files(datapath)
+    #rename_files(datapath, dry_run=False)
 
     # import just one contract file
     # transfer_norgate_prices_to_arctic_single_contract("GOLD", "20211200", datapath=datapath)
@@ -342,6 +342,7 @@ if __name__ == "__main__":
     #for instr in ['JPY', 'OJ', 'COFFEE', 'SUGAR11', 'COPPER', 'RICE']:
     #for instr in ['JPY', 'OJ', 'COFFEE', 'SUGAR11', 'COPPER', 'RICE']:
     #for instr in ["BOBL", "BTP", "BUND", "BUXL", "CAC", "CANOLA", "COTTON", "EURIBOR", "EUROSTX", "DAX", "FTSE100", "GASOIL", "NIKKEI", "OAT", "ROBUSTA", "SHATZ", "SMI", "VIX"]:
+    #for instr in ["BOBL", "BTP", "BUND", "BUXL", "OAT", "SHATZ"]:
     for instr in ['COTTON2']:
          transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
          #transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)

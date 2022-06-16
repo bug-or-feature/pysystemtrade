@@ -72,6 +72,7 @@ if __name__ == "__main__":
     #     ADD_TO_ARCTIC=True, ADD_TO_CSV=True, csv_adj_data_path=arg_not_supplied
     # )
 
-    #for instr in ["BOBL", "BTP", "BUND", "BUXL", "CAC", "CANOLA", "COTTON", "EURIBOR", "EUROSTX", "DAX", "FTSE100", "GASOIL", "NIKKEI", "OAT", "ROBUSTA", "SHATZ", "SMI", "VIX"]:
-    for instr in ["COTTON2"]:
+    # for instr in ["BOBL", "BTP", "BUND", "BUXL", "CAC", "CANOLA", "COTTON", "EURIBOR", "EUROSTX", "DAX", "FTSE100", "GASOIL", "NIKKEI", "OAT", "ROBUSTA", "SHATZ", "SMI", "VIX"]:
+    # for instr in ["BOBL", "BTP", "BUND", "BUXL", "OAT", "SHATZ"]:
+    for instr in ['COTTON2']:
         process_adjusted_prices_single_instrument(instr, ADD_TO_ARCTIC=True)
