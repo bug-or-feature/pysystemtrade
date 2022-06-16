@@ -253,12 +253,13 @@ market_map = {
 
 
 norgate_multiplier_map = {
+    'COFFEE': 0.01,
+    'COPPER': 0.01,
+    'COTTON2': 0.01,
     'JPY': 0.01,
     'OJ': 0.01,
-    'COFFEE': 0.01,
+    'RICE': 0.01,
     'SUGAR11': 0.01,
-    'COPPER': 0.01,
-    'RICE': 0.01
 }
 
 
