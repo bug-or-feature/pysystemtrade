@@ -318,8 +318,8 @@ if __name__ == "__main__":
 
     # rename/move files, just for one (Norgate style) instrument code. Operates in 'dry_run' mode by default
     # to actually do the rename, set dry_run=False
-    # rename_files(datapath, "GC")
-    # rename_files(datapath, "GC", dry_run=False)
+    #rename_files(datapath, "NKD")
+    rename_files(datapath, "NKD", dry_run=False)
 
     # rename/move all files. Operates in 'dry_run' mode by default
     # to actually do the rename, set dry_run=False
@@ -344,8 +344,9 @@ if __name__ == "__main__":
     #for instr in ["BOBL", "BTP", "BUND", "BUXL", "CAC", "CANOLA", "COTTON", "EURIBOR", "EUROSTX", "DAX", "FTSE100", "GASOIL", "NIKKEI", "OAT", "ROBUSTA", "SHATZ", "SMI", "VIX"]:
     #for instr in ["BOBL", "BTP", "BUND", "BUXL", "OAT", "SHATZ"]:
     #for instr in ['COTTON2']:
-    for instr in ['EURIBOR']:
-         transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
+    #for instr in ['EURIBOR']:
+    #for instr in ['NIKKEI']:
+    #     transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
          #transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
     # import all contract files for all instruments
