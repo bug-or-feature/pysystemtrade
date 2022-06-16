@@ -74,5 +74,6 @@ if __name__ == "__main__":
 
     # for instr in ["BOBL", "BTP", "BUND", "BUXL", "CAC", "CANOLA", "COTTON", "EURIBOR", "EUROSTX", "DAX", "FTSE100", "GASOIL", "NIKKEI", "OAT", "ROBUSTA", "SHATZ", "SMI", "VIX"]:
     # for instr in ["BOBL", "BTP", "BUND", "BUXL", "OAT", "SHATZ"]:
-    for instr in ['COTTON2']:
+    #for instr in ['COTTON2']:
+    for instr in ['EURIBOR']:
         process_adjusted_prices_single_instrument(instr, ADD_TO_ARCTIC=True)
