@@ -207,7 +207,8 @@ if __name__ == "__main__":
     # for instr in ["BOBL", "BTP", "BUND", "BUXL", "OAT", "SHATZ"]:
     #for instr in ['COTTON2']:
     #for instr in ['EURIBOR']:
-    for instr in ['NIKKEI']:
+    #for instr in ['NIKKEI']:
+    for instr in ['COTTON2','FTSE100','VIX']:
         process_multiple_prices_single_instrument(
             instrument_code=instr,
             adjust_calendar_to_prices=True,
