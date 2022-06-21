@@ -94,7 +94,8 @@ liquidity_report_config = reportConfig(
 costs_report_config = reportConfig(
     title="Costs report",
     function="sysproduction.reporting.costs_report.costs_report",
-    output="email"
+    output="email",
+    calendar_days_back = 250
 
 )
 
@@ -129,6 +130,12 @@ remove_markets_report_config = reportConfig(title="Remove markets report",
                                             output="email"
                                             )
 
+
+market_monitor_report_config = reportConfig(title = "Market monitor report",
+        function = "sysproduction.reporting.market_monitor_report.market_monitor_report",
+                                            output="email")
+
+
 fsb_report_config = reportConfig(
     title="Futures spread bet report",
     function = "sysproduction.reporting.fsb_report.do_fsb_report",
@@ -150,6 +157,7 @@ report_config_defaults = dict(
     instrument_risk_report = instrument_risk_report_config,
     min_capital = min_capital_report_config,
     duplicate_market =duplicate_market_report_config,
-    remove_markets_report = remove_markets_report_config,
+    remove_markets_report=remove_markets_report_config,
+    market_monitor_report=market_monitor_report_config,
     fsb_report=fsb_report_config
 )

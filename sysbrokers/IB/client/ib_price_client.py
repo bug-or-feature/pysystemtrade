@@ -37,6 +37,7 @@ class ibPriceClient(ibContractsClient):
         self,
         contract_object_with_ib_broker_config: futuresContract,
         bar_freq: Frequency = DAILY_PRICE_FREQ,
+            whatToShow="TRADES",
         allow_expired=False,
     ) -> pd.DataFrame:
         """
@@ -61,7 +62,7 @@ class ibPriceClient(ibContractsClient):
             return missing_data
 
         price_data = self._get_generic_data_for_contract(
-            ibcontract, log=specific_log, bar_freq=bar_freq, whatToShow="TRADES"
+            ibcontract, log=specific_log, bar_freq=bar_freq, whatToShow=whatToShow
         )
 
         return price_data

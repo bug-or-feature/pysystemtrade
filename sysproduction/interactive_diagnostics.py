@@ -1,9 +1,10 @@
-from syscore.dateutils import get_datetime_input, SECONDS_PER_HOUR, openingTimes, listOfOpeningTimes
+from syscore.dateutils import SECONDS_PER_HOUR, openingTimes, listOfOpeningTimes
 from syscore.interactive import (
     get_and_convert,
     run_interactive_menu,
     print_menu_of_values_and_get_response,
     print_menu_and_get_response,
+    true_if_answer_is_yes, get_report_dates
 )
 from syscore.genutils import progressBar
 from syscore.pdutils import set_pd_print_options, print_full
@@ -57,6 +58,7 @@ from sysproduction.reporting.report_configs import (
     min_capital_report_config,
     duplicate_market_report_config,
     remove_markets_report_config,
+    market_monitor_report_config,
     fsb_report_config
 )
 
@@ -139,7 +141,8 @@ nested_menu_of_options = {
         71: "Minimum capital required",
         72: "Duplicate markets",
         73: "Remove markets",
-        74: "FSB report",
+        74: "Market monitor",
+        79: "FSB report",
     }
 
 }
@@ -184,10 +187,10 @@ def roll_report(data):
 
 
 def pandl_report(data):
-    start_date, end_date, calendar_days = get_report_dates(data)
+    start_date, end_date = get_report_dates()
     report_config = email_or_print_or_file(daily_pandl_report_config)
     report_config.modify_kwargs(
-        calendar_days_back=calendar_days, start_date=start_date, end_date=end_date
+         start_date=start_date, end_date=end_date
     )
     run_report(report_config, data=data)
 
@@ -198,10 +201,10 @@ def status_report(data):
 
 
 def trade_report(data):
-    start_date, end_date, calendar_days = get_report_dates(data)
+    start_date, end_date = get_report_dates()
     report_config = email_or_print_or_file(trade_report_config)
     report_config.modify_kwargs(
-        calendar_days_back=calendar_days, start_date=start_date, end_date=end_date
+         start_date=start_date, end_date=end_date
     )
     run_report(report_config, data=data)
 
@@ -238,10 +241,10 @@ def cost_report(data):
     run_report(report_config, data=data)
 
 def slippage_report(data):
-    start_date, end_date, calendar_days = get_report_dates(data)
+    start_date, end_date= get_report_dates()
     report_config = email_or_print_or_file(slippage_report_config)
     report_config.modify_kwargs(
-        calendar_days_back=calendar_days, start_date=start_date, end_date=end_date
+         start_date=start_date, end_date=end_date
     )
     run_report(report_config, data=data)
 
@@ -267,10 +270,26 @@ def remove_markets_report(data):
     report_config = email_or_print_or_file(remove_markets_report_config)
     run_report(report_config, data=data)
 
+
 def fsb_report(data):
     report_config = email_or_print_or_file(fsb_report_config)
     run_report(report_config, data=data)
 
+
+def market_monitor_report(data):
+
+    run_full_report = true_if_answer_is_yes('Run normal full report? (alternative is customise dates)')
+    if run_full_report:
+        start_date = arg_not_supplied
+        end_date = arg_not_supplied
+    else:
+        start_date, end_date = get_report_dates()
+
+    report_config = email_or_print_or_file(market_monitor_report_config)
+    report_config.modify_kwargs(
+         start_date=start_date, end_date=end_date
+    )
+    run_report(report_config, data = data)
 
 def email_or_print_or_file(report_config):
     ans = get_and_convert(
@@ -290,27 +309,6 @@ def email_or_print_or_file(report_config):
         report_config = report_config.new_config_with_modified_output("emailfile")
 
     return report_config
-
-
-def get_report_dates(data):
-    end_date = get_datetime_input("End date for report?\n", allow_default=True)
-    start_date = get_datetime_input(
-        "Start date for report? (SPACE to use an offset from end date)\n",
-        allow_no_arg=True,
-    )
-    if start_date is None:
-        start_date = arg_not_supplied
-        calendar_days = get_and_convert(
-            "Calendar days back from %s?" % str(end_date),
-            type_expected=int,
-            allow_default=True,
-            default_value=1,
-        )
-
-    else:
-        calendar_days = arg_not_supplied
-
-    return start_date, end_date, calendar_days
 
 
 # logs emails errors
@@ -564,8 +562,7 @@ def get_order_pd(
     list_method="get_historic_instrument_order_ids_in_date_range",
     getter_method="get_historic_instrument_order_from_order_id",
 ):
-    start_date = get_datetime_input("Start Date", allow_default=True)
-    end_date = get_datetime_input("End Date", allow_default=True)
+    start_date, end_date = get_report_dates()
 
     data_orders = dataOrders(data)
     list_func = getattr(data_orders, list_method)
@@ -808,7 +805,8 @@ dict_of_functions = {
     71: min_capital_report,
     72: duplicate_market_report,
     73: remove_markets_report,
-    74: fsb_report,
+    74: market_monitor_report,
+    79: fsb_report,
 
 }
 
