@@ -105,4 +105,9 @@ setup(
     extras_require=dict(),
     test_suite="nose.collector",
     include_package_data=True,
+    entry_points={
+        "console_scripts": [
+            "pst = sysproduction.pst:pst",
+        ],
+    },
 )
