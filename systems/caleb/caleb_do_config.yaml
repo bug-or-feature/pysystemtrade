@@ -6789,3 +6789,170 @@ risk_overlay:
   max_risk_fraction_stdev_risk: 3.6
   max_risk_limit_sum_abs_risk: 3.4
   max_risk_leverage: 13.0
+
+
+#
+# duplicated/excluded instruments are ignored in backtests
+# we still collect price data for them in production, do rolls etc
+# this is to avoid double counting of basically the same instrument
+# anything in the 'exclude' list is ignored in backtests
+# we use the 'include section to match up for reporting when deciding which to trade
+# Be careful when swapping between instruments, a bit dangerous if a position is held...
+# You can override this by modifying the backtest config .yaml file used in either sim or production
+#
+# THe following example shows how you would select one instrument out of a choice of 3
+#
+duplicate_instruments:
+  include:
+    copper: 'COPPER'
+    corn: 'CORN'
+    crude: 'CRUDE_W'
+    gas_us: 'GAS_US'
+    gasoiline: 'GASOILINE'
+    gold: 'GOLD_micro'
+    heatoil: 'HEATOIL'
+    jpy: 'JPY'
+    nasdaq: 'NASDAQ'
+    nikkei: 'NIKKEI'
+    silver: 'SILVER-mini'
+    soybean: 'SOYBEAN'
+    sp500: 'SP500'
+    vix: 'VIX'
+    wheat: 'WHEAT'
+  exclude:
+    copper: 'COPPER-mini'
+    corn: 'CORN_mini'
+    crude: 'CRUDE_W_mini'
+    gas_us: 'GAS_US_mini'
+    gasoiline: 'GASOILINE_mini'
+    gold: 'GOLD'
+    heatoil: 'HEATOIL_mini'
+    jpy: ['JPY_micro','JPY-SGX-TITAN', 'JPY-SGX']
+    nasdaq: 'NASDAQ_micro'
+    nikkei: 'NIKKEI-JPY'
+    silver: 'SILVER'
+    soybean: 'SOYBEAN_mini'
+    sp500: 'SP500_micro'
+    vix: 'VIX_mini'
+    wheat: 'WHEAT_mini'
+exclude_instrument_lists:
+  # ignore_instruments are ignored in backtests
+  # we still collect price data for them in production, do rolls etc
+  # You can override this by modifying the backtest config .yaml file used in either sim or production
+  # If you want to ignore because a duplicate market, use duplicate_instruments
+  # If you want to include in sim data, but not actually trade, use trading_restrictions
+  #
+  # BEST FOR INSTRUMENTS THAT LOOK EXPENSIVE, BUT WHERE WE HAVEN'T GOT ACCURATE DATA YET
+  #
+  # REVIEW REGULARLY AND CHECK THESE INSTRUMENTS AREN'T BETTER ELSEWHERE...
+  ignore_instruments:
+    - AEX
+    - ALUMINIUM
+    - BONO
+    - BOVESPA
+    - BRE
+    - BRENT-LAST
+    - BTP3
+    - BUTTER
+    - CH10
+    - CHEESE
+    - CNH
+    - COTTON
+    - CZK
+    - DJSTX-SMALL
+    - ETHANOL
+    - ETHEREUM
+    - EU-AUTO
+    - EU-BANKS
+    - EU-BASIC
+    - EU-CHEM
+    - EU-CONSTRUCTION
+    - EU-DIV30
+    - EU-DJ-TELECOM
+    - EU-FOOD
+    - EU-HEALTH
+    - EU-HOUSE
+    - EU-INSURE
+    - EU-MEDIA
+    - EU-MID
+    - EU-OIL
+    - EU-REALESTATE
+    - EU-RETAIL
+    - EU-TECH
+    - EU-TRAVEL
+    - EU-UTILS
+    - EURCHF
+    - EURO600
+    - EUROSTX-LARGE
+    - EUROSTX-SMALL
+    - EUROSTX200-LARGE
+    - FTSECHINAA
+    - FTSECHINAH
+    - FTSEINDO
+    - FTSETAIWAN
+    - GAS-LAST
+    - GBPEUR
+    - INR
+    - IRON
+    - IRS
+    - JGB
+    - JP-REALESTATE
+    - KOSDAQ
+    - KOSPI
+    - KR10
+    - KR3
+    - KRWUSD
+    - MILK
+    - MILKDRY
+    - MILKWET
+    - MSCIASIA
+    - MSCISING
+    - MUMMY
+    - NIFTY
+    - NIKKEI400
+    - NOK
+    - OATIES
+    - OMX
+    - R1000
+    - RUR
+    - SEK
+    - SGD
+    - SMI
+    - SMI-MID
+    - SP400
+    - TOPIX
+    - US-DISCRETE
+    - US-ENERGY
+    - US-FINANCE
+    - US-HEALTH
+    - US-INDUSTRY
+    - US-MATERIAL
+    - US-PROPERTY
+    - US-REALESTATE
+    - US-STAPLES
+    - US-TECH
+    - US-UTILS
+    - US3
+    - USIRS10
+    - USIRS5
+    - USIRS5ERIS
+    - V2X
+    - VNKI
+    - YENEUR
+  #
+  # Here we put stuff we can't trade, but for which we still want to bring in prices in sim
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # NOTE: This will be regionally biased, you will probably want to override this in private_config.yaml
+  #
+  trading_restrictions:
+    - RESTRICTED_EXAMPLE
+  # These are markets that are too expensive or illiquid to actually trade
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # Run interactive controls to get a list of suggested markets here
+  # To override this list, change in sim .yaml config (sim) and private_config.yaml (production)
+  bad_markets:
+    - BAD_EXAMPLE
