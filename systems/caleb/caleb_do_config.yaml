@@ -6848,6 +6848,7 @@ exclude_instrument_lists:
   ignore_instruments:
     - AEX
     - ALUMINIUM
+    - BBCOMM
     - BONO
     - BOVESPA
     - BRE
