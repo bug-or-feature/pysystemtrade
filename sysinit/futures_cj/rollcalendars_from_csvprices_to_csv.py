@@ -139,6 +139,7 @@ if __name__ == "__main__":
 
     # ['AUD', 'BITCOIN', 'CAD', 'CHF', 'DX', 'EUR', 'GBP', 'JPY', 'MXP', 'NZD']
 
+    # DX, EUR, GBP, NZD
     instrument_code = 'DX'
 
     build_and_write_roll_calendar(

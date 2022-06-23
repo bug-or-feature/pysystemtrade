@@ -222,7 +222,8 @@ if __name__ == "__main__":
     # ['AUD', 'BITCOIN', 'CAD', 'CHF', 'DX', 'EUR', 'GBP', 'JPY', 'MXP', 'NZD']
     # failed ['DX', 'EUR', 'GBP', 'NZD']
 
-    for instrument_code in ['AUD', 'BITCOIN', 'CAD', 'CHF', 'JPY', 'MXP']:
+    for instrument_code in ['EUR', 'GBP', 'NZD']:
+        print(f"Processing multiple prices for {instrument_code}")
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,

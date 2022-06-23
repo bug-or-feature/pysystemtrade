@@ -77,5 +77,6 @@ if __name__ == "__main__":
     #for instr in ['COTTON2']:
     #for instr in ['EURIBOR']:
     #for instr in ['NIKKEI']:
-    for instr in ['COTTON2','FTSE100','VIX']:
+    #for instr in ['COTTON2','FTSE100','VIX']:
+    for instr in ['EUR', 'GBP', 'NZD']:
         process_adjusted_prices_single_instrument(instr, ADD_TO_ARCTIC=True)
