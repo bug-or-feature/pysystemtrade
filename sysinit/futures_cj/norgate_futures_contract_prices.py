@@ -376,7 +376,7 @@ if __name__ == "__main__":
     #for instr in ['EURIBOR']:
     #for instr in ['NIKKEI']:
 
-    for instr in ['EUR', 'GBP', 'NZD']:
+    for instr in ['MXP', 'CHF', 'CAD', 'EUR', 'AUD']:
          transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
          #transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
