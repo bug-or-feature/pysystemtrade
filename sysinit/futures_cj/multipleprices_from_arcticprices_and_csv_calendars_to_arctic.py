@@ -209,7 +209,7 @@ if __name__ == "__main__":
     #for instr in ['EURIBOR']:
     #for instr in ['NIKKEI']:
 
-    for instr in ['MXP', 'CHF', 'CAD', 'EUR', 'AUD']:
+    for instr in ['MXP', 'CHF', 'CAD', 'AUD']:
         process_multiple_prices_single_instrument(
             instrument_code=instr,
             adjust_calendar_to_prices=True,

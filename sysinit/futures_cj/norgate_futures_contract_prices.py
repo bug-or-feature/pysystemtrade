@@ -376,9 +376,8 @@ if __name__ == "__main__":
     #for instr in ['EURIBOR']:
     #for instr in ['NIKKEI']:
 
-    for instr in ['MXP', 'CHF', 'CAD', 'EUR', 'AUD']:
-         transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
-         #transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
+    for instr in ['MXP', 'CHF', 'CAD', 'AUD']:
+        transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
 
     # import all contract files for all instruments
     # transfer_norgate_prices_to_arctic(datapath=datapath)
