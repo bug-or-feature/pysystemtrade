@@ -79,5 +79,5 @@ if __name__ == "__main__":
     #for instr in ['NIKKEI']:
     #for instr in ['COTTON2','FTSE100','VIX']:
 
-    for instr in ['MXP', 'CHF', 'CAD', 'EUR', 'AUD']:
+    for instr in ['MXP', 'CHF', 'CAD', 'AUD']:
         process_adjusted_prices_single_instrument(instr, ADD_TO_ARCTIC=True)
