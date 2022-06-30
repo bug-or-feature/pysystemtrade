@@ -1,5 +1,5 @@
 #YAML
-start_date: 2021-05-03
+#start_date: 2021-05-03
 #use_forecast_weight_estimates: True
 #use_forecast_div_mult_estimates: True
 #use_instrument_weight_estimates: True
@@ -2570,13 +2570,6 @@ risk_overlay:
   max_risk_fraction_stdev_risk: 3.6
   max_risk_limit_sum_abs_risk: 3.4
   max_risk_leverage: 13.0
-
-#instruments: [ 'AUD', 'BITCOIN', 'BOBL', 'BTP', 'BUND', 'BUXL', 'CAC', 'CAD', 'CANOLA', 'CHF', 'COCOA', 'COFFEE',
-#               'COPPER', 'CORN', 'COTTON2', 'CRUDE_W', 'DAX', 'DOW', 'DX', 'EUR', 'EUROSTX', 'FEEDCOW', 'FTSE100',
-#               'GASOIL', 'GASOILINE', 'GAS_US', 'GBP', 'GOLD', 'GOLD_micro', 'HEATOIL', 'JPY', 'LEANHOG', 'LIVECOW',
-#               'MXP', 'NASDAQ', 'NIKKEI', 'NZD', 'OAT', 'OJ', 'PALLAD', 'PLAT', 'REDWHEAT', 'ROBUSTA', 'RUSSELL',
-#               'SILVER-mini', 'SMI', 'SOYBEAN', 'SOYMEAL', 'SOYOIL', 'SP400', 'SP500', 'SUGAR11', 'US10', 'US10U',
-#               'US20', 'US30', 'US5', 'VIX', 'WHEAT']
 
 #
 # duplicated/excluded instruments are ignored in backtests
