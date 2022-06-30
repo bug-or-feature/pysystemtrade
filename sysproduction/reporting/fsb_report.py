@@ -27,7 +27,7 @@ def do_fsb_report(
     )
     formatted_output = []
 
-    formatted_output.append(reporting_api_fsb.std_header("FSB report"))
+    formatted_output.append(reporting_api_fsb.terse_header("FSB report"))
 
     # problem correlations for currently sampled contracts
     formatted_output.append(BELOW_MIN_CORR_HEADER_TEXT)
