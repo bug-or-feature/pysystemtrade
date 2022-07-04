@@ -153,6 +153,9 @@ forecast_weight_estimate:
    equalise_vols: True
    shrinkage_SR: 0.9
    shrinkage_corr: 0.5
+   # uncomment and set to the number of cores in your processor, if you want to take advantage
+   # of optimiser multiprocessor support
+   # n_threads: 8
    correlation_estimate:
      func: sysquant.estimators.correlation_estimator.correlationEstimator
      using_exponent: True
