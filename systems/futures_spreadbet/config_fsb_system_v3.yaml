@@ -176,43 +176,9 @@ start_date: 2000-01-01
 # You can override this by modifying the backtest config .yaml file used in either sim or production
 duplicate_instruments:
   include:
-    copper: 'COPPER'
-    corn: 'CORN'
-    crude: 'CRUDE_W'
-    gas_us: 'GAS_US'
-    gasoline: 'GASOLINE'
-    gold: 'GOLD'
-    heatoil: 'HEATOIL'
-    jgb: 'JGB'
-    jpy: 'JPY'
     kospi: 'KOSPI'
-    krwusd: 'KRWUSD'
-    nasdaq: 'NASDAQ'
-    silver: 'SILVER'
-    soybean: 'SOYBEAN'
-    sp500: 'SP500'
-    twd: 'TWD'
-    vix: 'VIX'
-    wheat: 'WHEAT'
   exclude:
-    copper: 'COPPER-mini'
-    corn: 'CORN_mini'
-    crude: 'CRUDE_W_mini'
-    gas_us: 'GAS_US_mini'
-    gasoline: 'GASOLINE_mini'
-    gold: 'GOLD_micro'
-    heatoil: 'HEATOIL_mini'
-    jgb: ['JGB_mini', 'JGB-SGX-mini']
-    jpy: ['JPY_micro','JPY-SGX-TITAN', 'JPY-SGX']
     kospi: 'KOSPI_mini'
-    krwusd: 'KRWUSD_mini'
-    nasdaq: 'NASDAQ_micro'
-    silver: 'SILVER_mini'
-    soybean: 'SOYBEAN_mini'
-    sp500: 'SP500_micro'
-    twd: 'TWD-mini'
-    vix: 'VIX_mini'
-    wheat: 'WHEAT_mini'
 exclude_instrument_lists:
   # ignore_instruments are ignored in backtests
   # we still collect price data for them in production, do rolls etc
