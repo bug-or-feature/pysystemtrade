@@ -46,13 +46,13 @@ class dataCapital(productionDataLayerGeneric):
 
         return all_capital_data
 
-    def get_series_of_maximum_capital(self) -> pd.DataFrame:
+    def get_series_of_maximum_capital(self) -> pd.Series:
         return self.total_capital_calculator.get_maximum_account()
 
-    def get_series_of_accumulated_capital(self) -> pd.DataFrame:
+    def get_series_of_accumulated_capital(self) -> pd.Series:
         return self.total_capital_calculator.get_profit_and_loss_account()
 
-    def get_series_of_broker_capital(self) -> pd.DataFrame:
+    def get_series_of_broker_capital(self) -> pd.Series:
         return self.total_capital_calculator.get_broker_account()
 
     @property
@@ -80,7 +80,7 @@ class dataCapital(productionDataLayerGeneric):
 
     ## STRATEGY CAPITAL
     def get_capital_pd_series_for_strategy(self, strategy_name: str) -> pd.DataFrame:
-        capital_series = self.db_capital_data.get_capital_pd_df_for_strategy(
+        capital_series = self.db_capital_data.get_capital_pd_series_for_strategy(
             strategy_name
         )
         return capital_series
