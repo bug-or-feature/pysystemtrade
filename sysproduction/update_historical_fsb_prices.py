@@ -133,11 +133,15 @@ def get_and_add_prices_for_frequency(
         contract_object, frequency
     )
 
-    if len(broker_prices) == 0:
-        data.log.msg("No prices from broker for %s" % str(contract_object))
+    if broker_prices is failure:
+        print("Something went wrong with getting prices for %s to check" % str(contract_object))
         return failure
 
-    data.log.msg(f"broker_prices latest price {broker_prices.index[-1]}")
+    if len(broker_prices) == 0:
+        print("No broker prices found for %s nothing to check" % str(contract_object))
+        return success
+    else:
+        data.log.msg(f"broker_prices latest price {broker_prices.index[-1]}")
 
     error_or_rows_added = db_fsb_prices.update_prices_for_contract(
         contract_object, broker_prices, check_for_spike=False
