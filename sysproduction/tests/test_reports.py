@@ -6,9 +6,16 @@ from sysproduction.reporting.reporting_functions import (
 from sysproduction.reporting.roll_report import ALL_ROLL_INSTRUMENTS
 from sysproduction.reporting.report_configs import reportConfig
 
+"""
+Test Reports
+
+NOTE: this is not an automated test for reports, just an easy way to run
+individual reports, outside of the scheduler context 
+"""
+
 
 def test_report(
-        format="console",
+        output="console",
         title=None,
         function=None,
         instrument_code=None,
@@ -16,7 +23,7 @@ def test_report(
 ):
 
     if instrument_code is None:
-        config = reportConfig(title=title, function=function, output=format)
+        config = reportConfig(title=title, function=function, output=output)
     else:
         config = reportConfig(
             title=title,
