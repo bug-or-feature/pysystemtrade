@@ -11,6 +11,19 @@ Test Reports
 
 NOTE: this is not an automated test for reports, just an easy way to run
 individual reports, outside of the scheduler context 
+
+>>> from sysproduction.tests.test_reports import *
+>>> run_roll_report()
+>>> run_roll_report(instrument_code='GOLD')
+>>> run_pandl_report()
+>>> run_trade_report()
+>>> run_strategy_report()
+>>> run_risk_report()
+>>> run_status_report()
+>>> run_instrument_risk_report()
+>>> run_min_capital_report()
+>>> run_remove_markets_report()
+
 """
 
 
