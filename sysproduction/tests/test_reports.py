@@ -29,7 +29,7 @@ def test_report(
             title=title,
             function=function,
             instrument_code=instrument_code,
-            output=format,
+            output=output,
         )
     pandas_display_for_reports()
     if use_db:
