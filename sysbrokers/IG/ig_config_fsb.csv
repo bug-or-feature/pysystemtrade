@@ -11,7 +11,7 @@ CAC_fsb,IX.D.CAC,GBP,1.0,False,Month1|Month2,0.05,MX
 CAD_fsb,CF.D.USDCAD,GBP,10000.0,True,MAR|JUN|SEP|DEC,0.033,D6
 CHF_fsb,CF.D.USDCHF,GBP,10000.0,True,MAR|JUN|SEP|DEC,0.033,S6
 COCOA_LDN_fsb,CO.D.LCC,GBP,1.0,False,Month1|Month2|Month3|Month4|Month5|Month6|Month7,0.1,CA
-COCOA_NY_fsb,CO.D.CC,GBP,1.0,False,Month1|Month2|Month3|Month4|Month5|Month6|Month7,0.1,CC
+COCOA_fsb,CO.D.CC,GBP,1.0,False,Month1|Month2|Month3|Month4|Month5|Month6|Month7,0.1,CC
 COFFEE_fsb,CO.D.KC,GBP,100.0,False,Month1|Month2,0.1,KC
 COPPER_fsb,MT.D.HG,GBP,10000.0,False,Month1|Month2,0.1,HG
 CORN_fsb,CO.D.C,GBP,1.0,False,Month1|Month2,0.1,ZC
@@ -26,6 +26,7 @@ EUR_fsb,CF.D.EURUSD,GBP,10000.0,False,MAR|JUN|SEP|DEC,0.033,E6
 EURIBOR_fsb,IR.D.FEI,GBP,100.0,False,Month2|Month3|Month4|Month7|MONTH5|MONTH6|Month8|Month11|Month14|Month15|Month16,0.2,IM
 EURGBP_fsb,CF.D.EURGBP,GBP,10000.0,False,MAR|JUN|SEP|DEC,0.033,RP
 EUROSTX_fsb,IX.D.STXE,GBP,1.0,False,MONTH2|MONTH3,0.05,FX
+FED_fsb,IR.D.FF,GBP,100.0,False,Month1|Month2|Month3|Month5|Month6|Month7|Month8|Month9|Month10|Month11|Month12|MonthX,0.2,ZQ
 FTSE100_fsb,IX.D.FTSE,GBP,1.0,False,MONTH1|MONTH2,0.05,X
 GAS_US_fsb,EN.D.NG,GBP,1000.0,False,Month1|Month2,0.1,NG
 GASOIL_fsb,EN.D.LGO,GBP,1.0,False,Month1|Month2,0.1,LF
@@ -57,7 +58,7 @@ RUSSELL_fsb,IX.D.RUSSELL,GBP,1.0,False,MONTH1|MONTH2,0.1,QR
 SHATZ_fsb,IR.D.FGBS,GBP,100.0,False,Month1|Month2,0.2,HF
 SILVER_fsb,MT.D.SI,GBP,100.0,False,Month1|Month2,0.1,SI
 SMI_fsb,IX.D.SMI,GBP,1.0,False,MONTH1|MONTH2,0.1,SZ
-STERLING3_fsb,IR.D.FSS,GBP,100.0,False,Month2|Month3|Month4|Month6|Month7|Month8|Month10|Month11|MONTHC,0.2,L
+SONIA3_fsb,IR.D.FSS,GBP,100.0,False,Month2|Month3|Month4|Month6|Month7|Month8|month9|Month10|Month11|MONTHC,0.2,MZ
 SOYBEAN_fsb,CO.D.S,GBP,1.0,False,Month1|Month2,0.1,ZS
 SOYMEAL_fsb,CO.D.SM,GBP,100.0,False,Month1|Month2,0.1,ZM
 SOYOIL_fsb,CO.D.BO,GBP,100.0,False,Month1|Month2|Month3|Month4,0.1,ZL
@@ -73,4 +74,4 @@ USTB_fsb,IR.D.BOND100,GBP,100.0,False,Month1|Month2,0.2,ZB
 VIX_fsb,IN.D.VIX,GBP,1.0,False,MONTH1|MONTH2|MONTH3|MONTH4|MONTH5,0.2,VI
 V2X_fsb,IN.D.VSTOXX,GBP,1.0,False,MONTH1|MONTH2|MONTH3|MONTH4|MONTH5,0.2,DV
 WHEAT_fsb,CO.D.W,GBP,1.0,False,Month1|Month2|Month3|MonthZ,0.1,ZW
-WHEAT_LDN_fsb,CO.D.LWB,GBP,1.0,False,Month1|Month3|Month4,0.1,LW
+WHEAT_ICE_fsb,CO.D.LWB,GBP,1.0,False,Month1|Month3|Month4,0.1,LW

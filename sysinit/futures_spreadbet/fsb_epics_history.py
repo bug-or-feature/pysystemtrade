@@ -38,5 +38,6 @@ def view_epics_history_single(instrument_code):
 
 if __name__ == "__main__":
     #view_epics_history_single("SOYOIL_fsb")
-    import_epics_history_single("SOYOIL_fsb")
+    for epic in ["COCOA_fsb", "COTTON2_fsb", "FED_fsb", "SONIA3_fsb", "WHEAT_ICE_fsb", ]:
+        import_epics_history_single(epic)
     #import_epics_history_all()
