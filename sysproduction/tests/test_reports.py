@@ -31,12 +31,15 @@ def test_report(
         output="console",
         title=None,
         function=None,
-        instrument_code=None,
-        use_db=True,
+        instrument_code=None
 ):
 
     if instrument_code is None:
-        config = reportConfig(title=title, function=function, output=output)
+        config = reportConfig(
+            title=title,
+            function=function,
+            output=output
+        )
     else:
         config = reportConfig(
             title=title,
@@ -45,14 +48,7 @@ def test_report(
             output=output,
         )
     pandas_display_for_reports()
-    if use_db:
-        my_data = dataBlob(log_name="Test-Report-DB")
-    else:
-        my_data = dataBlob(
-            log_name="Test-Report-CSV",
-            class_list=[],
-        )
-    with my_data as data:
+    with dataBlob(log_name=f"Test {title}") as data:
         run_report_with_data_blob(config, data)
 
 
@@ -144,26 +140,6 @@ def run_market_monitor_report():
 
 def run_account_curve_report():
     pass
-
-
-# def run_min_capital_fsb_report():
-#     test_report(
-#         title="Minimum Capital FSB report",
-#         function="sysproduction.reporting.minimum_capital_fsb_report.minimum_capital_fsb_report"
-#     )
-#
-#
-# def run_fsb_report():
-#     test_report(
-#         title="FSB report",
-#         function="sysproduction.reporting.fsb_report.do_fsb_report"
-#     )
-#
-# def run_instrument_risk_fsb_report():
-#     test_report(
-#         title="Instrument Risk FSB report",
-#         function="sysproduction.reporting.instrument_risk_fsb_report.instrument_risk_fsb_report"
-#     )
 
 
 if __name__ == "__main__":
