@@ -10,7 +10,7 @@ from systems.forecast_scale_cap import ForecastScaleCap
 from systems.forecasting import Rules
 from systems.portfolio import Portfolios
 from systems.positionsizing import PositionSizing
-from systems.provided.example.rules import ewmac_forecast_with_defaults as ewmac
+from systems.provided.rules.ewmac import ewmac_forecast_with_defaults as ewmac
 from systems.rawdata import RawData
 from systems.trading_rules import TradingRule
 
