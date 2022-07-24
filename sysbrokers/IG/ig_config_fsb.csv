@@ -15,7 +15,7 @@ COCOA_fsb,CO.D.CC,GBP,1.0,False,Month1|Month2|Month3|Month4|Month5|Month6|Month7
 COFFEE_fsb,CO.D.KC,GBP,100.0,False,Month1|Month2,0.1,KC
 COPPER_fsb,MT.D.HG,GBP,10000.0,False,Month1|Month2,0.1,HG
 CORN_fsb,CO.D.C,GBP,1.0,False,Month1|Month2,0.1,ZC
-COTTON_fsb,CO.D.CT,GBP,100.0,False,Month1|Month2,0.1,CT
+COTTON2_fsb,CO.D.CT,GBP,100.0,False,Month1|Month2,0.1,CT
 CRUDE_W_fsb,EN.D.CL,GBP,100.0,False,Month1|Month2|Month3,0.1,CL
 DAX_fsb,IX.D.DAX,GBP,1.0,False,FAR|VFAR,0.05,DY
 DOW_fsb,IX.D.DOW,GBP,1.0,False,MONTH1|MONTH2,0.05,YM
