@@ -3,7 +3,7 @@ import datetime
 import pandas as pd
 
 from syscore.cache import Cache
-from syscore.dateutils import SECONDS_PER_DAY, calculate_start_and_end_dates
+from syscore.dateutils import SECONDS_PER_DAY, calculate_start_and_end_dates, get_date_from_period_and_end_date
 from syscore.objects import arg_not_supplied, missing_data, body_text, ALL_ROLL_INSTRUMENTS
 from syscore.pdutils import top_and_tail
 
@@ -17,8 +17,9 @@ from sysproduction.reporting.formatting import (
     nice_format_liquidity_table,
     nice_format_slippage_table,
     nice_format_roll_table,
-    nice_format_min_capital_table)
-from sysproduction.reporting.reporting_functions import header, table
+    nice_format_min_capital_table,
+    make_account_curve_plot)
+from sysproduction.reporting.reporting_functions import header, table, PdfOutputWithTempFileName, figure
 
 from sysproduction.reporting.data.costs import (
     get_table_of_SR_costs,
@@ -48,6 +49,7 @@ from sysproduction.reporting.data.duplicate_remove_markets import (
 from sysproduction.reporting.data.pandl import (
     get_total_capital_pandl,
     pandlCalculateAndStore,
+    get_daily_perc_pandl
 )
 from sysproduction.reporting.data.positions import (
     get_optimal_positions,
@@ -127,6 +129,89 @@ class reportingApi(object):
 
     def footer(self):
         return header("END OF REPORT")
+    ## TRADING RULE ACCOUNT CURVES
+    def trading_rule_figures_using_dates(self) -> list:
+        list_of_figures = self.trading_rule_figures_given_start_and_end_date(
+            start_date=self.start_date,
+            end_date=self.end_date
+        )
+
+        return list_of_figures
+
+    def trading_rule_figures_given_period(self, period: str) -> list:
+        start_date = get_date_from_period_and_end_date(period)
+        list_of_figures = self.trading_rule_figures_given_start_and_end_date(
+            start_date=start_date
+        )
+
+        return list_of_figures
+
+    def trading_rule_figures_given_start_and_end_date(self,
+                                                      start_date: datetime.datetime = arg_not_supplied,
+                                                      end_date: datetime.datetime = arg_not_supplied) -> list:
+
+        list_of_groups = self.get_list_of_trading_rule_groups()
+        list_of_figures = []
+        for trading_rule_group in list_of_groups:
+            trading_rule_pandl = self.get_backtested_pandl_for_trading_rule_group(trading_rule_group)
+            pdf_output = PdfOutputWithTempFileName(self.data)
+            make_account_curve_plot(daily_pandl,
+                                    start_of_title = "Total p&l",
+                                    start_date = self.start_date,
+                                    end_date = self.end_date)
+            figure_object = pdf_output.save_chart_close_and_return_figure()
+            list_of_figures.append(figure_object)
+
+        return list_of_figures
+
+
+    def get_list_of_trading_rule_groups(self) -> list:
+        pass
+
+    def get_backtested_pandl_for_trading_rule_group(self,
+                                              trading_rule_group: str) -> pd.DataFrame:
+
+        return self.cache.get(self._get_backtested_pandl_for_trading_rule_group,
+                              trading_rule_group)
+
+    def _get_backtested_pandl_for_trading_rule_group(self,
+                                               trading_rule_group: str) -> pd.DataFrame:
+
+        return get_backtested_pandl_for_trading_rule_group(self.data,
+                                                           trading_rule_group)
+
+
+    ## PANDL ACCOUNT CURVE
+    def figure_of_account_curve_using_dates(self) -> figure:
+        pdf_output = PdfOutputWithTempFileName(self.data)
+        daily_pandl = self.daily_perc_pandl
+        make_account_curve_plot(daily_pandl,
+                                start_of_title = "Total p&l",
+                                start_date = self.start_date,
+                                end_date = self.end_date)
+        figure_object = pdf_output.save_chart_close_and_return_figure()
+
+        return figure_object
+
+    def figure_of_account_curves_given_period(self, period:str) -> figure:
+        pdf_output = PdfOutputWithTempFileName(self.data)
+        daily_pandl = self.daily_perc_pandl
+        start_date = get_date_from_period_and_end_date(period)
+
+        make_account_curve_plot(daily_pandl,
+                                start_of_title= "Total p&l",
+                                start_date = start_date)
+
+        figure_object = pdf_output.save_chart_close_and_return_figure()
+
+        return figure_object
+
+    @property
+    def daily_perc_pandl(self) -> pd.Series:
+        return self.cache.get(self._get_daily_perc_pandl)
+
+    def _get_daily_perc_pandl(self) -> pd.Series:
+        return get_daily_perc_pandl(self.data)
 
     ## MARKET MOVES
     def table_of_market_moves_using_dates(self,

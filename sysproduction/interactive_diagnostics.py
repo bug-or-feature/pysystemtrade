@@ -59,6 +59,7 @@ from sysproduction.reporting.report_configs import (
     duplicate_market_report_config,
     remove_markets_report_config,
     market_monitor_report_config,
+    account_curve_report_config,
     fsb_report_config
 )
 
@@ -142,6 +143,7 @@ nested_menu_of_options = {
         72: "Duplicate markets",
         73: "Remove markets",
         74: "Market monitor",
+        75: "P&L account curve",
         79: "FSB report",
     }
 
@@ -290,6 +292,21 @@ def market_monitor_report(data):
          start_date=start_date, end_date=end_date
     )
     run_report(report_config, data = data)
+
+def account_curve_report(data: dataBlob):
+    run_full_report = true_if_answer_is_yes('Run normal full report? (alternative is customise dates)')
+    if run_full_report:
+        start_date = arg_not_supplied
+        end_date = arg_not_supplied
+    else:
+        start_date, end_date = get_report_dates()
+
+    report_config = email_or_print_or_file(account_curve_report_config)
+    report_config.modify_kwargs(
+         start_date=start_date, end_date=end_date
+    )
+    run_report(report_config, data = data)
+
 
 def email_or_print_or_file(report_config):
     ans = get_and_convert(
@@ -806,6 +823,7 @@ dict_of_functions = {
     72: duplicate_market_report,
     73: remove_markets_report,
     74: market_monitor_report,
+    75: account_curve_report,
     79: fsb_report,
 
 }

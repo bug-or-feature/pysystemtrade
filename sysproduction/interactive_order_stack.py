@@ -897,3 +897,7 @@ dict_of_functions = {
     41: delete_specific_order,
     42: end_of_day,
 }
+
+
+if __name__ == '__main__':
+    interactive_order_stack()

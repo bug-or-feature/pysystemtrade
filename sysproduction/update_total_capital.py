@@ -83,3 +83,7 @@ class totalCapitalUpdate(object):
             return failure
 
         log.msg("New capital is %f" % new_capital)
+
+
+if __name__ == '__main__':
+    update_total_capital()

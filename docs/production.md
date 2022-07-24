@@ -259,9 +259,13 @@ You need to:
         - ECHO_PATH=/home/user_name/echos
         - MONGO_BACKUP_PATH=/media/shared_network/drive/mongo_backup
     - Add the SCRIPT_PATH directory to your PATH
-    - Create the following directories (again use other directories if you like, but you must modify the .profile above)
+    - Create the following directories (again use other directories if you like, but you must modify the .profile above and specify the proper directories in 'private_config.yaml')
         - '/home/user_name/data/mongodb/'
         - '/home/user_name/echos/'
+        - '/home/user_name/data/mongo_dump'
+        - '/home/user_name/data/backups_csv'
+        - '/home/user_name/data/backtests'
+        - '/home/user_name/data/reports'
     - Install the pysystemtrade package, and install or update, any dependencies in directory $PYSYS_CODE (it's possible to put it elsewhere, but you will need to modify the environment variables listed above). If using git clone from your home directory this should create the directory '/home/user_name/pysystemtrade/'
     - [Set up interactive brokers](/docs/IB.md), download and install their python code, and get a gateway running.
     - [Install mongodb](https://docs.mongodb.com/manual/administration/install-on-linux/). Latest v4 is recommended, as [Arctic doesn't support 5](https://github.com/man-group/arctic#requirements) yet
@@ -3835,4 +3839,27 @@ ASX                       NaN           NaN              NaN        NaN         
 .....
 KOSPI                     NaN           NaN              NaN        NaN    0.025000           NaN   <--- slippage is configured, but no sampling or trading done
 ....
+```
+
+## Customize report generation in the run_report process
+
+It is possible to setup a custom report configuration. Say for example that you would like to push reports to a git repo 
+[like this](https://github.com/robcarver17/reports). In that case you would need to change the default behaviour, sending reports
+via email, to saving the report as a file Files would be stored in according to what is declared in private_config.yaml
+`reporting_directory`. Customization is done in the private_config.yaml. Example of reporting customization is; 
+
+```
+ reports:
+  slippage_report:
+    title: "Slippage report"
+    function: "sysproduction.reporting.slippage_report.slippage_report"
+    calendar_days_back: 250
+    output: "file"
+
+  costs_report:
+    title: "Costs report"
+    function: "sysproduction.reporting.costs_report.costs_report"
+    output: "file"
+    calendar_days_back: 250
+
 ```

@@ -99,6 +99,7 @@ setup(
         "Flask>=2.0.1",
         "Werkzeug>=2.0.1",
         "statsmodels==0.12.2",
+        "PyPDF2>=2.5.0",
         "requests>=2.25",
         "trading-ig",
         "beautifulsoup4>4.9",
