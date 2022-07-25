@@ -1,0 +1,32 @@
+Instrument,Pointsize,Percentage,PerBlock,PerTrade,AssetClass,Currency,Description,Slippage
+ASX,25,0,0,0,Equity,AUD,Australian equity index ASX200,0.0
+BTP,1000,0,2,0,Bond,EUR,Italian 10 year bond BTP,0.005
+BUXL,1000,0,2,0,Bond,EUR,German Buxl 15 to 30 year bond,0.013
+CAD,100000,0,1.5,0,FX,USD,CADUSD currency,3.4E-05
+COFFEE,37500,0,3,0,Ags,USD,Coffee,0.001
+COPPER,25000,0,2.31,0,Metals,USD,Copper,0.000423883318893
+CRUDE_W,1000,0,2.31,0,OilGas,USD,Light sweet crude Winter,0.009711689350737
+DOW,0.5,0,0.25,0,Equity,USD,Micro E-Mini Dow Jones Industrial Average Index,0.72
+DX,1000,0,2.2,0,FX,USD,US Dollar Index,0.1
+EDOLLAR,2500,0,2.11,0,Bond,USD,US STIR Eurodollar,0.0025
+EUA,1000,0,3,0,OilGas,EUR,ECX EU carbon emissions allowance futures,0.25
+EUR,125000,0,2.46,0,FX,USD,EURUSD currency,3.01853081309044E-05
+EUROSTX,10,0,2,0,Equity,EUR,European equity index EUROSTOXX50,0.37
+GAS_US,10000,0,2.31,0,OilGas,USD,Natural gas US,0.0013
+GBP,62500,0,2.46,0,FX,USD,GBPUSD currency,6.61459616616592E-05
+GILT,1000,0,0,0,Bond,GBP,UK 10 year bonds Long Gilt,0.0
+GOLD,100,0,2.31,0,Metals,USD,Gold,0.0885298446
+HANG,50,0,0,0,Equity,HKD,Hong Kong equity index Hang Seng,0.0
+JGB,1000000,0,500,0,Bond,JPY,Standardized 6% 10-Year Japanese Government Bond,0.005
+JPY,12500000,0,2.46,0,FX,USD,JPYUSD currency,2.5E-07
+NASDAQ,20,0,2.05,0,Equity,USD,US equity index Nasdaq ,0.3
+NIKKEI,100,0,40,0,Equity,JPY,Nikkei 225 Mini,2.5
+NZD,100000,0,2.46,0,FX,USD,NZDUSD currency,5.8E-05
+SILVER,1000,0,1.5,0,Metals,USD,NYMEX Silver Index,0.004
+SOYBEAN,50,0,2.9,0,Ags,USD,Soybean,0.25
+SOYOIL,600,0,1.5,0,Ags,USD,Soybean oil,0.015
+US10,1000,0,1.51,0,Bond,USD,US 10 year bond note,0.01
+US2,2000,0,1.51,0,Bond,USD,US 2 year bond note,0.002267
+V2X,100,0,2,0,Vol,EUR,Vol European equity V2X,0.06
+VIX,1000,0,2.2,0,Vol,USD,Vol US equity VIX,0.02812
+WHEAT,50,0,2.9,0,Ags,USD,Wheat,0.25

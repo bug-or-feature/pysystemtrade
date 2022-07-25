@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # modify flags as required
 
     data_out = mongoRollParametersData()
-    data_in = csvRollParametersData()
+    data_in = csvRollParametersData(datapath="data.futures_ag.csvconfig")
 
     instrument_list = data_in.get_list_of_instruments()
 

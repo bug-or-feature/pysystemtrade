@@ -6,7 +6,7 @@ Populate a mongo DB collection with instrument data from a csv
 from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 
-INSTRUMENT_CONFIG_PATH = "data.futures.csvconfig"
+INSTRUMENT_CONFIG_PATH = "data.futures_ag.csvconfig"
 
 data_out = mongoFuturesInstrumentData()
 data_in = csvFuturesInstrumentData(datapath=INSTRUMENT_CONFIG_PATH)
