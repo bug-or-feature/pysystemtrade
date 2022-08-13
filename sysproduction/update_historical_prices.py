@@ -6,6 +6,7 @@ from copy import copy
 from syscore.objects import success, failure, arg_not_supplied
 from syscore.merge_data import spike_in_data
 from syscore.dateutils import DAILY_PRICE_FREQ, Frequency
+from syscore.text import remove_suffix
 
 from sysdata.data_blob import dataBlob
 from sysdata.tools.manual_price_checker import manual_price_checker
@@ -21,6 +22,7 @@ from sysdata.tools.cleaner import priceFilterConfig, get_config_for_price_filter
 from sysproduction.data.contracts import dataContracts
 
 NO_SPIKE_CHECKING = 99999999999.0
+
 
 def update_historical_prices(instrument_list=None):
     """
@@ -50,6 +52,8 @@ def update_historical_prices_with_data(data: dataBlob,
     price_data = diagPrices(data)
     if instrument_list is None:
         list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
+        print(list_of_codes_all)
+        list_of_codes_all = [remove_suffix(instr, "_fsb") for instr in list_of_codes_all]
     else:
         list_of_codes_all = instrument_list
     for instrument_code in list_of_codes_all:
@@ -233,3 +237,4 @@ def report_price_spike(data: dataBlob, contract_object: futuresContract):
 
 if __name__ == '__main__':
     update_historical_prices()
+    #update_historical_prices(["GOLD_fsb"])

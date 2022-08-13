@@ -109,8 +109,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
     def get_list_of_instruments(self) -> list:
         """
-        Get instruments that have price data
-        Pulls these in from a config file
+        Instruments that we can handle with this broker
 
         :return: list of str
         """

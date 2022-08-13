@@ -165,3 +165,18 @@ def measure_width(text: str) -> int:
         first_cr = len(text)
 
     return first_cr
+
+
+def remove_suffix(input_str: str, suffix: str):
+    """
+    Returns the input string with the supplied suffix removed, if present
+    :param input_str: input
+    :type input_str: str
+    :param suffix: the suffix
+    :type suffix: str
+    :return: output
+    :rtype: str
+    """
+    if input_str.endswith(suffix):
+        return re.sub(f"{suffix}$", '', input_str)
+    return input_str

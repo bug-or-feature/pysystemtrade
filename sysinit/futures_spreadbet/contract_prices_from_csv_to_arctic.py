@@ -1,4 +1,3 @@
-import re
 from syscore.objects import arg_not_supplied
 
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
@@ -10,6 +9,8 @@ from sysdata.arctic.arctic_fsb_per_contract_prices import (
     ArcticFsbContractPriceData,
 )
 from sysobjects.contracts import futuresContract
+from syscore.text import remove_suffix
+
 
 def init_arctic_with_csv_futures_contract_prices(
     datapath: str, csv_config=arg_not_supplied
@@ -71,6 +72,7 @@ def init_arctic_with_csv_futures_contract_prices_for_code(
         written_prices = arctic_prices.get_prices_for_contract_object(contract)
         print("Read back prices are \n %s" % str(written_prices))
 
+
 def init_arctic_with_csv_fsb_contract_prices_for_code(
     instrument_code: str, datapath: str, csv_config=arg_not_supplied
 ):
@@ -98,10 +100,6 @@ def init_arctic_with_csv_fsb_contract_prices_for_code(
 
 
 
-def remove_suffix(input_str: str, suffix: str):
-    if input_str.endswith(suffix):
-        return re.sub(f"{suffix}$", '', input_str)
-    return input_str
 
 
 def init_arctic_with_csv_futures_contract_prices_for_contract(

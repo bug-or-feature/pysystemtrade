@@ -71,7 +71,8 @@ if __name__ == "__main__":
     # modify flags and datapath as required
 
     #instrument_code = get_valid_instrument_code_from_user(source="single")
-    for instrument_code in ["BUXL_fsb","CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US10_fsb"]:
+    for instrument_code in ["BUXL_fsb", "GOLD_fsb", "NASDAQ_fsb", "NZD_fsb", "US10_fsb"]:
+        print(f"Creating adjusted price for {instrument_code}")
         process_adjusted_prices_single_instrument(
             instrument_code,
             ADD_TO_ARCTIC=True,

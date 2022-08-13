@@ -11,7 +11,6 @@ Import IG FSB contract price CSV files into system
 """
 
 def transfer_ig_prices_to_arctic_single(instr, datapath):
-    input("Will overwrite existing prices are you sure?! CTL-C to abort")
     init_arctic_with_csv_fsb_contract_prices_for_code(
         instr,
         datapath,
@@ -21,6 +20,12 @@ def transfer_ig_prices_to_arctic_single(instr, datapath):
             input_skipfooter=0,
             input_date_format="%Y-%m-%dT%H:%M:%S%z",
         )
+        # csv_config = ConfigCsvFuturesPrices(
+        #     input_date_index_name="DATETIME",
+        #     input_skiprows=0,
+        #     input_skipfooter=0,
+        #     input_date_format="%Y-%m-%d %H:%M:%S",
+        # )
     )
 
 
@@ -34,16 +39,18 @@ def transfer_ig_prices_to_arctic(datapath):
         )
     )
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
+    input("Will overwrite existing prices are you sure?! CTL-C to abort")
     datapath = get_filename_for_package(
         get_production_config().get_element_or_missing_data("ig_path")
+        #get_production_config().get_element_or_missing_data("ig_prod_backup")
     )
-    #datapath = '/Users/ageach/Dev/work/pyhistprice/data/ig/test'
 
     # single instrument
     # for instr in ["GOLD_fsb"]:
-    #     transfer_ig_prices_to_arctic_single(instr, datapath=datapath)
+    for instr in ['BUXL_fsb', 'GOLD_fsb', 'NASDAQ_fsb', 'NZD_fsb', 'US10_fsb']:
+        transfer_ig_prices_to_arctic_single(instr, datapath=datapath)
 
     # all instruments
-    transfer_ig_prices_to_arctic(datapath)
+    # transfer_ig_prices_to_arctic(datapath)
