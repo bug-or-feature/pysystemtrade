@@ -18,7 +18,7 @@ from syslogdiag.log_to_screen import logtoscreen
 from sysdata.csv.csv_fsb_epics_history_data import CsvFsbEpicHistoryData
 from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 
-IG_FSB_CONFIG_FILE = get_filename_for_package("sysbrokers.IG.ig_config_fsb.csv")
+IG_INSTRUMENT_CONFIG_FILE = get_filename_for_package("sysbrokers.IG.ig_instrument_config.csv")
 
 
 class IGConfig(pd.DataFrame):
@@ -52,11 +52,11 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
     def config(self) -> IGConfig:
 
         try:
-            df = pd.read_csv(IG_FSB_CONFIG_FILE)
+            df = pd.read_csv(IG_INSTRUMENT_CONFIG_FILE)
             config_data = IGConfig(df)
 
         except BaseException:
-            self.log.warn("Can't read file %s" % IG_FSB_CONFIG_FILE)
+            self.log.warn("Can't read file %s" % IG_INSTRUMENT_CONFIG_FILE)
             config_data = missing_file
 
         return config_data
