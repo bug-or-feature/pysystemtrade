@@ -26,10 +26,9 @@ def convert_futures_prices_to_fsb_single(instr):
     for contract_date_str, futures_prices in instr_prices.items():
         fsb_contract = futuresContract.from_two_strings(fsb_code, contract_date_str)
         for col_name in ["OPEN", "HIGH", "LOW", "FINAL"]:
-            column_series = futures_prices[col_name]
             if config.inverse:
-                column_series = 1 / column_series
-            column_series *= config.multiplier
+                futures_prices[col_name] = 1 / futures_prices[col_name]
+            futures_prices[col_name] *= config.multiplier
 
         fsb_price_data = futuresContractPrices(futures_prices)
 
