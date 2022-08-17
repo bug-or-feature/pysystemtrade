@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
     #input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
-    # ['GOLD', 'NASDAQ', 'NZD', 'BUXL', 'US10']
+    # ['BUXL', 'GOLD', 'NASDAQ', 'NZD', 'US10']
 
     # ['ASX', 'BTP', 'CAD', 'COFFEE', 'COPPER', 'CRUDE_W', 'DOW', 'DX', 'EUA', 'EUROSTX', 'EUR', 'GAS_US',
     # 'GBP', 'GILT', 'HANG', 'JGB', 'JPY', 'NIKKEI', 'SILVER', 'SOYBEAN', 'SOYOIL', 'V2X', 'VIX', 'WHEAT']

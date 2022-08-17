@@ -1,8 +1,16 @@
 from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
-from sysdata.csv.csv_fsb_epics_history_data import CsvFsbEpicHistoryData
+from sysdata.csv.csv_fsb_epics_history_data import CsvFsbEpicHistoryData, EPIC_HISTORY_DIRECTORY
 from syscore.pdutils import print_full
+from sysdata.config.production_config import get_production_config
+from syscore.fileutils import get_filename_for_package
 
-input_data = CsvFsbEpicHistoryData()
+prod_backup = get_filename_for_package(get_production_config().get_element_or_missing_data('prod_backup'))
+datapath = EPIC_HISTORY_DIRECTORY
+#datapath = f"{prod_backup}/epic_history"
+
+input_data = CsvFsbEpicHistoryData(
+    datapath=datapath
+)
 output_data = ArcticFsbEpicHistoryData()
 
 
@@ -39,6 +47,7 @@ def view_epics_history_single(instrument_code):
 
 if __name__ == "__main__":
     #view_epics_history_single("SOYOIL_fsb")
-    for epic in ["GOLD_fsb", ]:
-        import_epics_history_single(epic)
-    #import_epics_history_all()
+    #for epic in ["GOLD_fsb" ]:
+    # for epic in ["BUXL_fsb", "NASDAQ_fsb", "NZD_fsb", "US10_fsb"]:
+    #     import_epics_history_single(epic)
+    import_epics_history_all()

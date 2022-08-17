@@ -42,10 +42,10 @@ def transfer_ig_prices_to_arctic(datapath):
 
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    datapath = get_filename_for_package(
-        get_production_config().get_element_or_missing_data("ig_path")
-        #get_production_config().get_element_or_missing_data("ig_prod_backup")
-    )
+    #datapath = get_filename_for_package(get_production_config().get_element_or_missing_data("ig_path"))
+    prod_backup = get_filename_for_package(get_production_config().get_element_or_missing_data('prod_backup'))
+    datapath = f"{prod_backup}/fsb_contract_prices"
+
 
     # single instrument
     # for instr in ["GOLD_fsb"]:
