@@ -207,7 +207,11 @@ if __name__ == "__main__":
 
     #instrument_code = get_valid_instrument_code_from_user(source="single")
     #instrument_code = "US10_fsb"
-    for instrument_code in ['BUXL_fsb', 'GOLD_fsb', 'NASDAQ_fsb', 'NZD_fsb', 'US10_fsb']:
+    #for instrument_code in ['BUXL_fsb', 'GOLD_fsb', 'NASDAQ_fsb', 'NZD_fsb', 'US10_fsb']:
+    for instrument_code in ['ASX_fsb', 'BTP_fsb', 'CAD_fsb', 'COFFEE_fsb', 'COPPER_fsb', 'CRUDE_W_fsb', 'DOW_fsb',
+                            'DX_fsb', 'EUA_fsb', 'EUROSTX_fsb', 'EUR_fsb', 'GAS_US_fsb', 'GBP_fsb', 'GILT_fsb',
+                            'HANG_fsb', 'JGB_fsb', 'JPY_fsb', 'NIKKEI_fsb', 'SILVER_fsb', 'SOYBEAN_fsb',
+                            'SOYOIL_fsb', 'US2_fsb', 'V2X_fsb', 'WHEAT_fsb']:
     #for instrument_code in ["NZD_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
