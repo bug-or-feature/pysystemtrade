@@ -12,6 +12,7 @@ def import_epics_history_single(instrument_code):
 
     status = output_data.add_epics_history(
         instrument_code,
+        # TODO remove duplicates before importing
         input_data.get_epic_history(instrument_code),
         ignore_duplication=True
     )
@@ -38,6 +39,6 @@ def view_epics_history_single(instrument_code):
 
 if __name__ == "__main__":
     #view_epics_history_single("SOYOIL_fsb")
-    for epic in ["COCOA_fsb", "COTTON2_fsb", "FED_fsb", "SONIA3_fsb", "WHEAT_ICE_fsb", ]:
+    for epic in ["GOLD_fsb", ]:
         import_epics_history_single(epic)
     #import_epics_history_all()

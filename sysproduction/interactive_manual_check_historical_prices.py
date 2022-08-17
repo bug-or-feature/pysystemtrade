@@ -16,6 +16,9 @@ from sysproduction.update_historical_prices import update_historical_prices_for_
 from sysproduction.update_multiple_adjusted_prices import (
     update_multiple_adjusted_prices,
 )
+from sysproduction.generate_fsb_updates import GenerateFsbUpdates
+
+
 def interactive_manual_check_historical_prices():
     """
     Do a daily update for futures contract prices, using IB historical data
@@ -46,6 +49,11 @@ def interactive_manual_check_historical_prices():
                 instr_list.append(instrument_code)
 
         if instr_list:
+            print(f"Now generating FSB prices from: {instr_list}")
+            fsb_updater = GenerateFsbUpdates(data)
+            for instr in instr_list:
+                fsb_updater.update(instr + "_fsb")
+
             print(f"Now updating multiple and adjusted prices for: {instr_list}")
             update_multiple_adjusted_prices(instr_list)
 

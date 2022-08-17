@@ -53,7 +53,8 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         return self._existing_prices
 
     def has_data_for_contract(self, futures_contract: futuresContract) -> bool:
-        return futures_contract.key in self.futures_instrument_data.epic_mapping
+        contract = self.fsb_contract_data.get_contract_object_with_config_data(futures_contract)
+        return contract is not missing_contract
 
     def get_list_of_instrument_codes_with_price_data(self) -> list:
         # return list of instruments for which pricing is configured
@@ -145,32 +146,10 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             # Some contract data is marked to model, don't want this
             price_data = price_data.remove_zero_volumes()
 
-            # massage Barchart price data into IG format
-            price_data = self._do_price_massage(contract_object, price_data)
-
         return price_data
 
     def _write_prices_for_contract_object_no_checking(self, *args, **kwargs):
         raise NotImplementedError("Read only source of prices")
-
-    def _do_price_massage(self, contract_object: futuresContract, prices):
-        instrument_code = contract_object.instrument_code
-        multiplier = contract_object.instrument.multiplier
-        inverse = bool(contract_object.instrument.inverse)
-        self.log.msg(
-            f"Massaging prices for IG: {instrument_code}, multiplier {multiplier}, "
-            f"inverse {inverse}",
-            instrument_code=instrument_code,
-            contract_date=contract_object.contract_date.date_str,
-        )
-        for col_name in ["OPEN", "HIGH", "LOW", "FINAL"]:
-            series = prices[col_name]
-            if inverse:
-                series = 1 / series
-            series *= multiplier
-            prices[col_name] = series
-
-        return prices
 
     def delete_prices_for_contract_object(self, *args, **kwargs):
         raise NotImplementedError("Read only source of prices")

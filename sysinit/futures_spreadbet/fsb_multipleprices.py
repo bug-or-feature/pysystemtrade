@@ -2,18 +2,13 @@ import datetime
 
 import pandas as pd
 
-from syscore.fileutils import get_filename_for_package
 from syscore.objects import arg_not_supplied
+from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
-from sysdata.config.production_config import get_production_config
-from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysdata.csv.csv_multiple_prices import csvFuturesMultiplePricesData
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
-# from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysinit.futures.build_roll_calendars import adjust_to_price_series
-from sysinit.futures_spreadbet.fsb_contract_prices import build_import_config
-from sysinit.futures_spreadbet.contract_prices_from_csv_to_arctic import remove_suffix
 from sysobjects.contract_dates_and_expiries import contractDate
 from sysobjects.dict_of_futures_per_contract_prices import (
     dictFuturesContractFinalPrices,
@@ -33,19 +28,21 @@ We then store those multiple prices in: (depending on options)
 - csv
 """
 def _get_data_inputs(instr_code, csv_roll_data_path, csv_multiple_data_path):
-    csv_roll_calendars = csvRollCalendarData(csv_roll_data_path)
-    csv_individual_fsb_prices = csvFuturesContractPriceData(
-        datapath=get_filename_for_package(
-            get_production_config().get_element_or_missing_data("barchart_path")
-        ),
-        config=build_import_config(instr_code)
-    )
+    roll_calendars = csvRollCalendarData(csv_roll_data_path)
+    # contract_prices = csvFuturesContractPriceData(
+    #     datapath=get_filename_for_package(
+    #         get_production_config().get_element_or_missing_data("barchart_path")
+    #     ),
+    #     config=build_import_config(instr_code)
+    # )
+    #roll_calendars = mongoRollParametersData()
+    contract_prices = arcticFuturesContractPriceData()
     arctic_multiple_prices = arcticFuturesMultiplePricesData()
     csv_multiple_prices = csvFuturesMultiplePricesData(csv_multiple_data_path)
 
     return (
-        csv_roll_calendars,
-        csv_individual_fsb_prices,
+        roll_calendars,
+        contract_prices,
         arctic_multiple_prices,
         csv_multiple_prices,
     )
@@ -89,8 +86,8 @@ def process_multiple_prices_single_instrument(
 ):
 
     (
-        csv_roll_calendars,
-        csv_fsb_prices,
+        roll_calendars,
+        contract_prices,
         arctic_multiple_prices,
         csv_multiple_prices,
     ) = _get_data_inputs(
@@ -100,16 +97,12 @@ def process_multiple_prices_single_instrument(
     )
 
     print(f"Generating multiple prices for {instrument_code}")
-    dict_of_futures_contract_prices = (
-        csv_fsb_prices.get_all_prices_for_instrument(
-            remove_suffix(instrument_code, "_fsb")
-        )
-    )
+    dict_of_futures_contract_prices = contract_prices.get_all_prices_for_instrument(instrument_code)
     dict_of_futures_contract_closing_prices = (
         dict_of_futures_contract_prices.final_prices()
     )
 
-    roll_calendar = csv_roll_calendars.get_roll_calendar(instrument_code)
+    roll_calendar = roll_calendars.get_roll_calendar(instrument_code)
 
     # Add first phantom row so that the last calendar entry won't be consumed by adjust_roll_calendar()
     #m = mongoRollParametersData()
@@ -120,10 +113,9 @@ def process_multiple_prices_single_instrument(
     )
 
     if adjust_calendar_to_prices:
-        roll_calendar = adjust_roll_calendar(
-            remove_suffix(instrument_code, "_fsb"),
+        roll_calendar = adjust_roll_calendar(instrument_code,
             roll_calendar,
-            csv_fsb_prices
+            contract_prices
         )
 
     # Second phantom row is needed in order to process the whole set of closing prices (and not stop after the last roll-over)
@@ -150,7 +142,7 @@ def process_multiple_prices_single_instrument(
 
 
 def adjust_roll_calendar(instrument_code, roll_calendar, prices):
-    print(f"Getting prices for '{instrument_code}_fsb' to adjust roll calendar")
+    print(f"Getting prices for '{instrument_code}' to adjust roll calendar")
     dict_of_prices = prices.get_all_prices_for_instrument(
         instrument_code
     )
@@ -215,8 +207,8 @@ if __name__ == "__main__":
 
     #instrument_code = get_valid_instrument_code_from_user(source="single")
     #instrument_code = "US10_fsb"
-    #for instrument_code in ["EUROSTX_fsb"]:
-    for instrument_code in ["SOYOIL_fsb"]:
+    for instrument_code in ['BUXL_fsb', 'GOLD_fsb', 'NASDAQ_fsb', 'NZD_fsb', 'US10_fsb']:
+    #for instrument_code in ["NZD_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,

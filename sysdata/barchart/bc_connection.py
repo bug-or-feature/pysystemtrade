@@ -2,7 +2,6 @@ import io
 import re
 import urllib.parse
 import time
-from functools import lru_cache
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup as Scraper
@@ -83,8 +82,7 @@ class bcConnection(object):
             self.log.error("Error: %s" % e)
             return None
 
-    @lru_cache(maxsize=256)
-    def _get_expiry_date_for_symbol(self, bc_symbol: str):
+    def get_expiry_date_for_symbol(self, bc_symbol: str):
         """
         Get the actual expiry date for the given Barchart symbol
 
@@ -104,7 +102,7 @@ class bcConnection(object):
                 expiry_date_raw = label.next_sibling.next_sibling  # whitespace counts
                 match = re.search(
                     "(\\d{2}/\\d{2}/\\d{2})", expiry_date_raw.text
-                )  # compile pattern?
+                )  # TODO compile pattern?
                 expiry_date_clean = match.group()
                 return expiry_date_clean
 

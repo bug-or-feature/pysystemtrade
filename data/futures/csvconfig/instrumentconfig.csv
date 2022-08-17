@@ -166,9 +166,9 @@ GAS_US_mini,2500,0,1.5,0,OilGas,USD,Natural gas US mini,0.005
 GAS-LAST,10000,0,1.5,0,OilGas,USD,Natural Gas Last Day Financial Futures Index,0.004
 GAS-PEN,10000,0,0.85,0,OilGas,USD,Natural Gas Penultimate Financial Futures Index,0.001
 GASOIL,100,0,1.7,0,OilGas,USD,ICE-EU Low Sulphur Gasoil,0.1
-GASOILINE,42000,0,1.5,0,OilGas,USD,RBOB Gasoline US,0.0005
-GASOILINE_ICE,42000,,,,OilGas,USD,ICE NYH RBOB Gasoline,
-GASOILINE-mini,21000,0,0.85,0,OilGas,USD,NYMEX MINY Gasoline RBOB Index,
+GASOLINE,42000,0,1.5,0,OilGas,USD,RBOB Gasoline US,0.0005
+GASOLINE_ICE,42000,,,,OilGas,USD,ICE NYH RBOB Gasoline,
+GASOLINE-mini,21000,0,0.85,0,OilGas,USD,NYMEX MINY Gasoline RBOB Index,
 GBP,62500,0,2.46,0,FX,USD,GBPUSD currency,6.61459616616592E-05
 GBP_micro,6250,,,,FX,USD,GBPUSD_micro,
 GBPCHF,125000,,,,FX,CHF,GBPCHF,

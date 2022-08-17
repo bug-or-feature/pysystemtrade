@@ -44,11 +44,12 @@ class IGConnection(object):
             self._ig_username,
             self._ig_password,
             self._ig_api_key,
+            acc_type=self._ig_acc_type,
             acc_number=self._ig_acc_number,
             retryer=retryer,
         )
-        ig_service.create_session()
-        #ig_service.create_session(version="3")
+        #ig_service.create_session()
+        ig_service.create_session(version="3")
         return ig_service
 
     @property

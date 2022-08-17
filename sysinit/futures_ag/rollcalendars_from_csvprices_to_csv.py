@@ -1,20 +1,22 @@
-import sys
-
 from syscore.interactive import true_if_answer_is_yes
 from syscore.objects import arg_not_supplied
-from syscore.pdutils import print_full
+
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
-from sysdata.csv.csv_roll_calendars import csvRollCalendarData
-from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysobjects.roll_calendars import rollCalendar
+from sysdata.csv.csv_roll_calendars import csvRollCalendarData
+from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
+from syscore.fileutils import get_filename_for_package
+from sysdata.config.production_config import get_production_config
+from sysinit.futures_ag.barchart_futures_contract_prices import BARCHART_CONFIG
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
 
 """
+
 
 
 def build_and_write_roll_calendar(
@@ -30,7 +32,7 @@ def build_and_write_roll_calendar(
             "*** WARNING *** This will overwrite the provided roll calendar. Might be better to use a temporary directory!"
         )
     else:
-        print(f"{instrument_code}: writing to {output_datapath}")
+        print("Writing to %s" % output_datapath)
 
     if input_prices is arg_not_supplied:
         prices = arcticFuturesContractPriceData()
@@ -119,66 +121,25 @@ def check_saved_roll_calendar(
     return roll_calendar
 
 
-def show_expected_rolls_for_config(
-    instrument_code,
-    path=arg_not_supplied,
-    input_prices=arg_not_supplied
-):
-
-    rollparameters = csvRollParametersData(datapath=path)
-    roll_parameters_object = rollparameters.get_roll_parameters(instrument_code)
-    if input_prices is arg_not_supplied:
-        prices = arcticFuturesContractPriceData()
-    else:
-        prices = input_prices
-    dict_of_all_futures_contract_prices = prices.get_all_prices_for_instrument(
-        instrument_code
-    )
-    dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
-    approx_roll_calendar = rollCalendar.create_approx_from_prices(
-        dict_of_futures_contract_prices, roll_parameters_object
-    )
-
-    print(f"Approx roll calendar for: {instrument_code}")
-    print_full(approx_roll_calendar.tail(20))
-
-
 if __name__ == "__main__":
 
-    args = None
-    if len(sys.argv) > 1:
-        args = sys.argv[1]
+    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
-    if args is not None:
-        method = sys.argv[1]
+    # ['GOLD', 'NASDAQ', 'NZD', 'BUXL', 'US10']
 
-    # ['BUXL_fsb', 'GOLD_fsb', 'NASDAQ_fsb', 'NZD_fsb', 'US10_fsb']
-    instr_code = 'BUXL_fsb'
+    # ['ASX', 'BTP', 'CAD', 'COFFEE', 'COPPER', 'CRUDE_W', 'DOW', 'DX', 'EUA', 'EUROSTX', 'EUR', 'GAS_US',
+    # 'GBP', 'GILT', 'HANG', 'JGB', 'JPY', 'NIKKEI', 'SILVER', 'SOYBEAN', 'SOYOIL', 'V2X', 'VIX', 'WHEAT']
 
-    prices = arcticFuturesContractPriceData()
-    # prices = csvFuturesContractPriceData(
-    #     datapath=get_filename_for_package(
-    #         get_production_config().get_element_or_missing_data("barchart_path")
-    #     ),
-    #     config=build_import_config(instr_code)
-    # )
+    instrument_code = 'US10'
 
-    if method == "build":
-        build_and_write_roll_calendar(
-            instrument_code=instr_code,
-            output_datapath="data.futures_spreadbet.roll_calendars_csv",
-            input_prices=prices,
-            check_before_writing=False,
-            input_config=csvRollParametersData(datapath="data.futures_spreadbet.csvconfig")
-        )
-    else:
-        show_expected_rolls_for_config(
-            instrument_code=instr_code,
-            path="data.futures_spreadbet.csvconfig",
-            input_prices=prices,
-        )
-
-    # check_saved_roll_calendar("AUD",
-    #     #input_datapath='data.futures_spreadbet.roll_calendars_csv',
-    #     input_datapath='sysinit.futures.tests.data.aud',
-    #     input_prices=csvFuturesContractPriceData())
+    build_and_write_roll_calendar(
+        instrument_code=instrument_code,
+        output_datapath="data.futures_ag.roll_calendars_csv",
+        input_prices=csvFuturesContractPriceData(
+            datapath=get_filename_for_package(
+                get_production_config().get_element_or_missing_data("barchart_path")
+            ),
+            config=BARCHART_CONFIG
+        ),
+        check_before_writing=False,
+    )

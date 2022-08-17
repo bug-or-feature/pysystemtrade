@@ -105,6 +105,10 @@ def update_multiple_adjusted_prices_with_data(
         list_of_codes = [instrument_code]
 
     for instrument_code in list_of_codes:
+
+        if not instrument_code.endswith("_fsb"):
+            instrument_code = instrument_code + "_fsb"
+
         try:
             update_multiple_adjusted_prices_for_instrument(instrument_code, data)
         except Exception as e:

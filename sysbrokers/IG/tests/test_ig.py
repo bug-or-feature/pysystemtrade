@@ -32,7 +32,7 @@ class TestIg:
         with pytest.raises(Exception):
             instr_data.epic_mapping.values()
 
-    def test_contract_ids(self):
+    def test_fsb_contract_ids(self):
 
         contracts = IgFuturesContractData(
             broker_conn=IGConnection(auto_connect=False),
@@ -58,6 +58,34 @@ class TestIg:
 
         with pytest.raises(Exception):
             contracts.get_barchart_id(fc.from_two_strings("AUD_fsb", "20201300"))
+
+    def test_futures_contract_ids(self):
+
+        contracts = IgFuturesContractData(
+            broker_conn=IGConnection(auto_connect=False),
+            instr_data=IgFuturesInstrumentData(
+                epic_history_datapath="data.futures_spreadbets.epic_history_csv"
+            )
+        )
+
+        assert contracts.get_barchart_id(fc.from_two_strings("GOLD", "20210600")) == "GCM21"
+
+        assert contracts.get_barchart_id(fc.from_two_strings("EDOLLAR", "20200300")) == "GEH20"
+
+        assert contracts.get_barchart_id(fc.from_two_strings("AEX", "20190900")) == "AEU19"
+
+        assert contracts.get_barchart_id(fc.from_two_strings("GBP", "20181200")) == "B6Z18"
+
+        assert contracts.get_barchart_id(fc.from_two_strings("LEANHOG", "20000200")) == "HEG00"
+
+        assert contracts.get_barchart_id(fc.from_two_strings("PLAT", "20020400")) == "PLJ02"
+
+        with pytest.raises(Exception):
+            contracts.get_barchart_id(fc.from_two_strings("BLAH", "20210600"))
+
+        with pytest.raises(Exception):
+            contracts.get_barchart_id(fc.from_two_strings("AUD", "20201300"))
+
 
     def test_expiry_dates(self):
 
@@ -89,7 +117,13 @@ class TestIg:
         )
         assert expiry == expiryDate.from_str("19900328")
 
-        # unknown instr
+        # unknown fsb instr
+        expiry = contracts.get_actual_expiry_date_for_single_contract(
+            fc.from_two_strings("CRAP_fsb", "20220300")
+        )
+        assert expiry == missing_contract
+
+        # unknown futures instr
         expiry = contracts.get_actual_expiry_date_for_single_contract(
             fc.from_two_strings("CRAP", "20220300")
         )
