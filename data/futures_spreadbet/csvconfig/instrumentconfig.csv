@@ -25,7 +25,6 @@ NZD_fsb,1.0,0.0,FX,0.0,NZDUSD currency,0.0,GBP,2.9
 SILVER_fsb,1.0,0.0,Metals,0.0,Silver,0.0,GBP,1.5
 SOYBEAN_fsb,5.0,0.0,Ags,0.0,Soybean,0.0,GBP,1.0
 SOYOIL_fsb,1.0,0.0,Ags,0.0,Soybean Oil,0.0,GBP,5.0
-STERLING3_fsb,0.5,0.0,Bond,0.0,3 month Sterling interest rate,0.0,GBP,0.5
 US10_fsb,0.5,0.0,Bond,0.0,US 10 year bond note,0.0,GBP,2.0
 US2_fsb,0.5,0.0,Bond,0.0,US 2 year bond note,0.0,GBP,1.0
 V2X_fsb,100.0,0.0,Vol,0.0,Vol European equity V2X,0.0,GBP,0.1
