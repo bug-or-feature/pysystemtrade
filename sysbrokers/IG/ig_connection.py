@@ -64,10 +64,8 @@ class IGConnection(object):
 
     def get_capital(self, account: str):
         data = self.service.fetch_accounts()
-        data = data.loc[data["accountId"] == account]
-        # data = data.loc[data["accountType"] == "SPREADBET"]
-        balance = float(data["balance"].loc[1])
-        profitLoss = float(data["profitLoss"].loc[1])
+        balance = float(data[data["accountId"] == account]["balance"])
+        profitLoss = float(data[data["accountId"] == account]["profitLoss"])
         tot_capital = balance + profitLoss
         available_capital = tot_capital * 0.8 # leave 20% for margin
 
