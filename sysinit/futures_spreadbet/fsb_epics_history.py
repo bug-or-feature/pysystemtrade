@@ -45,9 +45,21 @@ def view_epics_history_single(instrument_code):
     print_full(df)
 
 
+def delete_epics_history_single(instrument_code):
+
+    print(f"Deleting epics history for {instrument_code}")
+
+    status = output_data.delete_epics_history(instrument_code)
+    print(f"\n{status}")
+
+    return status
+
+
 if __name__ == "__main__":
     #view_epics_history_single("SOYOIL_fsb")
     #for epic in ["GOLD_fsb" ]:
-    # for epic in ["BUXL_fsb", "NASDAQ_fsb", "NZD_fsb", "US10_fsb"]:
+    #for epic in ["US30_fsb", "US30U_fsb"]:
     #     import_epics_history_single(epic)
-    import_epics_history_all()
+    #import_epics_history_all()
+    for instr in ["STERLING3_fsb", "US30_fsb", "USTB_fsb", "COTTON_fsb", "COCOA_NY_fsb", "WHEAT_LDN_fsb"]:
+        delete_epics_history_single(instr)

@@ -72,3 +72,7 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
         )
 
         return success
+
+    def delete_epics_history(self, instrument_code: str):
+        self._arctic.delete(instrument_code)
+        self.log.msg(f"Deleted epic history for {instrument_code} from {self}")
