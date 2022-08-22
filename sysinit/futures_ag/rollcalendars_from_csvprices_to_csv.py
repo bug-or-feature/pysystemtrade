@@ -130,7 +130,10 @@ if __name__ == "__main__":
     # ['ASX', 'BTP', 'CAD', 'COFFEE', 'COPPER', 'CRUDE_W', 'DOW', 'DX', 'EUA', 'EUROSTX', 'EUR', 'GAS_US',
     # 'GBP', 'GILT', 'HANG', 'JGB', 'JPY', 'NIKKEI', 'SILVER', 'SOYBEAN', 'SOYOIL', 'V2X', 'VIX', 'WHEAT']
 
-    instrument_code = 'US10'
+    # ['AEX', 'AUD', 'CAC', 'CHF', 'DAX', 'EURGBP', 'FTSE100', 'IBXEX', 'JSE40', 'MSCISING', 'RUSSELL', 'SMI', 'SP500', 'SWE30']
+    # TODO: EURGBP, JSE40, SWE30
+
+    instrument_code = 'CAC'
 
     build_and_write_roll_calendar(
         instrument_code=instrument_code,

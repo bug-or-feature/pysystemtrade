@@ -152,12 +152,9 @@ if __name__ == "__main__":
     if args is not None:
         method = sys.argv[1]
 
-    # ['BUXL_fsb', 'GOLD_fsb', 'NASDAQ_fsb', 'NZD_fsb', 'US10_fsb']
-
-    # ['ASX_fsb', 'BTP_fsb', 'CAD_fsb', 'COFFEE_fsb', 'COPPER_fsb', 'CRUDE_W_fsb', 'DOW_fsb', 'DX_fsb', 'EUA_fsb',
-    # 'EUROSTX_fsb', 'EUR_fsb', 'GAS_US_fsb', 'GBP_fsb', 'GILT_fsb', 'HANG_fsb', 'JGB_fsb', 'JPY_fsb', 'NIKKEI_fsb',
-    # 'SILVER_fsb', 'SOYBEAN_fsb', 'SOYOIL_fsb', 'US2_fsb', 'V2X_fsb', 'WHEAT_fsb']
-    instr_code = 'BUXL_fsb'
+    # ['AEX_fsb', 'AUD_fsb', 'CAC_fsb', 'CHF_fsb', 'DAX_fsb', 'FTSE100_fsb', 'IBXEX_fsb', 'MSCISING_fsb', 'RUSSELL_fsb',
+    # 'SMI_fsb', 'SP500_fsb']
+    instr_code = 'SP500_fsb'
 
     prices = arcticFuturesContractPriceData()
     # prices = csvFuturesContractPriceData(

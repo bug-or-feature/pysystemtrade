@@ -39,9 +39,7 @@ if __name__ == "__main__":
     )
 
     # for instr in ['BUXL']:
-    #for instr in ['BUXL', 'GOLD', 'NASDAQ', 'NZD', 'US10']:
-    for instr in ['ASX', 'BTP', 'CAD', 'COFFEE', 'COPPER', 'CRUDE_W', 'DOW', 'DX', 'EUA', 'EUROSTX', 'EUR', 'GAS_US',
-                  'GBP', 'GILT', 'HANG', 'JGB', 'JPY', 'NIKKEI', 'SILVER', 'SOYBEAN', 'SOYOIL', 'US2', 'V2X', 'WHEAT']:
+    for instr in ['AEX', 'AUD', 'CAC', 'CHF', 'DAX', 'FTSE100', 'IBXEX', 'MSCISING', 'RUSSELL', 'SMI', 'SP500']:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
     #transfer_barchart_prices_to_arctic_single_contract('US10', '20221200', datapath)
