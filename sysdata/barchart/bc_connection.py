@@ -105,6 +105,8 @@ class bcConnection(object):
                 )  # TODO compile pattern?
                 expiry_date_clean = match.group()
                 return expiry_date_clean
+            if resp.status_code == 404:
+                self.log.warn(f"Missing Barchart page for {bc_symbol}, unable to get expiry")
 
         except Exception as e:
             self.log.error("Error: %s" % e)

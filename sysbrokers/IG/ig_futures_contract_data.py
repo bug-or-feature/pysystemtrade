@@ -113,7 +113,12 @@ class IgFuturesContractData(brokerFuturesContractData):
 
         barchart_id = self.get_barchart_id(contract_object_with_config_data)
         future_expiry = self.barchart.get_expiry_date_for_symbol(barchart_id)
-        exp_date = expiryDate.from_str(future_expiry, format="%m/%d/%y")
+        if future_expiry is None:
+            self.log.warn("Unable to get expiry from broker, calculating approx date")
+            exp_date = self.calc_approx_expiry(contract_object)
+        else:
+            exp_date = expiryDate.from_str(future_expiry, format="%m/%d/%y")
+            exp_date.source = "B"
 
         return exp_date
 
@@ -157,16 +162,19 @@ class IgFuturesContractData(brokerFuturesContractData):
             self.log.warn(
                 f"Failed to get expiry for contract {futures_contract_plus}, returning approx date"
             )
-            datestring = futures_contract_plus.date_str
-            if datestring[6:8] == "00":
-                datestring = datestring[:6] + "28"
-            expiry_date = expiryDate.from_str(datestring, format="%Y%m%d")
-            expiry_date.source = "E"
-            return expiry_date
+            return self.calc_approx_expiry(futures_contract_plus)
         else:
             expiry_date = expiryDate.from_str(expiry_date, format=date_format_str)
             expiry_date.source = "B"
 
+        return expiry_date
+
+    def calc_approx_expiry(self, futures_contract_plus):
+        datestring = futures_contract_plus.date_str
+        if datestring[6:8] == "00":
+            datestring = datestring[:6] + "28"
+        expiry_date = expiryDate.from_str(datestring, format="%Y%m%d")
+        expiry_date.source = "E"
         return expiry_date
 
     def _get_expiry_fsb(self, futures_contract_plus: futuresContract) -> str:
