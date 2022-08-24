@@ -6,7 +6,7 @@ base_currency: "GBP"
 
 trading_rules:
   ewmac2_8:
-     function: systems.provided.futures_chapter15.rules.ewmac
+     function: systems.provided.rules.ewmac.ewmac
      data:
          - "rawdata.get_daily_prices"
          - "rawdata.daily_returns_volatility"
@@ -15,7 +15,7 @@ trading_rules:
          Lslow: 8
 
   ewmac4_16:
-     function: systems.provided.futures_chapter15.rules.ewmac
+     function: systems.provided.rules.ewmac.ewmac
      data:
          - "rawdata.get_daily_prices"
          - "rawdata.daily_returns_volatility"
@@ -24,7 +24,7 @@ trading_rules:
          Lslow: 16
 
   ewmac8_32:
-     function: systems.provided.futures_chapter15.rules.ewmac
+     function: systems.provided.rules.ewmac.ewmac
      data:
          - "rawdata.get_daily_prices"
          - "rawdata.daily_returns_volatility"
@@ -33,7 +33,7 @@ trading_rules:
          Lslow: 32
 
   ewmac16_64:
-     function: systems.provided.futures_chapter15.rules.ewmac
+     function: systems.provided.rules.ewmac.ewmac
      data:
          - "rawdata.get_daily_prices"
          - "rawdata.daily_returns_volatility"
@@ -42,7 +42,7 @@ trading_rules:
          Lslow: 64
 
   ewmac32_128:
-     function: systems.provided.futures_chapter15.rules.ewmac
+     function: systems.provided.rules.ewmac.ewmac
      data:
          - "rawdata.get_daily_prices"
          - "rawdata.daily_returns_volatility"
@@ -51,7 +51,7 @@ trading_rules:
          Lslow: 128
 
   ewmac64_256:
-     function: systems.provided.futures_chapter15.rules.ewmac
+     function: systems.provided.rules.ewmac.ewmac
      data:
          - "rawdata.get_daily_prices"
          - "rawdata.daily_returns_volatility"
@@ -60,7 +60,7 @@ trading_rules:
          Lslow: 256
 
   carry:
-     function: systems.provided.futures_chapter15.rules.carry2
+     function: systems.provided.rules.carry.carry
      data:
          - "rawdata.raw_carry"
      other_args:
