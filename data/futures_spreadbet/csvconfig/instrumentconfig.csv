@@ -2,7 +2,9 @@ Instrument,Pointsize,PerTrade,AssetClass,PerBlock,Description,Percentage,Currenc
 AEX_fsb,5.0,0.0,Equity,0.0,Netherlands equity index AEX,0.0,GBP,0.15
 ASX_fsb,2.0,0.0,Equity,0.0,Australian equity index ASX200,0.0,GBP,2.0
 AUD_fsb,1.0,0.0,FX,0.0,AUDUSD currency,0.0,GBP,5.45
+BOBL_fsb,0.5,0.0,Bond,0.0,German 5 year bond Bobl,0.0,GBP,1.5
 BTP_fsb,0.5,0.0,Bond,0.0,Italian 10 year bond BTP,0.0,GBP,2.5
+BUND_fsb,0.5,0.0,Bond,0.0,German 10 year bond Bund,0.0,GBP,1.5
 BUXL_fsb,0.5,0.0,Bond,0.0,German Buxl 15 to 30 year bond,0.0,GBP,2.0
 CAC_fsb,1.0,0.0,Equity,0.0,French equity index CAC40,0.0,GBP,2.0
 CAD_fsb,1.0,0.0,FX,0.0,USDCAD currency,0.0,GBP,3.65
@@ -16,7 +18,9 @@ DX_fsb,0.5,0.0,FX,0.0,UUS Dollar Index,0.0,GBP,4.25
 EDOLLAR_fsb,0.5,0.0,Bond,0.0,US STIR Eurodollar,0.0,GBP,0.8
 EUA_fsb,0.25,0.0,OilGas,0.0,ECX EU carbon emissions,0.0,GBP,5.5
 EUR_fsb,1.0,0.0,FX,0.0,EURUSD currency,0.0,GBP,5.45
+EURIBOR_fsb,0.5,0.0,Bond,0.0,Three Month EURIBOR,0.0,GBP,0.75
 EUROSTX_fsb,1.0,0.0,Equity,0.0,European equity index EUROSTOXX50,0.0,GBP,1.0
+FED_fsb,0.5,0.0,Bond,0.0,30 Day Fed Funds,0.0,GBP,0.8
 FTSE100_fsb,0.5,0.0,Equity,0.0,FTSE100 Index,0.0,GBP,1.0
 GAS_US_fsb,1.0,0.0,OilGas,0.0,Natural gas US,0.0,GBP,10.0
 GBP_fsb,1.0,0.0,FX,0.0,GBPUSD currency,0.0,GBP,5.25
@@ -30,14 +34,20 @@ MSCISING_fsb,20,0.0,Equity,0.0,MSCI Singapore Free Index,0.0,GBP,0.15
 NASDAQ_fsb,0.5,0.0,Equity,0.0,US equity index Nasdaq,0.0,GBP,1.5
 NIKKEI_fsb,0.5,0.0,Equity,0.0,Nikkei 225 equity index,0.0,GBP,10.0
 NZD_fsb,1.0,0.0,FX,0.0,NZDUSD currency,0.0,GBP,2.9
+OAT_fsb,0.5,0.0,Bond,0.0,French 10 year bond OAT,0.0,GBP,2.5
 RUSSELL_fsb,2.0,0.0,Equity,0.0,Russell 2000 Index,0.0,GBP,0.25
+SHATZ_fsb,0.5,0.0,Bond,0.0,German 2 year bond Schatz,0.0,GBP,1.0
 SILVER_fsb,1.0,0.0,Metals,0.0,Silver,0.0,GBP,1.5
 SMI_fsb,0.5,0.0,Equity,0.0,Swiss equity index SMI,0.0,GBP,3.0
+SONIA3_fsb,0.5,0.0,Bond,0.0,Three Month SONIA,0.0,GBP,0.75
 SOYBEAN_fsb,5.0,0.0,Ags,0.0,Soybean,0.0,GBP,1.0
 SOYOIL_fsb,1.0,0.0,Ags,0.0,Soybean Oil,0.0,GBP,5.0
 SP500_fsb,1.0,0.0,Equity,0.0,US equity index S&P 500,0.0,GBP,0.5
-US10_fsb,0.5,0.0,Bond,0.0,US 10 year bond note,0.0,GBP,2.0
 US2_fsb,0.5,0.0,Bond,0.0,US 2 year bond note,0.0,GBP,1.0
+US5_fsb,0.5,0.0,Bond,0.0,US 5 year Treasury note,0.0,GBP,1.0
+US10_fsb,0.5,0.0,Bond,0.0,US 10 year bond note,0.0,GBP,2.0
+US30_fsb,0.5,0.0,Bond,0.0,US Treasury Bond,0.0,GBP,2.0
+US30U_fsb,0.5,0.0,Bond,0.0,US Ultra Treasury Bond,0.0,GBP,2.0
 V2X_fsb,100.0,0.0,Vol,0.0,Vol European equity V2X,0.0,GBP,0.1
 VIX_fsb,100.0,0.0,Vol,0.0,Vol US equity VIX,0.0,GBP,0.1
 WHEAT_fsb,15.0,0.0,Ags,0.0,Wheat,0.0,GBP,0.5

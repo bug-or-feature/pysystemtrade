@@ -371,7 +371,8 @@ US20,1000,0,1.51,0,Bond,USD,US 20 year bond,0.016
 US2Y_micro,1000,,,,Bond,USD,2 Year Micro Treasury Yield,
 US2Y_small,100,,,,Bond,USD,Small 2YR US Treasury Yield,
 US3,2000,0,1.5,0,Bond,USD,US 3 year bond note,0.00390625
-US30,1000,0,1.5,0,Bond,USD,Ultra Treasury Bond,0.015625
+US30,1000,0,1.5,0,Bond,USD,US Treasury Bond,0.015625
+US30U,1000,0,1.5,0,Bond,USD,Ultra Treasury Bond,0.015625
 US30Y_micro,1000,,,,Bond,USD,30 Year Micro Treasury Yield,
 US30Y_small,100,,,,Bond,USD,Small 30YR US Treasury Yield,
 US5,1000,0,1.51,0,Bond,USD,US 5 year bond note,0.004
