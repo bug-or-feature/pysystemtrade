@@ -1,0 +1,236 @@
+
+********************************************************************************
+          Status report report produced on 2022-08-25 16:54:54.408189           
+********************************************************************************
+
+
+Delayed methods: No delays
+
+================================
+  Delayed adjusted / FX prices  
+================================
+
+                     last_update
+name                            
+MSCISING_fsb 2022-08-22 05:00:00
+JGB_fsb      2022-08-22 05:00:00
+IBXEX_fsb    2022-08-22 05:00:00
+
+Delayed optimal positions: No delays
+Instruments at trade limit: No constraints
+Instruments at position limit: No constraints
+
+=======================================
+Overrides in database consider deleting
+=======================================
+
+Empty DataFrame
+Columns: [override]
+Index: []
+
+Locked instruments (position mismatch): []
+
+==============================================
+Status of adjusted price / FX price collection
+==============================================
+
+                     last_update
+MSCISING_fsb 2022-08-22 05:00:00
+JGB_fsb      2022-08-22 05:00:00
+IBXEX_fsb    2022-08-22 05:00:00
+KRWUSD       2022-08-24 00:00:00
+AUDUSD       2022-08-24 00:00:00
+CADUSD       2022-08-24 00:00:00
+CHFUSD       2022-08-24 00:00:00
+SGDUSD       2022-08-24 00:00:00
+EURUSD       2022-08-24 00:00:00
+JPYUSD       2022-08-24 00:00:00
+HKDUSD       2022-08-24 00:00:00
+GBPUSD       2022-08-24 00:00:00
+CNHUSD       2022-08-24 00:00:00
+HANG_fsb     2022-08-24 11:00:00
+EUA_fsb      2022-08-24 15:00:00
+GILT_fsb     2022-08-24 16:00:01
+BTP_fsb      2022-08-24 17:00:00
+COFFEE_fsb   2022-08-24 17:00:00
+SOYBEAN_fsb  2022-08-24 18:00:00
+WHEAT_fsb    2022-08-24 18:00:00
+SOYOIL_fsb   2022-08-24 18:00:00
+SMI_fsb      2022-08-24 19:00:00
+SILVER_fsb   2022-08-24 19:00:00
+RUSSELL_fsb  2022-08-24 19:00:00
+NZD_fsb      2022-08-24 19:00:00
+SP500_fsb    2022-08-24 19:00:00
+NIKKEI_fsb   2022-08-24 19:00:00
+US2_fsb      2022-08-24 19:00:00
+V2X_fsb      2022-08-24 19:00:00
+US10_fsb     2022-08-24 19:00:00
+AEX_fsb      2022-08-24 19:00:00
+GOLD_fsb     2022-08-24 19:00:00
+ASX_fsb      2022-08-24 19:00:00
+AUD_fsb      2022-08-24 19:00:00
+BUXL_fsb     2022-08-24 19:00:00
+CAC_fsb      2022-08-24 19:00:00
+CAD_fsb      2022-08-24 19:00:00
+CHF_fsb      2022-08-24 19:00:00
+COPPER_fsb   2022-08-24 19:00:00
+CRUDE_W_fsb  2022-08-24 19:00:00
+NASDAQ_fsb   2022-08-24 19:00:00
+DAX_fsb      2022-08-24 19:00:00
+JPY_fsb      2022-08-24 19:00:00
+DX_fsb       2022-08-24 19:00:00
+EUROSTX_fsb  2022-08-24 19:00:00
+EUR_fsb      2022-08-24 19:00:00
+FTSE100_fsb  2022-08-24 19:00:00
+GBP_fsb      2022-08-24 19:00:00
+DOW_fsb      2022-08-24 19:00:00
+GAS_US_fsb   2022-08-24 19:00:01
+US30U_fsb    2022-08-25 08:00:00
+US5_fsb      2022-08-25 08:00:00
+EDOLLAR_fsb  2022-08-25 08:00:00
+SHATZ_fsb    2022-08-25 08:00:00
+BUND_fsb     2022-08-25 08:00:00
+BOBL_fsb     2022-08-25 08:00:00
+OAT_fsb      2022-08-25 08:00:00
+US30_fsb     2022-08-25 08:00:00
+
+
+=====================================
+Status of optimal position generation
+=====================================
+
+Empty DataFrame
+Columns: [last_update]
+Index: []
+
+
+======================
+Status of trade limits
+======================
+
+Empty DataFrame
+Columns: [period_days, trade_limit, trades_since_last_reset, trade_capacity_remaining, time_since_last_reset]
+Index: []
+
+
+=========================
+Status of position limits
+=========================
+
+Empty DataFrame
+Columns: [keys, position, pos_limit, spare]
+Index: []
+
+
+================================================================
+                      Status of overrides                       
+================================================================
+
+                                                        override
+name                                                            
+BRENT          Override Reduce only because ignore_instrument...
+BITCOIN_fsb    Override No trading because trading_restrictio...
+EUA_fsb        Override Reduce only because bad_instrument in...
+JGB_fsb        Override Reduce only because bad_instrument in...
+VIX_fsb        Override Reduce only because bad_instrument in...
+V2X_fsb        Override Reduce only because bad_instrument in...
+KOSPI_mini     Override Reduce only because duplicate_instrum...
+bad_thing      Override Reduce only because duplicate_instrum...
+Another_thing  Override Reduce only because duplicate_instrum...
+
+
+=======================================================================
+                       Status of process control                       
+=======================================================================
+
+                              time_to_start  time_to_stop  prev_process
+run_capital_update                     True         False          True
+run_daily_prices_updates               True         False          True
+run_stack_handler                      True         False          True
+run_reports                            True         False          True
+run_backups                            True         False          True
+run_cleaners                           True         False          True
+run_systems                            True         False          True
+run_strategy_order_generator           True         False         False
+
+
+=====================================================================================
+                              Status of process control                              
+=====================================================================================
+
+                                   start             end status      PID      running
+run_backups               08/24 22:15:07  08/24 22:17:01     GO      0.0  not running
+run_capital_update        08/25 00:45:07  08/24 18:45:10     GO  70864.0      running
+run_cleaners              08/24 22:00:07  08/24 22:00:08     GO      0.0  not running
+run_daily_prices_updates  08/24 20:05:08  08/24 20:27:05     GO      0.0  not running
+run_reports               08/24 22:30:07  08/24 22:34:58     GO      0.0  not running
+run_stack_handler         08/25 00:15:06  08/25 00:15:07     GO      0.0  not running
+run_systems               08/23 21:30:06       ???           GO  96161.0      running
+
+
+===================================================================================================================================================
+                                                                 Status of methods                                                                 
+===================================================================================================================================================
+
+                                                             process_name                  last_start                    last_end currently_running
+method_or_strategy                                                                                                                                 
+fsb_strategy_v3                                               run_systems  2022-08-23 21:30:06.720000                missing data              True
+update_fx_prices                                 run_daily_prices_updates  2022-08-24 20:05:09.138000  2022-08-24 20:06:56.235000             False
+update_epic_history                              run_daily_prices_updates  2022-08-24 20:06:56.242000  2022-08-24 20:15:48.960000             False
+update_sampled_contracts                         run_daily_prices_updates  2022-08-24 20:15:48.967000  2022-08-24 20:20:08.628000             False
+update_historical_prices                         run_daily_prices_updates  2022-08-24 20:20:08.635000  2022-08-24 20:26:45.425000             False
+update_multiple_adjusted_prices                  run_daily_prices_updates  2022-08-24 20:26:52.327000  2022-08-24 20:27:04.814000             False
+clean_backtest_states                                        run_cleaners  2022-08-24 22:00:08.019000  2022-08-24 22:00:08.070000             False
+clean_echo_files                                             run_cleaners  2022-08-24 22:00:08.077000  2022-08-24 22:00:08.087000             False
+clean_log_files                                              run_cleaners  2022-08-24 22:00:08.094000  2022-08-24 22:00:08.166000             False
+backup_arctic_to_csv                                          run_backups  2022-08-24 22:15:07.973000  2022-08-24 22:16:56.691000             False
+backup_mongo_data_as_dump                                     run_backups  2022-08-24 22:16:56.722000  2022-08-24 22:17:00.765000             False
+backup_files                                                  run_backups  2022-08-24 22:17:00.870000  2022-08-24 22:17:00.979000             False
+roll_report                                                   run_reports  2022-08-24 22:30:07.844000  2022-08-24 22:30:18.376000             False
+status_report                                                 run_reports  2022-08-24 22:30:18.397000  2022-08-24 22:30:20.129000             False
+instrument_risk_report                                        run_reports  2022-08-24 22:30:20.139000  2022-08-24 22:30:38.407000             False
+min_capital                                                   run_reports  2022-08-24 22:30:38.415000  2022-08-24 22:30:56.622000             False
+remove_markets_report                                         run_reports  2022-08-24 22:30:56.631000  2022-08-24 22:31:50.859000             False
+fsb_report                                                    run_reports  2022-08-24 22:34:54.647000  2022-08-24 22:34:58.318000             False
+strategy_allocation                                    run_capital_update  2022-08-25 00:45:08.856000  2022-08-25 00:45:08.920000             False
+update_total_capital                                   run_capital_update  2022-08-25 16:45:10.670000  2022-08-25 16:45:11.270000             False
+refresh_additional_sampling_all_instruments             run_stack_handler                missing data                missing data             False
+check_external_position_break                           run_stack_handler                missing data                missing data             False
+spawn_children_from_new_instrument_orders               run_stack_handler                missing data                missing data             False
+generate_force_roll_orders                              run_stack_handler                missing data                missing data             False
+create_broker_orders_from_contract_orders               run_stack_handler                missing data                missing data             False
+process_fills_stack                                     run_stack_handler                missing data                missing data             False
+handle_completed_orders                                 run_stack_handler                missing data                missing data             False
+safe_stack_removal                                      run_stack_handler                missing data                missing data             False
+costs_report                                                  run_reports                missing data                missing data             False
+liquidity_report                                              run_reports                missing data                missing data             False
+daily_pandl_report                                            run_reports                missing data                missing data             False
+reconcile_report                                              run_reports                missing data                missing data             False
+trade_report                                                  run_reports                missing data                missing data             False
+strategy_report                                               run_reports                missing data                missing data             False
+risk_report                                                   run_reports                missing data                missing data             False
+slippage_report                                               run_reports                missing data                missing data             False
+duplicate_market                                              run_reports                missing data                missing data             False
+fsb_strategy_v3                              run_strategy_order_generator                missing data                missing data             False
+
+
+===========================================================================
+                        Config for process control                         
+===========================================================================
+
+                                      previous_process start_time  end_time
+run_capital_update                                None   00:45:00  19:50:00
+run_daily_prices_updates                          None   06:00:00  23:50:00
+run_stack_handler                                 None   00:01:00  19:45:00
+run_reports                                              06:00:00  23:50:00
+run_backups                               run_cleaners   06:00:00  23:50:00
+run_cleaners                                             06:00:00  23:50:00
+run_systems                   run_daily_prices_updates   06:00:00  23:50:00
+run_strategy_order_generator               run_systems   06:00:00  19:30:00
+
+
+********************************************************************************
+                                 END OF REPORT                                  
+********************************************************************************
+
+
