@@ -49,8 +49,7 @@ if __name__ == "__main__":
 
     # single instrument
     # for instr in ["GOLD_fsb"]:
-    for instr in ['AEX_fsb', 'AUD_fsb', 'CAC_fsb', 'CHF_fsb', 'DAX_fsb', 'FTSE100_fsb', 'IBXEX_fsb',
-                  'MSCISING_fsb', 'RUSSELL_fsb', 'SMI_fsb', 'SP500_fsb']:
+    for instr in ['BOBL_fsb', 'BUND_fsb', 'EDOLLAR_fsb', 'OAT_fsb', 'SHATZ_fsb', 'US5_fsb', 'US30_fsb', 'US30U_fsb']:
         transfer_ig_prices_to_arctic_single(instr, datapath=datapath)
 
     # all instruments

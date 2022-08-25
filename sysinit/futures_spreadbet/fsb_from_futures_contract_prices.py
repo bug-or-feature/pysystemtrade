@@ -41,6 +41,6 @@ def convert_futures_prices_to_fsb_single(instr):
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
-    #for instr in ['BUXL']:
-    for instr in ['AEX', 'AUD', 'CAC', 'CHF', 'DAX', 'FTSE100', 'IBXEX', 'MSCISING', 'RUSSELL', 'SMI', 'SP500']:
+    #for instr in ['FED']:
+    for instr in ['BOBL', 'BUND', 'EDOLLAR', 'OAT', 'SHATZ', 'US5', 'US30', 'US30U']:
         convert_futures_prices_to_fsb_single(instr)

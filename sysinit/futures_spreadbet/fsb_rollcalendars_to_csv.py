@@ -152,9 +152,9 @@ if __name__ == "__main__":
     if args is not None:
         method = sys.argv[1]
 
-    # ['AEX_fsb', 'AUD_fsb', 'CAC_fsb', 'CHF_fsb', 'DAX_fsb', 'FTSE100_fsb', 'IBXEX_fsb', 'MSCISING_fsb', 'RUSSELL_fsb',
-    # 'SMI_fsb', 'SP500_fsb']
-    instr_code = 'SP500_fsb'
+    # ['BOBL_fsb', 'BUND_fsb', 'EDOLLAR_fsb', 'EURIBOR_fsb', 'FED_fsb', 'OAT_fsb', 'SHATZ_fsb', 'SONIA3_fsb', 'US5_fsb', 'US30_fsb', 'US30U_fsb']
+    instr_code = 'FED_fsb'
+    # TODO ['EURIBOR_fsb', 'SONIA3_fsb']
 
     prices = arcticFuturesContractPriceData()
     # prices = csvFuturesContractPriceData(

@@ -206,10 +206,7 @@ if __name__ == "__main__":
     #                                          ADD_TO_CSV=True)
 
     #instrument_code = get_valid_instrument_code_from_user(source="single")
-    #instrument_code = "US10_fsb"
-    #for instrument_code in ["NZD_fsb"]:
-    for instrument_code in ['AEX_fsb', 'AUD_fsb', 'CAC_fsb', 'CHF_fsb', 'DAX_fsb', 'FTSE100_fsb', 'IBXEX_fsb',
-                            'MSCISING_fsb', 'RUSSELL_fsb', 'SMI_fsb', 'SP500_fsb']:
+    for instrument_code in ['BOBL_fsb', 'BUND_fsb', 'EDOLLAR_fsb', 'OAT_fsb', 'SHATZ_fsb', 'US5_fsb', 'US30_fsb', 'US30U_fsb']:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,

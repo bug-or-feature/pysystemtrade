@@ -133,7 +133,10 @@ if __name__ == "__main__":
     # ['AEX', 'AUD', 'CAC', 'CHF', 'DAX', 'EURGBP', 'FTSE100', 'IBXEX', 'JSE40', 'MSCISING', 'RUSSELL', 'SMI', 'SP500', 'SWE30']
     # TODO: EURGBP, JSE40, SWE30
 
-    instrument_code = 'CAC'
+    # ['BOBL', 'BUND', 'EDOLLAR', 'OAT', 'SHATZ', 'US5', 'US30', 'US30U']
+
+    instrument_code = 'FED'
+    # TODO: ['EURIBOR', 'FED', 'SONIA3']
 
     build_and_write_roll_calendar(
         instrument_code=instrument_code,

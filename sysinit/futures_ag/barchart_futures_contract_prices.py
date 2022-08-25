@@ -38,8 +38,8 @@ if __name__ == "__main__":
         get_production_config().get_element_or_missing_data("barchart_path")
     )
 
-    # for instr in ['BUXL']:
-    for instr in ['AEX', 'AUD', 'CAC', 'CHF', 'DAX', 'FTSE100', 'IBXEX', 'MSCISING', 'RUSSELL', 'SMI', 'SP500']:
+    #for instr in ['FED']:
+    for instr in ['BOBL', 'BUND', 'EDOLLAR', 'OAT', 'SHATZ', 'US5', 'US30', 'US30U']:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
     #transfer_barchart_prices_to_arctic_single_contract('US10', '20221200', datapath)
