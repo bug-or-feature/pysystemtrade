@@ -14,18 +14,18 @@ def transfer_ig_prices_to_arctic_single(instr, datapath):
     init_arctic_with_csv_fsb_contract_prices_for_code(
         instr,
         datapath,
-        # csv_config=ConfigCsvFuturesPrices(
-        #     input_date_index_name="Date",
-        #     input_skiprows=0,
-        #     input_skipfooter=0,
-        #     input_date_format="%Y-%m-%dT%H:%M:%S%z",
-        # )
-        csv_config = ConfigCsvFuturesPrices(
-            input_date_index_name="DATETIME",
+        csv_config=ConfigCsvFuturesPrices(
+            input_date_index_name="Date",
             input_skiprows=0,
             input_skipfooter=0,
-            input_date_format="%Y-%m-%d %H:%M:%S",
+            input_date_format="%Y-%m-%dT%H:%M:%S%z",
         )
+        # csv_config = ConfigCsvFuturesPrices(
+        #     input_date_index_name="DATETIME",
+        #     input_skiprows=0,
+        #     input_skipfooter=0,
+        #     input_date_format="%Y-%m-%d %H:%M:%S",
+        # )
     )
 
 
