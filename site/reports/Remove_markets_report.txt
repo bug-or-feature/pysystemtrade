@@ -1,0 +1,41 @@
+
+********************************************************************************
+      Removed markets report report produced on 2022-08-25 17:07:20.957447      
+********************************************************************************
+
+
+List of markets which should be marked as untradeable due to risk, liquidity or cost issues
+Following should be removed from trading (add to config.bad_markets) [0.300000 threshold]: ['US2_fsb', 'EDOLLAR_fsb', 'SHATZ_fsb', 'CHF_fsb', 'NIKKEI_fsb'] 
+
+
+
+Following should be allowed to trade (delete from config.bad_markets) [0.300000 threshold]: ['EUA_fsb', 'VIX_fsb']
+
+
+
+Markets too expensive (SR cost per trade > 0.010): ['AUD_fsb', 'CHF_fsb', 'DX_fsb', 'EDOLLAR_fsb', 'EUR_fsb', 'JGB_fsb', 'V2X_fsb']
+
+
+
+Markets not enough risk volume (Volume in $m ann. risk per day < 1.50): ['CHF_fsb', 'EDOLLAR_fsb', 'NIKKEI_fsb', 'NZD_fsb', 'SILVER_fsb', 'US30U_fsb']
+
+
+
+Markets not enough contract volume (Volume in contracts per day < 100): []
+
+
+
+Markets too safe (Annual % std. dev < 5.0): ['EDOLLAR_fsb', 'JGB_fsb', 'SHATZ_fsb', 'US2_fsb', 'US5_fsb']
+
+
+
+(Minimum standard deviation 5.000 calculated as follows: = max_vs_average_forecast * approx_IDM * notional_instrument_weight * notional_risk_target /  raw_max_leverage= 2.0 * 2.50 * 0.040 * 0.250 / 1.000000
+
+
+
+
+********************************************************************************
+                                 END OF REPORT                                  
+********************************************************************************
+
+

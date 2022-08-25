@@ -1,6 +1,6 @@
 
 ********************************************************************************
-            FSB report report produced on 2022-08-24 22:34:54.650916            
+            FSB report report produced on 2022-08-25 17:09:46.088358            
 ********************************************************************************
 
 
@@ -9,26 +9,23 @@ Price: correlation between spread bet price and the underlying future, per contr
 Returns: correlation between spread bet returns and the underlying future, per contract
 Showing only those with Price < 0.8 or Returns < 0.6, sorted by Returns
 
-====================================
-      Problem FSB Correlations      
-====================================
+==================================
+     Problem FSB Correlations     
+==================================
 
-                      Price  Returns
-Contract                            
-GILT_fsb/20221200      0.99    -1.00
-AUD_fsb/20221200       0.65    -0.34
-IBXEX_fsb/20220900     0.81    -0.21
-V2X_fsb/20230100       0.86    -0.06
-CHF_fsb/20221200       0.79    -0.04
-AEX_fsb/20220900       0.91     0.00
-BUXL_fsb/20221200      0.96     0.16
-CAC_fsb/20220900       0.94     0.20
-AUD_fsb/20220900       0.96     0.47
-BTP_fsb/20220900       0.93     0.51
-NZD_fsb/20221200       0.94     0.56
-US10_fsb/20221200      0.92     0.59
-CRUDE_W_fsb/20221200   0.78     0.84
-US2_fsb/20221200      -1.00      NaN
+                    Price  Returns
+Contract                          
+AUD_fsb/20221200     0.64    -0.34
+IBXEX_fsb/20220900   0.81    -0.21
+V2X_fsb/20230100     0.86    -0.06
+CHF_fsb/20221200     0.79    -0.04
+BUXL_fsb/20221200    0.96     0.16
+AEX_fsb/20220900     0.88     0.21
+CAC_fsb/20220900     0.94     0.34
+GILT_fsb/20221200    1.00     0.41
+AUD_fsb/20220900     0.96     0.47
+BTP_fsb/20220900     0.94     0.56
+NZD_fsb/20221200     0.94     0.56
 
 Price: correlation between spread bet price and the underlying future, per contract
 Returns: correlation between spread bet returns and the underlying future, per contract
@@ -40,47 +37,50 @@ Sorted by contract
 
                       Price  Returns
 Contract                            
-AEX_fsb/20220900       0.91     0.00
-ASX_fsb/20220900       0.99     0.73
+AEX_fsb/20220900       0.88     0.21
+ASX_fsb/20220900       0.99     0.74
 ASX_fsb/20221200        NaN      NaN
 AUD_fsb/20220900       0.96     0.47
-AUD_fsb/20221200       0.65    -0.34
-BTP_fsb/20220900       0.93     0.51
+AUD_fsb/20221200       0.64    -0.34
+BOBL_fsb/20220900      0.99     0.77
+BTP_fsb/20220900       0.94     0.56
+BUND_fsb/20220900      0.99     0.75
 BUXL_fsb/20220900      1.00     0.95
 BUXL_fsb/20221200      0.96     0.16
-CAC_fsb/20220900       0.94     0.20
+CAC_fsb/20220900       0.94     0.34
 CAD_fsb/20220900       0.98     0.76
 CAD_fsb/20221200       0.98     0.95
 CHF_fsb/20220900       0.98     0.77
 CHF_fsb/20221200       0.79    -0.04
 COFFEE_fsb/20221200    1.00     1.00
-COFFEE_fsb/20230300    0.99     0.98
+COFFEE_fsb/20230300    0.97     0.98
 COPPER_fsb/20220900    1.00     0.86
 COPPER_fsb/20221200    0.99     0.76
 CRUDE_W_fsb/20221000   0.98     0.89
-CRUDE_W_fsb/20221100   0.86     0.79
-CRUDE_W_fsb/20221200   0.78     0.84
-DAX_fsb/20220900       0.98     0.78
+CRUDE_W_fsb/20221100   0.87     0.79
+CRUDE_W_fsb/20221200   0.82     0.84
+DAX_fsb/20220900       0.98     0.79
 DOW_fsb/20220900       1.00     0.87
 DX_fsb/20220900        1.00     0.91
 DX_fsb/20221200        0.99     0.91
+EDOLLAR_fsb/20220900   1.00     0.97
 EUA_fsb/20221200       0.99     0.88
 EUA_fsb/20231200       0.96     0.71
 EUA_fsb/20241200       0.97     0.69
 EUROSTX_fsb/20220900   1.00     0.91
-EUR_fsb/20220900       1.00     0.85
-EUR_fsb/20221200       1.00     0.94
+EUR_fsb/20220900       1.00     0.84
+EUR_fsb/20221200       1.00     0.93
 FTSE100_fsb/20220900   0.98     0.83
 GAS_US_fsb/20220900    0.98     0.92
 GAS_US_fsb/20221000    1.00     0.99
 GBP_fsb/20220900       0.99     0.79
 GBP_fsb/20221200       0.98     0.89
 GILT_fsb/20220900      1.00     1.00
-GILT_fsb/20221200      0.99    -1.00
+GILT_fsb/20221200      1.00     0.41
 GOLD_fsb/20221200      0.99     0.92
 GOLD_fsb/20230200      0.99     0.90
-GOLD_fsb/20230400      0.96     0.89
-HANG_fsb/20220800      0.97     0.73
+GOLD_fsb/20230400      0.96     0.88
+HANG_fsb/20220800      0.96     0.68
 HANG_fsb/20220900       NaN      NaN
 HANG_fsb/20221000       NaN      NaN
 IBXEX_fsb/20220900     0.81    -0.21
@@ -94,21 +94,25 @@ NIKKEI_fsb/20220900    0.99     0.73
 NIKKEI_fsb/20221200     NaN      NaN
 NZD_fsb/20220900       0.99     0.86
 NZD_fsb/20221200       0.94     0.56
+OAT_fsb/20220900       0.99     0.70
 RUSSELL_fsb/20220900   0.99     0.71
+SHATZ_fsb/20220900     0.99     0.77
 SILVER_fsb/20220900    1.00     0.92
-SILVER_fsb/20221200    0.99     0.94
+SILVER_fsb/20221200    0.99     0.93
 SMI_fsb/20220900       0.99     0.69
 SOYBEAN_fsb/20221100   0.97     0.87
 SOYBEAN_fsb/20230100   0.96     0.83
 SOYOIL_fsb/20220900    1.00     0.91
 SOYOIL_fsb/20221200    0.98     0.86
 SP500_fsb/20220900     0.99     0.75
-US10_fsb/20220900      0.99     0.94
-US10_fsb/20221200      0.92     0.59
-US2_fsb/20220900       0.99     0.95
-US2_fsb/20221200      -1.00      NaN
-V2X_fsb/20220900       0.98     0.92
-V2X_fsb/20221000       0.90     0.76
+US10_fsb/20220900      1.00     0.95
+US10_fsb/20221200      0.91     0.62
+US2_fsb/20220900       1.00     0.95
+US2_fsb/20221200       1.00      NaN
+US5_fsb/20220900       1.00     0.95
+US5_fsb/20221200        NaN      NaN
+V2X_fsb/20220900       1.00     0.94
+V2X_fsb/20221000       0.97     0.81
 V2X_fsb/20230100       0.86    -0.06
 WHEAT_fsb/20220900     1.00     0.75
 WHEAT_fsb/20221200     1.00     0.75
