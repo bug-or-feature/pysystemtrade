@@ -42,14 +42,14 @@ class reportConfig(object):
 status_report_config = reportConfig(
     title="Status report",
     function="sysproduction.reporting.status_reporting.system_status",
-    output="email"
+    output="file"
 )
 
 roll_report_config = reportConfig(
     title="Roll report",
     function="sysproduction.reporting.roll_report.roll_info",
     instrument_code=ALL_ROLL_INSTRUMENTS,
-    output="email"
+    output="file"
 )
 
 daily_pandl_report_config = reportConfig(
@@ -110,13 +110,13 @@ slippage_report_config = reportConfig(
 instrument_risk_report_config = reportConfig(title="Instrument risk report",
     function=
     "sysproduction.reporting.instrument_risk_fsb_report.instrument_risk_fsb_report",
-                                             output="email"
+                                             output="file"
                                              )
 
 min_capital_report_config= reportConfig(title="Minimum capital report",
     function=
     "sysproduction.reporting.minimum_capital_fsb_report.minimum_capital_fsb_report",
-                                        output="email"
+                                        output="file"
                                         )
 
 duplicate_market_report_config = reportConfig(title="Duplicate markets report",
@@ -127,7 +127,7 @@ duplicate_market_report_config = reportConfig(title="Duplicate markets report",
 
 remove_markets_report_config = reportConfig(title="Remove markets report",
     function = "sysproduction.reporting.remove_markets_report.remove_markets_report",
-                                            output="email"
+                                            output="file"
                                             )
 
 
@@ -142,7 +142,7 @@ account_curve_report_config = reportConfig(title = "Account curve report",
 fsb_report_config = reportConfig(
     title="Futures spread bet report",
     function = "sysproduction.reporting.fsb_report.do_fsb_report",
-    output="emailfile"
+    output="file"
 )
 
 ## The reports will be run in this order
