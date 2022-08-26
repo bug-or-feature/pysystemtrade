@@ -42,14 +42,14 @@ class reportConfig(object):
 status_report_config = reportConfig(
     title="Status report",
     function="sysproduction.reporting.status_reporting.system_status",
-    output="file"
+    output="email"
 )
 
 roll_report_config = reportConfig(
     title="Roll report",
     function="sysproduction.reporting.roll_report.roll_info",
     instrument_code=ALL_ROLL_INSTRUMENTS,
-    output="file"
+    output="email"
 )
 
 daily_pandl_report_config = reportConfig(
@@ -109,14 +109,14 @@ slippage_report_config = reportConfig(
 
 instrument_risk_report_config = reportConfig(title="Instrument risk report",
     function=
-    "sysproduction.reporting.instrument_risk_fsb_report.instrument_risk_fsb_report",
-                                             output="file"
+    "sysproduction.reporting.instrument_risk_report.instrument_risk_report",
+                                             output="email"
                                              )
 
 min_capital_report_config= reportConfig(title="Minimum capital report",
     function=
-    "sysproduction.reporting.minimum_capital_fsb_report.minimum_capital_fsb_report",
-                                        output="file"
+    "sysproduction.reporting.minimum_capital_report.minimum_capital_report",
+                                        output="email"
                                         )
 
 duplicate_market_report_config = reportConfig(title="Duplicate markets report",
@@ -127,9 +127,8 @@ duplicate_market_report_config = reportConfig(title="Duplicate markets report",
 
 remove_markets_report_config = reportConfig(title="Remove markets report",
     function = "sysproduction.reporting.remove_markets_report.remove_markets_report",
-                                            output="file"
+                                            output="email"
                                             )
-
 
 market_monitor_report_config = reportConfig(title = "Market monitor report",
         function = "sysproduction.reporting.market_monitor_report.market_monitor_report",
@@ -142,7 +141,7 @@ account_curve_report_config = reportConfig(title = "Account curve report",
 fsb_report_config = reportConfig(
     title="Futures spread bet report",
     function = "sysproduction.reporting.fsb_report.do_fsb_report",
-    output="file"
+    output="email"
 )
 
 ## The reports will be run in this order

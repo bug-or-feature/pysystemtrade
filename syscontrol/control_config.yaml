@@ -95,6 +95,10 @@ process_configuration_methods:
       max_executions: 1
     remove_markets_report:
       max_executions: 1
+    market_monitor_report:
+      max_executions: 1
+    account_curve_report:
+      max_executions: 1
   run_backups:
     backup_arctic_to_csv:
       max_executions: 1
