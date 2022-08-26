@@ -2,6 +2,7 @@
 
 . ~/.zprofile
 cd $PYSYS_CODE || return
+rm site/reports/*_report.txt
 for f in site/reports/*_report; do mv "$f" "$f.txt"; done
 git add site/*
 git add site/reports/*
