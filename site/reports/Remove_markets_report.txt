@@ -1,23 +1,23 @@
 
 ********************************************************************************
-      Removed markets report report produced on 2022-09-01 22:31:04.709799      
+      Removed markets report report produced on 2022-09-02 22:31:03.643578      
 ********************************************************************************
 
 
 List of markets which should be marked as untradeable due to risk, liquidity or cost issues
-Following should be removed from trading (add to config.bad_markets) [0.300000 threshold]: ['SHATZ_fsb', 'EDOLLAR_fsb', 'US2_fsb', 'NIKKEI_fsb'] 
+Following should be removed from trading (add to config.bad_markets) [0.300000 threshold]: ['NIKKEI_fsb', 'SHATZ_fsb', 'US2_fsb', 'EDOLLAR_fsb'] 
 
 
 
-Following should be allowed to trade (delete from config.bad_markets) [0.300000 threshold]: ['VIX_fsb', 'EUA_fsb']
+Following should be allowed to trade (delete from config.bad_markets) [0.300000 threshold]: ['EUA_fsb', 'VIX_fsb']
 
 
 
-Markets too expensive (SR cost per trade > 0.010): ['AUD_fsb', 'CHF_fsb', 'DX_fsb', 'EDOLLAR_fsb', 'EUR_fsb', 'JGB_fsb', 'US2_fsb', 'V2X_fsb']
+Markets too expensive (SR cost per trade > 0.010): ['AUD_fsb', 'CHF_fsb', 'DX_fsb', 'EDOLLAR_fsb', 'EUR_fsb', 'JGB_fsb', 'V2X_fsb']
 
 
 
-Markets not enough risk volume (Volume in $m ann. risk per day < 1.50): ['CHF_fsb', 'EDOLLAR_fsb', 'NIKKEI_fsb', 'NZD_fsb']
+Markets not enough risk volume (Volume in $m ann. risk per day < 1.50): ['CHF_fsb', 'EDOLLAR_fsb', 'NIKKEI_fsb']
 
 
 
