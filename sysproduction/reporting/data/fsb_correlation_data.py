@@ -119,7 +119,7 @@ if __name__ == "__main__":
     #run_fsb_report(fc.from_key("BTP_fsb/20210300"), plot=True)
     #run_fsb_report(fc("CRUDE_W_fsb", "20210700"), draw=True) # CRUDE_W_fsb/20220400
     #run_fsb_report(fc("ASX_fsb", "20211200"), draw=True) # ASX_fsb/20211200
-    fsb_correlation_data(contract_key("DX_fsb/20220900"), draw=True)
+    fsb_correlation_data(contract_key("CAC_fsb/20220900"), draw=True)
 
     # all correlations
     #currently_sampling_report()
