@@ -1,11 +1,16 @@
-from systems.provided.futures_chapter15.basesystem import *
 from systems.futures_spreadbet.fsb_static_system import *
 from syscore.pdutils import print_full
-from sysdata.sim.db_futures_sim_data import dbFuturesSimData
-import matplotlib
+import matplotlib.pyplot as plt
 from matplotlib.pyplot import show
 import pandas as pd
-from syscore.dateutils import ROOT_BDAYS_INYEAR, BUSINESS_DAYS_IN_YEAR
+from syscore.dateutils import ROOT_BDAYS_INYEAR
+from syscore.dateutils import adjust_timestamp_to_include_notional_close_and_time_offset
+from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData, ConfigCsvFuturesPrices
+from sysobjects.futures_per_contract_prices import futuresContractPrices
+from sysobjects.dict_of_futures_per_contract_prices import dictFuturesContractPrices
+from sysdata.config.production_config import get_production_config
+from syscore.fileutils import get_filename_for_package
+from sysinit.futures_ag.barchart_futures_contract_prices import BARCHART_CONFIG
 
 DEPOSIT_FACTOR_MAP = {
     "Ags": 0.1,
@@ -16,6 +21,57 @@ DEPOSIT_FACTOR_MAP = {
     "OilGas": 0.1,
     "Vol": 0.2
 }
+
+
+def process_barchart_data(instrument):
+    original_close = pd.DateOffset(hours=23, minutes=0, seconds=1)
+    csv_time_offset = pd.DateOffset(hours=6)
+    actual_close = pd.DateOffset(hours=0, minutes=0, seconds=0)
+    datapath = get_filename_for_package(
+        get_production_config().get_element_or_missing_data("barchart_path")
+    )
+
+    csv_futures_contract_prices = csvFuturesContractPriceData(datapath=datapath, config=BARCHART_CONFIG)
+    all_barchart_data_original_ts = csv_futures_contract_prices.get_all_prices_for_instrument(instrument)
+    all_barchart_data = dict([(contractid, index_to_closing(data, csv_time_offset, original_close, actual_close))
+                              for contractid, data in all_barchart_data_original_ts.items()])
+
+    all_barchart_data = dictFuturesContractPrices(
+        [(key, futuresContractPrices(x)) for key, x in all_barchart_data.items()])
+
+    return all_barchart_data
+
+
+def index_to_closing(data_object, time_offset, original_close, actual_close):
+    """
+    Allows us to mix daily and intraday prices and seperate if required
+
+    If index is daily, mark to actual_close
+    If index is original_close, mark to actual_close
+    If index is intraday, add time_offset
+
+    :param data_object: pd.DataFrame or Series
+    :return: data_object
+    """
+    new_index = []
+    for index_entry in data_object.index:
+        # Check for genuine daily data
+        new_index_entry = adjust_timestamp_to_include_notional_close_and_time_offset(index_entry, actual_close,
+                                                                                     original_close, time_offset)
+        new_index.append(new_index_entry)
+
+    new_data_object = pd.DataFrame(data_object.values, index=new_index, columns=data_object.columns)
+    new_data_object = new_data_object.loc[~new_data_object.index.duplicated(keep='first')]
+
+    return new_data_object
+
+
+def check_csv_prices(instr_code):
+    barchart_data = process_barchart_data(instr_code)
+    barchart_prices_final = barchart_data.final_prices()
+    barchart_prices_final_as_pd = pd.concat(barchart_prices_final, axis=1)
+    barchart_prices_final_as_pd.plot()
+    show()
 
 
 def run_new_instrument_report(instr_code, do_print=True):
@@ -35,11 +91,6 @@ def run_new_instrument_report(instr_code, do_print=True):
     min_bet = metadata.meta_data.Pointsize
     asset_class = metadata.meta_data.AssetClass
     deposit_factor = DEPOSIT_FACTOR_MAP[asset_class]
-
-    #system.rules.get_raw_forecast("DOW_fsb", "ewmac64_256").plot()
-    #system.rules.get_raw_forecast("DOW_fsb", "carry").plot()
-    #system.combForecast.get_combined_forecast("DOW_fsb").plot()
-    #system.positionSize.get_subsystem_position("DOW_fsb").plot()
 
     daily_vol = system.rawdata.get_daily_percentage_volatility(instr_code).iloc[-1]
     ann_std_dev = daily_vol * ROOT_BDAYS_INYEAR
@@ -87,16 +138,56 @@ def run_new_instrument_report(instr_code, do_print=True):
         for key, value in results.items():
             print(f"{key}: {value}")
 
+        do_plots(system, instr_code)
+
     return results
+
+
+def do_plots(system, instr_code):
+    fig = plt.figure(figsize=(10, 20))
+    ax = fig.add_subplot(711)
+    ax.set_title(f"Adjusted prices for {instr_code}")
+    ax.plot(system.data.get_raw_price(instr_code))
+    ax.grid(True)
+
+    ax = fig.add_subplot(712)
+    ax.set_title(f"ewmac64_256 for {instr_code}")
+    ax.plot(system.rules.get_raw_forecast(instr_code, "ewmac64_256"))
+    ax.grid(True)
+
+    ax = fig.add_subplot(713)
+    ax.set_title(f"carry for {instr_code}")
+    ax.plot(system.rules.get_raw_forecast(instr_code, "carry"))
+    ax.grid(True)
+
+    ax = fig.add_subplot(714)
+    ax.set_title(f"Combined forecast for {instr_code}")
+    ax.plot(system.combForecast.get_combined_forecast(instr_code))
+    ax.grid(True)
+
+    ax = fig.add_subplot(715)
+    ax.set_title(f"Subsystem position for {instr_code}")
+    ax.plot(system.positionSize.get_subsystem_position(instr_code))
+    ax.grid(True)
+
+    ax = fig.add_subplot(716)
+    ax.set_title(f"PnL for {instr_code}")
+    ax.plot(system.accounts.pandl_for_instrument(instr_code).curve())
+    ax.grid(True)
+
+    ax = fig.add_subplot(717)
+    ax.set_title(f"Subsystem PnL for {instr_code}")
+    ax.plot(system.accounts.pandl_for_subsystem(instr_code))
+    ax.grid(True)
+
+    show()
 
 
 def multi_instrument_report():
     rows = []
-    instr_list = ["BUXL_fsb","CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US10_fsb",
-                  "BTP_fsb","DOW_fsb","COFFEE_fsb","EUR_fsb","GILT_fsb","JPY_fsb","NIKKEI_fsb","SOYOIL_fsb",
-                  "ASX_fsb", "HANG_fsb", "DX_fsb", "GBP_fsb", "JGB_fsb", "US2_fsb", "WHEAT_fsb", "SOYBEAN_fsb",
-                  "COPPER_fsb", "SILVER_fsb", "EUA_fsb", "GAS_US_fsb", "VIX_fsb", "V2X_fsb"
-                  ]
+    instr_list = ['ASX_fsb', 'BTP_fsb', 'CAD_fsb', 'COFFEE_fsb', 'COPPER_fsb', 'CRUDE_W_fsb', 'DOW_fsb', 'DX_fsb',
+                  'EUA_fsb', 'EUROSTX_fsb', 'EUR_fsb', 'GAS_US_fsb', 'GBP_fsb', 'GILT_fsb', 'HANG_fsb', 'JGB_fsb',
+                  'JPY_fsb', 'NIKKEI_fsb', 'SILVER_fsb', 'SOYBEAN_fsb', 'SOYOIL_fsb', 'US2_fsb', 'V2X_fsb', 'WHEAT_fsb']
 
     for instr in instr_list:
         rows.append(run_new_instrument_report(instr, do_print=False))
@@ -110,6 +201,6 @@ def multi_instrument_report():
 
 
 if __name__ == "__main__":
-    #run_new_instrument_report("GOLD_fsb")
-
-    multi_instrument_report()
+    #run_new_instrument_report("WHEAT_fsb")
+    #multi_instrument_report()
+    check_csv_prices("AEX")
