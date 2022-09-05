@@ -8,7 +8,7 @@ from syscore.interactive import (
 )
 from syscore.genutils import progressBar
 from syscore.pdutils import set_pd_print_options
-from syscore.objects import user_exit, arg_not_supplied, missing_contract, ALL_ROLL_INSTRUMENTS
+from syscore.objects import user_exit, arg_not_supplied, missing_contract, ALL_ROLL_INSTRUMENTS, missing_data
 from sysexecution.orders.list_of_orders import listOfOrders
 
 from sysdata.data_blob import dataBlob
@@ -393,7 +393,7 @@ def individual_prices(data):
         data, only_include_priced_contracts=True
     )
     diag_prices = diagPrices(data)
-    prices = diag_prices.get_prices_for_contract_object(contract)
+    prices = diag_prices.get_merged_prices_for_contract_object(contract)
 
     print(prices)
 
@@ -440,10 +440,16 @@ def spreads(data):
 def capital_strategy(data):
     data_capital = dataCapital(data)
     strat_list = data_capital.get_list_of_strategies_with_capital()
+    if len(strat_list)==0:
+        print("No strategies with capital need to run update_strategy_capital")
+        return None
     strategy_name = print_menu_of_values_and_get_response(
         strat_list, default_str=strat_list[0]
     )
     capital_series = data_capital.get_capital_pd_series_for_strategy(strategy_name)
+    if capital_series is missing_data:
+        print("No capital for strategy need to run update_strategy_capital")
+        return None
     print(capital_series.tail(30))
     return None
 
@@ -451,6 +457,9 @@ def capital_strategy(data):
 def total_current_capital(data):
     data_capital = dataCapital(data)
     capital_series = data_capital.get_series_of_all_global_capital()
+    if capital_series is missing_data:
+        print("No total capital in database")
+        return None
     print(capital_series.tail(30))
     return None
 

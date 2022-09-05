@@ -1,7 +1,9 @@
 import datetime
 
+import numpy as np
+
 from syscore.objects import missing_contract, arg_not_supplied, missing_data
-from syscore.dateutils import Frequency, from_config_frequency_to_frequency
+from syscore.dateutils import Frequency, from_config_frequency_to_frequency, n_days_ago
 
 from sysobjects.contracts import futuresContract
 from sysobjects.dict_of_futures_per_contract_prices import (
@@ -36,10 +38,13 @@ from sysdata.data_blob import dataBlob
 
 from sysobjects.multiple_prices import price_name
 from sysobjects.contract_dates_and_expiries import listOfContractDateStr
+from sysproduction.data.currency_data import dataCurrency
 
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
 
 ## default for spike checking
+from sysproduction.data.instruments import diagInstruments, get_block_size
+
 VERY_BIG_NUMBER = 999999.0
 
 class diagPrices(productionDataLayerGeneric):
@@ -95,14 +100,25 @@ class diagPrices(productionDataLayerGeneric):
 
         return multiple_prices
 
-    def get_prices_for_contract_object(
+    def get_merged_prices_for_contract_object(
         self, contract_object: futuresContract
     ) -> futuresContractPrices:
-        prices = self.db_futures_contract_price_data.get_prices_for_contract_object(
+        prices = self.db_futures_contract_price_data.get_merged_prices_for_contract_object(
             contract_object
         )
 
         return prices
+
+    def get_prices_at_frequency_for_contract_object(
+        self, contract_object: futuresContract,
+            frequency: Frequency
+    ) -> futuresContractPrices:
+        prices = self.db_futures_contract_price_data.\
+            get_prices_at_frequency_for_contract_object(contract_object,
+                                                        frequency=frequency)
+
+        return prices
+
 
     def get_current_priced_contract_prices_for_instrument(
         self, instrument_code: str
@@ -114,7 +130,7 @@ class diagPrices(productionDataLayerGeneric):
 
     def get_list_of_instruments_with_contract_prices(self) -> list:
         unique_list_of_instruments = (
-            self.db_futures_contract_price_data.get_list_of_instrument_codes_with_price_data()
+            self.db_futures_contract_price_data.get_list_of_instrument_codes_with_merged_price_data()
         )
 
         return unique_list_of_instruments
@@ -122,7 +138,7 @@ class diagPrices(productionDataLayerGeneric):
     def contract_dates_with_price_data_for_instrument_code(
         self, instrument_code: str
     ) -> listOfContractDateStr:
-        list_of_contract_date_str = self.db_futures_contract_price_data.contract_dates_with_price_data_for_instrument_code(
+        list_of_contract_date_str = self.db_futures_contract_price_data.contract_dates_with_merged_price_data_for_instrument_code(
             instrument_code
         )
 
@@ -168,7 +184,7 @@ class diagPrices(productionDataLayerGeneric):
                 continue
             # Could blow up here if don't have prices for a contract??
             contract = futuresContract(instrument_code, contract_date_str)
-            prices = self.get_prices_for_contract_object(contract)
+            prices = self.get_merged_prices_for_contract_object(contract)
             dict_of_prices[contract_date_str] = prices
 
         dict_of_prices = dictFuturesContractPrices(dict_of_prices)
@@ -212,17 +228,31 @@ class updatePrices(productionDataLayerGeneric):
 
         return data
 
-    def update_prices_for_contract(
+    def overwrite_merged_prices_for_contract(
         self,
         contract_object: futuresContract,
+        new_prices: futuresContractPrices,
+    ):
+
+        self.db_futures_contract_price_data.write_merged_prices_for_contract_object(contract_object,
+                                                                                    futures_price_data=new_prices,
+                                                                                    ignore_duplication=True)
+
+
+    def update_prices_at_frequency_for_contract(
+        self,
+        contract_object: futuresContract,
+        frequency: Frequency,
         new_prices: futuresContractPrices,
         check_for_spike: bool = True,
         max_price_spike: float = VERY_BIG_NUMBER
     ) -> int:
 
         error_or_rows_added = (
-            self.db_futures_contract_price_data.update_prices_for_contract(
-                contract_object, new_prices,
+            self.db_futures_contract_price_data.update_prices_at_frequency_for_contract(
+                contract_object=contract_object,
+                new_futures_per_contract_prices =new_prices,
+                frequency=frequency,
                 check_for_spike=check_for_spike,
                 max_price_spike = max_price_spike
             )
@@ -327,3 +357,64 @@ def get_list_of_instruments(
     instrument_list.sort()
 
     return instrument_list
+
+
+def recent_average_price(data: dataBlob, instrument_code: str) -> float:
+    diag_prices = diagPrices(data)
+    prices = diag_prices.get_adjusted_prices(instrument_code)
+    if len(prices) == 0:
+        return np.nan
+    one_year_ago = n_days_ago(365)
+    recent_prices = prices[one_year_ago:]
+
+    return recent_prices.mean(skipna=True)
+
+
+def get_current_price_of_instrument(data, instrument_code):
+    price_series = get_price_series(data, instrument_code)
+    if len(price_series) == 0:
+        return np.nan
+
+    current_price = price_series.values[-1]
+
+    return current_price
+
+
+def get_price_series(data, instrument_code):
+    diag_prices = diagPrices(data)
+    price_series = diag_prices.get_adjusted_prices(instrument_code)
+
+    return price_series
+
+
+def get_current_price_series(data, instrument_code):
+    diag_prices = diagPrices(data)
+    return diag_prices.get_current_priced_contract_prices_for_instrument(
+        instrument_code
+    )
+
+
+def get_cash_cost_in_base_for_instrument(data: dataBlob, instrument_code: str):
+    diag_instruments = diagInstruments(data)
+    costs_object = diag_instruments.get_cost_object(instrument_code)
+    blocks_traded = 1
+    block_price_multiplier = get_block_size(data, instrument_code)
+    price = recent_average_price(data, instrument_code)
+    cost_instrument_ccy = costs_object.calculate_cost_instrument_currency(
+        blocks_traded=blocks_traded,
+        block_price_multiplier=block_price_multiplier,
+        price=price,
+    )
+    fx = last_currency_fx(data, instrument_code)
+    cost_base_ccy = cost_instrument_ccy * fx
+
+    return cost_base_ccy
+
+
+def last_currency_fx(data: dataBlob, instrument_code: str) -> float:
+    data_currency = dataCurrency(data)
+    diag_instruments = diagInstruments(data)
+    currency = diag_instruments.get_currency(instrument_code)
+    fx_rate = data_currency.get_last_fx_rate_to_base(currency)
+
+    return fx_rate

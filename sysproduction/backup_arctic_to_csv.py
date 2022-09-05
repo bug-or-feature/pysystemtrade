@@ -31,6 +31,7 @@ from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesDat
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
 from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
 from sysdata.arctic.arctic_spreads import arcticSpreadsForInstrumentData
+from sysdata.arctic.arctic_capital import arcticCapitalData
 
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 from sysdata.mongodb.mongo_position_by_contract import mongoContractPositionData
@@ -40,7 +41,6 @@ from sysdata.mongodb.mongo_historic_orders import (
     mongoContractHistoricOrdersData,
     mongoStrategyHistoricOrdersData,
 )
-from sysdata.mongodb.mongo_capital import mongoCapitalData
 from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
 from sysdata.mongodb.mongo_optimal_position import mongoOptimalPositionData
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
@@ -146,12 +146,12 @@ def get_data_and_create_csv_directories(logname):
             arcticFuturesAdjustedPricesData,
             arcticFxPricesData,
             arcticSpreadsForInstrumentData,
+            arcticCapitalData,
             mongoContractPositionData,
             mongoStrategyPositionData,
             mongoBrokerHistoricOrdersData,
             mongoContractHistoricOrdersData,
             mongoStrategyHistoricOrdersData,
-            mongoCapitalData,
             mongoFuturesContractData,
             mongoFuturesInstrumentData,
             mongoOptimalPositionData,
@@ -170,7 +170,7 @@ def get_data_and_create_csv_directories(logname):
 # Futures contract data
 def backup_futures_contract_prices_to_csv(data):
     instrument_list = (
-        data.arctic_futures_contract_price.get_list_of_instrument_codes_with_price_data()
+        data.arctic_futures_contract_price.get_list_of_instrument_codes_with_merged_price_data()
     )
     for instrument_code in instrument_list:
         backup_futures_contract_prices_for_instrument_to_csv(data, instrument_code)
@@ -179,7 +179,7 @@ def backup_futures_contract_prices_to_csv(data):
 def backup_futures_contract_prices_for_instrument_to_csv(
     data: dataBlob, instrument_code: str
 ):
-    list_of_contracts = data.arctic_futures_contract_price.contracts_with_price_data_for_instrument_code(
+    list_of_contracts = data.arctic_futures_contract_price.contracts_with_merged_price_data_for_instrument_code(
         instrument_code
     )
 
@@ -196,11 +196,11 @@ def backup_futures_contract_prices_for_contract_to_csv(
 
             return None
 
-        arctic_data = data.arctic_futures_contract_price.get_prices_for_contract_object(
+        arctic_data = data.arctic_futures_contract_price.get_merged_prices_for_contract_object(
             futures_contract
         )
 
-        csv_data = data.csv_futures_contract_price.get_prices_for_contract_object(
+        csv_data = data.csv_futures_contract_price.get_merged_prices_for_contract_object(
             futures_contract
         )
 
@@ -210,7 +210,7 @@ def backup_futures_contract_prices_for_contract_to_csv(
         else:
             # Write backup
             try:
-                data.csv_futures_contract_price.write_prices_for_contract_object(
+                data.csv_futures_contract_price.write_merged_prices_for_contract_object(
                     futures_contract,
                     arctic_data,
                     ignore_duplication=True,
@@ -352,9 +352,14 @@ def backup_contract_position_data(data):
                     contract
                 )
             )
-            data.csv_contract_position.write_position_df_for_contract(
-                contract, mongo_data
-            )
+            try:
+                data.csv_contract_position.write_position_df_for_contract(
+                    contract, mongo_data
+                )
+            except:
+                ## deals with weird corner case
+                print("Couldn't write %s to .csv" % str(mongo_data))
+                pass
             data.log.msg(
                 "Backed up %s %s contract position data" % (instrument_code, contract)
             )
@@ -411,36 +416,34 @@ def backup_historical_orders(data):
 
 
 def backup_capital(data):
+    strategy_capital_dict = get_dict_of_strategy_capital(data)
+    capital_data_df = add_total_capital_to_strategy_capital_dict_return_df(data, strategy_capital_dict)
+    capital_data_df = capital_data_df.ffill()
+
+    data.csv_capital.write_backup_df_of_all_capital(capital_data_df)
+
+
+def get_dict_of_strategy_capital(data: dataBlob) -> dict:
     strategy_list = get_list_of_strategies(data)
-    capital_data = dict()
+    strategy_capital_data = dict()
     for strategy_name in strategy_list:
-        capital_data[strategy_name] = data.mongo_capital.get_capital_pd_series_for_strategy(
+        strategy_capital_data[strategy_name] = data.arctic_capital.get_capital_pd_df_for_strategy(
             strategy_name
         )
 
-    if len(capital_data) > 0:
-        capital_data["TOTAL_total"] = data.mongo_capital.get_total_capital_pd_series()
-        capital_data[
-            "TOTAL_broker"
-        ] = data.mongo_capital.get_broker_account_value_pd_series()
-        capital_data["TOTAL_max"] = data.mongo_capital.get_maximum_account_value_pd_series()
-        capital_data[
-            "TOTAL_pandl"
-        ] = data.mongo_capital.get_profit_and_loss_account_pd_series()
+    return strategy_capital_data
 
-        capital_data = pd.concat(capital_data, axis=1)
-        capital_data.columns = strategy_list + [
-            "TOTAL_total",
-            "TOTAL_broker",
-            "TOTAL_max",
-            "TOTAL_pandl",
-        ]
-        capital_data = capital_data.ffill()
+def add_total_capital_to_strategy_capital_dict_return_df(data: dataBlob,
+                                          capital_data: dict) -> pd.DataFrame:
 
-        data.csv_capital.write_df_of_all_capital(capital_data)
+    strategy_capital_as_df = pd.concat(capital_data, axis=1)
+    total_capital = data.arctic_capital.get_df_of_all_global_capital()
+    capital_data = pd.concat([strategy_capital_as_df, total_capital],
+                                       axis=1)
 
-    data.log.msg("Backed up capital data")
+    capital_data = capital_data.ffill()
 
+    return  capital_data
 
 def backup_optimal_positions(data):
 
@@ -498,3 +501,7 @@ def backup_csv_dump(data):
     destination_path = get_csv_backup_directory()
     data.log.msg("Copy from %s to %s" % (source_path, destination_path))
     os.system("rsync -av %s %s" % (source_path, destination_path))
+
+
+if __name__ == '__main__':
+    backup_arctic_to_csv()

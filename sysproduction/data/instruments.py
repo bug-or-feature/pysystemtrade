@@ -88,3 +88,8 @@ class diagInstruments(productionDataLayerGeneric):
         ]
 
         return instrument_codes
+
+
+def get_block_size(data, instrument_code):
+    diag_instruments = diagInstruments(data)
+    return diag_instruments.get_point_size(instrument_code)
