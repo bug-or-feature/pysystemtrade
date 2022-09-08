@@ -1,11 +1,11 @@
 
 ********************************************************************************
-      Removed markets report report produced on 2022-09-07 22:31:03.042118      
+      Removed markets report report produced on 2022-09-08 22:31:04.756867      
 ********************************************************************************
 
 
 List of markets which should be marked as untradeable due to risk, liquidity or cost issues
-Following should be removed from trading (add to config.bad_markets) [0.300000 threshold]: ['EDOLLAR_fsb', 'CHF_fsb', 'US2_fsb', 'SHATZ_fsb', 'NIKKEI_fsb'] 
+Following should be removed from trading (add to config.bad_markets) [0.300000 threshold]: ['EDOLLAR_fsb', 'SHATZ_fsb', 'NIKKEI_fsb', 'US2_fsb'] 
 
 
 
