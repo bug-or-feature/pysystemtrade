@@ -1,6 +1,6 @@
 
 ********************************************************************************
-            FSB report report produced on 2022-09-09 22:32:09.498803            
+            FSB report report produced on 2022-09-12 22:32:08.958903            
 ********************************************************************************
 
 
@@ -16,23 +16,21 @@ Showing only those with Price < 0.8 or Returns < 0.6, sorted by Returns
                      Price  Returns
 Contract                           
 HANG_fsb/20221100    -0.78    -1.00
-SHATZ_fsb/20221200    0.79    -0.57
 BUXL_fsb/20230300     0.96    -0.32
 BTP_fsb/20230300     -0.24    -0.24
-IBXEX_fsb/20220900    0.86    -0.07
+IBXEX_fsb/20220900    0.86    -0.06
 V2X_fsb/20230100      0.86    -0.06
-JGB_fsb/20221200      0.42    -0.04
 US2_fsb/20230300      0.71    -0.02
+JGB_fsb/20221200      0.44    -0.01
 BUND_fsb/20230300     0.96     0.01
 OAT_fsb/20230300      0.93     0.04
-AUD_fsb/20221200      0.88     0.05
+AUD_fsb/20221200      0.88     0.06
 SHATZ_fsb/20230300    0.91     0.13
 BOBL_fsb/20230300     0.85     0.18
-BOBL_fsb/20221200     0.96     0.25
-CHF_fsb/20221200      0.95     0.34
-BUXL_fsb/20221200     0.82     0.42
-NIKKEI_fsb/20221200   0.87     0.50
-AUD_fsb/20220900      0.97     0.53
+CHF_fsb/20221200      0.95     0.37
+BUXL_fsb/20221200     0.83     0.43
+NIKKEI_fsb/20221200   0.91     0.53
+AUD_fsb/20220900      0.97     0.54
 
 Price: correlation between spread bet price and the underlying future, per contract
 Returns: correlation between spread bet returns and the underlying future, per contract
@@ -44,103 +42,107 @@ Sorted by contract
 
                       Price  Returns
 Contract                            
-AEX_fsb/20220900       0.98     0.66
+AEX_fsb/20220900       0.99     0.79
 AEX_fsb/20221100        NaN      NaN
-ASX_fsb/20220900       0.99     0.75
+ASX_fsb/20220900       0.99     0.77
 ASX_fsb/20221200        NaN      NaN
-AUD_fsb/20220900       0.97     0.53
-AUD_fsb/20221200       0.88     0.05
-BOBL_fsb/20221200      0.96     0.25
+AUD_fsb/20220900       0.97     0.54
+AUD_fsb/20221200       0.88     0.06
+BOBL_fsb/20221200      1.00     0.87
 BOBL_fsb/20230300      0.85     0.18
 BTP_fsb/20230300      -0.24    -0.24
-BUND_fsb/20221200      0.99     0.81
+BUND_fsb/20221200      1.00     0.85
 BUND_fsb/20230300      0.96     0.01
-BUXL_fsb/20221200      0.82     0.42
+BUXL_fsb/20221200      0.83     0.43
 BUXL_fsb/20230300      0.96    -0.32
-CAC_fsb/20220900       0.98     0.70
+CAC_fsb/20220900       0.99     0.81
+CAC_fsb/20221000       1.00      NaN
 CAD_fsb/20220900       0.99     0.77
 CAD_fsb/20221200       0.99     0.94
-CHF_fsb/20220900       0.98     0.79
-CHF_fsb/20221200       0.95     0.34
+CHF_fsb/20220900       0.98     0.80
+CHF_fsb/20221200       0.95     0.37
 COFFEE_fsb/20221200    1.00     1.00
 COFFEE_fsb/20230300    0.95     0.98
 COPPER_fsb/20221200    0.99     0.79
-COPPER_fsb/20230300    0.96     0.78
-CRUDE_W_fsb/20221000   0.98     0.89
-CRUDE_W_fsb/20221100   0.89     0.80
-CRUDE_W_fsb/20221200   0.87     0.84
-DAX_fsb/20220900       0.98     0.80
-DOW_fsb/20220900       1.00     0.90
+COPPER_fsb/20230300    0.97     0.78
+CRUDE_W_fsb/20221000   0.99     0.90
+CRUDE_W_fsb/20221100   0.89     0.81
+CRUDE_W_fsb/20221200   0.88     0.88
+DAX_fsb/20220900       0.98     0.82
+DAX_fsb/20221200        NaN      NaN
+DOW_fsb/20220900       1.00     0.91
 DOW_fsb/20221200        NaN      NaN
 DX_fsb/20220900        1.00     0.89
-DX_fsb/20221200        1.00     0.89
+DX_fsb/20221200        1.00     0.88
 EDOLLAR_fsb/20220900   1.00     0.97
-EDOLLAR_fsb/20221200   0.99     0.92
-EDOLLAR_fsb/20230300   0.99     0.92
-EDOLLAR_fsb/20230600   1.00     0.93
-EDOLLAR_fsb/20230900   1.00     0.93
+EDOLLAR_fsb/20221200   1.00     0.93
+EDOLLAR_fsb/20230300   1.00     0.93
+EDOLLAR_fsb/20230600   1.00     0.94
+EDOLLAR_fsb/20230900   1.00     0.94
 EUA_fsb/20221200       0.99     0.89
 EUA_fsb/20231200       0.98     0.76
 EUA_fsb/20241200       0.98     0.75
-EUROSTX_fsb/20220900   0.99     0.90
+EUROSTX_fsb/20220900   0.99     0.92
 EUROSTX_fsb/20221200    NaN      NaN
 EUR_fsb/20220900       1.00     0.85
-EUR_fsb/20221200       1.00     0.93
-FTSE100_fsb/20220900   0.98     0.81
+EUR_fsb/20221200       1.00     0.92
+FTSE100_fsb/20220900   0.98     0.83
+FTSE100_fsb/20221200    NaN      NaN
 GAS_US_fsb/20221000    1.00     0.98
 GAS_US_fsb/20221100    0.99     0.96
 GBP_fsb/20220900       1.00     0.80
 GBP_fsb/20221200       0.99     0.88
-GILT_fsb/20221200      1.00     0.93
-GOLD_fsb/20221200      0.99     0.92
+GILT_fsb/20221200      1.00     0.94
+GOLD_fsb/20221200      0.99     0.91
 GOLD_fsb/20230200      0.99     0.90
-GOLD_fsb/20230400      0.90     0.89
-HANG_fsb/20220900      0.89     0.65
+GOLD_fsb/20230400      0.90     0.88
+HANG_fsb/20220900      0.90     0.63
 HANG_fsb/20221000       NaN      NaN
 HANG_fsb/20221100     -0.78    -1.00
-IBXEX_fsb/20220900     0.86    -0.07
+IBXEX_fsb/20220900     0.86    -0.06
 IBXEX_fsb/20221000     1.00      NaN
-JGB_fsb/20220900       0.97     0.61
-JGB_fsb/20221200       0.42    -0.04
+JGB_fsb/20221200       0.44    -0.01
 JGB_fsb/20230300        NaN      NaN
 JPY_fsb/20220900       0.99     0.70
 JPY_fsb/20221200       0.99     0.88
-NASDAQ_fsb/20220900    1.00     0.93
+NASDAQ_fsb/20220900    1.00     0.94
 NASDAQ_fsb/20221200     NaN      NaN
-NIKKEI_fsb/20221200    0.87     0.50
+NIKKEI_fsb/20221200    0.91     0.53
+NIKKEI_fsb/20230300     NaN      NaN
 NZD_fsb/20220900       1.00     0.86
 NZD_fsb/20221200       0.96     0.62
-OAT_fsb/20221200       0.99     0.81
+OAT_fsb/20221200       0.98     0.84
 OAT_fsb/20230300       0.93     0.04
-RUSSELL_fsb/20220900   0.99     0.78
+RUSSELL_fsb/20220900   0.99     0.79
 RUSSELL_fsb/20221200    NaN      NaN
-SHATZ_fsb/20221200     0.79    -0.57
+SHATZ_fsb/20221200     1.00     0.95
 SHATZ_fsb/20230300     0.91     0.13
 SILVER_fsb/20221200    0.99     0.93
-SILVER_fsb/20230300    0.99     0.91
-SMI_fsb/20220900       0.98     0.70
+SILVER_fsb/20230300    0.99     0.90
+SMI_fsb/20220900       0.99     0.73
 SMI_fsb/20221200        NaN      NaN
-SOYBEAN_fsb/20221100   0.96     0.86
-SOYBEAN_fsb/20230100   0.95     0.83
+SOYBEAN_fsb/20221100   0.96     0.87
+SOYBEAN_fsb/20230100   0.95     0.84
 SOYOIL_fsb/20221200    0.98     0.88
-SOYOIL_fsb/20230100    0.94     0.83
-SP500_fsb/20220900     0.99     0.82
+SOYOIL_fsb/20230100    0.95     0.85
+SP500_fsb/20220900     0.99     0.83
+SP500_fsb/20221200      NaN      NaN
 US10_fsb/20221200      0.97     0.77
 US10_fsb/20230300      0.98     0.80
-US2_fsb/20221200       0.95     0.94
+US2_fsb/20221200       0.99     0.98
 US2_fsb/20230300       0.71    -0.02
 US30U_fsb/20221200     1.00     0.98
 US30U_fsb/20230300     0.99     0.90
 US30_fsb/20221200      0.99     0.97
 US30_fsb/20230300      0.99     0.91
-US5_fsb/20221200       0.98     0.97
+US5_fsb/20221200       0.99     0.98
 US5_fsb/20230300       0.99     0.90
-V2X_fsb/20220900       0.98     0.91
-V2X_fsb/20221000       0.97     0.87
+V2X_fsb/20220900       0.99     0.91
+V2X_fsb/20221000       0.97     0.86
 V2X_fsb/20230100       0.86    -0.06
-WHEAT_fsb/20221200     1.00     0.76
-WHEAT_fsb/20230300     0.98     0.83
-WHEAT_fsb/20230500     0.92     0.81
+WHEAT_fsb/20221200     1.00     0.77
+WHEAT_fsb/20230300     0.99     0.86
+WHEAT_fsb/20230500     0.96     0.89
 
 
 =====================================================================
