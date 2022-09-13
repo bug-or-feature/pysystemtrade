@@ -13,6 +13,7 @@ trading_rules - a specification of the trading rules for a system
 """
 
 from pathlib import Path
+import os
 
 import yaml
 
@@ -265,7 +266,10 @@ class Config(object):
 
 
 def default_config():
-    config = Config()
+    if os.getenv("PST_PRIVATE_CONFIG"):
+        config = Config(private_filename=os.environ["PST_PRIVATE_CONFIG"])
+    else:
+        config = Config()
     config.fill_with_defaults()
 
     return config
