@@ -59,7 +59,6 @@ class Test(unittest.TestCase):
         self.assertEqual(ans[0].values[-1], 97.9875)
         self.assertEqual(ans[1], 2500)
 
-    @unittest.SkipTest
     def test_get_daily_cash_vol_target(self):
         ans_dict = self.system.positionSize.get_vol_target_dict()
         self.assertEqual(ans_dict["base_currency"], "GBP")
