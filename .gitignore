@@ -7,7 +7,7 @@ __pycache__
 .tox
 dist
 build
-private
+private/
 restats
 
 # Coverage reports
@@ -32,7 +32,7 @@ env/
 # jupyter
 *.ipynb
 
-/notes
+notes/
 
 data/Norgate
 data/backups_csv
