@@ -9,7 +9,7 @@ from sysdata.data_blob import dataBlob
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.prices import diagPrices
 from sysproduction.reporting.api import reportingApi
-from sysproduction.reporting.data import fsb_correlation_data
+from sysproduction.reporting.data.fsb_correlation_data import fsb_correlation_data
 from sysproduction.reporting.data.risk_fsb import (
     minimum_capital_table
 )
