@@ -1,6 +1,6 @@
 
 ********************************************************************************
-            FSB report report produced on 2022-09-17 15:43:51.317234            
+            FSB report report produced on 2022-09-19 22:32:11.563087            
 ********************************************************************************
 
 
@@ -18,12 +18,13 @@ Contract
 AEX_fsb/20221000       0.39    -1.00
 HANG_fsb/20221100     -0.78    -1.00
 BUXL_fsb/20230300      0.96    -0.32
+IBXEX_fsb/20221000     0.97    -0.26
 BTP_fsb/20230300      -0.24    -0.24
 RUSSELL_fsb/20230300   0.76    -0.19
 DOW_fsb/20230300       0.84    -0.18
 NASDAQ_fsb/20230300    0.79    -0.14
-JGB_fsb/20221200       0.34    -0.13
 ASX_fsb/20230600       0.38    -0.12
+JGB_fsb/20221200       0.37    -0.11
 SP500_fsb/20230300     0.79    -0.10
 EUROSTX_fsb/20230300   0.65    -0.06
 V2X_fsb/20230100       0.86    -0.06
@@ -31,14 +32,12 @@ US2_fsb/20230300       0.71    -0.02
 BUND_fsb/20230300      0.96     0.01
 OAT_fsb/20230300       0.93     0.04
 DAX_fsb/20230300       0.63     0.06
-IBXEX_fsb/20220900     0.86     0.11
 SHATZ_fsb/20230300     0.91     0.13
 BOBL_fsb/20230300      0.85     0.18
-AUD_fsb/20221200       0.91     0.25
+AUD_fsb/20221200       0.91     0.26
 SMI_fsb/20221200       0.98     0.38
-CHF_fsb/20221200       0.95     0.46
+CHF_fsb/20221200       0.95     0.45
 BUXL_fsb/20221200      0.84     0.48
-AUD_fsb/20220900       0.97     0.59
 SMI_fsb/20230300       0.11     0.62
 
 Price: correlation between spread bet price and the underlying future, per contract
@@ -51,13 +50,11 @@ Sorted by contract
 
                       Price  Returns
 Contract                            
-AEX_fsb/20220900       0.99     0.82
 AEX_fsb/20221000       0.39    -1.00
 AEX_fsb/20221100       0.86     0.60
 ASX_fsb/20221200       0.98     0.94
 ASX_fsb/20230600       0.38    -0.12
-AUD_fsb/20220900       0.97     0.59
-AUD_fsb/20221200       0.91     0.25
+AUD_fsb/20221200       0.91     0.26
 AUD_fsb/20230300        NaN      NaN
 BOBL_fsb/20221200      0.99     0.89
 BOBL_fsb/20230300      0.85     0.18
@@ -66,14 +63,11 @@ BUND_fsb/20221200      0.99     0.86
 BUND_fsb/20230300      0.96     0.01
 BUXL_fsb/20221200      0.84     0.48
 BUXL_fsb/20230300      0.96    -0.32
-CAC_fsb/20220900       0.98     0.82
 CAC_fsb/20221000       0.97     0.80
 CAC_fsb/20221100        NaN      NaN
-CAD_fsb/20220900       0.99     0.79
 CAD_fsb/20221200       0.99     0.95
 CAD_fsb/20230300        NaN      NaN
-CHF_fsb/20220900       0.98     0.81
-CHF_fsb/20221200       0.95     0.46
+CHF_fsb/20221200       0.95     0.45
 CHF_fsb/20230300        NaN      NaN
 COFFEE_fsb/20221200    1.00     1.00
 COFFEE_fsb/20230300    0.93     0.98
@@ -82,13 +76,10 @@ COPPER_fsb/20230300    0.97     0.82
 CRUDE_W_fsb/20221000   0.99     0.90
 CRUDE_W_fsb/20221100   0.90     0.81
 CRUDE_W_fsb/20221200   0.89     0.87
-DAX_fsb/20220900       0.98     0.83
-DAX_fsb/20221200       0.97     0.92
+DAX_fsb/20221200       0.97     0.91
 DAX_fsb/20230300       0.63     0.06
-DOW_fsb/20220900       1.00     0.92
-DOW_fsb/20221200       1.00     0.99
+DOW_fsb/20221200       1.00     1.00
 DOW_fsb/20230300       0.84    -0.18
-DX_fsb/20220900        1.00     0.90
 DX_fsb/20221200        1.00     0.90
 DX_fsb/20230300        0.88     0.67
 EDOLLAR_fsb/20220900   1.00     0.97
@@ -99,18 +90,14 @@ EDOLLAR_fsb/20230900   1.00     0.95
 EUA_fsb/20221200       0.99     0.89
 EUA_fsb/20231200       0.98     0.78
 EUA_fsb/20241200       0.98     0.75
-EUROSTX_fsb/20220900   0.99     0.92
-EUROSTX_fsb/20221200   0.96     0.93
+EUROSTX_fsb/20221200   0.96     0.92
 EUROSTX_fsb/20230300   0.65    -0.06
-EUR_fsb/20220900       1.00     0.86
 EUR_fsb/20221200       1.00     0.94
 EUR_fsb/20230300        NaN      NaN
-FTSE100_fsb/20220900   0.98     0.84
 FTSE100_fsb/20221200   0.97     0.73
-GAS_US_fsb/20221000    1.00     0.99
+GAS_US_fsb/20221000    1.00     0.98
 GAS_US_fsb/20221100    0.99     0.97
-GBP_fsb/20220900       1.00     0.81
-GBP_fsb/20221200       0.99     0.90
+GBP_fsb/20221200       0.99     0.89
 GBP_fsb/20230300        NaN      NaN
 GILT_fsb/20221200      1.00     0.95
 GOLD_fsb/20221200      0.99     0.93
@@ -119,39 +106,32 @@ GOLD_fsb/20230400      0.90     0.89
 HANG_fsb/20220900      0.93     0.67
 HANG_fsb/20221000       NaN      NaN
 HANG_fsb/20221100     -0.78    -1.00
-IBXEX_fsb/20220900     0.86     0.11
-IBXEX_fsb/20221000     0.97     1.00
-JGB_fsb/20221200       0.34    -0.13
+IBXEX_fsb/20221000     0.97    -0.26
+JGB_fsb/20221200       0.37    -0.11
 JGB_fsb/20230300        NaN      NaN
-JPY_fsb/20220900       1.00     0.72
 JPY_fsb/20221200       0.99     0.89
 JPY_fsb/20230300        NaN      NaN
-NASDAQ_fsb/20220900    1.00     0.95
 NASDAQ_fsb/20221200    1.00     1.00
 NASDAQ_fsb/20230300    0.79    -0.14
 NIKKEI_fsb/20221200    0.96     0.83
 NIKKEI_fsb/20230300     NaN      NaN
-NZD_fsb/20220900       1.00     0.87
 NZD_fsb/20221200       0.97     0.69
 NZD_fsb/20230300        NaN      NaN
 OAT_fsb/20221200       0.98     0.83
 OAT_fsb/20230300       0.93     0.04
-RUSSELL_fsb/20220900   0.99     0.81
-RUSSELL_fsb/20221200   1.00     0.99
+RUSSELL_fsb/20221200   1.00     1.00
 RUSSELL_fsb/20230300   0.76    -0.19
 SHATZ_fsb/20221200     0.99     0.95
 SHATZ_fsb/20230300     0.91     0.13
 SILVER_fsb/20221200    0.99     0.94
 SILVER_fsb/20230300    0.98     0.93
-SMI_fsb/20220900       0.99     0.74
 SMI_fsb/20221200       0.98     0.38
 SMI_fsb/20230300       0.11     0.62
 SOYBEAN_fsb/20221100   0.97     0.88
 SOYBEAN_fsb/20230100   0.96     0.87
 SOYOIL_fsb/20221200    0.99     0.89
 SOYOIL_fsb/20230100    0.95     0.86
-SP500_fsb/20220900     0.99     0.86
-SP500_fsb/20221200     1.00     0.95
+SP500_fsb/20221200     1.00     0.96
 SP500_fsb/20230300     0.79    -0.10
 US10_fsb/20221200      0.98     0.79
 US10_fsb/20230300      0.98     0.80
@@ -184,7 +164,7 @@ ASX_fsb/20221200              IX.D.ASX.MONTH3.IP  2022-12-15 01:59:00
 ASX_fsb/20230600              IX.D.ASX.MONTH4.IP  2023-06-14 23:59:00
 AUD_fsb/20230300                 CF.D.AUD.MAR.IP  2023-03-10 20:00:00
 AUD_fsb/20230600                 CF.D.AUD.JUN.IP  2023-06-16 19:00:00
-AUD_fsb/20230900                 CF.D.AUD.SEP.IP  2022-09-16 19:00:00
+AUD_fsb/20230900                 CF.D.AUD.SEP.IP  2023-09-15 19:00:00
 AUD_fsb/20221200                 CF.D.AUD.DEC.IP  2022-12-16 20:00:00
 BOBL_fsb/20230300            IR.D.FGBM.Month1.IP  2023-03-07 16:15:00
 BOBL_fsb/20221200            IR.D.FGBM.Month2.IP  2022-12-07 16:15:00
@@ -203,11 +183,11 @@ CAC_fsb/20221000              IX.D.CAC.Month1.IP  2022-10-21 13:40:00
 CAC_fsb/20221100              IX.D.CAC.Month2.IP  2022-11-18 14:40:00
 CAD_fsb/20230300              CF.D.USDCAD.MAR.IP  2023-03-10 20:00:00
 CAD_fsb/20230600              CF.D.USDCAD.JUN.IP  2023-06-16 19:00:00
-CAD_fsb/20230900              CF.D.USDCAD.SEP.IP  2022-09-16 19:00:00
+CAD_fsb/20230900              CF.D.USDCAD.SEP.IP  2023-09-15 19:00:00
 CAD_fsb/20221200              CF.D.USDCAD.DEC.IP  2022-12-16 20:00:00
 CHF_fsb/20230300              CF.D.USDCHF.MAR.IP  2023-03-10 20:00:00
 CHF_fsb/20230600              CF.D.USDCHF.JUN.IP  2023-06-16 19:00:00
-CHF_fsb/20230900              CF.D.USDCHF.SEP.IP  2022-09-16 19:00:00
+CHF_fsb/20230900              CF.D.USDCHF.SEP.IP  2023-09-15 19:00:00
 CHF_fsb/20221200              CF.D.USDCHF.DEC.IP  2022-12-16 20:00:00
 COCOA_LDN_fsb/20230500        CO.D.LCC.Month1.IP  2023-05-05 15:50:00
 COCOA_LDN_fsb/20230700        CO.D.LCC.Month2.IP  2023-07-07 15:50:00
@@ -233,7 +213,7 @@ COTTON2_fsb/20230300           CO.D.CT.Month1.IP  2023-02-17 19:15:00
 COTTON2_fsb/20221200           CO.D.CT.Month2.IP  2022-11-18 19:15:00
 CRUDE_W_fsb/20221200           EN.D.CL.Month1.IP  2022-11-18 19:30:00
 CRUDE_W_fsb/20221100           EN.D.CL.Month2.IP  2022-10-19 18:30:00
-CRUDE_W_fsb/20221000           EN.D.CL.Month3.IP  2022-09-19 18:30:00
+CRUDE_W_fsb/20230100           EN.D.CL.Month3.IP  2022-12-19 19:30:00
 DAX_fsb/20230300                 IX.D.DAX.FAR.IP  2023-03-17 12:00:00
 DAX_fsb/20221200                IX.D.DAX.VFAR.IP  2022-12-16 12:00:00
 DOW_fsb/20221200              IX.D.DOW.MONTH1.IP  2022-12-16 14:30:00
@@ -255,9 +235,9 @@ EUA_fsb/20241200              CO.D.CFI.Month2.IP  2024-12-16 17:00:00
 EUA_fsb/20231200              CO.D.CFI.Month3.IP  2023-12-18 17:00:00
 EURGBP_fsb/20230300           CF.D.EURGBP.MAR.IP  2023-03-10 20:00:00
 EURGBP_fsb/20230600           CF.D.EURGBP.JUN.IP  2023-06-16 19:00:00
-EURGBP_fsb/20230900           CF.D.EURGBP.SEP.IP  2022-09-16 19:00:00
+EURGBP_fsb/20230900           CF.D.EURGBP.SEP.IP  2023-09-15 19:00:00
 EURGBP_fsb/20221200           CF.D.EURGBP.DEC.IP  2022-12-16 20:00:00
-EURIBOR_fsb/20220900          IR.D.FEI.Month2.IP  2022-09-19 09:00:00
+EURIBOR_fsb/20250900         IR.D.FEI.Month14.IP  2025-09-15 09:00:00
 EURIBOR_fsb/20221200          IR.D.FEI.Month3.IP  2022-12-19 10:00:00
 EURIBOR_fsb/20230300          IR.D.FEI.Month4.IP  2023-03-13 10:00:00
 EURIBOR_fsb/20231200          IR.D.FEI.Month7.IP  2023-12-18 10:00:00
@@ -265,14 +245,13 @@ EURIBOR_fsb/20230600          IR.D.FEI.MONTH5.IP  2023-06-19 09:00:00
 EURIBOR_fsb/20230900          IR.D.FEI.MONTH6.IP  2023-09-18 09:00:00
 EURIBOR_fsb/20240300          IR.D.FEI.Month8.IP  2024-03-18 10:00:00
 EURIBOR_fsb/20241200         IR.D.FEI.Month11.IP  2024-12-16 10:00:00
-EURIBOR_fsb/20250900         IR.D.FEI.Month14.IP  2025-09-15 09:00:00
 EURIBOR_fsb/20211200         IR.D.FEI.Month15.IP  2021-12-13 10:00:00
 EURIBOR_fsb/20220300         IR.D.FEI.Month16.IP  2022-03-14 10:00:00
 EUROSTX_fsb/20230300         IX.D.STXE.MONTH2.IP  2023-03-17 10:50:00
 EUROSTX_fsb/20221200         IX.D.STXE.MONTH3.IP  2022-12-16 10:50:00
 EUR_fsb/20230300              CF.D.EURUSD.MAR.IP  2023-03-10 20:00:00
 EUR_fsb/20230600              CF.D.EURUSD.JUN.IP  2023-06-16 19:00:00
-EUR_fsb/20230900              CF.D.EURUSD.SEP.IP  2022-09-16 19:00:00
+EUR_fsb/20230900              CF.D.EURUSD.SEP.IP  2023-09-15 19:00:00
 EUR_fsb/20221200              CF.D.EURUSD.DEC.IP  2022-12-16 20:00:00
 FED_fsb/20221000               IR.D.FF.Month1.IP  2022-10-31 20:00:00
 FED_fsb/20221100               IR.D.FF.Month2.IP  2022-11-30 20:00:00
@@ -296,7 +275,7 @@ GAS_US_fsb/20221000            EN.D.NG.Month1.IP  2022-09-27 18:30:00
 GAS_US_fsb/20221100            EN.D.NG.Month2.IP  2022-10-26 18:30:00
 GBP_fsb/20230300              CF.D.GBPUSD.MAR.IP  2023-03-10 20:00:00
 GBP_fsb/20230600              CF.D.GBPUSD.JUN.IP  2023-06-16 19:00:00
-GBP_fsb/20230900              CF.D.GBPUSD.SEP.IP  2022-09-16 19:00:00
+GBP_fsb/20230900              CF.D.GBPUSD.SEP.IP  2023-09-15 19:00:00
 GBP_fsb/20221200              CF.D.GBPUSD.DEC.IP  2022-12-16 20:00:00
 GILT_fsb/20221200             IR.D.FLG.Month1.IP  2022-11-28 16:15:00
 GILT_fsb/20230300             IR.D.FLG.Month2.IP  2023-02-24 16:15:00
@@ -315,7 +294,7 @@ JGB_fsb/20230300              IR.D.JGB.Month2.IP  2023-03-10 06:10:00
 JGB_fsb/20221200              IR.D.JGB.Month3.IP  2022-12-12 06:10:00
 JPY_fsb/20230300              CF.D.USDJPY.MAR.IP  2023-03-10 20:00:00
 JPY_fsb/20230600              CF.D.USDJPY.JUN.IP  2023-06-16 19:00:00
-JPY_fsb/20230900              CF.D.USDJPY.SEP.IP  2022-09-16 19:00:00
+JPY_fsb/20230900              CF.D.USDJPY.SEP.IP  2023-09-15 19:00:00
 JPY_fsb/20221200              CF.D.USDJPY.DEC.IP  2022-12-16 20:00:00
 JSE40_fsb/20230300            IX.D.SAF.MONTH1.IP  2023-03-16 10:00:00
 JSE40_fsb/20221200            IX.D.SAF.MONTH2.IP  2022-12-15 10:00:00
@@ -333,7 +312,7 @@ NIKKEI_fsb/20221200           IX.D.NIKFUT.FAR.IP  2022-12-08 21:15:00
 NIKKEI_fsb/20230300          IX.D.NIKFUT.FAR3.IP  2023-03-09 21:15:00
 NZD_fsb/20230300              CF.D.NZDUSD.MAR.IP  2023-03-10 20:00:00
 NZD_fsb/20230600              CF.D.NZDUSD.JUN.IP  2023-06-16 19:00:00
-NZD_fsb/20230900              CF.D.NZDUSD.SEP.IP  2022-09-16 19:00:00
+NZD_fsb/20230900              CF.D.NZDUSD.SEP.IP  2023-09-15 19:00:00
 NZD_fsb/20221200              CF.D.NZDUSD.DEC.IP  2022-12-16 20:00:00
 OATIES_fsb/20221200             CO.D.O.Month1.IP  2022-11-29 19:15:00
 OATIES_fsb/20230300             CO.D.O.Month2.IP  2023-02-27 19:15:00

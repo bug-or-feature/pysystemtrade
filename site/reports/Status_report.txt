@@ -1,6 +1,6 @@
 
 ********************************************************************************
-          Status report report produced on 2022-09-17 15:41:46.573402           
+          Status report report produced on 2022-09-19 22:30:09.014624           
 ********************************************************************************
 
 
@@ -21,9 +21,11 @@ account_curve_report   run_reports  2022-08-26 07:51:25.314000  2022-08-26 07:51
 
                      last_update
 name                            
-IBXEX_fsb    2022-09-14 05:00:00
-JGB_fsb      2022-09-14 05:00:00
-MSCISING_fsb 2022-09-14 05:00:00
+IBXEX_fsb    2022-09-15 05:00:00
+JGB_fsb      2022-09-15 05:00:00
+MSCISING_fsb 2022-09-15 05:00:00
+GILT_fsb     2022-09-16 16:00:00
+FTSE100_fsb  2022-09-16 19:00:00
 
 Delayed optimal positions: No delays
 Instruments at trade limit: No constraints
@@ -44,64 +46,64 @@ Status of adjusted price / FX price collection
 ==============================================
 
                      last_update
-IBXEX_fsb    2022-09-14 05:00:00
-JGB_fsb      2022-09-14 05:00:00
-MSCISING_fsb 2022-09-14 05:00:00
-SGDUSD       2022-09-16 00:00:00
-JPYUSD       2022-09-16 00:00:00
-HKDUSD       2022-09-16 00:00:00
-GBPUSD       2022-09-16 00:00:00
-EURUSD       2022-09-16 00:00:00
-CNHUSD       2022-09-16 00:00:00
-CHFUSD       2022-09-16 00:00:00
-CADUSD       2022-09-16 00:00:00
-AUDUSD       2022-09-16 00:00:00
-KRWUSD       2022-09-16 00:00:00
-EUA_fsb      2022-09-16 15:00:00
+IBXEX_fsb    2022-09-15 05:00:00
+JGB_fsb      2022-09-15 05:00:00
+MSCISING_fsb 2022-09-15 05:00:00
 GILT_fsb     2022-09-16 16:00:00
-BTP_fsb      2022-09-16 16:00:00
-COFFEE_fsb   2022-09-16 17:00:00
-SOYBEAN_fsb  2022-09-16 18:00:00
-HANG_fsb     2022-09-16 18:00:00
-SOYOIL_fsb   2022-09-16 18:00:00
-WHEAT_fsb    2022-09-16 18:00:00
-SILVER_fsb   2022-09-16 19:00:00
-SHATZ_fsb    2022-09-16 19:00:00
-US2_fsb      2022-09-16 19:00:00
-SP500_fsb    2022-09-16 19:00:00
-US10_fsb     2022-09-16 19:00:00
-RUSSELL_fsb  2022-09-16 19:00:00
-US30U_fsb    2022-09-16 19:00:00
-US30_fsb     2022-09-16 19:00:00
-US5_fsb      2022-09-16 19:00:00
-V2X_fsb      2022-09-16 19:00:00
-SMI_fsb      2022-09-16 19:00:00
-OAT_fsb      2022-09-16 19:00:00
-AEX_fsb      2022-09-16 19:00:00
-NIKKEI_fsb   2022-09-16 19:00:00
-ASX_fsb      2022-09-16 19:00:00
-AUD_fsb      2022-09-16 19:00:00
-BOBL_fsb     2022-09-16 19:00:00
-BUND_fsb     2022-09-16 19:00:00
-BUXL_fsb     2022-09-16 19:00:00
-CAC_fsb      2022-09-16 19:00:00
-CAD_fsb      2022-09-16 19:00:00
-CHF_fsb      2022-09-16 19:00:00
-COPPER_fsb   2022-09-16 19:00:00
-CRUDE_W_fsb  2022-09-16 19:00:00
-DAX_fsb      2022-09-16 19:00:00
-DOW_fsb      2022-09-16 19:00:00
-DX_fsb       2022-09-16 19:00:00
-EDOLLAR_fsb  2022-09-16 19:00:00
-EUROSTX_fsb  2022-09-16 19:00:00
-EUR_fsb      2022-09-16 19:00:00
 FTSE100_fsb  2022-09-16 19:00:00
-GAS_US_fsb   2022-09-16 19:00:00
-GBP_fsb      2022-09-16 19:00:00
-GOLD_fsb     2022-09-16 19:00:00
-NASDAQ_fsb   2022-09-16 19:00:00
-NZD_fsb      2022-09-16 19:00:00
-JPY_fsb      2022-09-16 19:00:00
+KRWUSD       2022-09-19 00:00:00
+AUDUSD       2022-09-19 00:00:00
+CADUSD       2022-09-19 00:00:00
+SGDUSD       2022-09-19 00:00:00
+CNHUSD       2022-09-19 00:00:00
+EURUSD       2022-09-19 00:00:00
+GBPUSD       2022-09-19 00:00:00
+HKDUSD       2022-09-19 00:00:00
+JPYUSD       2022-09-19 00:00:00
+CHFUSD       2022-09-19 00:00:00
+EUA_fsb      2022-09-19 15:00:00
+BTP_fsb      2022-09-19 16:00:00
+COFFEE_fsb   2022-09-19 17:00:00
+SOYBEAN_fsb  2022-09-19 18:00:00
+HANG_fsb     2022-09-19 18:00:00
+SOYOIL_fsb   2022-09-19 18:00:00
+WHEAT_fsb    2022-09-19 18:00:00
+SILVER_fsb   2022-09-19 19:00:00
+SMI_fsb      2022-09-19 19:00:00
+US2_fsb      2022-09-19 19:00:00
+US10_fsb     2022-09-19 19:00:00
+SHATZ_fsb    2022-09-19 19:00:00
+US30U_fsb    2022-09-19 19:00:00
+US30_fsb     2022-09-19 19:00:00
+US5_fsb      2022-09-19 19:00:00
+V2X_fsb      2022-09-19 19:00:00
+SP500_fsb    2022-09-19 19:00:00
+RUSSELL_fsb  2022-09-19 19:00:00
+AEX_fsb      2022-09-19 19:00:00
+NZD_fsb      2022-09-19 19:00:00
+ASX_fsb      2022-09-19 19:00:00
+AUD_fsb      2022-09-19 19:00:00
+BOBL_fsb     2022-09-19 19:00:00
+BUND_fsb     2022-09-19 19:00:00
+BUXL_fsb     2022-09-19 19:00:00
+CAC_fsb      2022-09-19 19:00:00
+CAD_fsb      2022-09-19 19:00:00
+CHF_fsb      2022-09-19 19:00:00
+COPPER_fsb   2022-09-19 19:00:00
+CRUDE_W_fsb  2022-09-19 19:00:00
+DAX_fsb      2022-09-19 19:00:00
+DOW_fsb      2022-09-19 19:00:00
+DX_fsb       2022-09-19 19:00:00
+EDOLLAR_fsb  2022-09-19 19:00:00
+EUROSTX_fsb  2022-09-19 19:00:00
+EUR_fsb      2022-09-19 19:00:00
+GAS_US_fsb   2022-09-19 19:00:00
+GBP_fsb      2022-09-19 19:00:00
+GOLD_fsb     2022-09-19 19:00:00
+NASDAQ_fsb   2022-09-19 19:00:00
+NIKKEI_fsb   2022-09-19 19:00:00
+OAT_fsb      2022-09-19 19:00:00
+JPY_fsb      2022-09-19 19:00:00
 
 
 ===================================================
@@ -110,14 +112,14 @@ JPY_fsb      2022-09-16 19:00:00
 
                                         last_update
 name                                               
-fsb_strategy_v3/BUXL_fsb    2022-09-16 21:30:24.598
-fsb_strategy_v3/CAD_fsb     2022-09-16 21:30:24.785
-fsb_strategy_v3/CRUDE_W_fsb 2022-09-16 21:30:24.911
-fsb_strategy_v3/EUROSTX_fsb 2022-09-16 21:30:25.030
-fsb_strategy_v3/GOLD_fsb    2022-09-16 21:30:25.157
-fsb_strategy_v3/NASDAQ_fsb  2022-09-16 21:30:25.275
-fsb_strategy_v3/NZD_fsb     2022-09-16 21:30:25.394
-fsb_strategy_v3/US10_fsb    2022-09-16 21:30:25.515
+fsb_strategy_v3/BUXL_fsb    2022-09-19 21:30:25.548
+fsb_strategy_v3/CAD_fsb     2022-09-19 21:30:25.743
+fsb_strategy_v3/CRUDE_W_fsb 2022-09-19 21:30:25.873
+fsb_strategy_v3/EUROSTX_fsb 2022-09-19 21:30:25.992
+fsb_strategy_v3/GOLD_fsb    2022-09-19 21:30:26.120
+fsb_strategy_v3/NASDAQ_fsb  2022-09-19 21:30:26.238
+fsb_strategy_v3/NZD_fsb     2022-09-19 21:30:26.358
+fsb_strategy_v3/US10_fsb    2022-09-19 21:30:26.482
 
 
 ======================
@@ -160,14 +162,14 @@ Another_thing  Override Reduce only because duplicate_instrum...
 =======================================================================
 
                               time_to_start  time_to_stop  prev_process
-run_capital_update                     True         False          True
+run_capital_update                    False          True          True
 run_daily_prices_updates               True         False          True
-run_stack_handler                      True         False          True
+run_stack_handler                     False          True          True
 run_reports                            True         False          True
 run_backups                            True         False          True
 run_cleaners                           True         False          True
 run_systems                            True         False          True
-run_strategy_order_generator           True         False          True
+run_strategy_order_generator          False          True          True
 
 
 =====================================================================================
@@ -175,13 +177,13 @@ run_strategy_order_generator           True         False          True
 =====================================================================================
 
                                    start             end status      PID      running
-run_backups               09/16 22:15:07  09/16 22:17:24     GO      0.0  not running
-run_capital_update        09/16 00:45:06  09/16 18:45:10     GO      0.0  not running
-run_cleaners              09/16 22:00:07  09/16 22:00:09     GO      0.0  not running
-run_daily_prices_updates  09/16 20:05:08  09/16 20:30:00     GO      0.0  not running
-run_reports               09/17 15:41:45  09/17 15:23:44     GO  93327.0      running
-run_stack_handler         09/16 00:15:05  09/16 00:15:06     GO      0.0  not running
-run_systems               09/16 21:30:06  09/16 21:30:26     GO      0.0  not running
+run_backups               09/19 22:15:07  09/19 22:17:29     GO      0.0  not running
+run_capital_update        09/19 00:45:07  09/19 18:45:11     GO      0.0  not running
+run_cleaners              09/19 22:00:07  09/19 22:00:09     GO      0.0  not running
+run_daily_prices_updates  09/19 20:05:06  09/19 20:29:36     GO      0.0  not running
+run_reports               09/19 22:30:07  09/17 15:43:56     GO  94877.0      running
+run_stack_handler         09/19 00:15:07  09/19 00:15:08     GO      0.0  not running
+run_systems               09/19 21:30:06  09/19 21:30:27     GO      0.0  not running
 
 
 ===================================================================================================================================================
@@ -192,26 +194,26 @@ run_systems               09/16 21:30:06  09/16 21:30:26     GO      0.0  not ru
 method_or_strategy                                                                                                                                 
 market_monitor_report                                         run_reports  2022-08-26 07:47:52.103000  2022-08-26 07:51:25.307000             False
 account_curve_report                                          run_reports  2022-08-26 07:51:25.314000  2022-08-26 07:51:26.597000             False
-strategy_allocation                                    run_capital_update  2022-09-16 00:45:08.015000  2022-09-16 00:45:08.085000             False
-update_total_capital                                   run_capital_update  2022-09-16 18:45:10.327000  2022-09-16 18:45:10.883000             False
-update_fx_prices                                 run_daily_prices_updates  2022-09-16 20:05:09.368000  2022-09-16 20:06:56.312000             False
-update_epic_history                              run_daily_prices_updates  2022-09-16 20:06:56.320000  2022-09-16 20:15:55.439000             False
-update_sampled_contracts                         run_daily_prices_updates  2022-09-16 20:15:55.446000  2022-09-16 20:20:49.505000             False
-update_historical_prices                         run_daily_prices_updates  2022-09-16 20:20:49.512000  2022-09-16 20:29:36.371000             False
-update_multiple_adjusted_prices                  run_daily_prices_updates  2022-09-16 20:29:44.888000  2022-09-16 20:29:59.670000             False
-fsb_strategy_v3                                               run_systems  2022-09-16 21:30:06.759000  2022-09-16 21:30:25.886000             False
-clean_backtest_states                                        run_cleaners  2022-09-16 22:00:07.712000  2022-09-16 22:00:07.767000             False
-clean_echo_files                                             run_cleaners  2022-09-16 22:00:07.774000  2022-09-16 22:00:07.783000             False
-clean_log_files                                              run_cleaners  2022-09-16 22:00:07.793000  2022-09-16 22:00:08.338000             False
-backup_arctic_to_csv                                          run_backups  2022-09-16 22:15:08.250000  2022-09-16 22:17:18.719000             False
-backup_mongo_data_as_dump                                     run_backups  2022-09-16 22:17:18.757000  2022-09-16 22:17:23.699000             False
-backup_files                                                  run_backups  2022-09-16 22:17:23.803000  2022-09-16 22:17:24.267000             False
-roll_report                                                   run_reports  2022-09-17 15:06:10.973000  2022-09-17 15:06:22.462000             False
-instrument_risk_report                                        run_reports  2022-09-17 15:06:22.470000  2022-09-17 15:06:45.123000             False
-min_capital                                                   run_reports  2022-09-17 15:06:45.131000  2022-09-17 15:07:07.293000             False
-remove_markets_report                                         run_reports  2022-09-17 15:07:07.300000  2022-09-17 15:08:17.029000             False
-fsb_report                                                    run_reports  2022-09-17 15:08:17.036000  2022-09-12 22:32:13.172000              True
-status_report                                                 run_reports  2022-09-17 15:41:45.860000  2022-09-17 15:06:10.965000              True
+roll_report                                                   run_reports  2022-09-17 15:41:48.139000  2022-09-17 15:41:59.614000             False
+instrument_risk_report                                        run_reports  2022-09-17 15:41:59.622000  2022-09-17 15:42:21.450000             False
+min_capital                                                   run_reports  2022-09-17 15:42:21.459000  2022-09-17 15:42:43.095000             False
+remove_markets_report                                         run_reports  2022-09-17 15:42:43.102000  2022-09-17 15:43:51.305000             False
+fsb_report                                                    run_reports  2022-09-17 15:43:51.313000  2022-09-17 15:43:55.762000             False
+strategy_allocation                                    run_capital_update  2022-09-19 00:45:08.936000  2022-09-19 00:45:09.012000             False
+update_total_capital                                   run_capital_update  2022-09-19 18:45:11.276000  2022-09-19 18:45:11.756000             False
+update_fx_prices                                 run_daily_prices_updates  2022-09-19 20:05:07.331000  2022-09-19 20:06:54.168000             False
+update_epic_history                              run_daily_prices_updates  2022-09-19 20:06:54.175000  2022-09-19 20:15:50.049000             False
+update_sampled_contracts                         run_daily_prices_updates  2022-09-19 20:15:50.057000  2022-09-19 20:20:47.239000             False
+update_historical_prices                         run_daily_prices_updates  2022-09-19 20:20:47.246000  2022-09-19 20:29:12.007000             False
+update_multiple_adjusted_prices                  run_daily_prices_updates  2022-09-19 20:29:20.533000  2022-09-19 20:29:35.488000             False
+fsb_strategy_v3                                               run_systems  2022-09-19 21:30:07.063000  2022-09-19 21:30:26.864000             False
+clean_backtest_states                                        run_cleaners  2022-09-19 22:00:08.016000  2022-09-19 22:00:08.073000             False
+clean_echo_files                                             run_cleaners  2022-09-19 22:00:08.080000  2022-09-19 22:00:08.096000             False
+clean_log_files                                              run_cleaners  2022-09-19 22:00:08.105000  2022-09-19 22:00:08.689000             False
+backup_arctic_to_csv                                          run_backups  2022-09-19 22:15:08.360000  2022-09-19 22:17:22.856000             False
+backup_mongo_data_as_dump                                     run_backups  2022-09-19 22:17:22.952000  2022-09-19 22:17:28.045000             False
+backup_files                                                  run_backups  2022-09-19 22:17:28.178000  2022-09-19 22:17:28.615000             False
+status_report                                                 run_reports  2022-09-19 22:30:08.247000  2022-09-17 15:41:48.131000              True
 refresh_additional_sampling_all_instruments             run_stack_handler                missing data                missing data             False
 check_external_position_break                           run_stack_handler                missing data                missing data             False
 spawn_children_from_new_instrument_orders               run_stack_handler                missing data                missing data             False
