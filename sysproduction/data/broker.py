@@ -126,6 +126,8 @@ class dataBroker(productionDataLayerGeneric):
                 self.get_prices_at_frequency_for_contract_object(contract_object=contract_object,
                                                          frequency = frequency)
         daily_data = frequency is DAILY_PRICE_FREQ
+        if broker_prices_raw is missing_data:
+            return missing_data
 
         broker_prices = apply_price_cleaning(data = self.data,
                                              daily_data=daily_data,
@@ -138,10 +140,9 @@ class dataBroker(productionDataLayerGeneric):
         self, contract_object: futuresContract, frequency: Frequency
     ) -> futuresContractPrices:
 
-        return self.broker_futures_contract_price_data.get_prices_at_frequency_for_contract_object(
-            contract_object, frequency,
-            return_empty=False ##want to return a failure if no prices available
-        )
+        return self.broker_futures_contract_price_data.get_prices_at_frequency_for_contract_object(contract_object,
+                                                                                                   frequency,
+                                                                                                   return_empty=False)
 
     def get_recent_bid_ask_tick_data_for_contract_object(
         self, contract: futuresContract

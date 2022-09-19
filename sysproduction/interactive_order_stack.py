@@ -11,7 +11,8 @@ from syscore.objects import missing_order
 from syscore.interactive import (
     get_and_convert,
     run_interactive_menu,
-    print_menu_of_values_and_get_response, get_datetime_input,
+    print_menu_of_values_and_get_response,
+    get_datetime_input,
 )
 from syscore.pdutils import set_pd_print_options
 
@@ -23,7 +24,7 @@ from sysproduction.data.contracts import (
     get_valid_instrument_code_and_contractid_from_user,
 )
 from sysproduction.data.controls import dataLocks
-from sysproduction.data.prices import get_valid_instrument_code_from_user
+from sysproduction.data.prices import get_valid_instrument_code_from_user, diagPrices
 
 from sysexecution.stack_handler.stack_handler import stackHandler
 from sysexecution.stack_handler.balance_trades import stackHandlerCreateBalanceTrades
@@ -42,10 +43,18 @@ from sysexecution.orders.instrument_orders import (
     balance_order_type as instrument_balance_order_type,
 )
 from sysexecution.algos.allocate_algo_to_order import list_of_algos
+from sysbrokers.IB.ib_connection import connectionIB
+from syscore.objects import arg_not_supplied
 
+from sysobjects.contracts import futuresContract
 
 def interactive_order_stack():
-    with dataBlob(log_name="Interactive-Order-Stack") as data:
+    # Avoids pressing enter when running from script
+    ib_conn = arg_not_supplied
+    interactive_order_stack_with_ib_conn(ib_conn)
+
+def interactive_order_stack_with_ib_conn(ib_conn: connectionIB = arg_not_supplied):
+    with dataBlob(log_name="Interactive-Order-Stack", ib_conn=ib_conn) as data:
 
         menu = run_interactive_menu(
             top_level_menu_of_options,
@@ -203,8 +212,11 @@ def create_balance_trade(data):
     )
     # TODO AG position int -> float
     fill_qty = get_and_convert("Quantity ", type_expected=int, allow_default=False)
+
+    default_price = default_price_for_contract(data, futuresContract(instrument_code, contract_date))
     filled_price = get_and_convert(
-        "Filled price", type_expected=float, allow_default=False
+        "Filled price", type_expected=float, allow_default=True,
+        default_value=default_price
     )
     fill_datetime = get_datetime_input("Fill datetime", allow_default=True)
     commission = get_and_convert(
@@ -242,17 +254,26 @@ def create_balance_trade(data):
 
     stack_handler.create_balance_trade(broker_order)
 
+def default_price_for_contract(data: dataBlob, futures_contract: futuresContract):
+    diag_prices = diagPrices(data)
+    default_prices = diag_prices.get_merged_prices_for_contract_object(futures_contract)
+    default_price = default_prices.return_final_prices().values[-1]
+
+    return default_price
+
 
 def create_instrument_balance_trade(data):
     data_broker = dataBroker(data)
-    default_account = data_broker.get_broker_account()
 
     print("Use to fix breaks between instrument strategy and contract level positions")
     strategy_name = get_valid_strategy_name_from_user(data=data, source="positions")
     instrument_code = get_valid_instrument_code_from_user(data)
     fill_qty = get_and_convert("Quantity ", type_expected=int, allow_default=False)
+
+    default_price = default_price_for_instrument(data, instrument_code)
     filled_price = get_and_convert(
-        "Filled price", type_expected=float, allow_default=False
+        "Filled price", type_expected=float, allow_default=True,
+        default_value=default_price
     )
     fill_datetime = get_datetime_input("Fill datetime", allow_default=True)
 
@@ -264,6 +285,7 @@ def create_instrument_balance_trade(data):
         order_type=instrument_balance_order_type,
         filled_price=filled_price,
         fill_datetime=fill_datetime,
+
     )
 
     print(instrument_order)
@@ -274,6 +296,12 @@ def create_instrument_balance_trade(data):
     stack_handler = stackHandlerCreateBalanceTrades(data)
 
     stack_handler.create_balance_instrument_trade(instrument_order)
+
+def default_price_for_instrument(data: dataBlob, instrument_code: str) -> float:
+    diag_prices = diagPrices(data)
+    default_price = diag_prices.get_current_priced_contract_prices_for_instrument(instrument_code)
+
+    return default_price.values[-1]
 
 
 def create_manual_trade(data):
@@ -899,5 +927,5 @@ dict_of_functions = {
 }
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     interactive_order_stack()

@@ -8,7 +8,7 @@ from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
 
-from syscore.objects import failure
+from syscore.objects import failure, missing_data
 
 
 def seed_price_data_from_IB(instrument_code):
@@ -20,7 +20,7 @@ def seed_price_data_from_IB(instrument_code):
             ibFuturesContractData,
         ]
     )
-    list_of_contracts = data.broker_futures_contract_price.contracts_with_price_data_for_instrument_code(
+    list_of_contracts = data.broker_futures_contract_price.contracts_with_merged_price_data_for_instrument_code(
         instrument_code, allow_expired=True
     )
 
@@ -38,13 +38,13 @@ def seed_price_data_for_contract(data: dataBlob, contract: futuresContract):
     prices = data.broker_futures_contract_price.get_prices_at_frequency_for_potentially_expired_contract_object(
         new_contract
     )
-    if prices is failure or len(prices) == 0:
+    if prices is missing_data or len(prices) == 0:
         print("No data!")
     else:
         ## If you want to modify this script so it updates existing prices
         ## eg from barchart, then uncomment the following line and comment the next
         # data.db_futures_contract_price.update_prices_for_contract(contract, prices)
-        data.db_futures_contract_price.write_prices_for_contract_object(
+        data.db_futures_contract_price.write_merged_prices_for_contract_object(
             new_contract, prices, ignore_duplication=True
         )
 
