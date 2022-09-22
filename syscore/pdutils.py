@@ -487,21 +487,30 @@ def set_pd_print_options():
 
 
 def closing_date_rows_in_pd_object(pd_object):
-    return pd_object[
-        [
-            time_matches(index_entry, NOTIONAL_CLOSING_TIME_AS_PD_OFFSET)
-            for index_entry in pd_object.index
-        ]
-    ]
+    # return pd_object[
+    #     [
+    #         time_matches(index_entry, NOTIONAL_CLOSING_TIME_AS_PD_OFFSET)
+    #         for index_entry in pd_object.index
+    #     ]
+    # ]
+
+    idx = pd_object.index.floor('D')
+    subset = pd_object[~idx.duplicated(keep='last')]
+    # subset = pd_object[~idx.duplicated(keep='last') | ~idx.duplicated(keep=False)]
+    return subset
 
 
 def intraday_date_rows_in_pd_object(pd_object):
-    return pd_object[
-        [
-            not time_matches(index_entry, NOTIONAL_CLOSING_TIME_AS_PD_OFFSET)
-            for index_entry in pd_object.index
-        ]
-    ]
+    # return pd_object[
+    #     [
+    #         not time_matches(index_entry, NOTIONAL_CLOSING_TIME_AS_PD_OFFSET)
+    #         for index_entry in pd_object.index
+    #     ]
+    # ]
+    idx = pd_object.index.floor('D')
+    subset = pd_object[idx.duplicated(keep='last')]
+    return subset
+
 
 def get_intraday_df_at_frequency(df: pd.DataFrame, frequency="H"):
     intraday_only_df = intraday_date_rows_in_pd_object(df)
