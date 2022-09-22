@@ -259,9 +259,13 @@ You need to:
         - ECHO_PATH=/home/user_name/echos
         - MONGO_BACKUP_PATH=/media/shared_network/drive/mongo_backup
     - Add the SCRIPT_PATH directory to your PATH
-    - Create the following directories (again use other directories if you like, but you must modify the .profile above)
+    - Create the following directories (again use other directories if you like, but you must modify the .profile above and specify the proper directories in 'private_config.yaml')
         - '/home/user_name/data/mongodb/'
         - '/home/user_name/echos/'
+        - '/home/user_name/data/mongo_dump'
+        - '/home/user_name/data/backups_csv'
+        - '/home/user_name/data/backtests'
+        - '/home/user_name/data/reports'
     - Install the pysystemtrade package, and install or update, any dependencies in directory $PYSYS_CODE (it's possible to put it elsewhere, but you will need to modify the environment variables listed above). If using git clone from your home directory this should create the directory '/home/user_name/pysystemtrade/'
     - [Set up interactive brokers](/docs/IB.md), download and install their python code, and get a gateway running.
     - [Install mongodb](https://docs.mongodb.com/manual/administration/install-on-linux/)
@@ -2301,6 +2305,11 @@ Linux script:
 Called by: `run_backups`
 
 It copies backtest pickle and config files to the backup directory,  "offsystem_backup_directory", subdirectory /statefile
+
+**Important**: the backed up files will contain any data you have added to your private config, some of which may be 
+sensitive (e.g., IB account number, email address, email password). If you 
+choose to store these files with a cloud storage provider or backup service, you should consider encrypting them first
+(some services may do this for you, but many do not).
 
 ### Backup mongo dump
 

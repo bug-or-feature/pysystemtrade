@@ -10,6 +10,11 @@ from syscore.interactive import (
 from syscore.algos import magnitude
 from syscore.pdutils import set_pd_print_options
 from syscore.dateutils import CALENDAR_DAYS_IN_YEAR
+from syscore.objects import missing_data
+
+from sysinit.futures.repocsv_instrument_config import copy_instrument_config_from_csv_to_mongo
+from sysinit.futures.safely_modify_roll_parameters import safely_modify_roll_parameters
+from sysinit.futures.roll_parameters_csv_mongo import copy_roll_parameters_from_csv_to_mongo
 
 from sysdata.data_blob import dataBlob
 from sysobjects.production.override import override_dict, Override
@@ -18,6 +23,7 @@ from sysobjects.production.tradeable_object import instrumentStrategy
 from sysproduction.backup_arctic_to_csv import (
     get_data_and_create_csv_directories,
     backup_instrument_data,
+    backup_roll_parameters
 )
 from sysproduction.data.controls import (
     diagOverrides,
@@ -118,8 +124,11 @@ nested_menu_of_options = {
     },
     5: {
         50: "Auto update spread cost configuration based on sampling and trades",
-        51: "Suggest 'bad' markets (illiquid or costly)",
-        52: "Suggest which duplicate market to use",
+        51: "Copy instrument configuration from DB to .csv",
+        52: "Copy instrument configuration from .csv to DB",
+        53: "Copy roll parameters config from DB to .csv",
+        54: "Copy roll parameters config from .csv to DB",
+        55: "Safe modify of roll parameters configuration"
     },
 }
 
@@ -383,6 +392,10 @@ def get_standardised_position_for_risk(risk_data: dict,
 
     capital = risk_data["capital"]
     annual_risk_per_contract = risk_data["annual_risk_per_contract"]
+    if np.isnan(annual_risk_per_contract):
+        print("No estimated risk for contract, can't calculate standard position - returning zero")
+        return 0
+
     max_forecast_ratio = auto_parameters.max_vs_average_forecast
     idm = auto_parameters.approx_IDM
     instr_weight = auto_parameters.notional_instrument_weight
@@ -429,6 +442,10 @@ def get_maximum_position_given_risk_concentration_limit(
 ) -> float:
 
     ccy_risk_per_contract = abs(risk_data['annual_risk_per_contract'])
+    if np.isnan(ccy_risk_per_contract):
+        print("Can't get risk per contract, Max position exposure limit will be zero")
+        return 0
+
     capital = risk_data['capital']
     risk_target = auto_parameters.notional_risk_target
     cash_risk_capital = capital * risk_target
@@ -885,12 +902,21 @@ def make_changes_to_slippage_in_db(data: dataBlob, changes_to_make: dict):
 
 def backup_instrument_data_to_csv(data: dataBlob):
     backup_data = get_data_and_create_csv_directories("")
-    backup_data.mongo_futures_instrument = data.db_futures_instrument
+
     print(
-        "Backing up database to .csv %s; you will need to copy to /pysystemtrade/data/csvconfig/ for it to work in sim"
+        "Backing up instrument configuration in database to .csv %s; you will need to copy to /pysystemtrade/data/csvconfig/ for it to work in sim"
         % backup_data.csv_futures_instrument.config_file
     )
     backup_instrument_data(backup_data)
+
+def backup_roll_parameters_data_to_csv(data: dataBlob):
+    backup_data = get_data_and_create_csv_directories("")
+
+    print(
+        "Backing up roll parameters in database to .csv %s; you will need to copy to /pysystemtrade/data/csvconfig/ for it to work in sim"
+        % backup_data.csv_roll_parameters.config_file
+    )
+    backup_roll_parameters(backup_data)
 
 
 def not_defined(data):
@@ -921,5 +947,15 @@ dict_of_functions = {
     43: finish_process,
     44: finish_all_processes,
     45: view_process_config,
-    50: auto_update_spread_costs
+    50: auto_update_spread_costs,
+    51: backup_instrument_data_to_csv,
+    52: copy_instrument_config_from_csv_to_mongo,
+    53: backup_roll_parameters_data_to_csv,
+    54: copy_roll_parameters_from_csv_to_mongo,
+    55: safely_modify_roll_parameters
+
+
 }
+
+if __name__ == '__main__':
+    interactive_controls()

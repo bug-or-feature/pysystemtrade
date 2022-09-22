@@ -184,7 +184,7 @@ def get_dict_of_new_prices_and_contractid(
     relevant_contract_prices = dict()
     for key, contract_date_str in contract_date_dict.items():
         contract = futuresContract(instrument_code, contract_date_str)
-        price_series = diag_prices.get_prices_for_contract_object(contract)
+        price_series = diag_prices.get_merged_prices_for_contract_object(contract)
         relevant_contract_prices[key] = price_series.return_final_prices()
 
     relevant_contract_prices = dictNamedFuturesContractFinalPrices(
@@ -215,3 +215,7 @@ def update_with_new_prices(
     update_prices.add_adjusted_prices(
         instrument_code, updated_adjusted_prices, ignore_duplication=True
     )
+
+
+if __name__ == '__main__':
+    update_multiple_adjusted_prices()

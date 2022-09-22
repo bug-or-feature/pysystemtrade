@@ -11,8 +11,8 @@ def run_reports():
     process_name = "run_reports"
     data = dataBlob(log_name=process_name)
     list_of_timer_names_and_functions = get_list_of_timer_functions_for_reports(data)
-    price_process = processToRun(process_name, data, list_of_timer_names_and_functions)
-    price_process.run_process()
+    report_process = processToRun(process_name, data, list_of_timer_names_and_functions)
+    report_process.run_process()
 
 
 def get_list_of_timer_functions_for_reports(data):
@@ -43,3 +43,7 @@ class runReport(object):
     def run_generic_report(self):
         ## Will be renamed
         run_report(self.config, data=self.data)
+
+
+if __name__ == '__main__':
+    run_reports()
