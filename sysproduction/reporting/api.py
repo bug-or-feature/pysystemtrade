@@ -24,6 +24,7 @@ from sysproduction.reporting.reporting_functions import header, table, PdfOutput
 from sysproduction.reporting.data.costs import (
     get_table_of_SR_costs,
     get_combined_df_of_costs,
+adjust_df_costs_show_ticks
 )
 
 from sysproduction.reporting.data.pricechanges import marketMovers
@@ -61,7 +62,7 @@ from sysproduction.reporting.data.risk import (
     get_correlation_matrix_all_instruments,
     cluster_correlation_matrix,
     get_instrument_risk_table,
-    get_portfolio_risk_for_all_strategies,
+    portfolioRisks,
     get_portfolio_risk_across_strategies,
     get_margin_usage,
     minimum_capital_table
@@ -129,56 +130,7 @@ class reportingApi(object):
 
     def footer(self):
         return header("END OF REPORT")
-    ## TRADING RULE ACCOUNT CURVES
-    def trading_rule_figures_using_dates(self) -> list:
-        list_of_figures = self.trading_rule_figures_given_start_and_end_date(
-            start_date=self.start_date,
-            end_date=self.end_date
-        )
 
-        return list_of_figures
-
-    def trading_rule_figures_given_period(self, period: str) -> list:
-        start_date = get_date_from_period_and_end_date(period)
-        list_of_figures = self.trading_rule_figures_given_start_and_end_date(
-            start_date=start_date
-        )
-
-        return list_of_figures
-
-    def trading_rule_figures_given_start_and_end_date(self,
-                                                      start_date: datetime.datetime = arg_not_supplied,
-                                                      end_date: datetime.datetime = arg_not_supplied) -> list:
-
-        list_of_groups = self.get_list_of_trading_rule_groups()
-        list_of_figures = []
-        for trading_rule_group in list_of_groups:
-            trading_rule_pandl = self.get_backtested_pandl_for_trading_rule_group(trading_rule_group)
-            pdf_output = PdfOutputWithTempFileName(self.data)
-            make_account_curve_plot(daily_pandl,
-                                    start_of_title = "Total p&l",
-                                    start_date = self.start_date,
-                                    end_date = self.end_date)
-            figure_object = pdf_output.save_chart_close_and_return_figure()
-            list_of_figures.append(figure_object)
-
-        return list_of_figures
-
-
-    def get_list_of_trading_rule_groups(self) -> list:
-        pass
-
-    def get_backtested_pandl_for_trading_rule_group(self,
-                                              trading_rule_group: str) -> pd.DataFrame:
-
-        return self.cache.get(self._get_backtested_pandl_for_trading_rule_group,
-                              trading_rule_group)
-
-    def _get_backtested_pandl_for_trading_rule_group(self,
-                                               trading_rule_group: str) -> pd.DataFrame:
-
-        return get_backtested_pandl_for_trading_rule_group(self.data,
-                                                           trading_rule_group)
 
 
     ## PANDL ACCOUNT CURVE
@@ -673,7 +625,8 @@ class reportingApi(object):
         return instrument_risk_sorted_table
 
     def body_text_portfolio_risk_total(self):
-        portfolio_risk_total = get_portfolio_risk_for_all_strategies(self.data)
+        portfolio_risk_object = self.portfolio_risks
+        portfolio_risk_total = portfolio_risk_object.get_portfolio_risk_for_all_strategies()
         portfolio_risk_total = portfolio_risk_total * 100.0
         portfolio_risk_total = portfolio_risk_total.round(1)
         portfolio_risk_total_text = body_text(
@@ -682,6 +635,34 @@ class reportingApi(object):
         )
 
         return portfolio_risk_total_text
+
+    def table_of_risk_by_asset_class(self) -> table:
+        portfolio_risk_object = self.portfolio_risks
+        risk_by_asset_class = portfolio_risk_object.get_pd_series_of_risk_by_asset_class()
+        risk_by_asset_class = risk_by_asset_class*100
+        risk_by_asset_class = risk_by_asset_class.round(1)
+        risk_by_asset_class_table = table("Risk by asset class",
+                                             risk_by_asset_class)
+
+        return risk_by_asset_class_table
+
+    def table_of_beta_loadings_by_asset_class(self):
+        portfolio_risk_object = self.portfolio_risks
+        beta_load_by_asset_class = portfolio_risk_object.get_beta_loadings_by_asset_class()
+        beta_load_by_asset_class = beta_load_by_asset_class.round(2)
+        beta_load_by_asset_class = beta_load_by_asset_class.sort_values()
+        beta_load_by_asset_class_table = table("Beta loadings by asset class",
+                                             beta_load_by_asset_class)
+
+        return beta_load_by_asset_class_table
+
+
+    @property
+    def portfolio_risks(self) -> portfolioRisks:
+        return self.cache.get(self._portfolio_risks)
+
+    def _portfolio_risks(self) -> portfolioRisks:
+        return portfolioRisks(data = self.data)
 
     def body_text_abs_total_all_risk_perc_capital(self):
         instrument_risk_data = self.instrument_risk_data()
@@ -815,8 +796,13 @@ class reportingApi(object):
         return get_liquidity_report_data(self.data)
 
     ##### COSTS ######
-    def table_of_sr_costs(self):
-        SR_costs = self.SR_costs()
+    def table_of_sr_costs(self,
+                          commission_only = False):
+        if commission_only:
+            SR_costs = self.SR_costs_commission_only()
+        else:
+            SR_costs = self.SR_costs()
+
         SR_costs = SR_costs.round(5)
         SR_costs = annonate_df_index_with_positions_held(data=self.data, pd_df=SR_costs)
         formatted_table = table(
@@ -825,8 +811,27 @@ class reportingApi(object):
 
         return formatted_table
 
-    def SR_costs(self) -> pd.DataFrame:
-        SR_costs = get_table_of_SR_costs(self.data)
+    def SR_costs(self
+                 ) -> pd.DataFrame:
+        return self.cache.get(self._SR_costs,
+                              include_spread=True,
+                              include_commission=True)
+
+    def SR_costs_commission_only(self
+                 ) -> pd.DataFrame:
+        return self.cache.get(self._SR_costs,
+                              include_spread=False,
+                              include_commission=True)
+
+
+    def _SR_costs(self,
+                  include_commission: bool = True,
+                  include_spread: bool = True
+                  ) -> pd.DataFrame:
+
+        SR_costs = get_table_of_SR_costs(self.data,
+                                         include_commission=include_commission,
+                                         include_spread=include_spread)
 
         return SR_costs
 
@@ -843,7 +848,27 @@ class reportingApi(object):
 
         return combined_df_costs_as_formatted_table
 
+
+    def table_of_slippage_comparison_tick_adjusted(self):
+        combined_df_costs = self.combined_df_costs()
+        combined_df_costs = adjust_df_costs_show_ticks(data = self.data,
+                                                       combined_df_costs=combined_df_costs)
+
+        combined_df_costs = nice_format_slippage_table(combined_df_costs)
+        combined_df_costs = annonate_df_index_with_positions_held(
+            self.data, pd_df=combined_df_costs
+        )
+
+        combined_df_costs_as_formatted_table = table(
+            "Check of slippage, in tick units", combined_df_costs
+        )
+
+        return combined_df_costs_as_formatted_table
+
     def combined_df_costs(self):
+        return self.cache.get(self._combined_df_costs)
+
+    def _combined_df_costs(self):
         combined_df_costs = get_combined_df_of_costs(
             self.data, start_date=self.start_date, end_date=self.end_date
         )
@@ -929,10 +954,9 @@ class reportingApi(object):
 
     def table_of_cash_slippage(self):
         cash_slippage = self.cash_slippage
-        cash_slippage = cash_slippage.round(2)
         if len(cash_slippage) == 0:
             return body_text("No trades")
-
+        cash_slippage = cash_slippage.round(2)
         table_slippage = table("Slippage (In base currency)", cash_slippage)
 
         return table_slippage
