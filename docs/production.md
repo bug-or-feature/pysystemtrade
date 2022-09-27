@@ -2306,6 +2306,11 @@ Called by: `run_backups`
 
 It copies backtest pickle and config files to the backup directory,  "offsystem_backup_directory", subdirectory /statefile
 
+**Important**: the backed up files will contain any data you have added to your private config, some of which may be 
+sensitive (e.g., IB account number, email address, email password). If you 
+choose to store these files with a cloud storage provider or backup service, you should consider encrypting them first
+(some services may do this for you, but many do not).
+
 ### Backup mongo dump
 
 
@@ -2984,11 +2989,10 @@ Volumes are shown in relative terms to make interpretation easier."
 ```
 
 ### P&L report
-
+    
 The p&l report shows you profit and loss (duh!).  On a daily basis it is run for the previous 24 hours. On an ad hoc basis, it can be run for any time period (recent or in the past).
 
 Here is an example, with annotations added in quotes (""):
-
 
 ```
 
@@ -3862,4 +3866,10 @@ via email, to saving the report as a file Files would be stored in according to 
     output: "file"
     calendar_days_back: 250
 
+```
+The available reports can be found by interogating the `dataReports` object,
+e.g.:
+```python
+from sysproduction.data.reports import dataReports
+print(dataReports().get_default_reporting_config_dict().keys())
 ```

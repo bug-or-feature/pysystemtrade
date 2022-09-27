@@ -85,7 +85,7 @@ class DiagFsbPrices(productionDataLayerGeneric):
         return self.db_futures_multiple_prices_data.get_list_of_instruments()
 
     def get_list_of_instruments_with_contract_prices(self) -> list:
-        return self.db_futures_contract_price_data.get_list_of_instrument_codes_with_price_data()
+        return self.db_futures_contract_price_data.get_list_of_instrument_codes_with_merged_price_data()
 
     def get_list_of_instruments_with_epic_history(self) -> list:
         return self.db_fsb_epic_history_data.get_list_of_instruments()

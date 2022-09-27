@@ -19,6 +19,16 @@ class IgInstrumentConfigData:
         else:
             self.periods = []
 
+    def as_dict(self):
+        return dict(
+            epic=self.epic,
+            currency=self.currency,
+            multiplier=self.multiplier,
+            bc_code=self.bc_code,
+            inverse=self.inverse,
+            period_str=self.period_str,
+            margin=self.margin
+        )
 
 @dataclass
 class FsbInstrumentWithIgConfigData(object):
@@ -44,3 +54,8 @@ class FsbInstrumentWithIgConfigData(object):
     @property
     def bc_code(self):
         return self.ig_data.bc_code
+
+    @property
+    ## FIXME make it look like a standard instrument, but we don't officially inherit... not sure why?
+    def meta_data(self):
+        return self.ig_data

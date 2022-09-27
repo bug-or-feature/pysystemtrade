@@ -3,8 +3,7 @@
 This document describes changes to this fork. For upstream master, see [DONE_TO_DO](DONE_TO_DO.md)
 
 ## Status
-
-- 
+- Upstream version: 1.47
 
 ## TODO
 - TODO

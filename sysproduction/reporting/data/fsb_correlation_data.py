@@ -24,8 +24,8 @@ def fsb_correlation_data(
     if fsb_prices is None:
         fsb_prices = ArcticFsbContractPriceData()
 
-    futures_df = futures_prices.get_prices_for_contract_object(contract_obj)
-    fsb_df = fsb_prices.get_prices_for_contract_object(contract_obj)
+    futures_df = futures_prices.get_merged_prices_for_contract_object(contract_obj)
+    fsb_df = fsb_prices.get_merged_prices_for_contract_object(contract_obj)
 
     fut = futures_df.return_final_prices().resample("1B").last()
     fsb = fsb_df.return_final_prices().resample("1B").last()
@@ -100,7 +100,8 @@ def currently_sampling_report():
                 instr_code
             )
             for contract in all_contracts_list.currently_sampling():
-                if futures_prices.has_data_for_contract(contract) and fsb_prices.has_data_for_contract(contract):
+                if futures_prices.has_merged_price_data_for_contract(contract) and \
+                        fsb_prices.has_merged_price_data_for_contract(contract):
                     rows.append(fsb_correlation_data(contract, futures_prices, fsb_prices))
 
     results = pd.DataFrame(rows)

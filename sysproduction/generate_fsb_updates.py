@@ -25,8 +25,8 @@ def generate_fsb_updates():
 
     with dataBlob(log_name="Generate-FSB-Updates") as data:
         fsb_updater = GenerateFsbUpdates(data)
-        fsb_updater.generate_fsb_updates()
-        #fsb_updater.update("BUXL_fsb")
+        # fsb_updater.generate_fsb_updates()
+        fsb_updater.update("NASDAQ_fsb")
         # fsb_updater.update_list(["BUXL_fsb", "GOLD_fsb", "NASDAQ_fsb", "NZD_fsb", "US10_fsb"])
     return success
 
@@ -75,7 +75,7 @@ class GenerateFsbUpdates(object):
 
             fut_contract = futuresContract.from_two_strings(futures_code, fsb_contract.date_str)
 
-            fut_prices = self.price_data.get_prices_for_contract_object(
+            fut_prices = self.price_data.get_merged_prices_for_contract_object(
                 fut_contract
             )
             if fut_prices.shape[0] == 0:
@@ -92,7 +92,7 @@ class GenerateFsbUpdates(object):
                 )
 
             # do we have FSB prices for this contract?
-            fsb_prices = self.price_data.get_prices_for_contract_object(fsb_contract)
+            fsb_prices = self.price_data.get_merged_prices_for_contract_object(fsb_contract)
 
             if fsb_prices.shape[0] > 0:
                 existing_size = fsb_prices.shape[0]
@@ -113,7 +113,7 @@ class GenerateFsbUpdates(object):
                 updated = fut_prices_massaged
 
             # create/update contract price object in db
-            self.price_data.write_prices_for_contract_object(
+            self.price_data.write_merged_prices_for_contract_object(
                 fsb_contract,
                 updated,
                 ignore_duplication=True

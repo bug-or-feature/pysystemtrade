@@ -127,7 +127,7 @@ class IgFuturesContractData(brokerFuturesContractData):
     ) -> futuresContract:
 
         futures_contract_plus = (
-            self.ig_instrument_data.get_ig_fsb_instrument(
+            self.ig_instrument_data.get_futures_instrument_object_with_ig_data(
                 contract_object.instrument_code
             )
         )

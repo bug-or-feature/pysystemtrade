@@ -46,6 +46,7 @@ class runSystemClassic(object):
         self.strategy_name = strategy_name
         self.backtest_config_filename = backtest_config_filename
 
+    ## DO NOT CHANGE THE NAME OF THIS FUNCTION
     def run_backtest(self):
         strategy_name = self.strategy_name
         data = self.data
@@ -57,16 +58,25 @@ class runSystemClassic(object):
             base_currency=base_currency,
         )
 
-        updated_buffered_positions(data, strategy_name, system)
+        function_to_call_on_update = self.function_to_call_on_update
+        function_to_call_on_update(data=data,
+                                   strategy_name =strategy_name,
+                                   system = system)
 
         store_backtest_state(data, system, strategy_name=strategy_name)
+
+    ## MODIFY THIS WHEN INHERITING FOR A DIFFERENT STRATEGY
+    ## ARGUMENTS MUST BE: data: dataBlob, strategy_name: str, system: System
+    @property
+    def function_to_call_on_update(self):
+        return updated_buffered_positions
 
     def _get_currency_and_capital(self):
         data = self.data
         strategy_name = self.strategy_name
 
         capital_data = dataCapital(data)
-        notional_trading_capital = capital_data.get_capital_for_strategy(strategy_name)
+        notional_trading_capital = capital_data.get_current_capital_for_strategy(strategy_name)
         if notional_trading_capital is missing_data:
             # critical log will send email
             error_msg = (

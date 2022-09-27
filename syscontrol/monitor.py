@@ -119,7 +119,7 @@ def check_if_pid_running_and_if_not_finish(process_observatory: processMonitor):
     data_control.check_if_pid_running_and_if_not_finish_all_processes()
 
 
-filename = "site.monitor.html"
+filename = "private.index.html"
 
 
 def generate_html(process_observatory: processMonitor):

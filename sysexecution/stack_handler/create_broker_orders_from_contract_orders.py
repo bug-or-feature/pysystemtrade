@@ -8,7 +8,8 @@ from sysproduction.data.controls import dataTradeLimits
 from sysexecution.algos.allocate_algo_to_order import (
     check_and_if_required_allocate_algo_to_single_contract_order,
 )
-from sysexecution.orders.contract_orders import contractOrder
+
+from sysexecution.orders.contract_orders import contractOrder, limit_order_type
 from sysexecution.orders.broker_orders import brokerOrder
 from sysexecution.order_stacks.instrument_order_stack import instrumentOrder
 from sysexecution.order_stacks.broker_order_stack import orderWithControls
@@ -72,11 +73,16 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
             placed_broker_order_with_controls
         )
 
-        completed_broker_order_with_controls = algo_instance.manage_trade(
-            broker_order_with_controls_and_order_id
-        )
+        if algo_instance.blocking_algo_requires_management:
 
-        self.post_trade_processing(completed_broker_order_with_controls)
+            completed_broker_order_with_controls = algo_instance.manage_trade(
+                broker_order_with_controls_and_order_id
+            )
+
+            self.post_trade_processing(completed_broker_order_with_controls)
+        else:
+            ### Hopefully order will come through...
+            pass
 
     def preprocess_contract_order(
         self, original_contract_order: contractOrder
@@ -128,6 +134,10 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
         remaining_contract_order = (
             original_contract_order.create_order_with_unfilled_qty()
         )
+
+        if original_contract_order.order_type == limit_order_type:
+            ## NO SIZE LIMITS APPLY TO LIMIT ORDERS
+            return remaining_contract_order
 
         # Check the order doesn't breach trade limits
         contract_order_after_trade_limits = self.apply_trade_limits_to_contract_order(

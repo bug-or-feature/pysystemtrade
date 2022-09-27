@@ -24,6 +24,25 @@ from syscore.objects import arg_not_supplied, missing_data
 
 DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
+def interpolate_data_during_day(data_series: pd.Series, resample_freq = "600S") -> pd.Series:
+    set_of_data_by_day = [group[1] for group in data_series.groupby(data_series.index.date)]
+    interpolate_data_by_day = [interpolate_for_a_single_day(data_series_for_day, resample_freq=resample_freq)
+                                for data_series_for_day in set_of_data_by_day]
+
+    interpolated_data_as_single_series = pd.concat(
+        interpolate_data_by_day,
+        axis=0)
+
+    return interpolated_data_as_single_series
+
+def interpolate_for_a_single_day(data_series_for_day: pd.Series, resample_freq = "600S"):
+    if len(data_series_for_day)<2:
+        return data_series_for_day
+
+    resampled_data = data_series_for_day.resample(resample_freq).interpolate()
+
+    return resampled_data
+
 def top_and_tail(x: pd.DataFrame, rows=5):
     return pd.concat([x[:rows], x[-rows:]], axis=0)
 
@@ -348,43 +367,34 @@ def drawdown(x):
     return x - maxx
 
 
-def from_dict_of_values_to_df(data_dict: dict, long_ts_index, columns: list = None):
+def from_dict_of_values_to_df(data_dict: dict, ts_index, columns: list = None) -> pd.DataFrame:
     """
-    Turn a set of fixed values into a pd.dataframe that spans the long index
+    Turn a set of fixed values into a pd.DataFrame that spans the long index
 
     :param data_dict: A dict of scalars
     :param ts_index: A timeseries index
     :param columns: (optional) A list of str to align the column names to [must have entries in data_dict keys]
-    :return: pd.dataframe, column names from data_dict, values repeated scalars
+    :return: pd.DataFrame, column names from data_dict, values repeated scalars
     """
 
-    if columns is None:
-        columns = data_dict.keys()
+    if columns is not None:
+        data_dict = { keyname: data_dict[keyname] for keyname in columns }
 
-    columns_as_list = list(columns)
-
-    ts_index = [long_ts_index[0], long_ts_index[-1]]
-
-    numeric_values = dict(
-        [(keyname, [data_dict[keyname]] * len(ts_index)) for keyname in columns_as_list]
-    )
-
-    pd_dataframe = pd.DataFrame(numeric_values, ts_index)
+    pd_dataframe = pd.DataFrame(data_dict, ts_index)
 
     return pd_dataframe
 
 
-def from_scalar_values_to_ts(scalar_value: float, long_ts_index) -> pd.Series:
+def from_scalar_values_to_ts(scalar_value: float, ts_index) -> pd.Series:
     """
-    Turn a set of fixed values into a pd.dataframe that spans the long index
+    Turn a scalar value into a pd.Series that spans the long index
 
-    :param data_dict: A dict of scalars
+    :param scalar_value: A scalar
     :param ts_index: A timeseries index
-    :param columns: (optional) A list of str to align the column names to [must have entries in data_dict keys]
-    :return: pd.dataframe, column names from data_dict, values repeated scalars
+    :return: pd.Series, values repeated scalars
     """
 
-    pd_series = pd.Series([scalar_value] * len(long_ts_index), index=long_ts_index)
+    pd_series = pd.Series(scalar_value, index=ts_index)
 
     return pd_series
 
@@ -515,6 +525,12 @@ def get_intraday_df_at_frequency(df: pd.DataFrame, frequency="H"):
 
     return intraday_df_clean
 
+def merge_data_with_different_freq(list_of_data: list):
+    list_as_concat_pd = pd.concat(list_of_data, axis=0)
+    sorted_pd = list_as_concat_pd.sort_index()
+    unique_pd = uniquets(sorted_pd)
+
+    return unique_pd
 
 def sumup_business_days_over_pd_series_without_double_counting_of_closing_data(
     pd_series,
@@ -628,6 +644,20 @@ def get_row_of_series(
             data_at_date = series.loc[relevant_date]
         except KeyError:
             raise Exception("Date %s not found in data" % str(relevant_date))
+
+    return data_at_date
+
+
+def get_row_of_series_before_data(
+    series: pd.Series, relevant_date: datetime.datetime = arg_not_supplied
+):
+
+    if relevant_date is arg_not_supplied:
+        data_at_date = series.values[-1]
+    else:
+        index_point = get_max_index_before_datetime(series.index,
+                                                    relevant_date)
+        data_at_date = series.values[index_point]
 
     return data_at_date
 

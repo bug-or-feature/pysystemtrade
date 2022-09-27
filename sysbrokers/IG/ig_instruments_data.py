@@ -73,18 +73,18 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
             self._parse_epic_history_for_expiries()
         return self._expiry_dates
 
-    def get_ig_fsb_instrument(self, instr_code: str) -> FsbInstrumentWithIgConfigData:
-        new_log = self.log.setup(instrument_code=instr_code)
-
-        try:
-            assert instr_code in self.get_list_of_instruments()
-        except Exception:
-            new_log.warn(f"Instrument {instr_code} is not in IG config")
-            return missing_instrument
-
-        instrument_object = get_instrument_object_from_config(instr_code, config=self.config)
-
-        return instrument_object
+    # def get_ig_fsb_instrument(self, instr_code: str) -> FsbInstrumentWithIgConfigData:
+    #     new_log = self.log.setup(instrument_code=instr_code)
+    #
+    #     try:
+    #         assert instr_code in self.get_list_of_instruments()
+    #     except Exception:
+    #         new_log.warn(f"Instrument {instr_code} is not in IG config")
+    #         return missing_instrument
+    #
+    #     instrument_object = get_instrument_object_from_config(instr_code, config=self.config)
+    #
+    #     return instrument_object
 
     def get_brokers_instrument_code(self, instrument_code: str) -> str:
         raise NotImplementedError
@@ -107,6 +107,25 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
         return config_row.iloc[0].Instrument
 
+    def _get_instrument_data_without_checking(self, instrument_code: str):
+        return self.get_futures_instrument_object_with_ig_data(instrument_code)
+
+    def get_futures_instrument_object_with_ig_data(
+        self, instrument_code: str
+    ) -> FsbInstrumentWithIgConfigData:
+
+        new_log = self.log.setup(instrument_code=instrument_code)
+
+        try:
+            assert instrument_code in self.get_list_of_instruments()
+        except Exception:
+            new_log.warn(f"Instrument {instrument_code} is not in IG config")
+            return missing_instrument
+
+        instrument_object = get_instrument_object_from_config(instrument_code, config=self.config)
+
+        return instrument_object
+
     def get_list_of_instruments(self) -> list:
         """
         Instruments that we can handle with this broker
@@ -126,7 +145,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
             df = df.reset_index()
             del df['index']
             instr_map = df.to_dict()
-            config = self.get_ig_fsb_instrument(instr)
+            config = self.get_futures_instrument_object_with_ig_data(instr)
             if config is missing_instrument:
                 self.log.warn(f"Missing IG config for {instr}")
                 continue
@@ -144,7 +163,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
     def _parse_epic_history_for_expiries(self):
         for instr in self._epic_history.get_list_of_instruments():
             history_df = self._epic_history.get_epic_history(instr)
-            config = self.get_ig_fsb_instrument(instr)
+            config = self.get_futures_instrument_object_with_ig_data(instr)
             if config is missing_instrument:
                 self.log.warn(f"Missing IG config for {instr}")
                 continue
@@ -168,9 +187,6 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
     def _validate_row(self, period, instr_map):
         return period in instr_map and isinstance(instr_map[period], str)
-
-    def _get_instrument_data_without_checking(self, instrument_code: str):
-        return get_instrument_object_from_config(instrument_code, config=self.config)
 
 
 def get_instrument_object_from_config(
