@@ -130,7 +130,8 @@ class ReportingApiFsb(reportingApi):
                     instr_code
                 )
                 for contract in all_contracts_list.currently_sampling():
-                    if futures_prices.has_data_for_contract(contract) and fsb_prices.has_data_for_contract(contract):
+                    if futures_prices.has_merged_price_data_for_contract(contract) and \
+                            fsb_prices.has_merged_price_data_for_contract(contract):
                         rows.append(fsb_correlation_data(contract, futures_prices, fsb_prices))
         return rows
 

@@ -329,7 +329,7 @@ def long_to_datetime(int_to_convert: int) -> datetime.datetime:
     return as_datetime
 
 
-NOTIONAL_CLOSING_TIME = dict(hours=23, minutes=0, seconds=0)
+NOTIONAL_CLOSING_TIME = dict(hours=5, minutes=0, seconds=0)
 NOTIONAL_CLOSING_TIME_AS_PD_OFFSET = pd.DateOffset(
     hours=NOTIONAL_CLOSING_TIME["hours"],
     minutes=NOTIONAL_CLOSING_TIME["minutes"],

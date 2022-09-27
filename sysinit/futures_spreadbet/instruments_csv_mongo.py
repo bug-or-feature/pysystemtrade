@@ -1,5 +1,8 @@
 """
 Populate a mongo DB collection with futures spreadbet instrument data from CSV
+
+*** TODO: check changes in sysinit/futures/repocsv_instrument_config.py ***
+
 """
 import sys
 from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData

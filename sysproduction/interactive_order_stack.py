@@ -43,18 +43,19 @@ from sysexecution.orders.instrument_orders import (
     balance_order_type as instrument_balance_order_type,
 )
 from sysexecution.algos.allocate_algo_to_order import list_of_algos
-from sysbrokers.IB.ib_connection import connectionIB
-from syscore.objects import arg_not_supplied
+#from sysbrokers.IB.ib_connection import connectionIB
+#from syscore.objects import arg_not_supplied
 
 from sysobjects.contracts import futuresContract
 
 def interactive_order_stack():
-    # Avoids pressing enter when running from script
-    ib_conn = arg_not_supplied
-    interactive_order_stack_with_ib_conn(ib_conn)
-
-def interactive_order_stack_with_ib_conn(ib_conn: connectionIB = arg_not_supplied):
-    with dataBlob(log_name="Interactive-Order-Stack", ib_conn=ib_conn) as data:
+#     # Avoids pressing enter when running from script
+#     ib_conn = arg_not_supplied
+#     interactive_order_stack_with_ib_conn(ib_conn)
+#
+# def interactive_order_stack_with_ib_conn(ib_conn: connectionIB = arg_not_supplied):
+    #with dataBlob(log_name="Interactive-Order-Stack", ib_conn=ib_conn) as data:
+    with dataBlob(log_name="Interactive-Order-Stack") as data:
 
         menu = run_interactive_menu(
             top_level_menu_of_options,

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import pytz
 
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
-from syscore.objects import missing_contract, missing_data, failure
+from syscore.objects import missing_contract, missing_data
 
 from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
 from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
@@ -56,63 +56,95 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
     def existing_prices(self) -> ArcticFsbContractPriceData:
         return self._existing_prices
 
-    def has_data_for_contract(self, futures_contract: futuresContract) -> bool:
+    def has_merged_price_data_for_contract(self, futures_contract: futuresContract) -> bool:
         contract = self.fsb_contract_data.get_contract_object_with_config_data(futures_contract)
         return contract is not missing_contract
 
-    def get_list_of_instrument_codes_with_price_data(self) -> list:
+    def get_list_of_instrument_codes_with_merged_price_data(self) -> list:
         # return list of instruments for which pricing is configured
         list_of_instruments = self.futures_instrument_data.get_list_of_instruments()
         return list_of_instruments
 
-    def contracts_with_price_data_for_instrument_code(
-        self, instrument_code: str, allow_expired=True
-    ) -> listOfFuturesContracts:
+    # didn't exist before split stuff - inherit from superclass for now
+    # def contracts_with_merged_price_data_for_instrument_code(
+    #     self, instrument_code: str, allow_expired=True
+    # ) -> listOfFuturesContracts:
+    #
+    #     futures_instrument_with_ig_data = (
+    #         self.futures_instrument_data.get_futures_instrument_object_with_ig_data(
+    #             instrument_code
+    #         )
+    #     )
+    #     list_of_date_str = self.ib_client.broker_get_futures_contract_list(
+    #         futures_instrument_with_ig_data, allow_expired=allow_expired
+    #     )
+    #
+    #     list_of_contracts = [
+    #         futuresContract(instrument_code, date_str) for date_str in list_of_date_str
+    #     ]
+    #
+    #     list_of_contracts = listOfFuturesContracts(list_of_contracts)
+    #
+    #     return list_of_contracts
 
-        futures_instrument_with_ib_data = (
-            self.futures_instrument_data.get_futures_instrument_object_with_IB_data(
-                instrument_code
-            )
-        )
-        list_of_date_str = self.ib_client.broker_get_futures_contract_list(
-            futures_instrument_with_ib_data, allow_expired=allow_expired
-        )
-
-        list_of_contracts = [
-            futuresContract(instrument_code, date_str) for date_str in list_of_date_str
-        ]
-
-        list_of_contracts = listOfFuturesContracts(list_of_contracts)
-
-        return list_of_contracts
-
-    def get_contracts_with_price_data(self):
-        raise NotImplementedError("Do not use get_contracts_with_price_data with IB")
+    def get_contracts_with_merged_price_data(self):
+        raise NotImplementedError("Do not use get_contracts_with_merged_price_data with IB")
 
     def get_prices_at_frequency_for_potentially_expired_contract_object(
         self, contract: futuresContract, freq: Frequency = DAILY_PRICE_FREQ
     ) -> futuresContractPrices:
 
-        price_data = self._get_prices_at_frequency_for_contract_object_no_checking(
-            contract, freq=freq, allow_expired=True
+        price_data = self._get_prices_at_frequency_for_contract_object_no_checking_with_expiry_flag(
+            contract,
+            frequency=freq,
+            allow_expired=True
         )
+
         return price_data
 
-    def _get_prices_for_contract_object_no_checking(
+    def _get_merged_prices_for_contract_object_no_checking(
         self, contract_object: futuresContract
     ) -> futuresContractPrices:
-        price_series = self._get_prices_at_frequency_for_contract_object_no_checking(
-            contract_object, freq=DAILY_PRICE_FREQ
-        )
 
-        return price_series
+        raise Exception("Have to get prices from IB with specific frequency")
+
+    def get_prices_at_frequency_for_contract_object(
+            self,
+            contract_object: futuresContract,
+            frequency: Frequency,
+            return_empty: bool = True
+    ):
+
+        ## Override this because don't want to check for existing data first
+
+        prices = self._get_prices_at_frequency_for_contract_object_no_checking(
+            futures_contract_object=contract_object,
+            frequency=frequency
+        )
+        if prices is missing_data:
+            if return_empty:
+                return futuresContractPrices.create_empty()
+            else:
+                return missing_data
+
+        return prices
 
     def _get_prices_at_frequency_for_contract_object_no_checking(
-        self,
-        contract_object: futuresContract,
-        freq: Frequency,
-        allow_expired=False,
-    ) -> futuresContractPrices:
+            self,
+            futures_contract_object: futuresContract,
+            frequency: Frequency) -> futuresContractPrices:
+
+        return self._get_prices_at_frequency_for_contract_object_no_checking_with_expiry_flag(
+            futures_contract_object=futures_contract_object,
+            frequency=frequency,
+            allow_expired=False
+        )
+
+    def _get_prices_at_frequency_for_contract_object_no_checking_with_expiry_flag(
+            self,
+            futures_contract_object: futuresContract,
+            frequency: Frequency,
+            allow_expired:bool = False) -> futuresContractPrices:
 
         """
         Get historical prices at a particular frequency
@@ -120,35 +152,27 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         We override this method, rather than _get_prices_at_frequency_for_contract_object_no_checking
         Because the list of dates returned by contracts_with_price_data is likely to not match (expiries)
 
-        :param contract_object:  futuresContract
-        :param freq: str; one of D, H, 15M, 5M, M, 10S, S
+        :param futures_contract_object:  futuresContract
+        :param frequency: str; one of D, H, 15M, 5M, M, 10S, S
         :return: data
         """
-        if contract_object is missing_contract:
+        if futures_contract_object is missing_contract:
             self.log.warn(
-                f"Can't get data for {str(contract_object)}",
-                instrument_code=contract_object.instrument_code,
-                contract_date=contract_object.contract_date.date_str,
+                f"Can't get data for {str(futures_contract_object)}",
+                instrument_code=futures_contract_object.instrument_code,
+                contract_date=futures_contract_object.contract_date.date_str,
             )
             return futuresContractPrices.create_empty()
 
         contract_object_plus = (
             self.fsb_contract_data.get_contract_object_with_config_data(
-                contract_object, requery_expiries=False)
+                futures_contract_object, requery_expiries=False)
         )
 
-        if contract_object.params.data_source == "Barchart":
-            return self._get_barchart_prices(contract_object_plus, freq)
+        if futures_contract_object.params.data_source == "Barchart":
+            return self._get_barchart_prices(contract_object_plus, frequency)
         else:
             return self._get_ig_prices(contract_object_plus)
-
-    def _get_prices_at_frequency_for_ibcontract_object_no_checking(
-        self,
-        contract_object_with_ib_broker_config,
-        freq: Frequency,
-        allow_expired: bool = False,
-    ) -> futuresContractPrices:
-        raise NotImplementedError("Not implemented")
 
     def get_ticker_object_for_order(self, order: contractOrder) -> tickerObject:
         raise NotImplementedError("Not implemented")

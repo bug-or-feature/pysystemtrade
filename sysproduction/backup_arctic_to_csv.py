@@ -552,7 +552,7 @@ def backup_epic_history_to_csv_for_instrument(data, instrument_code: str):
 # Futures spread bet price data
 def backup_fsb_contract_prices_to_csv(data):
     instrument_list = (
-        data.arctic_fsb_contract_price.get_list_of_instrument_codes_with_price_data()
+        data.arctic_fsb_contract_price.get_list_of_instrument_codes_with_merged_price_data()
     )
     for instrument_code in instrument_list:
         backup_fsb_contract_prices_for_instrument_to_csv(data, instrument_code)

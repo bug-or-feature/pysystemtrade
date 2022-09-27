@@ -10,8 +10,8 @@ from sysdata.futures.futures_per_contract_prices import (
 from sysobjects.fsb_contract_prices import FsbContractPrices
 from sysobjects.contracts import futuresContract
 from syslogdiag.log_to_screen import logtoscreen
-from syscore.merge_data import merge_newer_data
-from syscore.merge_data import spike_in_data
+from syscore.merge_data import merge_newer_data, spike_in_data
+from syscore.objects import missing_data, failure
 import pandas as pd
 
 CONTRACT_COLLECTION = "fsb_contract_prices"
@@ -36,13 +36,13 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
     def arctic_connection(self):
         return self._arctic_connection
 
-    def _get_prices_for_contract_object_no_checking(
+    def _get_merged_prices_for_contract_object_no_checking(
         self, futures_contract_object: futuresContract
     ) -> FsbContractPrices:
         """
         Read back the prices for a given contract object
 
-        :param contract_object:  futuresContract
+        :param futures_contract_object:  futuresContract
         :return: data
         """
 
@@ -53,7 +53,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
 
         return FsbContractPrices(data)
 
-    def _write_prices_for_contract_object_no_checking(
+    def _write_merged_prices_for_contract_object_no_checking(
         self,
         futures_contract_object: futuresContract,
         futures_price_data: FsbContractPrices,
@@ -78,7 +78,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
             % (len(futures_price_data), str(futures_contract_object.key), str(self))
         )
 
-    def get_contracts_with_price_data(self) -> listOfFuturesContracts:
+    def get_contracts_with_merged_price_data(self) -> listOfFuturesContracts:
         """
 
         :return: list of contracts
@@ -94,7 +94,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
 
         return list_of_contracts
 
-    def has_data_for_contract(self, contract_object: futuresContract) -> bool:
+    def has_merged_price_data_for_contract(self, contract_object: futuresContract) -> bool:
         return self.arctic_connection.has_keyname(from_contract_to_key(contract_object))
 
     def _get_contract_tuples_with_price_data(self) -> list:
@@ -113,7 +113,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
     def _all_keynames_in_library(self) -> list:
         return self.arctic_connection.get_keynames()
 
-    def _delete_prices_for_contract_object_with_no_checks_be_careful(
+    def _delete_merged_prices_for_contract_object_with_no_checks_be_careful(
         self, futures_contract_object: futuresContract
     ):
         """
@@ -141,7 +141,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
         """
         Reads existing data, merges with new_futures_prices, writes merged data
 
-        :param new_futures_prices:
+        :param new_futures_per_contract_prices:
         :return: int, number of rows
         """
         new_log = contract_object.log(self.log)
@@ -176,7 +176,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
             return 0
 
         # We have guaranteed no duplication
-        self.write_prices_for_contract_object(
+        self.write_merged_prices_for_contract_object(
             contract_object, merged_prices, ignore_duplication=True
         )
 
@@ -209,20 +209,29 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
 
         return merged_futures_prices
 
-    def get_prices_for_contract_object(self, contract_object: futuresContract):
+    def get_merged_prices_for_contract_object(
+            self,
+            contract_object: futuresContract,
+            return_empty: bool = True
+    ):
         """
         get all prices without worrying about frequency
 
         :param contract_object:  futuresContract
+        :param return_empty:  return_empty
         :return: data
         """
 
-        if self.has_data_for_contract(contract_object):
-            prices = self._get_prices_for_contract_object_no_checking(contract_object)
+        if self.has_merged_price_data_for_contract(contract_object):
+            prices = self._get_merged_prices_for_contract_object_no_checking(contract_object)
         else:
-            prices = FsbContractPrices.create_empty()
+            if return_empty:
+                return FsbContractPrices.create_empty()
+            else:
+                return missing_data
 
         return prices
+
 
 def from_key_to_tuple(keyname):
     return keyname.split(".")

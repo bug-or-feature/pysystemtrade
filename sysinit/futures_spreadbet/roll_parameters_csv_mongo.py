@@ -1,5 +1,8 @@
 """
 Populate a mongo DB collection with futures spreadbet roll data from a csv file
+
+*** TODO: check changes in sysinit/futures/roll_parameters_csv_mongo.py ***
+
 """
 import sys
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData

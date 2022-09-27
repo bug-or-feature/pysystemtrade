@@ -93,4 +93,4 @@ class UpdateEpicHistory(object):
                 self.data.log.critical(msg)
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
-        return self.broker.broker_futures_instrument_data.get_ig_fsb_instrument(instr)
+        return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(instr)
