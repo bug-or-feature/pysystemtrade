@@ -53,12 +53,12 @@ class csvFuturesContractPriceData(futuresContractPriceData):
         """
         Read back the prices for a given contract object
 
-        :param contract_object:  futuresContract
+        :param futures_contract_object:  futuresContract
         :return: data
         """
 
-        return self._get_prices_at_frequency_for_contract_object_no_checking(futures_contract_object=futures_contract_object,
-                                                                             frequency=MIXED_FREQ)
+        return self._get_prices_at_frequency_for_contract_object_no_checking(futures_contract_object,
+                                                                             MIXED_FREQ)
 
     def _get_prices_at_frequency_for_contract_object_no_checking \
                     (self, futures_contract_object: futuresContract, frequency: Frequency) -> futuresContractPrices:
