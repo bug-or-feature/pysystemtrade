@@ -1,11 +1,10 @@
-from syscore.dateutils import Frequency
+from syscore.dateutils import MIXED_FREQ, Frequency
 from syscore.objects import arg_not_supplied
 from syscore.pdutils import pd_readcsv
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData, ConfigCsvFuturesPrices
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contracts import futuresContract
 from sysobjects.fsb_contract_prices import FsbContractPrices, PRICE_DATA_COLUMNS
-from sysobjects.futures_per_contract_prices import futuresContractPrices
 
 
 class CsvFsbContractPriceData(csvFuturesContractPriceData):
@@ -24,16 +23,31 @@ class CsvFsbContractPriceData(csvFuturesContractPriceData):
     def __repr__(self):
         return "CsvFsbContractPriceData accessing %s" % self._datapath
 
-    def _get_prices_for_contract_object_no_checking(
+    def _get_merged_prices_for_contract_object_no_checking(
         self, futures_contract_object: futuresContract
     ) -> FsbContractPrices:
         """
         Read back the prices for a given contract object
 
-        :param contract_object:  futuresContract
+        :param futures_contract_object:  futuresContract
         :return: data
         """
-        keyname = self._keyname_given_contract_object(futures_contract_object)
+
+        return self._get_prices_at_frequency_for_contract_object_no_checking(
+            futures_contract_object,
+            MIXED_FREQ
+        )
+
+    def _get_prices_at_frequency_for_contract_object_no_checking(
+            self,
+            futures_contract_object: futuresContract,
+            frequency: Frequency
+    ) -> FsbContractPrices:
+
+        keyname = self._keyname_given_contract_object_and_freq(
+            futures_contract_object,
+            frequency=frequency
+        )
         filename = self._filename_given_key_name(keyname)
         config = self.config
 
@@ -65,21 +79,42 @@ class CsvFsbContractPriceData(csvFuturesContractPriceData):
             if inverse:
                 column_series = 1 / column_series
             column_series *= multiplier
-            instrpricedata[col_name] = column_series.round(2)
 
         instrpricedata = FsbContractPrices(instrpricedata)
 
         return instrpricedata
 
-    def _delete_prices_for_contract_object_with_no_checks_be_careful(
-            self,
-            futures_contract_object: futuresContract
+    def _write_merged_prices_for_contract_object_no_checking(
+        self,
+        futures_contract_object: futuresContract,
+        futures_price_data: FsbContractPrices,
     ):
-        pass
+        """
+        Write prices
+        CHECK prices are overriden on second write
 
-    def _get_prices_at_frequency_for_contract_object_no_checking(
-            self,
-            contract_object: futuresContract,
-            freq: Frequency
-    ) -> futuresContractPrices:
-        pass
+        :param futures_contract_object: futuresContract
+        :param futures_price_data: futuresContractPriceData
+        :return: None
+        """
+        self._write_prices_at_frequency_for_contract_object_no_checking(
+            futures_contract_object=futures_contract_object,
+            futures_price_data=futures_price_data,
+            frequency=MIXED_FREQ,
+        )
+
+    def _write_prices_at_frequency_for_contract_object_no_checking(
+        self,
+        futures_contract_object: futuresContract,
+        futures_price_data: FsbContractPrices,
+        frequency: Frequency
+    ):
+
+        keyname = self._keyname_given_contract_object_and_freq(
+            futures_contract_object,
+            frequency=frequency
+        )
+        filename = self._filename_given_key_name(keyname)
+        futures_price_data.to_csv(
+            filename, index_label=self.config.input_date_index_name
+        )

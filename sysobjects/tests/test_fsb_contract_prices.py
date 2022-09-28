@@ -18,7 +18,7 @@ class TestFsbContractPrices:
                 input_date_format="%Y-%m-%dT%H:%M:%S%z",
             )
         )
-        prices = data.get_prices_for_contract_object(fc.from_two_strings("GOLD_fsb", "20220600"))
+        prices = data.get_merged_prices_for_contract_object(fc.from_two_strings("GOLD_fsb", "20220600"))
         assert type(prices) == FsbContractPrices
         assert prices.at[prices.index[-1], 'Open.bid'] == 1859.4
 
