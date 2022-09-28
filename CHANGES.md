@@ -1,6 +1,6 @@
 # Release notes
 
-This document describes changes to this fork. For upstream master, see [DONE_TO_DO](DONE_TO_DO.md)
+This document describes changes to this fork. For upstream master, see [CHANGELOG](CHANGELOG.md)
 
 ## Status
 - Upstream version: 1.47
