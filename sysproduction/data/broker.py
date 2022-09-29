@@ -1,9 +1,5 @@
 from copy import copy
-
-try:
-    from sysbrokers.broker_factory import get_broker_class_list
-except:
-    pass
+from sysbrokers.broker_factory import get_broker_class_list
 from sysbrokers.broker_fx_handling import brokerFxHandlingData
 from sysbrokers.broker_static_data import brokerStaticData
 from sysbrokers.broker_execution_stack import brokerExecutionStackData
