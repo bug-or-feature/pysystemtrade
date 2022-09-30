@@ -1,6 +1,6 @@
 from syscore.objects import missing_data, resolve_function
-from sysdata.config.production_config import get_production_config
 from sysdata.data_blob import dataBlob
+
 
 def get_broker_class_list(data: dataBlob):
     """
@@ -48,5 +48,5 @@ def get_ib_class_list():
             ibFuturesInstrumentData,
             ibFxHandlingData,
         ]
-    except:
+    except ModuleNotFoundError:
         return []

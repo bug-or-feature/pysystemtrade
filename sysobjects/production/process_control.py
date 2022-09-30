@@ -15,7 +15,7 @@ import pandas as pd
 
 from syscontrol.list_running_pids import list_of_all_running_pids
 from syscore.fileutils import html_table
-from syscore.dateutils import SECONDS_PER_DAY, last_run_or_heartbeat_from_date_or_none
+from syscore.dateutils import SECONDS_PER_DAY, last_run_or_heartbeat_from_date_or_none, ISO_DATE_FORMAT
 
 from syscore.objects import (
     success,
@@ -318,10 +318,16 @@ class controlProcess(object):
     def as_printable_dict(self) -> dict:
         run_string = self.running_mode_str
         return dict(
-            start=last_run_or_heartbeat_from_date_or_none(self.last_start_time),
-            end=last_run_or_heartbeat_from_date_or_none(self.last_end_time),
+            start=last_run_or_heartbeat_from_date_or_none(
+                self.last_start_time,
+                date_format=ISO_DATE_FORMAT
+            ),
+            end=last_run_or_heartbeat_from_date_or_none(
+                self.last_end_time,
+                date_format=ISO_DATE_FORMAT
+            ),
             status=self.status,
-            PID=self.process_id,
+            PID=int(self.process_id),
             running=run_string,
         )
 
