@@ -29,7 +29,7 @@ limit_price_from_offside_price = "offside_price"
 sources_of_limit_price = [
     limit_price_from_offside_price,
     limit_price_from_side_price,
-    limit_price_from_offside_price,
+    limit_price_from_input
 ]
 
 
@@ -49,6 +49,10 @@ class Algo(object):
     @property
     def data(self):
         return self._data
+
+    @property
+    def blocking_algo_requires_management(self) -> bool:
+        return True
 
     @property
     def data_broker(self):
@@ -183,10 +187,6 @@ class Algo(object):
 
         # These prices will be used for limit price purposes
         # They are scalars
-        benchmark_side_prices = tick_analysis.side_price
-        offside_price = tick_analysis.offside_price
-        mid_price = tick_analysis.mid_price
-
         collected_prices = benchmarkPriceCollection(
             offside_price=tick_analysis.offside_price,
             side_price=tick_analysis.side_price,

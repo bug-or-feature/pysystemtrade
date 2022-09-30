@@ -13,13 +13,15 @@ trading_rules - a specification of the trading rules for a system
 """
 
 from pathlib import Path
+import os
 
 import yaml
 
 from syscore.fileutils import get_filename_for_package
 from syscore.objects import missing_data, arg_not_supplied
 from sysdata.config.defaults import get_system_defaults_dict
-from sysdata.config.private_config import get_private_config_as_dict
+from sysdata.config.private_config import get_private_config_as_dict, PRIVATE_CONFIG_FILE
+from sysdata.config.private_directory import get_full_path_for_config, PRIVATE_CONFIG_DIR_ENV_VAR
 from syslogdiag.log_to_screen import logtoscreen
 from sysdata.config.fill_config_dict_with_defaults import fill_config_dict_with_defaults
 
@@ -42,7 +44,7 @@ class Config(object):
                         or a dict (which may nest many things)
                         or a list of strings or dicts or configs (build config from
                         multiple elements, latter elements will overwrite
-                        earlier oness)
+                        earlier ones)
 
         :type config_object: str or dict
 
@@ -261,7 +263,10 @@ class Config(object):
 
 
 def default_config():
-    config = Config()
+    if os.getenv(PRIVATE_CONFIG_DIR_ENV_VAR):
+        config = Config(private_filename=get_full_path_for_config(PRIVATE_CONFIG_FILE))
+    else:
+        config = Config()
     config.fill_with_defaults()
 
     return config
