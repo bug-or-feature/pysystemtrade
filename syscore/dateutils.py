@@ -302,6 +302,7 @@ def time_matches(
 Convert date into a decimal, and back again
 """
 LONG_DATE_FORMAT = "%Y%m%d%H%M%S.%f"
+ISO_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 LONG_TIME_FORMAT = "%H%M%S.%f"
 LONG_JUST_DATE_FORMAT = "%Y%m%d"
 CONVERSION_FACTOR = 10000
@@ -365,11 +366,14 @@ SHORT_DATE_PATTERN = "%m/%d %H:%M:%S"
 MISSING_STRING_PATTERN = "     ???      "
 
 
-def last_run_or_heartbeat_from_date_or_none(last_run_or_heartbeat: datetime.datetime):
+def last_run_or_heartbeat_from_date_or_none(
+        last_run_or_heartbeat: datetime.datetime,
+        date_format=SHORT_DATE_PATTERN
+):
     if last_run_or_heartbeat is missing_data or last_run_or_heartbeat is None:
         last_run_or_heartbeat = MISSING_STRING_PATTERN
     else:
-        last_run_or_heartbeat = last_run_or_heartbeat.strftime(SHORT_DATE_PATTERN)
+        last_run_or_heartbeat = last_run_or_heartbeat.strftime(date_format)
 
     return last_run_or_heartbeat
 
