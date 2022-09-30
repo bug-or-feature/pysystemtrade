@@ -1,11 +1,11 @@
 
 ********************************************************************************
-      Removed markets report report produced on 2022-09-26 22:31:05.350258      
+      Removed markets report report produced on 2022-09-30 22:31:03.328739      
 ********************************************************************************
 
 
 List of markets which should be marked as untradeable due to risk, liquidity or cost issues
-Following should be removed from trading (add to config.bad_markets) [0.300000 threshold]: ['EDOLLAR_fsb', 'SHATZ_fsb', 'NIKKEI_fsb', 'US2_fsb'] 
+Following should be removed from trading (add to config.bad_markets) [0.300000 threshold]: ['US2_fsb', 'DAX_fsb', 'EDOLLAR_fsb', 'SILVER_fsb', 'DX_fsb', 'NIKKEI_fsb', 'BOBL_fsb', 'GOLD_fsb', 'NZD_fsb', 'RUSSELL_fsb', 'CHF_fsb', 'SHATZ_fsb', 'OAT_fsb', 'BUXL_fsb', 'FTSE100_fsb'] 
 
 
 
@@ -17,7 +17,7 @@ Markets too expensive (SR cost per trade > 0.010): ['AUD_fsb', 'CHF_fsb', 'EDOLL
 
 
 
-Markets not enough risk volume (Volume in $m ann. risk per day < 1.50): ['EDOLLAR_fsb', 'NIKKEI_fsb']
+Markets not enough risk volume (Volume in $m ann. risk per day < 1.50): ['AUD_fsb', 'BOBL_fsb', 'BUXL_fsb', 'CAD_fsb', 'CHF_fsb', 'DAX_fsb', 'DOW_fsb', 'DX_fsb', 'EDOLLAR_fsb', 'FTSE100_fsb', 'GOLD_fsb', 'NIKKEI_fsb', 'NZD_fsb', 'OAT_fsb', 'RUSSELL_fsb', 'SHATZ_fsb', 'SILVER_fsb', 'US2_fsb', 'US30U_fsb']
 
 
 
@@ -25,7 +25,7 @@ Markets not enough contract volume (Volume in contracts per day < 100): []
 
 
 
-Markets too safe (Annual % std. dev < 5.0): ['EDOLLAR_fsb', 'JGB_fsb', 'SHATZ_fsb', 'US2_fsb', 'US5_fsb']
+Markets too safe (Annual % std. dev < 5.0): ['EDOLLAR_fsb', 'JGB_fsb', 'SHATZ_fsb', 'US2_fsb']
 
 
 
