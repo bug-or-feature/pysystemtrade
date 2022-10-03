@@ -146,17 +146,14 @@ class ibPriceClient(ibContractsClient):
             )
             return missing_contract
 
-        recent_time = datetime.datetime.now() - datetime.timedelta(seconds=60)
+        # recent_time = datetime.datetime.now() - datetime.timedelta(seconds=60)
+        # tick_data = self.ib.reqHistoricalTicks(
+        #     ibcontract, recent_time, "", tick_count, "BID_ASK", useRth=False
+        # )
 
         tick_data = self.ib.reqHistoricalTicks(
-            ibcontract, recent_time, "", tick_count, "BID_ASK", useRth=False
+            ibcontract, "", self.get_broker_time_local_tz(), tick_count, "BID_ASK", useRth=False
         )
-
-        # local_ib_time = self.get_broker_time_local_tz()
-        # print(local_ib_time)
-        # tick_data = self.ib.reqHistoricalTicks(
-        #     ibcontract, "", local_ib_time, tick_count, "BID_ASK", useRth=False
-        # )
 
         return tick_data
 
