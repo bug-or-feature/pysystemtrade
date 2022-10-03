@@ -35,14 +35,30 @@ Visit `http://localhost:5000/` to view the dashboard. To remap this location or 
 
 # System monitor
 
-Alternatively, there is a simple monitoring tool which also outputs an .html file and only shows which processes are running. To use it, add the following two commands to your crontab on reboot, or run manually eg using [screen](https://linuxize.com/post/how-to-use-linux-screen/):
+Alternatively, there is a simple monitoring tool which also outputs an .html file and only shows which processes are 
+running. To use it, add the following to your crontab on reboot, to start a web server.
 
 ```
-cd ~pysystemtrade/private/; python3 -m http.server
-cd ~pysystemtrade/syscontrol/; python3 monitor.py
+cd $PYSYS_CODE/private/; python3 -m http.server
 ```
 
-Once your machine has started you should be able to go to `http://192.168.1.13:8000/` (change the IP address as required) on any LAN connected machine and see the status of the system.
+and add the following to crontab run the monitor every 5 mins
+
+```
+*/5 * * * *    $HOME/.profile; python $PYSYS_CODE/syscontrol/monitor.py >> $ECHO_PATH/run_monitor.txt 2>&1
+```
+
+An alternative is to run manually eg using [screen](https://linuxize.com/post/how-to-use-linux-screen/). Once the 
+monitor script has run once, you should be able to go to `http://192.168.1.13:8000/` 
+(change the IP address as required) on any LAN connected machine and see the status of the system.
+
+By default, the HTML file is written to `private/index.html`, but this is configurable. Do something like:
+
+```
+monitor_output_path: '/path/to/dashboard.html'
+```
+
+And don't forget to adapt the command to start the web server accordingly
 
 # Handling of crashed processes
 
@@ -61,10 +77,12 @@ Then on the monitoring machine:
 
 - You may need to change your firewall settings to open up ports 27017 (mongodb) and 4001 (IB, unless you use a different port).
 - you will need to modify the `private_config.yaml` system configuration file so it connects to a different IP address eg `mongo_host: 192.168.0.13`
-- you will need to modify the private_config.yaml` system configuration file so it connects to a different IP address eg `ib_ipaddress: 192.168.0.13` 
+- you will need to modify the `private_config.yaml` system configuration file so it connects to a different IP address eg `ib_ipaddress: 192.168.0.13` 
 - add the following to your `private_config.yaml` file so that the process monitoring works correctly
-
-`trading_server_ip: 192.168.0.13`
-`trading_server_username: 'rob'`
-`trading_server_ssh_port: 22` (optional, defaults to port 22)
+```
+trading_server_ip: 192.168.0.13
+trading_server_username: 'rob'
+# optional, defaults to port 22
+trading_server_ssh_port: 22 
+```
 

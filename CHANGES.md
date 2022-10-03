@@ -6,9 +6,35 @@ This document describes changes to this fork. For upstream master, see [CHANGELO
 - Upstream version: 1.47
 
 ## TODO
-- TODO
+- See [Issues](https://github.com/bug-or-feature/pysystemtrade-fsb/issues)
 
-## Dec 2021 - now
+## Jul 2022 - Sep 2022 ish
+- get Futures prices from Barchart, derive FSB prices
+- reports auto published to [project site](https://bug-or-feature.github.io/pysystemtrade-fsb/reports/)
+- custom private dir
+- hourly/daily price split (from upstream)
+- better process viewer
+
+## Apr 2022 - Jun 2022 ish
+- streamline config
+- arctic epic history 
+- FSB min capital report
+- FSB instr risk report
+- remove ib-insync dependency
+- view FSB prices, epic history in interactive_diagnostics
+- FSB report
+- project site github page
+- custom broker classes in config
+
+## Jan 2022 - Mar 2022 ish
+- csv epic history
+- more instruments
+- better checks for new instruments
+- first cut of spread sampling
+- better interactive scripts with Flask
+- persistence of contract expiry source
+
+## Dec 2021 - Jan 2022 ish
 - epic mapping as YAML config
 - commandline fsb script
 - IG broker code updates

@@ -62,6 +62,10 @@ intraday_frequency: H
 # Capital calculation
 production_capital_method: 'full'
 #
+# where to write monitor output, if using
+monitor_output_path: 'private.index.html'
+#
+#
 #           BACKTESTING STUFF
 #
 # Raw data
