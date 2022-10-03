@@ -32,3 +32,11 @@ def do_create_broker_orders_from_contract_orders():
 def do_refresh_additional_sampling_all_instruments():
     sampler = stackHandlerAdditionalSampling()
     sampler.refresh_additional_sampling_all_instruments()
+
+
+if __name__ == '__main__':
+    # do_check_external_position_break()
+    # do_spawn_children_from_new_instrument_orders()
+    # do_force_roll_orders()
+    # do_create_broker_orders_from_contract_orders()
+    do_refresh_additional_sampling_all_instruments()
