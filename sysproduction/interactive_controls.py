@@ -693,8 +693,6 @@ def clear_used_client_ids(data):
 
 
 def view_process_controls(data):
-    data_control = dataControlProcess(data)
-    data_control.check_if_pid_running_and_if_not_finish_all_processes()
     controls_df = get_dict_of_process_controls(data).as_pd_df()
     print("\nControlled processes:\n")
     print(f"{controls_df}\n")
