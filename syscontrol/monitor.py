@@ -12,10 +12,12 @@ from syscontrol.list_running_pids import describe_trading_server_login_data
 
 def monitor():
     with dataBlob(log_name="system-monitor") as data:
+        data.log.msg("Starting process monitor...")
         process_observatory = processMonitor(data)
         check_if_pid_running_and_if_not_finish(process_observatory)
         process_observatory.update_all_status_with_process_control()
         generate_html(process_observatory)
+        data.log.msg("Process monitor done.")
 
 
 UNKNOWN_STATUS = "Unknown"
