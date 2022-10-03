@@ -20,6 +20,7 @@ PYSYS_PRIVATE_CONFIG_DIR=/home/caleb/pst_caleb_prod
 00 21  * * 1-5     conda activate base; $SCRIPT_PATH/run_cleaners  >> $ECHO_PATH/run_cleaners.txt 2>&1; conda deactivate
 15 21  * * 1-5     conda activate base; $SCRIPT_PATH/run_backups  >> $ECHO_PATH/run_backups_echos.txt 2>&1; conda deactivate
 30 21  * * 1-5     conda activate base; $SCRIPT_PATH/run_reports  >> $ECHO_PATH/run_reports.txt 2>&1; conda deactivate
-#15 10  * * 1-7     conda activate base; $SCRIPT_PATH/run_bc_downloads >> $ECHO_PATH/run_bc_downloads.txt 2>&1; conda deactivate
+*/5 *  * * *       conda activate base; python $PYSYS_CODE/syscontrol/monitor.py >> $ECHO_PATH/run_monitor.txt 2>&1
+#15 10  * * 1-7    conda activate base; $SCRIPT_PATH/run_bc_downloads >> $ECHO_PATH/run_bc_downloads.txt 2>&1; conda deactivate
 #
 @reboot          $SCRIPT_PATH/startup  >> $ECHO_PATH/startup.txt 2>&1
