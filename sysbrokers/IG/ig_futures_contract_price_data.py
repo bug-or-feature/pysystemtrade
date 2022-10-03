@@ -17,7 +17,7 @@ from sysexecution.orders.contract_orders import contractOrder
 from sysexecution.orders.broker_orders import brokerOrder
 
 from sysobjects.futures_per_contract_prices import futuresContractPrices
-from sysobjects.contracts import futuresContract, listOfFuturesContracts
+from sysobjects.contracts import futuresContract
 from sysobjects.fsb_contract_prices import FsbContractPrices
 
 from syslogdiag.log_to_screen import logtoscreen
@@ -224,7 +224,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             return FsbContractPrices.create_empty()
 
         # calc dates and freq
-        existing = self.existing_prices.get_prices_for_contract_object(contract_object)
+        existing = self.existing_prices.get_merged_prices_for_contract_object(contract_object)
         end_date = datetime.now().astimezone(tz=pytz.utc)
         if existing.shape[0] > 0:
             last_index_date = existing.index[-1]
