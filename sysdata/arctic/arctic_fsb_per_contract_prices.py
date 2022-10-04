@@ -11,7 +11,7 @@ from sysobjects.fsb_contract_prices import FsbContractPrices
 from sysobjects.contracts import futuresContract
 from syslogdiag.log_to_screen import logtoscreen
 from syscore.merge_data import merge_newer_data, spike_in_data
-from syscore.objects import missing_data, failure
+from syscore.objects import missing_data
 import pandas as pd
 
 CONTRACT_COLLECTION = "fsb_contract_prices"
@@ -150,7 +150,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
             new_log.msg("No new data")
             return 0
 
-        old_prices = self.get_prices_for_contract_object(contract_object)
+        old_prices = self.get_merged_prices_for_contract_object(contract_object)
         merged_prices = old_prices.add_rows_to_existing_data(
             new_futures_per_contract_prices, check_for_spike=check_for_spike
         )
