@@ -65,6 +65,11 @@ production_capital_method: 'full'
 # where to write monitor output, if using
 monitor_output_path: 'private.index.html'
 #
+# where to write reports, if using
+reporting_directory: '~/'
+# report file extension, if using
+report_file_extension: ''
+#
 #
 #           BACKTESTING STUFF
 #
