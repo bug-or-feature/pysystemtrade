@@ -1,5 +1,5 @@
 from jinja2 import Environment, select_autoescape, FileSystemLoader
-
+import os
 from copy import copy
 import datetime
 from sysdata.data_blob import dataBlob
@@ -130,6 +130,7 @@ def check_if_pid_running_and_if_not_finish(process_observatory: processMonitor):
 
 
 def generate_html(process_observatory: processMonitor):
+    print(f"working dir: {os.getcwd()}")
     jinja_env = Environment(
         loader=FileSystemLoader("syscontrol/templates"),
         autoescape=select_autoescape()
