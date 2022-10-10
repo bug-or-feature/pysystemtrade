@@ -1,3 +1,5 @@
+from jinja2 import Environment, select_autoescape, FileSystemLoader
+
 from copy import copy
 import datetime
 from sysdata.data_blob import dataBlob
@@ -53,10 +55,15 @@ class processMonitor(dict):
     def log_messages(self):
         return self._log_messages
 
-    def process_dict_to_html_table(self, file):
+    def process_dict_as_df(self):
         data_control = dataControlProcess(self.data)
         process_df = data_control.get_dict_of_control_processes().as_pd_df()
-        process_df.to_html(file, justify='left')
+        return process_df
+
+    def process_dict_to_html_table(self, file):
+        data_control = dataControlProcess(self.data)
+        dict_of_process = data_control.get_dict_of_control_processes()
+        dict_of_process.to_html_table_in_file(file)
 
     def log_messages_to_html(self, file):
         self.log_messages.html_repr(file)
@@ -123,20 +130,23 @@ def check_if_pid_running_and_if_not_finish(process_observatory: processMonitor):
 
 
 def generate_html(process_observatory: processMonitor):
-    trading_server_description = describe_trading_server_login_data()
-    dbase_description = str(process_observatory.data.mongo_db)
+    jinja_env = Environment(
+        loader=FileSystemLoader("syscontrol/templates"),
+        autoescape=select_autoescape()
+    )
+    template = jinja_env.get_template("monitor_template.html")
     with open(get_html_file_path(), "w") as file:
-        file.write("<br/> Last update %s" % str(datetime.datetime.now().strftime(ISO_DATE_FORMAT)))
-        file.write("<br/><br/>")
         file.write(
-            "Monitoring machine %s with database %s"
-            % (trading_server_description, dbase_description)
+            template.render(
+                {
+                    "created_date": str(datetime.datetime.now().strftime(ISO_DATE_FORMAT)),
+                    "trading_server_description": describe_trading_server_login_data(),
+                    "dbase_description": str(process_observatory.data.mongo_db),
+                    "process_info": process_observatory.process_dict_as_df(),
+                    "log_messages": process_observatory.log_messages
+                }
+            )
         )
-        file.write("<br/><br/>")
-        process_observatory.process_dict_to_html_table(file)
-        file.write("<br/><br/>")
-        process_observatory.log_messages_to_html(file)
-        file.write("<br/><br/>")
 
 
 def get_html_file_path():
