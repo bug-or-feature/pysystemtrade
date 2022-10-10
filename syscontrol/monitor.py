@@ -139,7 +139,6 @@ def generate_html(process_observatory: processMonitor):
         file.write(
             template.render(
                 {
-                    "created_date": str(datetime.datetime.now().strftime(ISO_DATE_FORMAT)),
                     "trading_server_description": describe_trading_server_login_data(),
                     "dbase_description": str(process_observatory.data.mongo_db),
                     "process_info": process_observatory.process_dict_as_df(),
