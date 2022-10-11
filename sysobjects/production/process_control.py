@@ -126,6 +126,11 @@ class controlProcess(object):
     def __repr__(self):
         return " ".join(self.as_printable_list())
 
+    def has_same_status(self, other):
+        if isinstance(other, controlProcess):
+            return (self.running_mode_str == other.running_mode_str) & (self.status == other.status)
+        return False
+
     @property
     def running_mode_str(self) -> str:
         if self.currently_running:
