@@ -64,15 +64,15 @@ class mongoControlProcessData(controlProcessData):
     def delete_control_for_process_name(self, process_name):
         self.mongo_data.delete_data_without_any_warning(process_name)
 
-    def _log_status_change(self, process_name, new_control):
+    def _log_status_change(self, process_name, new_control: controlProcess):
         existing_control = self._get_control_for_process_name_without_default(
             process_name
         )
-        if not existing_control.has_same_status(new_control):
+        if not existing_control.running_mode_str == new_control.running_mode_str:
             msg = "Status of %s changed from %s to %s at %s" % (
                 process_name,
-                existing_control.status,
-                new_control.status,
+                existing_control.running_mode_str,
+                new_control.running_mode_str,
                 last_run_or_heartbeat_from_date_or_none(
                     datetime.datetime.now(),
                     date_format=ISO_DATE_FORMAT
