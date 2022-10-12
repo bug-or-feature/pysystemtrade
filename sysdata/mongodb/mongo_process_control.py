@@ -1,7 +1,8 @@
+import datetime
 from sysobjects.production.process_control import controlProcess
 from sysdata.production.process_control_data import controlProcessData
 from syscore.objects import arg_not_supplied, missing_data
-
+from syscore.dateutils import last_run_or_heartbeat_from_date_or_none, ISO_DATE_FORMAT
 from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey
 from syslogdiag.log_to_screen import logtoscreen
 
@@ -50,6 +51,7 @@ class mongoControlProcessData(controlProcessData):
     def _modify_existing_control_for_process_name(
         self, process_name, new_control_object
     ):
+        self._log_status_change(process_name, new_control_object)
         self.mongo_data.add_data(
             process_name, new_control_object.as_dict(), allow_overwrite=True
         )
@@ -61,3 +63,21 @@ class mongoControlProcessData(controlProcessData):
 
     def delete_control_for_process_name(self, process_name):
         self.mongo_data.delete_data_without_any_warning(process_name)
+
+    def _log_status_change(self, process_name, new_control: controlProcess):
+        existing_control = self._get_control_for_process_name_without_default(
+            process_name
+        )
+        if not existing_control.has_same_status(new_control):
+            msg = "Status of '%s' changed from '%s (%s)' to '%s (%s)' at %s" % (
+                process_name,
+                existing_control.running_mode_str,
+                existing_control.status,
+                new_control.running_mode_str,
+                new_control.status,
+                last_run_or_heartbeat_from_date_or_none(
+                    datetime.datetime.now(),
+                    date_format=ISO_DATE_FORMAT
+                ),
+            )
+            self.log.terse(msg, sysmon='status_change')

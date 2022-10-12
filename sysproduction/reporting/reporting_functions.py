@@ -282,7 +282,7 @@ def get_directory_for_reporting(data):
 
 
 def get_report_file_extension(data):
-    return data.config.get_element_or_missing_data("report_file_extension")
+    return data.config.get_element_or_arg_not_supplied("report_file_extension")
 
 
 def write_text_report_to_file(
