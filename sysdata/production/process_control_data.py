@@ -116,7 +116,7 @@ class controlProcessData(baseData):
                 "Process %s with PID %d appears to have crashed, marking as finished: you may want to restart"
                 % (process_name, PID)
             )
-            self._update_control_for_process_name(process_name, original_process)
+        self._update_control_for_process_name(process_name, original_process)
 
     def finish_all_processes(self):
 

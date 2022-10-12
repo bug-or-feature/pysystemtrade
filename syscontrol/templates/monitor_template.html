@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>pysystemtrade monitor</title>
+        <style>
+            body { font-family: monospace; }
+            table, th, td { border: 1px solid gray; }
+            th, td { padding: 5px; }
+        </style>
+    </head>
+    <body>
+        <br/>
+        Last update <script>document.write(document.lastModified);</script><br/><br/>
+        Monitoring machine {{ trading_server_description }} with database {{ dbase_description }}<br/><br/>
+        <table>
+            <thead>
+                <tr>
+                    <th>Process</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Status</th>
+                    <th>PID</th>
+                    <th>Running</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for col, row in process_info.iterrows() %}
+                    <tr>
+                        <td>{{ col }}</td>
+                        <td>{{ row['start'] }}</td>
+                        <td>{{ row['end'] }}</td>
+                        <td>{{ row['status'] }}</td>
+                        <td>{{ row['PID'] }}</td>
+                        <td>{{ row['running'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <ul>
+            {% for msg in log_messages %}
+                <li>{{ msg }}</li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
