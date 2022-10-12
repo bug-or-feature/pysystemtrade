@@ -54,12 +54,15 @@ from sysproduction.reporting.report_configs import (
     liquidity_report_config,
     costs_report_config,
     slippage_report_config,
-    instrument_risk_report_config,
-    min_capital_report_config,
     duplicate_market_report_config,
     remove_markets_report_config,
     market_monitor_report_config,
     account_curve_report_config,
+)
+
+from sysproduction.reporting.report_configs_fsb import (
+    instrument_risk_fsb_report_config,
+    min_capital_fsb_report_config,
     fsb_report_config
 )
 
@@ -256,12 +259,12 @@ def liquidity_report(data):
     run_report(report_config, data=data)
 
 def instrument_risk_report(data):
-    report_config = email_or_print_or_file(instrument_risk_report_config)
+    report_config = email_or_print_or_file(instrument_risk_fsb_report_config)
     run_report(report_config, data=data)
 
 
 def min_capital_report(data):
-    report_config = email_or_print_or_file(min_capital_report_config)
+    report_config = email_or_print_or_file(min_capital_fsb_report_config)
     run_report(report_config, data=data)
 
 def duplicate_market_report(data):
