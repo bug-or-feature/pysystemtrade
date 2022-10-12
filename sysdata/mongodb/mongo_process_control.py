@@ -68,11 +68,13 @@ class mongoControlProcessData(controlProcessData):
         existing_control = self._get_control_for_process_name_without_default(
             process_name
         )
-        if not existing_control.running_mode_str == new_control.running_mode_str:
-            msg = "Status of %s changed from %s to %s at %s" % (
+        if not existing_control.has_same_status(new_control):
+            msg = "Status of '%s' changed from '%s (%s)' to '%s (%s)' at %s" % (
                 process_name,
                 existing_control.running_mode_str,
+                existing_control.status,
                 new_control.running_mode_str,
+                new_control.status,
                 last_run_or_heartbeat_from_date_or_none(
                     datetime.datetime.now(),
                     date_format=ISO_DATE_FORMAT
