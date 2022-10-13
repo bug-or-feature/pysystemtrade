@@ -1,15 +1,15 @@
 
 ********************************************************************************
-      Removed markets report report produced on 2022-10-03 22:31:03.822323      
+      Removed markets report report produced on 2022-10-04 22:31:02.959297      
 ********************************************************************************
 
 
 List of markets which should be marked as untradeable due to risk, liquidity or cost issues
-Following should be removed from trading (add to config.bad_markets) [0.300000 threshold]: ['OAT_fsb', 'SILVER_fsb', 'BOBL_fsb', 'DAX_fsb', 'US2_fsb', 'CHF_fsb', 'RUSSELL_fsb', 'FTSE100_fsb', 'GOLD_fsb', 'NIKKEI_fsb', 'BUXL_fsb', 'EDOLLAR_fsb', 'NZD_fsb', 'DX_fsb', 'SHATZ_fsb'] 
+Following should be removed from trading (add to config.bad_markets) [0.300000 threshold]: ['FTSE100_fsb', 'GOLD_fsb', 'EDOLLAR_fsb', 'BOBL_fsb', 'OAT_fsb', 'RUSSELL_fsb', 'SHATZ_fsb', 'US2_fsb', 'CHF_fsb', 'BUXL_fsb', 'DAX_fsb', 'NIKKEI_fsb', 'SILVER_fsb', 'DX_fsb', 'NZD_fsb'] 
 
 
 
-Following should be allowed to trade (delete from config.bad_markets) [0.300000 threshold]: ['VIX_fsb', 'EUA_fsb']
+Following should be allowed to trade (delete from config.bad_markets) [0.300000 threshold]: ['EUA_fsb', 'VIX_fsb']
 
 
 
