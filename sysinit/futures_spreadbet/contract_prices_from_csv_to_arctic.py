@@ -10,7 +10,8 @@ from sysdata.arctic.arctic_fsb_per_contract_prices import (
 )
 from sysobjects.contracts import futuresContract
 from syscore.text import remove_suffix
-
+from syscore.dateutils import DAILY_PRICE_FREQ, HOURLY_FREQ
+from syscore.pdutils import get_intraday_df_at_frequency, closing_date_rows_in_pd_object
 
 def init_arctic_with_csv_futures_contract_prices(
     datapath: str, csv_config=arg_not_supplied
@@ -59,18 +60,41 @@ def init_arctic_with_csv_futures_contract_prices_for_code(
     print("Have .csv prices for the following contracts:")
     print(str(csv_price_dict.keys()))
 
-    for contract_date_str, prices_for_contract in csv_price_dict.items():
+    for contract_date_str, merged_prices_for_contract in csv_price_dict.items():
         print("Processing %s" % contract_date_str)
-        print(".csv prices are \n %s" % str(prices_for_contract))
+        print(".csv prices are \n %s" % str(merged_prices_for_contract))
         contract = futuresContract.from_two_strings(instrument_code, contract_date_str)
         print("Contract object is %s" % str(contract))
-        print("Writing to arctic")
-        arctic_prices.write_merged_prices_for_contract_object(
-            contract, prices_for_contract, ignore_duplication=True
-        )
-        print("Reading back prices from arctic to check")
-        written_prices = arctic_prices.get_merged_prices_for_contract_object(contract)
-        print("Read back prices are \n %s" % str(written_prices))
+
+        print("Splitting prices into hourly and daily")
+        daily_data = closing_date_rows_in_pd_object(merged_prices_for_contract)
+        hourly_data = get_intraday_df_at_frequency(merged_prices_for_contract, frequency="H")
+
+        print("Writing hourly prices to arctic")
+        if len(hourly_data) > 0:
+            arctic_prices.write_prices_at_frequency_for_contract_object(
+                contract,
+                futures_price_data=hourly_data,
+                ignore_duplication=False,
+                frequency=HOURLY_FREQ
+            )
+
+        print("Reading back hourly prices from arctic to check")
+        written_hourly_prices = arctic_prices.get_prices_at_frequency_for_contract_object(contract, HOURLY_FREQ)
+        print("Read back hourly prices are \n %s" % str(written_hourly_prices))
+
+        print("Writing daily prices to arctic")
+        if len(daily_data) > 0:
+            arctic_prices.write_prices_at_frequency_for_contract_object(
+                contract,
+                futures_price_data=daily_data,
+                ignore_duplication=False,
+                frequency=DAILY_PRICE_FREQ
+            )
+
+        print("Reading back daily prices from arctic to check")
+        written_daily_prices = arctic_prices.get_prices_at_frequency_for_contract_object(contract, DAILY_PRICE_FREQ)
+        print("Read back prices are \n %s" % str(written_daily_prices))
 
 
 def init_arctic_with_csv_fsb_contract_prices_for_code(
