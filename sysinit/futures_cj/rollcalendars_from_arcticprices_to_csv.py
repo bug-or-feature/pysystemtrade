@@ -43,7 +43,7 @@ def build_and_write_roll_calendar(
 
     csv_roll_calendars = csvRollCalendarData(output_datapath)
 
-    dict_of_all_futures_contract_prices = prices.get_all_prices_for_instrument(
+    dict_of_all_futures_contract_prices = prices.get_merged_prices_for_instrument(
         instrument_code
     )
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
@@ -125,7 +125,7 @@ if __name__ == "__main__":
     # build_and_write_roll_calendar(instrument_code, output_datapath=arg_not_supplied)
 
     #for instr in ['DX', 'EUR', 'GBP', 'NZD']:
-    instrument_code = 'NZD'
+    instrument_code = 'VIX'
     build_and_write_roll_calendar(
         instrument_code,
         output_datapath="data.futures_cj.roll_calendars_csv",
