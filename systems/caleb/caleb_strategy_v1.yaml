@@ -2690,6 +2690,7 @@ exclude_instrument_lists:
     - MSCISING
     - MUMMY
     - NIFTY
+    - NIKKEI
     - NIKKEI400
     - NOK
     - OATIES
