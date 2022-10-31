@@ -90,18 +90,21 @@ class dictFuturesContractPrices(dict):
         )
         return object_repr
 
-    def final_prices(self) -> dictFuturesContractFinalPrices:
+    def final_prices(self, start: int = None) -> dictFuturesContractFinalPrices:
         """
-
+        :param start: contract month id to start from, as int eg 20221000
         :return: dict of final prices
         """
 
         all_contract_ids = list(self.keys())
         final_price_dict_as_list = []
         for contract_id in all_contract_ids:
-            final_prices = self[contract_id].return_final_prices()
-            final_prices.name = contract_id
-            final_price_dict_as_list.append((contract_id, final_prices))
+            if start is not None and int(contract_id) <= start:
+                continue
+            else:
+                final_prices = self[contract_id].return_final_prices()
+                final_prices.name = contract_id
+                final_price_dict_as_list.append((contract_id, final_prices))
 
         final_prices_dict = dictFuturesContractFinalPrices(final_price_dict_as_list)
 
