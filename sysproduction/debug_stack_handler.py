@@ -32,3 +32,7 @@ def do_create_broker_orders_from_contract_orders():
 def do_refresh_additional_sampling_all_instruments():
     sampler = stackHandlerAdditionalSampling()
     sampler.refresh_additional_sampling_all_instruments()
+
+
+if __name__ == "__main__":
+    do_refresh_additional_sampling_all_instruments()
