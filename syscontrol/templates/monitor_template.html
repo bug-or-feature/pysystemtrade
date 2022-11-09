@@ -10,7 +10,7 @@
     </head>
     <body>
         <br/>
-        Last update <script>document.write(document.lastModified);</script><br/><br/>
+        Last update <script>last_mod = new Date(document.lastModified); document.write(last_mod.toISOString());</script><br/><br/>
         Monitoring machine {{ trading_server_description }} with database {{ dbase_description }}<br/><br/>
         <table>
             <thead>
