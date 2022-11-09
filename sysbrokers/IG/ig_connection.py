@@ -5,11 +5,12 @@ import pandas as pd
 from pandas import json_normalize
 from tenacity import Retrying, wait_exponential, retry_if_exception_type
 from trading_ig.rest import IGService, ApiExceededException
+from trading_ig.stream import IGStreamService
+from trading_ig.lightstreamer import Subscription
 
 from syscore.objects import missing_data
 from sysdata.config.production_config import get_production_config
 from syslogdiag.log_to_screen import logtoscreen
-from sysobjects.contracts import futuresContract
 from sysobjects.fsb_contract_prices import FsbContractPrices
 from syscore.objects import missing_contract
 
@@ -30,17 +31,18 @@ class IGConnection(object):
         self._log = log
         logging.basicConfig(level=logging.DEBUG)
         if auto_connect:
-            self._session = self._create_ig_session()
+            self._rest_session = self._create_rest_session()
+            self._stream_session = self._create_stream_session()
 
     @property
     def log(self):
         return self._log
 
-    def _create_ig_session(self):
+    def _create_rest_session(self):
         retryer = Retrying(
             wait=wait_exponential(), retry=retry_if_exception_type(ApiExceededException)
         )
-        ig_service = IGService(
+        rest_service = IGService(
             self._ig_username,
             self._ig_password,
             self._ig_api_key,
@@ -48,36 +50,48 @@ class IGConnection(object):
             acc_number=self._ig_acc_number,
             retryer=retryer,
         )
-        #ig_service.create_session()
-        ig_service.create_session(version="3")
-        return ig_service
+        rest_service.create_session()
+        # rest_service.create_session(version="3")
+        return rest_service
+
+    def _create_stream_session(self):
+        stream_service = IGStreamService(self.rest_service)
+        stream_service.create_session()
+        self._spread_storage = []
+        return stream_service
 
     @property
-    def service(self):
-        return self._session
+    def rest_service(self):
+        return self._rest_session
+
+    @property
+    def stream_service(self):
+        return self._stream_session
 
     def logout(self):
-        self._session.logout()
+        self.rest_service.logout()
+        self.stream_service.disconnect()
 
     def get_account_number(self):
         return self._ig_acc_number
 
     def get_capital(self, account: str):
-        data = self.service.fetch_accounts()
+        data = self.rest_service.fetch_accounts()
         balance = float(data[data["accountId"] == account]["balance"])
-        profitLoss = float(data[data["accountId"] == account]["profitLoss"])
-        tot_capital = balance + profitLoss
-        available_capital = tot_capital * 0.8 # leave 20% for margin
+        profit_loss = float(data[data["accountId"] == account]["profitLoss"])
+        tot_capital = balance + profit_loss
+        # leave 20% for margin
+        available_capital = tot_capital * 0.8  # TODO implement properly
 
         return available_capital
 
     def get_positions(self):
-        positions = self.service.fetch_open_positions()
+        positions = self.rest_service.fetch_open_positions()
         # print_full(positions)
         result_list = []
         for i in range(0, len(positions)):
             pos = dict()
-            pos["account"] = self.service.ACC_NUMBER
+            pos["account"] = self.rest_service.ACC_NUMBER
             pos["name"] = positions.iloc[i]["instrumentName"]
             pos["size"] = positions.iloc[i]["size"]
             pos["dir"] = positions.iloc[i]["direction"]
@@ -94,7 +108,7 @@ class IGConnection(object):
         return result_list
 
     def get_activity(self):
-        activities = self.service.fetch_account_activity_by_period(48 * 60 * 60 * 1000)
+        activities = self.rest_service.fetch_account_activity_by_period(48 * 60 * 60 * 1000)
         test_epics = ["CS.D.GBPUSD.TODAY.IP", "IX.D.FTSE.DAILY.IP"]
         activities = activities.loc[~activities["epic"].isin(test_epics)]
 
@@ -124,18 +138,18 @@ class IGConnection(object):
     ) -> pd.DataFrame:
 
         """
-        Get historical daily data
+        Get historical FSB price data for the given epic
 
-        :param epic:
-        :type str:
-        :param bar_freq:
-        :type bar_freq:
-        :param start_date:
-        :type start_date:
-        :param end_date:
-        :type end_date:
-        :return:
-        :rtype:
+        :param epic: IG epic
+        :type epic: str
+        :param bar_freq: resolution
+        :type bar_freq: str
+        :param start_date: start date
+        :type start_date: datetime
+        :param end_date: end date
+        :type end_date: datetime
+        :return: historical price data
+        :rtype: pd.DataFrame
         """
 
         df = FsbContractPrices.create_empty()
@@ -155,7 +169,7 @@ class IGConnection(object):
                 f"to '{end_date.strftime('%Y-%m-%dT%H:%M:%S')}')"
             )
             try:
-                response = self.service.fetch_historical_prices_by_epic(
+                response = self.rest_service.fetch_historical_prices_by_epic(
                     epic=epic,
                     resolution=bar_freq,
                     start_date=start_date.strftime("%Y-%m-%dT%H:%M:%S"),
@@ -180,20 +194,18 @@ class IGConnection(object):
 
     def get_snapshot_price_data_for_contract(
             self,
-            futures_contract: futuresContract,
+            epic: str,
     ) -> pd.DataFrame:
-
-        epic = self.get_ig_epic(futures_contract)
 
         if epic is not None:
 
             self.log.msg(
-                f"Getting snapshot price data for {epic} ({futures_contract.key})"
+                f"Getting snapshot price data for {epic}"
             )
             snapshot_rows = []
             now = datetime.now()
             try:
-                info = self.service.fetch_market_by_epic(epic)
+                info = self.rest_service.fetch_market_by_epic(epic)
                 update_time = info["snapshot"]["updateTime"]
                 bid = info["snapshot"]["bid"]
                 offer = info["snapshot"]["offer"]
@@ -221,7 +233,7 @@ class IGConnection(object):
                 df = df[new_cols]
 
             except Exception as exc:
-                self.log.error(f"Problem getting expiry date for '{futures_contract.key}': {exc}")
+                self.log.error(f"Problem getting expiry date for '{epic}': {exc}")
                 return missing_data
             return df
         else:
@@ -230,39 +242,53 @@ class IGConnection(object):
     def get_expiry_details(self, epic: str):
         """
         Get the actual expiry date for a given contract, according to IG
-        :param futures_contract:
+        :param epic:
         :return: str
         """
 
         if epic is not None:
             try:
-                info = self.service.fetch_market_by_epic(epic)
+                info = self.rest_service.fetch_market_by_epic(epic)
                 expiry_key = info["instrument"]["expiry"]
                 last_dealing = info["instrument"]["expiryDetails"]["lastDealingDate"]
                 last_dealing_date = datetime.strptime(last_dealing, '%Y-%m-%dT%H:%M')
             except Exception as exc:
                 self.log.error(f"Problem getting expiry date for '{epic}': {exc}")
                 return missing_contract
-            return (expiry_key, last_dealing_date.strftime("%Y-%m-%d %H:%M:%S"))
+            return expiry_key, last_dealing_date.strftime("%Y-%m-%d %H:%M:%S")
         else:
             return missing_contract
 
     def get_recent_bid_ask_price_data(self, epic):
 
-        results = self.service.fetch_historical_prices_by_epic(
-            epic,
-            resolution="10Min",
-            numpoints=6,
-            format=self._flat_prices_tick_format,
-            wait=0
+        # override for testing at weekends, evenings
+        #epic = "CS.D.BITCOIN.TODAY.IP"  # sample weekend crypto spreadbet epics
+        subscription = Subscription(
+            mode="MERGE",
+            items=[f"L1:{epic}"],
+            fields=["UPDATE_TIME", "BID", "OFFER", "CHANGE", "MARKET_STATE"],
         )
 
-        return results["prices"]
+        subscription.addlistener(on_stream_update)
 
-    def broker_fx_balances(self, account_id: str):
+        sub_key = self.stream_service.ls_client.subscribe(subscription)
+        print(f"sub key: {sub_key}")
+
+        max_data_points = 10
+        while len(self._spread_storage) < max_data_points:
+            print(f"Collecting spread data, have {len(self._spread_storage)} of {max_data_points}")
+
+        df = pd.DataFrame(self._spread_storage)
+        self._spread_storage.clear()
+
+        return df
+
+    @staticmethod
+    def broker_fx_balances(account_id: str):
         return 0.0
 
-    def _flat_prices_tick_format(self, prices, version):
+    @staticmethod
+    def _flat_prices_tick_format(prices, version):
 
         """Format price data as a flat DataFrame, no hierarchy"""
 
@@ -300,7 +326,8 @@ class IGConnection(object):
 
         return df
 
-    def _flat_prices_bid_ask_format(self, prices, version):
+    @staticmethod
+    def _flat_prices_bid_ask_format(prices, version):
 
         """Format price data as a flat DataFrame, no hierarchy, with bid/ask OHLC prices"""
 
@@ -344,3 +371,14 @@ class IGConnection(object):
         ]
 
         return df
+
+
+def on_stream_update(item_update):
+    # print(
+    #     "{stock_name:<19}: Time {UPDATE_TIME:<8} - "
+    #     "Bid {BID:>5} - Ask {OFFER:>5}".format(
+    #         stock_name=item_update["name"], **item_update["values"]
+    #     )
+    # )
+    print(f"item_update: {item_update}")
+    stock_name = item_update["name"]
