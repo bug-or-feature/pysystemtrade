@@ -16,7 +16,8 @@ from syscore.objects import (
     missing_contract,
     missing_data
 )
-from syscore.dateutils import Frequency, DAILY_PRICE_FREQ, listOfOpeningTimes
+from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
+from sysobjects.production.trading_hours import listOfOpeningTimes
 
 from sysdata.data_blob import dataBlob
 from sysdata.tools.cleaner import apply_price_cleaning
