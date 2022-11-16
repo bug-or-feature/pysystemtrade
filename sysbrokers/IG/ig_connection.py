@@ -273,7 +273,7 @@ class IGConnection(object):
             subscription = Subscription(
                 mode="DISTINCT",
                 items=[f"CHART:{epic}:TICK"],
-                fields=["UTM", "BID", "OFR", "LTV", "TTV"],
+                fields=["UTM", "BID", "OFR", "LTV"],
             )
 
             subscription.addlistener(self.on_stream_update)
