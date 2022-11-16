@@ -12,26 +12,31 @@ from sysexecution.stack_handler.additional_sampling import stackHandlerAdditiona
 def do_check_external_position_break():
     checks = stackHandlerChecks()
     checks.check_external_position_break()
+    checks.data.close()
 
 
 def do_spawn_children_from_new_instrument_orders():
     spawner = stackHandlerForSpawning()
     spawner.spawn_children_from_new_instrument_orders()
+    spawner.data.close()
 
 
 def do_force_roll_orders():
     roller = stackHandlerForRolls()
     roller.generate_force_roll_orders()
+    roller.data.close()
 
 
 def do_create_broker_orders_from_contract_orders():
     handler = stackHandlerCreateBrokerOrders()
     handler.create_broker_orders_from_contract_orders()
+    handler.data.close()
 
 
 def do_refresh_additional_sampling_all_instruments():
     sampler = stackHandlerAdditionalSampling()
     sampler.refresh_additional_sampling_all_instruments()
+    sampler.data.close()
 
 
 if __name__ == "__main__":
