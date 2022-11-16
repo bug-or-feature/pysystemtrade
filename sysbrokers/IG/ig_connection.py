@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from dataclasses import dataclass
 
 import pandas as pd
 from pandas import json_normalize
@@ -13,6 +14,7 @@ from sysdata.config.production_config import get_production_config
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.fsb_contract_prices import FsbContractPrices
 from syscore.objects import missing_contract
+from timeit import default_timer as timer
 
 
 class IGConnection(object):
@@ -50,13 +52,13 @@ class IGConnection(object):
             acc_number=self._ig_acc_number,
             retryer=retryer,
         )
-        rest_service.create_session()
-        # rest_service.create_session(version="3")
+        # rest_service.create_session()
+        rest_service.create_session(version="3")
         return rest_service
 
     def _create_stream_session(self):
         stream_service = IGStreamService(self.rest_service)
-        stream_service.create_session()
+        stream_service.create_session(version="3")
         self._spread_storage = []
         return stream_service
 
@@ -69,7 +71,9 @@ class IGConnection(object):
         return self._stream_session
 
     def logout(self):
+        self.log.msg(f"Logging out of IG REST service")
         self.rest_service.logout()
+        self.log.msg(f"Logging out of IG Stream service")
         self.stream_service.disconnect()
 
     def get_account_number(self):
@@ -259,29 +263,44 @@ class IGConnection(object):
         else:
             return missing_contract
 
-    def get_recent_bid_ask_price_data(self, epic):
+    def get_recent_bid_ask_price_data(self, instr_code, epic):
 
-        # override for testing at weekends, evenings
-        #epic = "CS.D.BITCOIN.TODAY.IP"  # sample weekend crypto spreadbet epics
-        subscription = Subscription(
-            mode="MERGE",
-            items=[f"L1:{epic}"],
-            fields=["UPDATE_TIME", "BID", "OFFER", "CHANGE", "MARKET_STATE"],
-        )
+        if self._is_tradeable(epic):
+            start = timer()
 
-        subscription.addlistener(on_stream_update)
+            # override for testing at weekends, evenings
+            # epic = "CS.D.BITCOIN.TODAY.IP"  # sample weekend crypto spreadbet epics
+            subscription = Subscription(
+                mode="DISTINCT",
+                items=[f"CHART:{epic}:TICK"],
+                fields=["UTM", "BID", "OFR", "LTV", "TTV"],
+            )
 
-        sub_key = self.stream_service.ls_client.subscribe(subscription)
-        print(f"sub key: {sub_key}")
+            subscription.addlistener(self.on_stream_update)
+            sub_key = self.stream_service.ls_client.subscribe(subscription)
+            self.log.msg(f"sub key: {sub_key}")
 
-        max_data_points = 10
-        while len(self._spread_storage) < max_data_points:
-            print(f"Collecting spread data, have {len(self._spread_storage)} of {max_data_points}")
+            max_data_points = 10
+            duration = 0
+            while (len(self._spread_storage) < max_data_points) and (duration < 10.0):
+                duration = timer() - start
 
-        df = pd.DataFrame(self._spread_storage)
-        self._spread_storage.clear()
+            result = self._spread_storage.copy()
+            self._spread_storage.clear()
+            self.stream_service.ls_client.unsubscribe(sub_key)
+            duration = timer() - start
+            self.log.msg(f"Collection of spread data for {instr_code} ({epic}) took {duration} seconds")
 
-        return df
+            return result
+
+        else:
+            self.log.warn(f"Unable to sample spreads for {instr_code} ({epic}), market is not tradeable")
+            return []
+
+    def _is_tradeable(self, epic):
+        market_info = self.rest_service.fetch_market_by_epic(epic)
+        status = market_info.snapshot.marketStatus
+        return status == 'TRADEABLE'
 
     @staticmethod
     def broker_fx_balances(account_id: str):
@@ -372,13 +391,45 @@ class IGConnection(object):
 
         return df
 
+    def on_stream_update(self, item_update):
+        self.log.msg(f"item_update: {item_update}")
+        update_values = item_update["values"]
 
-def on_stream_update(item_update):
-    # print(
-    #     "{stock_name:<19}: Time {UPDATE_TIME:<8} - "
-    #     "Bid {BID:>5} - Ask {OFFER:>5}".format(
-    #         stock_name=item_update["name"], **item_update["values"]
-    #     )
-    # )
-    print(f"item_update: {item_update}")
-    stock_name = item_update["name"]
+        try:
+            tick = BidAskTick(
+                update_values["UTM"],
+                update_values["BID"],
+                update_values["OFR"],
+                update_values["LTV"]
+            )
+            self._spread_storage.append(tick)
+        except TypeError as err:
+            self.log.error(f"Problem trying to create tick data '{update_values}': {err}")
+
+
+@dataclass
+class BidAskTick:
+    timestamp: datetime
+    priceBid: float
+    priceAsk: float
+    sizeBid: int
+    sizeAsk: int
+
+    def __init__(
+            self,
+            date_str: str,
+            bid_str: str,
+            ask_str: str,
+            size_str: str
+    ):
+
+        self.timestamp = datetime.fromtimestamp(int(date_str) / 1000)
+        self.priceBid = float(bid_str)
+        self.priceAsk = float(ask_str)
+
+        try:
+            self.sizeBid = int(size_str)
+            self.sizeAsk = int(size_str)
+        except TypeError:
+            self.sizeBid = 0
+            self.sizeAsk = 0
