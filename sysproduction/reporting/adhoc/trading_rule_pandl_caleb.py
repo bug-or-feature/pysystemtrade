@@ -5,18 +5,38 @@ Ad-hoc reports do not fit into the normal report framework and may include much 
 """
 
 # include these lines if running line by line in IDE console mode, but don't work in a headless server
-#import matplotlib
-#matplotlib.use("TkAgg")
+# import matplotlib
+# matplotlib.use("TkAgg")
 
 import datetime
 import pandas as pd
 from syscore.dateutils import get_date_from_period_and_end_date
 from sysdata.data_blob import dataBlob
 from sysproduction.reporting.formatting import make_account_curve_plot_from_df
-from sysproduction.reporting.reporting_functions import parse_report_results, output_file_report, PdfOutputWithTempFileName
+from sysproduction.reporting.reporting_functions import parse_report_results, output_file_report, \
+    PdfOutputWithTempFileName
 from sysproduction.reporting.report_configs import reportConfig
-
 from systems.provided.rob_system.run_system import futures_system, System
+
+
+def run_report():
+    dict_of_rule_groups = dict(
+        acceleration=['accel16', 'accel32', 'accel64'],
+        asset_class_trend=['assettrend16', 'assettrend2', 'assettrend32', 'assettrend4', 'assettrend64', 'assettrend8'],
+        breakout=['breakout10', 'breakout160', 'breakout20', 'breakout320', 'breakout40', 'breakout80'],
+        ewmac_momentum=['momentum16', 'momentum32', 'momentum4', 'momentum64', 'momentum8'],
+        normalised_momentum=['normmom16', 'normmom2', 'normmom32', 'normmom4', 'normmom64', 'normmom8'],
+        relative_momentum=['relmomentum10', 'relmomentum20', 'relmomentum40', 'relmomentum80'],
+        carry=['carry10', 'carry125', 'carry30', 'carry60'],
+        relative_carry=['relcarry'],
+        # skew=['skewabs180', 'skewabs365', 'skewrv180', 'skewrv365'],
+        misc_mr=['mrinasset160', 'mrwrings4']
+    )
+
+    trading_rule_pandl_adhoc_report(
+        system_function=futures_system(config_filename="systems.caleb.caleb_strategy_v1.yaml"),
+        dict_of_rule_groups=dict_of_rule_groups
+    )
 
 
 def trading_rule_pandl_adhoc_report(
@@ -53,8 +73,8 @@ def trading_rule_pandl_adhoc_report(
                 dict_of_rule_groups=dict_of_rule_groups,
                 data=data,
                 system=system_function,
-                start_date=start_date,
-        )
+                start_date=start_date
+            )
 
             report_output.append(figure_object)
 
@@ -99,21 +119,4 @@ def get_figure_for_rule_group(
 
 
 if __name__ == '__main__':
-
-    dict_of_rule_groups = dict(
-        acceleration=['accel16', 'accel32', 'accel64'],
-        asset_class_trend=['assettrend16', 'assettrend2', 'assettrend32', 'assettrend4', 'assettrend64', 'assettrend8'],
-        breakout=['breakout10', 'breakout160', 'breakout20', 'breakout320', 'breakout40', 'breakout80'],
-        ewmac_momentum=['momentum16', 'momentum32', 'momentum4', 'momentum64', 'momentum8'],
-        normalised_momentum=['normmom16', 'normmom2', 'normmom32', 'normmom4', 'normmom64', 'normmom8'],
-        relative_momentum=['relmomentum10', 'relmomentum20', 'relmomentum40', 'relmomentum80'],
-        carry=['carry10', 'carry125', 'carry30', 'carry60'],
-        relative_carry=['relcarry'],
-        #skew=['skewabs180', 'skewabs365', 'skewrv180', 'skewrv365'],
-        misc_mr=['mrinasset160', 'mrwrings4']
-    )
-
-    trading_rule_pandl_adhoc_report(
-        system_function=futures_system(config_filename="systems.caleb.caleb_strategy_v1.yaml"),
-        dict_of_rule_groups=dict_of_rule_groups
-    )
+    run_report()
