@@ -9,13 +9,14 @@ from sysbrokers.IB.ib_instruments import (
     futuresInstrumentWithIBConfigData,
     ib_futures_instrument,
 )
-from sysbrokers.IB.ib_trading_hours import get_trading_hours, get_saved_trading_hours, get_conservative_trading_hours
+from sysbrokers.IB.ib_trading_hours import get_trading_hours, get_saved_trading_hours
 from sysbrokers.IB.ib_contracts import (
     ibcontractWithLegs,
     get_ib_contract_with_specific_expiry,
     resolve_unique_contract_from_ibcontract_list,
     _add_legs_to_ib_contract,
 )
+from syscore.exceptions import missingContract
 
 from syscore.objects import missing_contract
 from syscore.genutils import list_of_ints_with_highest_common_factor_positive_first
@@ -23,7 +24,9 @@ from syscore.genutils import list_of_ints_with_highest_common_factor_positive_fi
 from syslogdiag.logger import logger
 
 from sysobjects.contracts import futuresContract, contractDate
-from sysobjects.production.trading_hours import intersecting_trading_hours, listOfOpeningTimes, dictOfDictOfWeekdayOpeningTimes, weekdayDictOflistOfOpeningTimesAnyDay
+from sysobjects.production.trading_hours import weekdayDictOflistOfOpeningTimesAnyDay, dictOfDictOfWeekdayOpeningTimes, \
+    intersecting_trading_hours
+from sysobjects.production.trading_hours import listOfOpeningTimes
 from sysexecution.trade_qty import tradeQuantity
 
 
@@ -66,7 +69,7 @@ class ibContractsClient(ibClient):
         specific_log = futures_contract_with_ib_data.specific_log(self.log)
         if futures_contract_with_ib_data.is_spread_contract():
             specific_log.warn("Can only find expiry for single leg contract!")
-            return missing_contract
+            raise missingContract
 
         ibcontract = self.ib_futures_contract(
             futures_contract_with_ib_data,
@@ -76,7 +79,7 @@ class ibContractsClient(ibClient):
 
         if ibcontract is missing_contract:
             specific_log.warn("Contract is missing can't get expiry")
-            return missing_contract
+            raise missingContract
 
         expiry_date = ibcontract.lastTradeDateOrContractMonth
 
@@ -85,26 +88,32 @@ class ibContractsClient(ibClient):
     def ib_get_trading_hours(
         self, contract_object_with_ib_data: futuresContract
     ) -> listOfOpeningTimes:
+        return self.cache.get(self._ib_get_trading_hours,
+                              contract_object_with_ib_data)
+
+    def _ib_get_trading_hours(
+            self, contract_object_with_ib_data: futuresContract
+    ) -> listOfOpeningTimes:
         specific_log = contract_object_with_ib_data.specific_log(self.log)
 
         try:
             trading_hours_from_ib = self.ib_get_raw_trading_hours(contract_object_with_ib_data)
-            saved_trading_hours = self.ib_get_saved_trading_hours_for_contract(contract_object_with_ib_data)
-
-            ## uncomment
-            trading_hours = intersecting_trading_hours(trading_hours_from_ib,
-                                                       saved_trading_hours)
-
-            time_zone_id = self.ib_get_timezoneid(contract_object_with_ib_data)
-            trading_hours = get_conservative_trading_hours(time_zone_id=time_zone_id,
-                                                           trading_hours=trading_hours_from_ib)
-
         except Exception as e:
             specific_log.warn(
                 "%s when getting trading hours from %s!"
                 % (str(e), str(contract_object_with_ib_data))
             )
             raise missingData
+
+        try:
+            saved_trading_hours = self.ib_get_saved_trading_hours_for_contract(contract_object_with_ib_data)
+        except Exception as e:
+            self.log.warn("Issue %s getting saved trading hours for %s, using IB hours" % (
+                str(e), str(contract_object_with_ib_data)))
+            return trading_hours_from_ib
+
+        trading_hours = intersecting_trading_hours(trading_hours_from_ib,
+                                                   saved_trading_hours)
 
         return trading_hours
 
@@ -116,7 +125,7 @@ class ibContractsClient(ibClient):
         except Exception as e:
             specific_log.warn(
                 "%s when getting time zone from %s!"
-                % (str(e), str(ib_contract_details))
+                % (str(e), str(contract_object_with_ib_data))
             )
             raise missingData
 
@@ -133,7 +142,7 @@ class ibContractsClient(ibClient):
         except Exception as e:
             specific_log.warn(
                 "%s when getting trading hours from %s!"
-                % (str(e), str(ib_contract_details))
+                % (str(e), str(contract_object_with_ib_data))
             )
             raise missingData
 
@@ -157,20 +166,49 @@ class ibContractsClient(ibClient):
         return ib_contract_details
 
     def ib_get_saved_trading_hours_for_contract(
-        self, futures_contract: futuresContract
+        self, contract_object_with_ib_data: futuresContract
     ) -> weekdayDictOflistOfOpeningTimesAnyDay:
-        instrument_code = futures_contract.instrument_code
+        instrument_code = contract_object_with_ib_data.instrument_code
+
+        try:
+            hours_for_timezone = self.ib_get_saved_trading_hours_for_timezone_contract(contract_object_with_ib_data)
+        except missingData:
+            raise missingData
 
         all_saved_trading_hours = self.get_all_saved_trading_hours()
-        return all_saved_trading_hours[instrument_code]
+        specific_hours_for_contract = all_saved_trading_hours.get(instrument_code, None)
+
+        if specific_hours_for_contract is None:
+            # use timezone ones
+            return hours_for_timezone
+
+        intersected_trading_hours = hours_for_timezone.intersect(specific_hours_for_contract)
+
+        return intersected_trading_hours
+
+    def ib_get_saved_trading_hours_for_timezone_contract(
+                self, contract_object_with_ib_data: futuresContract
+        ) -> weekdayDictOflistOfOpeningTimesAnyDay:
+
+        all_saved_trading_hours = self.get_all_saved_trading_hours()
+        try:
+            time_zone_id = self.ib_get_timezoneid(contract_object_with_ib_data)
+        except missingData:
+            # problem getting timezoneid
+            raise missingData
+
+        try:
+            hours_for_timezone = all_saved_trading_hours[time_zone_id]
+        except:
+            # this means IB have changed something so we bork and alert
+            error_msg = "Check ib_config_trading_hours in sysbrokers/IB or private directory, hours for timezone %s not found!" % time_zone_id
+            self.log.critical(error_msg)
+            raise Exception(error_msg)
+
+        return hours_for_timezone
 
     def get_all_saved_trading_hours(self) -> dictOfDictOfWeekdayOpeningTimes:
-        all_trading_hours = getattr(self, "_all_trading_hours", None)
-        if all_trading_hours is None:
-            all_trading_hours = self._get_all_saved_trading_hours_from_file()
-            self._all_trading_hours = all_trading_hours
-
-        return all_trading_hours
+        return self.cache.get(self._get_all_saved_trading_hours_from_file)
 
     def _get_all_saved_trading_hours_from_file(self):
         return get_saved_trading_hours()
@@ -295,12 +333,22 @@ class ibContractsClient(ibClient):
 
     @property
     def contract_cache(self):
+        ## FIXME MERGE WITH CACHE
         if getattr(self, "_futures_contract_cache", None) is None:
             self._futures_contract_cache = {}
 
         cache = self._futures_contract_cache
 
         return cache
+
+    @property
+    def cache(self) -> Cache:
+        cache = getattr(self, "_cache", None)
+        if cache is None:
+            cache = self._cache = Cache(self)
+
+        return cache
+
 
     def _get_ib_futures_contract_from_cache(
         self,
