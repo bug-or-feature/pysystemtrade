@@ -194,12 +194,17 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             return dataFrameOfRecentTicks.create_empty()
 
         epic = self.futures_instrument_data.epic_mapping[contract_object.key]
-        price_data = self.igconnection.get_recent_bid_ask_price_data(epic)
+        tick_list = self.igconnection.get_recent_bid_ask_price_data(
+            contract_object.instrument_code, epic
+        )
 
-        if price_data is missing_contract:
+        if len(tick_list) < 3:
+            new_log.warn(f"Not enough recent price tick data for {contract_object} to record spreads")
             return missing_data
 
-        return dataFrameOfRecentTicks(price_data)
+        tick_data_as_df = from_bid_ask_tick_data_to_dataframe(tick_list)
+
+        return dataFrameOfRecentTicks(tick_data_as_df)
 
     def _get_ig_prices(self, contract_object: futuresContract) -> futuresContractPrices:
         """
@@ -345,3 +350,24 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             price_data = price_data.remove_zero_volumes()
 
         return price_data
+
+
+def from_bid_ask_tick_data_to_dataframe(tick_data) -> dataFrameOfRecentTicks:
+    """
+
+    :param tick_data: list of HistoricalTickBidAsk()
+    :return: pd.DataFrame,['priceBid', 'priceAsk', 'sizeAsk', 'sizeBid']
+    """
+    time_index = [tick_item.timestamp for tick_item in tick_data]
+    fields = ["priceBid", "priceAsk", "sizeAsk", "sizeBid"]
+
+    value_dict = {}
+    for field_name in fields:
+        field_values = [getattr(tick_item, field_name) for tick_item in tick_data]
+        value_dict[field_name] = field_values
+
+    output = dataFrameOfRecentTicks(value_dict, time_index)
+
+    print(f"tick_frame:\n{output}")
+
+    return output
