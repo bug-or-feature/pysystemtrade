@@ -25,6 +25,7 @@ from sysproduction.data.risk import get_current_annualised_perc_stdev_for_instru
 def get_current_configured_spread_cost(data):
     diag_instruments = diagInstruments(data)
     list_of_instruments = diag_instruments.get_list_of_instruments()
+    #list_of_instruments = diag_instruments.db_futures_instrument_data.
 
     spreads_as_list = [
         get_configured_spread_cost_for_instrument(data, instrument_code)
@@ -293,16 +294,20 @@ def get_costs_from_slippage(data, start_date, end_date):
 
     raw_slippage = create_raw_slippage_df(list_of_orders)
 
-    bid_ask_costs = get_average_half_spread_by_instrument_from_raw_slippage(
-        raw_slippage, "bid_ask"
-    )
-    actual_trade_costs = get_average_half_spread_by_instrument_from_raw_slippage(
-        raw_slippage, "total_trading"
-    )
+    if not raw_slippage.empty:
+        bid_ask_costs = get_average_half_spread_by_instrument_from_raw_slippage(
+            raw_slippage, "bid_ask"
+        )
+        actual_trade_costs = get_average_half_spread_by_instrument_from_raw_slippage(
+            raw_slippage, "total_trading"
+        )
 
-    order_count = order_count_by_instrument(list_of_orders)
+        order_count = order_count_by_instrument(list_of_orders)
 
-    return bid_ask_costs, actual_trade_costs, order_count
+        return bid_ask_costs, actual_trade_costs, order_count
+
+    else:
+        return pd.Series([0.0]), pd.Series([0.0]), pd.Series([0.0])
 
 
 def order_count_by_instrument(list_of_orders):

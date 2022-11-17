@@ -52,8 +52,21 @@ def test_report(
         run_report_with_data_blob(config, data)
 
 
+def test_report_config(config: reportConfig):
+    pandas_display_for_reports()
+    with dataBlob(log_name=f"Test {config.title}") as data:
+        run_report_with_data_blob(config, data)
+
+
 def run_slippage_report():
-    pass
+    test_report_config(
+        reportConfig(
+            title="Slippage report",
+            function="sysproduction.reporting.slippage_report.slippage_report",
+            calendar_days_back=250,
+            output="console"
+        )
+    )
 
 
 def run_costs_report():
@@ -151,7 +164,7 @@ if __name__ == "__main__":
     # run_trade_report()
     # run_strategy_report()
     # run_risk_report()
-    run_status_report()
+    # run_status_report()
     # run_liquidity_report()
     # run_instrument_risk_report()
     # run_min_capital_report()
@@ -159,3 +172,4 @@ if __name__ == "__main__":
     # run_remove_markets_report()
     # run_market_monitor_report()
     # run_account_curve_report()
+    run_slippage_report()

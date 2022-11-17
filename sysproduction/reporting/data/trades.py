@@ -32,11 +32,15 @@ def create_raw_slippage_df(broker_orders):
     raw_slippage_data_as_list = [
         raw_slippage_row(broker_orders.iloc[irow]) for irow in range(len(broker_orders))
     ]
-    raw_slippage_df = pd.concat(raw_slippage_data_as_list, axis=1)
-    raw_slippage_df = raw_slippage_df.transpose()
-    raw_slippage_df.index = broker_orders.index
+    if len(raw_slippage_data_as_list) > 0:
+        raw_slippage_df = pd.concat(raw_slippage_data_as_list, axis=1)
+        raw_slippage_df = raw_slippage_df.transpose()
+        raw_slippage_df.index = broker_orders.index
+        result = raw_slippage_df
+    else:
+        result = pd.DataFrame()
 
-    return raw_slippage_df
+    return result
 
 
 def get_tuple_object_from_order_id(data, order_id):
