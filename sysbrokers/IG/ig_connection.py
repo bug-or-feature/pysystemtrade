@@ -31,7 +31,7 @@ class IGConnection(object):
             "ig_acc_number"
         )
         self._log = log
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(level=logging.INFO)
         if auto_connect:
             self._rest_session = self._create_rest_session()
             self._stream_session = self._create_stream_session()
@@ -265,6 +265,7 @@ class IGConnection(object):
 
     def get_recent_bid_ask_price_data(self, instr_code, epic):
 
+        self.log.label(instrument_code=instr_code)
         if self._is_tradeable(epic):
             start = timer()
 
@@ -404,7 +405,9 @@ class IGConnection(object):
             )
             self._spread_storage.append(tick)
         except TypeError as err:
-            self.log.error(f"Problem trying to create tick data '{update_values}': {err}")
+            # we don't care too much about these, in DISTINCT mode, we get updates for everything, and lots of them
+            # are Volume changes
+            self.log.msg(f"Problem trying to create tick data '{update_values}': {err}")
 
 
 @dataclass
