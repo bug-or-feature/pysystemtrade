@@ -1,4 +1,4 @@
 #!/bin/bash
 . ~/.profile
 . p sysproduction.run_reports.run_reports
-. p sysproduction.reporting.adhoc.trading_rule_pandl_caleb
+. p sysproduction.reporting.adhoc.trading_rule_pandl_caleb.run_report
