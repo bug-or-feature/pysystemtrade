@@ -2730,6 +2730,7 @@ exclude_instrument_lists:
   #
   trading_restrictions:
     - NIKKEI
+    - FTSE100
   # These are markets that are too expensive or illiquid to actually trade
   # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
   # For static strategies, you will probably want to set these to zero instrument weights
