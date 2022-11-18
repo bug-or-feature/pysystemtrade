@@ -22,20 +22,27 @@ from systems.provided.rob_system.run_system import futures_system, System
 def run_report():
     dict_of_rule_groups = dict(
         acceleration=['accel16', 'accel32', 'accel64'],
-        asset_class_trend=['assettrend16', 'assettrend2', 'assettrend32', 'assettrend4', 'assettrend64', 'assettrend8'],
-        breakout=['breakout10', 'breakout160', 'breakout20', 'breakout320', 'breakout40', 'breakout80'],
-        ewmac_momentum=['momentum16', 'momentum32', 'momentum4', 'momentum64', 'momentum8'],
-        normalised_momentum=['normmom16', 'normmom2', 'normmom32', 'normmom4', 'normmom64', 'normmom8'],
+        asset_class_trend=['assettrend2', 'assettrend4', 'assettrend8', 'assettrend16', 'assettrend32', 'assettrend64'],
+        breakout=['breakout10', 'breakout20', 'breakout40', 'breakout80', 'breakout160', 'breakout320'],
+        ewmac_momentum=['momentum4', 'momentum8', 'momentum16', 'momentum32', 'momentum64'],
+        normalised_momentum=['normmom2', 'normmom4', 'normmom8', 'normmom16', 'normmom32', 'normmom64'],
         relative_momentum=['relmomentum10', 'relmomentum20', 'relmomentum40', 'relmomentum80'],
-        carry=['carry10', 'carry125', 'carry30', 'carry60'],
+        carry=['carry10', 'carry30', 'carry60', 'carry125'],
         relative_carry=['relcarry'],
         # skew=['skewabs180', 'skewabs365', 'skewrv180', 'skewrv365'],
         misc_mr=['mrinasset160', 'mrwrings4']
     )
 
+    debug_dict_of_rule_groups = dict(
+        ewmac_momentum=['momentum8', 'momentum32'],
+        carry=['carry30', 'carry60'],
+    )
+
     trading_rule_pandl_adhoc_report(
         system_function=futures_system(config_filename="systems.caleb.caleb_strategy_v1.yaml"),
+        #system_function=futures_system(config_filename="systems.caleb.caleb_strategy_v1_debug.yaml"),
         dict_of_rule_groups=dict_of_rule_groups
+        #dict_of_rule_groups=debug_dict_of_rule_groups
     )
 
 
@@ -73,7 +80,8 @@ def trading_rule_pandl_adhoc_report(
                 dict_of_rule_groups=dict_of_rule_groups,
                 data=data,
                 system=system_function,
-                start_date=start_date
+                start_date=start_date,
+                period_label=period
             )
 
             report_output.append(figure_object)
@@ -95,7 +103,8 @@ def get_figure_for_rule_group(
         data: dataBlob,
         system: System,
         dict_of_rule_groups: dict,
-        start_date: datetime.datetime
+        start_date: datetime.datetime,
+        period_label: str
 ):
 
     rules = dict_of_rule_groups[rule_group]
@@ -109,8 +118,9 @@ def get_figure_for_rule_group(
     pdf_output = PdfOutputWithTempFileName(data)
     make_account_curve_plot_from_df(
         concat_pd_by_rule,
-        start_of_title="Total p&l",
-        start_date=start_date
+        start_of_title=f"Total Trading Rule P&L for period '{period_label}'",
+        start_date=start_date,
+        title_style={'size': 6}
     )
 
     figure_object = pdf_output.save_chart_close_and_return_figure()
