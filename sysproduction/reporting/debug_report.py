@@ -4,6 +4,7 @@ from sysproduction.reporting.reporting_functions import (
     pandas_display_for_reports,
 )
 from sysproduction.reporting.report_configs import *
+from sysproduction.reporting.report_configs_fsb import *
 
 """
 
@@ -93,6 +94,18 @@ def run_account_curve_report():
     pass
 
 
+def run_min_capital_fsb_report():
+    do_report(min_capital_fsb_report_config.new_config_with_modified_output("console"))
+
+
+def run_fsb_report():
+    do_report(fsb_report_config.new_config_with_modified_output("console"))
+
+
+def run_instrument_risk_fsb_report():
+    do_report(instrument_risk_fsb_report_config.new_config_with_modified_output("console"))
+
+
 if __name__ == "__main__":
     # run_slippage_report()
     # run_costs_report()
@@ -111,3 +124,7 @@ if __name__ == "__main__":
     # run_market_monitor_report()
     # run_account_curve_report()
     run_slippage_report()
+
+    # run_fsb_report()
+    # run_min_capital_fsb_report()
+    # run_instrument_risk_fsb_report()
