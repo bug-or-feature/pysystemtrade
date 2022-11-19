@@ -296,20 +296,16 @@ def get_costs_from_slippage(data, start_date, end_date):
 
     raw_slippage = create_raw_slippage_df(list_of_orders)
 
-    if not raw_slippage.empty:
-        bid_ask_costs = get_average_half_spread_by_instrument_from_raw_slippage(
-            raw_slippage, "bid_ask"
-        )
-        actual_trade_costs = get_average_half_spread_by_instrument_from_raw_slippage(
-            raw_slippage, "total_trading"
-        )
+    bid_ask_costs = get_average_half_spread_by_instrument_from_raw_slippage(
+        raw_slippage, "bid_ask"
+    )
+    actual_trade_costs = get_average_half_spread_by_instrument_from_raw_slippage(
+        raw_slippage, "total_trading"
+    )
 
-        order_count = order_count_by_instrument(list_of_orders)
+    order_count = order_count_by_instrument(list_of_orders)
 
-        return bid_ask_costs, actual_trade_costs, order_count
-
-    else:
-        return pd.Series([0.0]), pd.Series([0.0]), pd.Series([0.0])
+    return bid_ask_costs, actual_trade_costs, order_count
 
 
 def order_count_by_instrument(list_of_orders):
