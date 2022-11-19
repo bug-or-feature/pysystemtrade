@@ -24,7 +24,10 @@ from sysproduction.data.risk import get_current_annualised_perc_stdev_for_instru
 
 def get_current_configured_spread_cost(data):
     diag_instruments = diagInstruments(data)
-    list_of_instruments = diag_instruments.get_list_of_instruments()
+    # list_of_instruments = diag_instruments.get_list_of_instruments()
+    list_of_instruments = [
+        str(instr) for instr in diag_instruments.get_list_of_instruments() if instr.endswith("_fsb")
+    ]
 
     spreads_as_list = [
         get_configured_spread_cost_for_instrument(data, instrument_code)

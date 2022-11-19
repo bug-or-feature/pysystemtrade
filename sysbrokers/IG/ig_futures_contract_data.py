@@ -191,7 +191,7 @@ class IgFuturesContractData(brokerFuturesContractData):
         return date_str
 
     def get_min_tick_size_for_contract(self, contract_object: futuresContract) -> float:
-        raise NotImplementedError("Not implemented! build it now")
+        return 0.01
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
         #print(f"futures_contract: {futures_contract.key}")
