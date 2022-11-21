@@ -69,7 +69,7 @@ from sysproduction.reporting.report_configs_fsb import (
 )
 
 def interactive_diagnostics():
-    print("\n\n INTERACTIVE DIAGONSTICS\n\n")
+    print("\n\n INTERACTIVE DIAGNOSTICS\n\n")
     set_pd_print_options()
     with dataBlob(log_name="Interactive-Diagnostics") as data:
         menu = run_interactive_menu(
