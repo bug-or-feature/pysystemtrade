@@ -164,7 +164,7 @@ def true_if_answer_is_yes(prompt="",
                           allow_empty_to_return_none=False) -> bool:
     invalid = True
     while invalid:
-        x = input(f"{prompt} (y/n) ")
+        x = input(prompt)
         if allow_empty_to_return_none:
             if x=="":
                 return None
