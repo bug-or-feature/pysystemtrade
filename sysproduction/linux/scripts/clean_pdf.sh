@@ -1,7 +1,9 @@
 #!/bin/bash
 
-set REPORT_DIR=/home/caleb/pst_site/reports
+echo "`date "+%Y-%m-%d %H:%M:%S"` Starting cleanup of temp report PDF files..."
 
-rm $REPORT_DIR/_tempfile_*.pdf
+rm /home/caleb/harbor-macro/harbor-macro.gitlab.io/public/reports/_tempfile_*.pdf
+
+echo "`date "+%Y-%m-%d %H:%M:%S"` Finished cleanup of temp report PDF files"
 
 exit 0
