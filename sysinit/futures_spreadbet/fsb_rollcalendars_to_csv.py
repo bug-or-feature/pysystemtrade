@@ -130,7 +130,7 @@ def show_expected_rolls_for_config(
 ):
 
     rollparameters = csvRollParametersData(datapath=path)
-    roll_parameters_object = rollparameters.get_roll_parameters(instrument_code)
+    roll_parameters_object = rollparameters.get_roll_parameters(f"{instrument_code}_fsb")
     if input_prices is arg_not_supplied:
         prices = arcticFuturesContractPriceData()
     else:
@@ -157,7 +157,7 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # ['BRENT_W', 'COCOA_LDN', 'COCOA', 'CORN', 'COTTON2', 'GASOIL', 'GASOLINE', 'HEATOIL', 'LEANHOG', 'LIVECOW', 'LUMBER', 'OATIES', 'OJ', 'PALLAD', 'PLAT', 'RICE', 'ROBUSTA', 'SOYMEAL', 'SUGAR11', 'WHEAT_ICE']
-    instr_code = 'BRENT_W_fsb'
+    instr_code = 'BRENT_W'
     # TODO ['EURIBOR_fsb', 'SONIA3_fsb']
 
     #prices = arcticFuturesContractPriceData()
