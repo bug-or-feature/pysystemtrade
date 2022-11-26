@@ -1,15 +1,19 @@
 import sys
 
 from syscore.interactive import true_if_answer_is_yes
+from syscore.fileutils import get_filename_for_package
 from syscore.objects import arg_not_supplied
 from syscore.pdutils import print_full
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
+from sysdata.config.production_config import get_production_config
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
+from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysobjects.roll_calendars import rollCalendar
+from sysinit.futures_spreadbet.fsb_contract_prices import build_import_config
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
@@ -131,7 +135,7 @@ def show_expected_rolls_for_config(
         prices = arcticFuturesContractPriceData()
     else:
         prices = input_prices
-    dict_of_all_futures_contract_prices = prices.get_all_prices_for_instrument(
+    dict_of_all_futures_contract_prices = prices.get_merged_prices_for_instrument(
         instrument_code
     )
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
@@ -152,17 +156,17 @@ if __name__ == "__main__":
     if args is not None:
         method = sys.argv[1]
 
-    # ['BOBL_fsb', 'BUND_fsb', 'EDOLLAR_fsb', 'EURIBOR_fsb', 'FED_fsb', 'OAT_fsb', 'SHATZ_fsb', 'SONIA3_fsb', 'US5_fsb', 'US30_fsb', 'US30U_fsb']
-    instr_code = 'FED_fsb'
+    # ['BRENT_W', 'COCOA_LDN', 'COCOA', 'CORN', 'COTTON2', 'GASOIL', 'GASOLINE', 'HEATOIL', 'LEANHOG', 'LIVECOW', 'LUMBER', 'OATIES', 'OJ', 'PALLAD', 'PLAT', 'RICE', 'ROBUSTA', 'SOYMEAL', 'SUGAR11', 'WHEAT_ICE']
+    instr_code = 'BRENT_W_fsb'
     # TODO ['EURIBOR_fsb', 'SONIA3_fsb']
 
-    prices = arcticFuturesContractPriceData()
-    # prices = csvFuturesContractPriceData(
-    #     datapath=get_filename_for_package(
-    #         get_production_config().get_element_or_missing_data("barchart_path")
-    #     ),
-    #     config=build_import_config(instr_code)
-    # )
+    #prices = arcticFuturesContractPriceData()
+    prices = csvFuturesContractPriceData(
+        datapath=get_filename_for_package(
+            get_production_config().get_element_or_missing_data("barchart_path")
+        ),
+        config=build_import_config(instr_code)
+    )
 
     if method == "build":
         build_and_write_roll_calendar(
