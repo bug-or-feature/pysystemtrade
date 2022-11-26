@@ -38,3 +38,5 @@ data/futures_spreadbet_backup
 
 # reports
 site/reports/_tempfile_*
+
+.DS_Store
