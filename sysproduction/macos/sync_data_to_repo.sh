@@ -1,7 +1,9 @@
 #!/bin/bash
 
-SOURCE="/Users/devuser/pysystemtrade/data/backups_csv";
-DEST="/Users/devuser/pysystemtrade/data/futures_spreadbet";
+source ~/.profile
+
+SOURCE="$PYSYS_CODE/data/backups_csv";
+DEST="$PYSYS_CODE/data/futures_spreadbet";
 
 echo "`date "+%Y-%m-%d %H:%M:%S"` Syncing data files to repo, source: '$SOURCE', dest: '$DEST'"
 
