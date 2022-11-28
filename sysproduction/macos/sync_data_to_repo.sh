@@ -22,8 +22,8 @@ git add $DEST/epic_history_csv/*.csv
 git add $DEST/adjusted_prices_csv/*.csv
 git add $DEST/multiple_prices_csv/*.csv
 git add $DEST/fx_prices_csv/*.csv
-#git commit -m "Syncing data files to repo"
-#git push origin
+git commit -m "Syncing data files to repo"
+git push origin
 
 echo "`date "+%Y-%m-%d %H:%M:%S"` Finished sync of data files to repo"
 
