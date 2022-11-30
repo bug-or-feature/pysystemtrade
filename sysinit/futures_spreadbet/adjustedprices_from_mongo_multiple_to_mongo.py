@@ -70,7 +70,7 @@ def process_adjusted_prices_single_instrument(
 
 if __name__ == "__main__":
 
-    for instrument_code in ['BRENT_W_fsb', 'COCOA_LDN_fsb']:
+    for instrument_code in ['BRENT_W_fsb']:
         print(f"Creating adjusted price for {instrument_code}")
         process_adjusted_prices_single_instrument(
             instrument_code,

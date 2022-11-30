@@ -103,6 +103,7 @@ def process_multiple_prices_single_instrument(
     #m = mongoRollParametersData()
     roll_config = csvRollParametersData(datapath="data.futures_spreadbet.csvconfig")
     roll_parameters = roll_config.get_roll_parameters(instrument_code)
+    print(f"{instrument_code}: {roll_parameters}")
     roll_calendar = add_phantom_row(
         roll_calendar, dict_of_futures_contract_closing_prices, roll_parameters
     )
@@ -195,7 +196,7 @@ if __name__ == "__main__":
     # only change if you have written the files elsewhere
     csv_roll_data_path = "data.futures_spreadbet.roll_calendars_csv"
 
-    for instrument_code in ['BRENT_W_fsb', 'COCOA_LDN_fsb']:
+    for instrument_code in ['BRENT_W_fsb']:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,

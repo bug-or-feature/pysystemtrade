@@ -46,7 +46,7 @@ if __name__ == "__main__":
         get_production_config().get_element_or_missing_data("barchart_path")
     )
 
-    for instr in ['BRENT_W', 'COCOA_LDN']:
+    for instr in ['BRENT_W']:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
 
