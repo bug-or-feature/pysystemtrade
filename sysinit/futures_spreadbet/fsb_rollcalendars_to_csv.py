@@ -4,6 +4,7 @@ from syscore.interactive import true_if_answer_is_yes
 from syscore.fileutils import get_filename_for_package
 from syscore.objects import arg_not_supplied
 from syscore.pdutils import print_full
+from syscore.text import remove_suffix
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
@@ -48,8 +49,8 @@ def build_and_write_roll_calendar(
 
     csv_roll_calendars = csvRollCalendarData(output_datapath)
 
-    dict_of_all_futures_contract_prices = prices.get_all_prices_for_instrument(
-        instrument_code
+    dict_of_all_futures_contract_prices = prices.get_merged_prices_for_instrument(
+        remove_suffix(instrument_code, "_fsb")
     )
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
 
@@ -130,13 +131,13 @@ def show_expected_rolls_for_config(
 ):
 
     rollparameters = csvRollParametersData(datapath=path)
-    roll_parameters_object = rollparameters.get_roll_parameters(f"{instrument_code}_fsb")
+    roll_parameters_object = rollparameters.get_roll_parameters(instrument_code)
     if input_prices is arg_not_supplied:
         prices = arcticFuturesContractPriceData()
     else:
         prices = input_prices
     dict_of_all_futures_contract_prices = prices.get_merged_prices_for_instrument(
-        instrument_code
+        remove_suffix(instrument_code, "_fsb")
     )
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
     approx_roll_calendar = rollCalendar.create_approx_from_prices(
@@ -156,11 +157,8 @@ if __name__ == "__main__":
     if args is not None:
         method = sys.argv[1]
 
-    # ['BRENT_W', 'COCOA_LDN', 'COCOA', 'CORN', 'COTTON2', 'GASOIL', 'GASOLINE', 'HEATOIL', 'LEANHOG', 'LIVECOW', 'LUMBER', 'OATIES', 'OJ', 'PALLAD', 'PLAT', 'RICE', 'ROBUSTA', 'SOYMEAL', 'SUGAR11', 'WHEAT_ICE']
-    instr_code = 'BRENT_W'
-    # TODO ['EURIBOR_fsb', 'SONIA3_fsb']
+    instr_code = 'COCOA_LDN_fsb'
 
-    #prices = arcticFuturesContractPriceData()
     prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
             get_production_config().get_element_or_missing_data("barchart_path")

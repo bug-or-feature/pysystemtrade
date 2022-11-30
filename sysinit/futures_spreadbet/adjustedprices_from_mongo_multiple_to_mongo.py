@@ -69,11 +69,8 @@ def process_adjusted_prices_single_instrument(
 
 
 if __name__ == "__main__":
-    input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    # modify flags and datapath as required
 
-    #instrument_code = get_valid_instrument_code_from_user(source="single")
-    for instrument_code in ['BOBL_fsb', 'BUND_fsb', 'EDOLLAR_fsb', 'OAT_fsb', 'SHATZ_fsb', 'US5_fsb', 'US30_fsb', 'US30U_fsb']:
+    for instrument_code in ['BRENT_W_fsb', 'COCOA_LDN_fsb']:
         print(f"Creating adjusted price for {instrument_code}")
         process_adjusted_prices_single_instrument(
             instrument_code,

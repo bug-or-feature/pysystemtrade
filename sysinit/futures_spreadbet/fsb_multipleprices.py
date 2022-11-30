@@ -3,6 +3,7 @@ import datetime
 import pandas as pd
 
 from syscore.objects import arg_not_supplied
+from syscore.text import remove_suffix
 from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
 from sysdata.csv.csv_multiple_prices import csvFuturesMultiplePricesData
@@ -27,15 +28,8 @@ We then store those multiple prices in: (depending on options)
 - arctic
 - csv
 """
-def _get_data_inputs(instr_code, csv_roll_data_path, csv_multiple_data_path):
+def _get_data_inputs(csv_roll_data_path, csv_multiple_data_path):
     roll_calendars = csvRollCalendarData(csv_roll_data_path)
-    # contract_prices = csvFuturesContractPriceData(
-    #     datapath=get_filename_for_package(
-    #         get_production_config().get_element_or_missing_data("barchart_path")
-    #     ),
-    #     config=build_import_config(instr_code)
-    # )
-    #roll_calendars = mongoRollParametersData()
     contract_prices = arcticFuturesContractPriceData()
     arctic_multiple_prices = arcticFuturesMultiplePricesData()
     csv_multiple_prices = csvFuturesMultiplePricesData(csv_multiple_data_path)
@@ -91,13 +85,14 @@ def process_multiple_prices_single_instrument(
         arctic_multiple_prices,
         csv_multiple_prices,
     ) = _get_data_inputs(
-        instrument_code,
         csv_roll_data_path,
         csv_multiple_data_path
     )
 
     print(f"Generating multiple prices for {instrument_code}")
-    dict_of_futures_contract_prices = contract_prices.get_all_prices_for_instrument(instrument_code)
+    dict_of_futures_contract_prices = contract_prices.get_merged_prices_for_instrument(
+        instrument_code
+    )
     dict_of_futures_contract_closing_prices = (
         dict_of_futures_contract_prices.final_prices()
     )
@@ -143,8 +138,8 @@ def process_multiple_prices_single_instrument(
 
 def adjust_roll_calendar(instrument_code, roll_calendar, prices):
     print(f"Getting prices for '{instrument_code}' to adjust roll calendar")
-    dict_of_prices = prices.get_all_prices_for_instrument(
-        instrument_code
+    dict_of_prices = prices.get_merged_prices_for_instrument(
+        remove_suffix(instrument_code, "_fsb")
     )
     dict_of_futures_contract_prices = dict_of_prices.final_prices()
     roll_calendar = adjust_to_price_series(
@@ -200,13 +195,7 @@ if __name__ == "__main__":
     # only change if you have written the files elsewhere
     csv_roll_data_path = "data.futures_spreadbet.roll_calendars_csv"
 
-    # modify flags as required
-    # process_multiple_prices_all_instruments(csv_multiple_data_path=csv_multiple_data_path,
-    #                                          csv_roll_data_path=csv_roll_data_path,
-    #                                          ADD_TO_CSV=True)
-
-    #instrument_code = get_valid_instrument_code_from_user(source="single")
-    for instrument_code in ['BOBL_fsb', 'BUND_fsb', 'EDOLLAR_fsb', 'OAT_fsb', 'SHATZ_fsb', 'US5_fsb', 'US30_fsb', 'US30U_fsb']:
+    for instrument_code in ['BRENT_W_fsb', 'COCOA_LDN_fsb']:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,
