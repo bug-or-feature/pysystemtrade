@@ -194,25 +194,29 @@ def get_instrument_object_from_config(
 ) -> FsbInstrumentWithIgConfigData:
 
     config_row = config[config.Instrument == f"{instrument_code}"]
-    epic = config_row.IGEpic.values[0]
-    currency = config_row.IGCurrency.values[0]
-    multiplier = config_row.IGMultiplier.values[0]
-    inverse = config_row.IGInverse.values[0]
-    bc_code = config_row.BarchartCode.values[0]
-    period_str = config_row.IGPeriods.values[0]
+    if len(config_row) > 0:
+        epic = config_row.IGEpic.values[0]
+        currency = config_row.IGCurrency.values[0]
+        multiplier = config_row.IGMultiplier.values[0]
+        inverse = config_row.IGInverse.values[0]
+        bc_code = config_row.BarchartCode.values[0]
+        period_str = config_row.IGPeriods.values[0]
 
-    instrument = futuresInstrument(instrument_code)
-    ig_data = IgInstrumentConfigData(
-        epic=epic,
-        currency=currency,
-        multiplier=multiplier,
-        inverse=inverse,
-        bc_code=bc_code,
-        period_str=period_str
-    )
+        instrument = futuresInstrument(instrument_code)
+        ig_data = IgInstrumentConfigData(
+            epic=epic,
+            currency=currency,
+            multiplier=multiplier,
+            inverse=inverse,
+            bc_code=bc_code,
+            period_str=period_str
+        )
 
-    futures_instrument_with_ig_data = FsbInstrumentWithIgConfigData(
-        instrument, ig_data
-    )
+        futures_instrument_with_ig_data = FsbInstrumentWithIgConfigData(
+            instrument, ig_data
+        )
 
-    return futures_instrument_with_ig_data
+        return futures_instrument_with_ig_data
+
+    else:
+        return missing_instrument
