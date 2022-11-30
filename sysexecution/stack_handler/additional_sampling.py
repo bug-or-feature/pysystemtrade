@@ -5,9 +5,12 @@ from syscore.objects import missing_data
 
 class stackHandlerAdditionalSampling(stackHandlerCore):
     def refresh_additional_sampling_all_instruments(self):
-        all_contracts = self.get_all_instruments_priced_contracts()
-        for contract in all_contracts:
-            self.refresh_sampling_for_contract(contract)
+        try:
+            all_contracts = self.get_all_instruments_priced_contracts()
+            for contract in all_contracts:
+                self.refresh_sampling_for_contract(contract)
+        except Exception as ex:
+            self.data.log.error(f"Problem with additional sampling: {ex}")
 
     def get_all_instruments_priced_contracts(self):
         ## Cache for speed
