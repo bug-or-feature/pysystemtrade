@@ -20,6 +20,7 @@ echo "`date "+%Y-%m-%d %H:%M:%S"` Syncing fx prices"
 rsync -av $SOURCE/fx_prices/*.csv $DEST/fx_prices_csv
 
 echo "`date "+%Y-%m-%d %H:%M:%S"` Committing to repo"
+cd $PYSYS_CODE
 git add --verbose $DEST
 git commit -m "Syncing data files to repo"
 git push origin
