@@ -196,7 +196,7 @@ if __name__ == "__main__":
     # only change if you have written the files elsewhere
     csv_roll_data_path = "data.futures_spreadbet.roll_calendars_csv"
 
-    for instrument_code in ['BRENT_W_fsb']:
+    for instrument_code in ['COCOA_fsb', 'CORN_fsb', 'COTTON2_fsb', 'GASOIL_fsb']:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,

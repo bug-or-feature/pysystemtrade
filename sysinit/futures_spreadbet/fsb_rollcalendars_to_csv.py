@@ -157,7 +157,7 @@ if __name__ == "__main__":
     if args is not None:
         method = sys.argv[1]
 
-    instr_code = 'BRENT_W_fsb'
+    instr_code = 'GASOIL_fsb'
 
     prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
