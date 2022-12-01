@@ -67,7 +67,7 @@ def init_arctic_with_csv_futures_contract_prices_for_code(
             arctic_prices.write_merged_prices_for_contract_object(
                 contract,
                 futures_price_data=merged_prices_for_contract,
-                ignore_duplication=False,
+                ignore_duplication=True,
             )
 
         print("\nReading back mixed prices from arctic to check")
