@@ -1,7 +1,7 @@
 #!/bin/bash
 
-REPORTS_DIR = /home/caleb/harbor-macro/harbor-macro.gitlab.io/public/reports
-TODAY = `date "+%Y-%m-%d"`
+REPORTS_DIR=/home/caleb/harbor-macro/harbor-macro.gitlab.io/public/reports
+TODAY=`date "+%Y-%m-%d"`
 
 echo ""
 echo "`date "+%Y-%m-%d %H:%M:%S"` Starting archive of today's ($TODAY) report files..."
