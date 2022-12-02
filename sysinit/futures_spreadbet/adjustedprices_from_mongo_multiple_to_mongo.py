@@ -70,8 +70,9 @@ def process_adjusted_prices_single_instrument(
 
 if __name__ == "__main__":
 
-    for instrument_code in ['COCOA_fsb', 'CORN_fsb', 'COTTON2_fsb', 'GASOIL_fsb']:
-        print(f"Creating adjusted price for {instrument_code}")
+    # []
+    for instrument_code in ['GASOLINE_fsb', 'HEATOIL_fsb']:
+        print(f"Creating adjusted prices for {instrument_code}")
         process_adjusted_prices_single_instrument(
             instrument_code,
             ADD_TO_ARCTIC=True,
