@@ -70,7 +70,7 @@ GILT_fsb,IR.D.FLG,GBP,100.0,False,Month1|Month2,0.2,G
 GOLD,,,,,na,,GC
 GOLD_fsb,MT.D.GC,GBP,1.0,False,MONTH1|Month2|Month3,0.05,GC
 HEATOIL,,,,,na,,HO
-HEATOIL_fsb,EN.D.HO,GBP,1.0,False,Month1|Month2,0.1,HO
+HEATOIL_fsb,EN.D.HO,GBP,10000.0,False,Month1|Month2,0.1,HO
 HANG,,,,,na,,HS
 HANG_fsb,IX.D.HANGSENG,GBP,1.0,False,NEAR|FAR|VFAR,0.1,HS
 IBXEX,,,,,na,,EF
