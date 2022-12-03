@@ -11,7 +11,7 @@ from sysbrokers.IB.client.ib_contracts_client import ibContractsClient
 from sysbrokers.IB.ib_positions import resolveBS_for_list
 from syscore.exceptions import missingContract
 
-from syscore.objects import missing_contract, missing_data
+from syscore.objects import missing_data
 from syscore.dateutils import (
     adjust_timestamp_to_include_notional_close_and_time_offset,
     strip_timezone_fromdatetime,
@@ -51,11 +51,11 @@ class ibPriceClient(ibContractsClient):
 
         specific_log = contract_object_with_ib_broker_config.specific_log(self.log)
 
-        ibcontract = self.ib_futures_contract(
-            contract_object_with_ib_broker_config, allow_expired=allow_expired
-        )
-
-        if ibcontract is missing_contract:
+        try:
+            ibcontract = self.ib_futures_contract(
+                contract_object_with_ib_broker_config, allow_expired=allow_expired
+            )
+        except missingContract:
             specific_log.warn(
                 "Can't resolve IB contract %s"
                 % str(contract_object_with_ib_broker_config)
@@ -76,17 +76,17 @@ class ibPriceClient(ibContractsClient):
 
         specific_log = contract_object_with_ib_data.specific_log(self.log)
 
-        ibcontract = self.ib_futures_contract(
-            contract_object_with_ib_data,
-            trade_list_for_multiple_legs=trade_list_for_multiple_legs,
-        )
-
-        if ibcontract is missing_contract:
+        try:
+            ibcontract = self.ib_futures_contract(
+                contract_object_with_ib_data,
+                trade_list_for_multiple_legs=trade_list_for_multiple_legs,
+            )
+        except missingContract:
             specific_log.warn(
                 "Can't find matching IB contract for %s"
                 % str(contract_object_with_ib_data)
             )
-            return missing_contract
+            raise
 
         self.ib.reqMktData(ibcontract, "", False, False)
         ticker = self.ib.ticker(ibcontract)
@@ -105,17 +105,17 @@ class ibPriceClient(ibContractsClient):
 
         specific_log = contract_object_with_ib_data.specific_log(self.log)
 
-        ibcontract = self.ib_futures_contract(
-            contract_object_with_ib_data,
-            trade_list_for_multiple_legs=trade_list_for_multiple_legs,
-        )
-
-        if ibcontract is missing_contract:
+        try:
+            ibcontract = self.ib_futures_contract(
+                contract_object_with_ib_data,
+                trade_list_for_multiple_legs=trade_list_for_multiple_legs,
+            )
+        except missingContract:
             specific_log.warn(
                 "Can't find matching IB contract for %s"
                 % str(contract_object_with_ib_data)
             )
-            return missing_contract
+            raise
 
         self.ib.cancelMktData(ibcontract)
 
@@ -138,14 +138,14 @@ class ibPriceClient(ibContractsClient):
             specific_log.critical(error_msg)
             raise Exception(error_msg)
 
-        ibcontract = self.ib_futures_contract(contract_object_with_ib_data)
-
-        if ibcontract is missing_contract:
+        try:
+            ibcontract = self.ib_futures_contract(contract_object_with_ib_data)
+        except missingContract:
             specific_log.warn(
                 "Can't find matching IB contract for %s"
                 % str(contract_object_with_ib_data)
             )
-            raise missingContract
+            raise
 
         recent_time = datetime.datetime.now() - datetime.timedelta(seconds=60)
 
