@@ -88,6 +88,15 @@ class futuresContract(object):
         self._contract_date = contract_date_object
         self._params = parameter_object
 
+    @classmethod
+    def from_two_strings(futuresContract, instrument_code: str,
+            contract_date_str: str):
+
+        instrument_object = futuresInstrument(instrument_code)
+        contract_date = contractDate(contract_date_str, simple=True)
+
+        return futuresContract(instrument_object, contract_date, simple=True)
+
     def specific_log(self, log):
         new_log = log.setup(
             instrument_code=self.instrument_code, contract_date=self.date_str
