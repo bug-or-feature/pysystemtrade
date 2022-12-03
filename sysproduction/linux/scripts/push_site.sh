@@ -2,8 +2,7 @@
 
 cd ~/harbor-macro/harbor-macro.gitlab.io/
 git pull
-git add public/*
-git add public/reports/*.txt
+git -v add public
 git commit -m "Updating site"
 
 git push origin
