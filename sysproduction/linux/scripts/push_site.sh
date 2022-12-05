@@ -2,7 +2,7 @@
 
 cd ~/harbor-macro/harbor-macro.gitlab.io/
 git pull
-git -v add public
+git add -v public
 git commit -m "Updating site"
 
 git push origin
