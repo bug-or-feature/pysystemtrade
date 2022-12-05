@@ -131,7 +131,9 @@ class csvFuturesContractPriceData(futuresContractPriceData):
                                                                frequency=frequency)
         filename = self._filename_given_key_name(keyname)
         futures_price_data.to_csv(
-            filename, index_label=self.config.input_date_index_name
+            filename,
+            index_label=self.config.input_date_index_name,
+            #date_format=self.config.input_date_format
         )
 
 
