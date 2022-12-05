@@ -50,8 +50,9 @@ if __name__ == "__main__":
         get_production_config().get_element_or_missing_data("barchart_path")
     )
 
-    # []
-    for instr in ['GASOLINE', 'HEATOIL']:
+    # XXX
+    # ['LEANHOG', 'LIVECOW', 'LUMBER']
+    for instr in ['LEANHOG', 'LIVECOW', 'LUMBER']:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
 
