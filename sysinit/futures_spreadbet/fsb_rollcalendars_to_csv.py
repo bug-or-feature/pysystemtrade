@@ -158,7 +158,7 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # XXX_fsb
-    instr_code = 'LUMBER_fsb'
+    instr_code = 'PLAT_fsb'
 
     prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(

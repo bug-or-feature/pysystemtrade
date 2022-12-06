@@ -51,8 +51,8 @@ if __name__ == "__main__":
     )
 
     # XXX
-    # ['LEANHOG', 'LIVECOW', 'LUMBER']
-    for instr in ['LEANHOG', 'LIVECOW', 'LUMBER']:
+    # ['OATIES', 'OJ', 'PALLAD', 'PLAT']
+    for instr in ['PLAT']:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
 
