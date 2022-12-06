@@ -2729,7 +2729,6 @@ exclude_instrument_lists:
   # NOTE: This will be regionally biased, you will probably want to override this in private_config.yaml
   #
   trading_restrictions:
-    - NIKKEI
     - FTSE100
   # These are markets that are too expensive or illiquid to actually trade
   # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
@@ -2747,3 +2746,4 @@ exclude_instrument_lists:
     - SHATZ
     - US2
     - DX
+    - NIKKEI
