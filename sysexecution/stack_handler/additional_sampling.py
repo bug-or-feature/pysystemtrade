@@ -2,12 +2,20 @@ from sysexecution.stack_handler.stackHandlerCore import stackHandlerCore
 from sysobjects.contracts import futuresContract
 from syscore.objects import missing_data
 
+# TODO hook into config
+IGNORE_LIST = ["FTSE100"]
+
 
 class stackHandlerAdditionalSampling(stackHandlerCore):
+
     def refresh_additional_sampling_all_instruments(self):
         all_contracts = self.get_all_instruments_priced_contracts()
         for contract in all_contracts:
-            self.refresh_sampling_for_contract(contract)
+            if contract.instrument_code not in IGNORE_LIST:
+                self.refresh_sampling_for_contract(contract)
+            else:
+                self.log.msg(f"Ignoring {contract.instrument_code}, no sample")
+                continue
 
     def get_all_instruments_priced_contracts(self):
         ## Cache for speed
