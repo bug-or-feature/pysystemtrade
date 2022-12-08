@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#REPORTS_DIR=/Users/ageach/Dev/work/harbor-macro/harbor-macro.gitlab.io/public/reports
 REPORTS_DIR=/home/caleb/harbor-macro/harbor-macro.gitlab.io/public/reports
 TODAY=`date "+%Y-%m-%d"`
 
@@ -8,23 +9,29 @@ echo "`date "+%Y-%m-%d %H:%M:%S"` Starting archive of today's ($TODAY) report fi
 
 cp -v $REPORTS_DIR/Trade_report.txt $REPORTS_DIR/older/Trade_report_$TODAY.txt
 cp -v $REPORTS_DIR/Strategy_report.txt $REPORTS_DIR/older/Strategy_report_$TODAY.txt
-#cp -v $REPORTS_DIR/Status_report.txt $REPORTS_DIR/older/Status_report_$TODAY.txt
-#cp -v $REPORTS_DIR/Roll_report.txt $REPORTS_DIR/older/Roll_report_$TODAY.txt
-#cp -v $REPORTS_DIR/Reconcile_report.txt $REPORTS_DIR/older/Reconcile_report_$TODAY.txt
-#cp -v $REPORTS_DIR/'P&L_report.txt' $REPORTS_DIR/older/'P&L_report'_$TODAY.txt
-#cp -v $REPORTS_DIR/'Trading_Rule_P&L.txt.pdf' $REPORTS_DIR/older/'Trading_Rule_P&L_'$TODAY.pdf
-#cp -v $REPORTS_DIR/Costs_report.txt $REPORTS_DIR/older/Costs_report_$TODAY.txt
-#cp -v $REPORTS_DIR/Account_curve_report.txt.pdf $REPORTS_DIR/older/Account_curve_report_$TODAY.pdf
-#cp -v $REPORTS_DIR/Duplicate_markets_report.txt $REPORTS_DIR/older/Duplicate_markets_report_$TODAY.txt
-#cp -v $REPORTS_DIR/Instrument_risk_report.txt $REPORTS_DIR/older/Instrument_risk_report_$TODAY.txt
-#cp -v $REPORTS_DIR/Liquidity_report.txt $REPORTS_DIR/older/Liquidity_report_$TODAY.txt
-#cp -v $REPORTS_DIR/Market_monitor_report.txt $REPORTS_DIR/older/Market_monitor_report_$TODAY.txt
-#cp -v $REPORTS_DIR/Minimum_capital_report.txt $REPORTS_DIR/older/Minimum_capital_report_$TODAY.txt
-#cp -v $REPORTS_DIR/Remove_markets_report.txt $REPORTS_DIR/older/Remove_markets_report_$TODAY.txt
-#cp -v $REPORTS_DIR/Risk_report.txt $REPORTS_DIR/older/Risk_report_$TODAY.txt
-#cp -v $REPORTS_DIR/Slippage_report.txt $REPORTS_DIR/older/Slippage_report_$TODAY.txt
 
 echo "`date "+%Y-%m-%d %H:%M:%S"` Finished archive of old report files"
+echo ""
+
+echo ""
+echo "`date "+%Y-%m-%d %H:%M:%S"` Building index for older report files..."
+
+OLD_REPORTS=$REPORTS_DIR/older
+OUTPUT="$OLD_REPORTS/index.html"
+
+echo "<html lang='en'><head><meta charset="utf-8"><title>Previous reports</title><link rel="stylesheet" href="../../style.css"></head>" > $OUTPUT
+echo "<body>" >> $OUTPUT
+echo "<a href='../index.html'>Back</a><br/>" >> $OUTPUT
+echo "<h1>Directory listing:</h1>" >> $OUTPUT
+echo "<ul>" >> $OUTPUT
+for i in `find "$OLD_REPORTS" -name "*.txt" -maxdepth 1 -mindepth 1 -type f| sort -r`; do
+  file=`basename "$i"`
+  echo "    <li><a href=\"./$file\">$file</a></li>" >> $OUTPUT
+done
+echo "</ul>" >> $OUTPUT
+echo "</body></html>" >> $OUTPUT
+
+echo "`date "+%Y-%m-%d %H:%M:%S"` Finished building index for older report files"
 echo ""
 
 echo "`date "+%Y-%m-%d %H:%M:%S"` Starting cleanup of temp report PDF files..."
