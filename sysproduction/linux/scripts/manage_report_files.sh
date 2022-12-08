@@ -24,7 +24,7 @@ echo "<body>" >> $OUTPUT
 echo "<a href='../index.html'>Back</a><br/>" >> $OUTPUT
 echo "<h1>Directory listing:</h1>" >> $OUTPUT
 echo "<ul>" >> $OUTPUT
-for i in `find "$OLD_REPORTS" -name "*.txt" -maxdepth 1 -mindepth 1 -type f| sort -r`; do
+for i in `find "$OLD_REPORTS" -maxdepth 1 -mindepth 1 -name "*.txt" -type f| sort -r`; do
   file=`basename "$i"`
   echo "    <li><a href=\"./$file\">$file</a></li>" >> $OUTPUT
 done
