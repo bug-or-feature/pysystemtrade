@@ -43,6 +43,24 @@ def build_import_config(instr):
             apply_inverse=config_data.inverse
         )
 
+def build_norgate_import_config(instr):
+    instr_data = IgFuturesInstrumentData()
+    config_data = get_instrument_object_from_config(instr, config=instr_data.config)
+    if config_data is missing_instrument:
+        print(f"No config for {instr}")
+    else:
+        return ConfigCsvFuturesPrices(
+            input_date_index_name="Time",
+            input_skiprows=0,
+            input_skipfooter=0,
+            input_date_format="%Y-%m-%dT%H:%M:%S%z",
+            input_column_mapping=dict(
+                OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
+            ),
+            apply_multiplier=config_data.multiplier,
+            apply_inverse=config_data.inverse
+        )
+
 
 if __name__ == "__main__":
     #input("Will overwrite existing prices are you sure?! CTL-C to abort")
@@ -51,8 +69,12 @@ if __name__ == "__main__":
     )
 
     # XXX
-    # ['OATIES', 'OJ', 'PALLAD', 'PLAT']
-    for instr in ['OATIES', 'OJ', 'PALLAD', 'PLAT']:
+    # 'BRENT_W', 'COTTON2', 'EDOLLAR', 'GASOLINE', 'HEATOIL',
+    # 'LIVECOW', 'LUMBER', 'OATIES', 'OJ', 'PALLAD', 'PLAT',
+    # ['RICE', 'ROBUSTA', 'XX', 'XX', 'XX']
+
+
+    for instr in ['BRENT_W', 'COTTON2', 'EDOLLAR', 'GASOLINE', 'HEATOIL']:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
 

@@ -71,8 +71,8 @@ def process_adjusted_prices_single_instrument(
 if __name__ == "__main__":
 
     # XXX_fsb
-    # ['OATIES_fsb', 'OJ_fsb', 'PALLAD_fsb', 'PLAT_fsb']
-    for instrument_code in ['OATIES_fsb', 'OJ_fsb', 'PALLAD_fsb', 'PLAT_fsb']:
+    # ['RICE_fsb', 'XX_fsb', 'XX_fsb', 'XX_fsb', 'XX_fsb']
+    for instrument_code in ['BRENT_W_fsb', 'COTTON2_fsb', 'EDOLLAR_fsb', 'GASOLINE_fsb', 'HEATOIL_fsb']:
         print(f"Creating adjusted prices for {instrument_code}")
         process_adjusted_prices_single_instrument(
             instrument_code,
