@@ -70,10 +70,7 @@ if __name__ == "__main__":
 
     # XXX
     # ['RICE', 'ROBUSTA', 'XX', 'XX', 'XX']
-
-
-    #for instr in ['ROBUSTA']:
-    for instr in ['GAS_US', 'GASOLINE', 'HEATOIL']:
+    for instr in ['ROBUSTA']:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
 

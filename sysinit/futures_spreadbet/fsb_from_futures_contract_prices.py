@@ -43,6 +43,5 @@ if __name__ == "__main__":
 
     # 'XXX'
     # ['RICE', 'ROBUSTA', 'XX', 'XX']
-    #for instr in ['ROBUSTA']:
-    for instr in ['GAS_US', 'GASOLINE', 'HEATOIL']:
+    for instr in ['ROBUSTA']:
         convert_futures_prices_to_fsb_single(instr)

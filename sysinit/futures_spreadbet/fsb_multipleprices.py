@@ -198,8 +198,7 @@ if __name__ == "__main__":
 
     # XXX_fsb
     # ['RICE_fsb', 'ROBUSTA_fsb', 'XX_fsb', 'XX_fsb', 'XX_fsb']
-    #for instrument_code in ['ROBUSTA_fsb']:
-    for instrument_code in ['GAS_US_fsb', 'GASOLINE_fsb', 'HEATOIL_fsb']:
+    for instrument_code in ['ROBUSTA_fsb']:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,

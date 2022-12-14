@@ -72,8 +72,7 @@ if __name__ == "__main__":
 
     # XXX_fsb
     # ['RICE_fsb', 'XX_fsb', 'XX_fsb', 'XX_fsb', 'XX_fsb']
-    #for instrument_code in ['RICE_fsb']:
-    for instrument_code in ['GAS_US_fsb', 'GASOLINE_fsb', 'HEATOIL_fsb']:
+    for instrument_code in ['RICE_fsb']:
         print(f"Creating adjusted prices for {instrument_code}")
         process_adjusted_prices_single_instrument(
             instrument_code,

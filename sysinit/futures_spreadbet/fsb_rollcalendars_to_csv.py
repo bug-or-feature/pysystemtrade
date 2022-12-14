@@ -158,9 +158,8 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # XXX_fsb
-    # 'LIVECOW', 'LUMBER', 'OATIES', 'OJ', 'PALLAD', 'PLAT',
     # 'RICE', 'ROBUSTA', 'SOYMEAL', 'SUGAR11', 'WHEAT_ICE'
-    instr_code = 'PLAT_fsb'
+    instr_code = 'ROBUSTA_fsb'
 
     prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
