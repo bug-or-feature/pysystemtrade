@@ -2,7 +2,7 @@ import datetime
 
 import numpy as np
 
-from syscore.objects import missing_contract, arg_not_supplied, missing_data
+from syscore.objects import arg_not_supplied, missing_data
 from syscore.dateutils import Frequency, from_config_frequency_to_frequency, n_days_ago
 
 from sysobjects.contracts import futuresContract
@@ -180,8 +180,6 @@ class diagPrices(productionDataLayerGeneric):
     ) -> dictFuturesContractPrices:
         dict_of_prices = {}
         for contract_date_str in list_of_contract_date_str:
-            if contract_date_str is missing_contract:
-                continue
             # Could blow up here if don't have prices for a contract??
             contract = futuresContract(instrument_code, contract_date_str)
             prices = self.get_merged_prices_for_contract_object(contract)
