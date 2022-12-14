@@ -1,4 +1,4 @@
-from syscore.objects import missing_data, resolve_function
+from syscore.objects import resolve_function
 from sysdata.data_blob import dataBlob
 
 
@@ -12,12 +12,9 @@ def get_broker_class_list(data: dataBlob):
     """
     config = data.config
 
-    broker_factory_func = config.get_element_or_missing_data('broker_factory_func')
+    broker_factory_func = config.get_element_or_default('broker_factory_func', get_ib_class_list)
 
-    if broker_factory_func is missing_data:
-        get_class_list = get_ib_class_list
-    else:
-        get_class_list = resolve_function(broker_factory_func)
+    get_class_list = resolve_function(broker_factory_func)
 
     broker_class_list = get_class_list()
 

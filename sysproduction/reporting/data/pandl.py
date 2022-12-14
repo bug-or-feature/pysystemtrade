@@ -3,7 +3,8 @@ from collections import namedtuple
 
 import pandas as pd
 
-from syscore.objects import arg_not_supplied, missing_data, missing_contract
+from syscore.exceptions import missingContract
+from syscore.objects import arg_not_supplied, missing_data
 from sysobjects.contracts import futuresContract
 from sysobjects.production.tradeable_object import instrumentStrategy
 
@@ -176,10 +177,11 @@ class pandlCalculateAndStore(object):
     ) -> float:
         print("Getting p&l for %s" % instrument_code)
 
-        pandl_across_contracts = self.pandl_for_instrument_across_contracts(
-            instrument_code
-        )
-        if pandl_across_contracts is missing_contract:
+        try:
+            pandl_across_contracts = self.pandl_for_instrument_across_contracts(
+                instrument_code
+            )
+        except missingContract:
             return 0.0
 
         pandl_series = pandl_across_contracts.sum(axis=1)
@@ -210,12 +212,9 @@ class pandlCalculateAndStore(object):
     def _get_pandl_for_instrument_across_contracts(
         self, instrument_code: str
     ) -> pd.DataFrame:
-        ## can return missing contract
         pandl_df_all_data = get_df_of_perc_pandl_series_for_instrument_all_strategies_across_contracts_in_date_range(
             self.data, instrument_code, self.start_date, self.end_date
         )
-        if pandl_df_all_data is missing_contract:
-            return missing_contract
 
         pandl_df = pandl_df_all_data[self.start_date : self.end_date]
 
@@ -318,7 +317,7 @@ def get_df_of_perc_pandl_series_for_instrument_all_strategies_across_contracts_i
     )
 
     if contract_list is missing_data:
-        return missing_contract
+        raise missingContract
 
     pandl_df = pd.concat(pandl_list, axis=1)
     pandl_df.columns = contract_list
