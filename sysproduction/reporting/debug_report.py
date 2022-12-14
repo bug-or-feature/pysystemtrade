@@ -6,6 +6,22 @@ from sysproduction.reporting.reporting_functions import (
 from sysproduction.reporting.report_configs import *
 from sysproduction.reporting.report_configs_fsb import *
 
+
+import pandas as pd
+from functools import cached_property
+
+from sysbrokers.IG.ig_connection import IGConnection
+from sysbrokers.IG.ig_futures_contract_price_data import IgFuturesContractPriceData
+from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
+from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData
+from sysdata.data_blob import dataBlob
+from sysproduction.data.contracts import dataContracts
+from sysproduction.data.prices import diagPrices
+from sysdata.data_blob import dataBlob
+from sysproduction.data.broker import dataBroker
+from syscore.pdutils import print_full
+
+
 """
 
 >>> from sysproduction.reporting.debug_report import *
@@ -105,6 +121,34 @@ def run_fsb_report():
 def run_instrument_risk_fsb_report():
     do_report(instrument_risk_fsb_report_config.new_config_with_modified_output("console"))
 
+def run_adhoc_tradeable_report(instr_code: str):
+    data = dataBlob()
+    broker = dataBroker(data=data)
+    expiries = broker.broker_futures_contract_price_data.futures_instrument_data.expiry_dates
+
+    rows = []
+    for key, value in broker.broker_futures_contract_price_data.futures_instrument_data.epic_mapping.items():
+
+        if instr_code is None or key.startswith(instr_code):
+            epic_info = data.broker_conn.rest_service.fetch_market_by_epic(value)
+            status = epic_info.snapshot.marketStatus
+            opening_hours = epic_info.instrument.openingHours
+
+            rows.append(
+                dict(
+                    Contract=key,
+                    Epic=value,
+                    Expiry=expiries[key],
+                    Status=status,
+                    Hours=opening_hours
+                )
+            )
+
+    results = pd.DataFrame(rows)
+    results.set_index("Contract", inplace=True)
+
+    print_full(results)
+
 
 if __name__ == "__main__":
     # run_slippage_report()
@@ -123,8 +167,11 @@ if __name__ == "__main__":
     # run_remove_markets_report()
     # run_market_monitor_report()
     # run_account_curve_report()
-    run_slippage_report()
+    #run_slippage_report()
 
     # run_fsb_report()
     # run_min_capital_fsb_report()
     # run_instrument_risk_fsb_report()
+
+    #run_adhoc_tradeable_report()
+    run_adhoc_tradeable_report(instr_code="GAS_US_fsb")
