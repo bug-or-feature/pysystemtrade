@@ -180,15 +180,19 @@ class bcConnection(object):
 
         # read response into dataframe
         iostr = io.StringIO(prices_resp.text)
-        df = pd.read_csv(iostr, header=None)
+        if len(prices_resp.text) > 0:
+            df = pd.read_csv(iostr, header=None)
 
-        # convert to expected format
-        price_data_as_df = self._raw_barchart_data_to_df(
-            df, bar_freq=bar_freq, log=self.log
-        )
-        self.log.msg(f"Latest price {price_data_as_df.index[-1]} with {bar_freq}")
+            # convert to expected format
+            price_data_as_df = self._raw_barchart_data_to_df(
+                df, bar_freq=bar_freq, log=self.log
+            )
+            self.log.msg(f"Latest price {price_data_as_df.index[-1]} with {bar_freq}")
 
-        return price_data_as_df
+            return price_data_as_df
+
+        else:
+            return missing_data
 
     @staticmethod
     def _raw_barchart_data_to_df(
