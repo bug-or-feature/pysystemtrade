@@ -50,13 +50,13 @@ def build_norgate_import_config(instr):
         print(f"No config for {instr}")
     else:
         return ConfigCsvFuturesPrices(
-            input_date_index_name="Time",
+            input_date_index_name="Date",
             input_skiprows=0,
             input_skipfooter=0,
-            input_date_format="%Y-%m-%dT%H:%M:%S%z",
+            input_date_format="%Y%m%d",  # 19810507
             input_column_mapping=dict(
                 OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
-            ),
+            ), # Date,Symbol,Security Name,Open,High,Low,Close,Volume
             apply_multiplier=config_data.multiplier,
             apply_inverse=config_data.inverse
         )
@@ -69,8 +69,8 @@ if __name__ == "__main__":
     )
 
     # XXX
-    # ['RICE', 'ROBUSTA', 'XX', 'XX', 'XX']
-    for instr in ['ROBUSTA']:
+    # ['RICE', 'ROBUSTA', 'SOYMEAL', 'SUGAR11', 'WHEAT_ICE']
+    for instr in ['RICE', 'ROBUSTA', 'SOYMEAL', 'SUGAR11', 'WHEAT_ICE']:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
 
