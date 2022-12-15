@@ -5,7 +5,8 @@ from sysobjects.contract_dates_and_expiries import expiryDate
 from sysobjects.contracts import futuresContract
 from syslogdiag.log_to_screen import logtoscreen
 from sysbrokers.IG.ig_connection import IGConnection
-from syscore.objects import missing_contract, missing_instrument
+from syscore.objects import missing_instrument
+from syscore.exceptions import missingContract
 from syscore.dateutils import contract_month_from_number
 from sysbrokers.IG.ig_instruments_data import (
     IgFuturesInstrumentData,
@@ -57,7 +58,7 @@ class IgFuturesContractData(brokerFuturesContractData):
         log = futures_contract.specific_log(self.log)
         if futures_contract.is_spread_contract():
             log.warn("Can't find expiry for multiple leg contract here")
-            return missing_contract
+            raise missingContract
 
         if self._is_fsb(futures_contract):
             return self._get_fsb_expiry_date(futures_contract)
@@ -77,8 +78,6 @@ class IgFuturesContractData(brokerFuturesContractData):
         """
 
         futures_contract_plus = self._get_contract_object_plus(futures_contract)
-        if futures_contract_plus is missing_contract:
-            return missing_contract
 
         if requery_expiries:
             futures_contract_plus = (
@@ -97,8 +96,6 @@ class IgFuturesContractData(brokerFuturesContractData):
         contract_object_with_config_data = self.get_contract_object_with_config_data(
             contract_object
         )
-        if contract_object_with_config_data is missing_contract:
-            return missing_contract
 
         expiry_date = contract_object_with_config_data.expiry_date
 
@@ -108,8 +105,6 @@ class IgFuturesContractData(brokerFuturesContractData):
         contract_object_with_config_data = self.get_contract_object_with_config_data(
             contract_object
         )
-        if contract_object_with_config_data is missing_contract:
-            return missing_contract
 
         barchart_id = self.get_barchart_id(contract_object_with_config_data)
         future_expiry = self.barchart.get_expiry_date_for_symbol(barchart_id)
@@ -133,7 +128,7 @@ class IgFuturesContractData(brokerFuturesContractData):
         )
 
         if futures_contract_plus is missing_instrument:
-            return missing_contract
+            raise missingContract
 
         futures_contract_plus = (
             contract_object.new_contract_with_replaced_instrument_object(
@@ -149,7 +144,7 @@ class IgFuturesContractData(brokerFuturesContractData):
 
         if futures_contract_plus.is_spread_contract():
             self.log.warn("Can't find expiry for multiple leg contract here")
-            return missing_contract
+            raise missingContract
 
         if self._is_fsb(futures_contract_plus):
             expiry_date = self._get_expiry_fsb(futures_contract_plus)
@@ -158,7 +153,7 @@ class IgFuturesContractData(brokerFuturesContractData):
             expiry_date = self._get_expiry_future(futures_contract_plus)
             date_format_str = "%m/%d/%y"
 
-        if expiry_date is missing_contract or expiry_date is None:
+        if expiry_date is None:
             self.log.warn(
                 f"Failed to get expiry for contract {futures_contract_plus}, returning approx date"
             )
@@ -181,7 +176,7 @@ class IgFuturesContractData(brokerFuturesContractData):
         if futures_contract_plus.key in self.ig_instrument_data.expiry_dates:
             date_str = self.ig_instrument_data.expiry_dates[futures_contract_plus.key]
         else:
-            date_str = missing_contract
+            date_str = None
 
         return date_str
 

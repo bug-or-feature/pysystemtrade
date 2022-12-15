@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 import pytz
 
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
-from syscore.objects import missing_contract, missing_data
+from syscore.exceptions import missingContract
+from syscore.objects import missing_data
 
 from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
 from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
@@ -57,8 +58,12 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         return self._existing_prices
 
     def has_merged_price_data_for_contract(self, futures_contract: futuresContract) -> bool:
-        contract = self.fsb_contract_data.get_contract_object_with_config_data(futures_contract)
-        return contract is not missing_contract
+        try:
+            self.fsb_contract_data.get_contract_object_with_config_data(futures_contract)
+        except missingContract:
+            return False
+        else:
+            return True
 
     def get_list_of_instrument_codes_with_merged_price_data(self) -> list:
         # return list of instruments for which pricing is configured
@@ -144,7 +149,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             self,
             futures_contract_object: futuresContract,
             frequency: Frequency,
-            allow_expired:bool = False) -> futuresContractPrices:
+            allow_expired: bool = False) -> futuresContractPrices:
 
         """
         Get historical prices at a particular frequency
@@ -156,13 +161,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         :param frequency: str; one of D, H, 15M, 5M, M, 10S, S
         :return: data
         """
-        if futures_contract_object is missing_contract:
-            self.log.warn(
-                f"Can't get data for {str(futures_contract_object)}",
-                instrument_code=futures_contract_object.instrument_code,
-                contract_date=futures_contract_object.contract_date.date_str,
-            )
-            return futuresContractPrices.create_empty()
 
         contract_object_plus = (
             self.fsb_contract_data.get_contract_object_with_config_data(
@@ -186,10 +184,11 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
 
         new_log = contract_object.log(self.log)
 
-        contract_object_with_config_data = (
-            self.fsb_contract_data.get_contract_object_with_config_data(contract_object)
-        )
-        if contract_object_with_config_data is missing_contract:
+        try:
+            contract_object_with_config_data = (
+                self.fsb_contract_data.get_contract_object_with_config_data(contract_object)
+            )
+        except missingContract:
             new_log.warn("Can't get recent price data for %s" % str(contract_object))
             return dataFrameOfRecentTicks.create_empty()
 
@@ -213,13 +212,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         :param contract_object:  futuresContract
         :return: data
         """
-
-        if contract_object is missing_contract:
-            self.log.warn(f"Can't get IG data for {str(contract_object)}",
-                          instrument_code=contract_object.instrument_code,
-                          contract_date=contract_object.contract_date.date_str,
-            )
-            return FsbContractPrices.create_empty()
 
         if contract_object.key not in self.futures_instrument_data.epic_mapping:
             self.log.warn(f"No epic mapped for {str(contract_object.key)}",
@@ -313,13 +305,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         :param freq: str; one of D, H, 15M, 5M, M, 10S, S
         :return: data
         """
-
-        if contract_object is missing_contract:
-            self.log.warn(f"Can't get data for {str(contract_object)}",
-                          instrument_code=contract_object.instrument_code,
-                          contract_date=contract_object.contract_date.date_str,
-            )
-            return futuresContractPrices.create_empty()
 
         barchart_id = self.fsb_contract_data.get_barchart_id(contract_object)
         price_data = self._barchart.get_historical_futures_data_for_contract(

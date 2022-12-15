@@ -4,7 +4,8 @@ from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysbrokers.IG.ig_positions import from_ig_positions_to_dict
 from sysbrokers.broker_contract_position_data import brokerContractPositionData
-from syscore.objects import arg_not_supplied, missing_contract
+from syscore.objects import arg_not_supplied
+from syscore.exceptions import missingContract
 from sysdata.futures.contracts import futuresContractData
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 from sysdata.production.timed_storage import classStrWithListOfEntriesAsListOfDicts
@@ -44,10 +45,11 @@ class IgContractPositionData(brokerContractPositionData):
         )
         current_positions = []
         for position_entry in all_positions:
-            contract_position_object = self._get_contract_position_for_raw_entry(
-                position_entry
-            )
-            if contract_position_object is missing_contract:
+            try:
+                contract_position_object = self._get_contract_position_for_raw_entry(
+                    position_entry
+                )
+            except missingContract:
                 continue
             else:
                 current_positions.append(contract_position_object)
@@ -63,7 +65,7 @@ class IgContractPositionData(brokerContractPositionData):
         if position_entry["dir"] == "SELL":
             position = position * -1
         if position == 0:
-            return missing_contract
+            raise missingContract
         epic = position_entry["symbol"]
         instrument_code = (
             self.futures_instrument_data.get_instrument_code_from_broker_code(epic)

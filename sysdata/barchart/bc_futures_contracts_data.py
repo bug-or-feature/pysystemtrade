@@ -1,4 +1,5 @@
-from syscore.objects import missing_contract, missing_instrument
+from syscore.objects import missing_instrument
+from syscore.exceptions import missingContract
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from sysdata.barchart.bc_connection import bcConnection
 from sysbrokers.broker_futures_contract_data import brokerFuturesContractData
@@ -46,11 +47,9 @@ class BarchartFuturesContractData(brokerFuturesContractData):
         log = futures_contract.specific_log(self.log)
         if futures_contract.is_spread_contract():
             log.warn("Can't find expiry for multiple leg contract here")
-            return missing_contract
+            raise missingContract
 
         contract_object_plus = self.get_contract_object_with_config_data(futures_contract)
-        if contract_object_plus is missing_contract:
-            return missing_contract
 
         expiry_date = contract_object_plus.expiry_date
 
@@ -67,8 +66,6 @@ class BarchartFuturesContractData(brokerFuturesContractData):
         """
 
         futures_contract_plus = self._get_contract_object_plus(futures_contract)
-        if futures_contract_plus is missing_contract:
-            return missing_contract
 
         futures_contract_plus = (
             futures_contract_plus.update_expiry_dates_one_at_a_time_with_method(
@@ -88,7 +85,7 @@ class BarchartFuturesContractData(brokerFuturesContractData):
             )
         )
         if futures_contract_plus is missing_instrument:
-            return missing_contract
+            raise missingContract
 
         futures_contract_plus = (
             contract_object.new_contract_with_replaced_instrument_object(
@@ -104,11 +101,11 @@ class BarchartFuturesContractData(brokerFuturesContractData):
 
         if futures_contract_plus.is_spread_contract():
             self.log.warn("Can't find expiry for multiple leg contract here")
-            return missing_contract
+            raise missingContract
 
         expiry_date = self._barchart.get_expiry_date(futures_contract_plus)
 
-        if expiry_date is missing_contract or expiry_date is None:
+        if expiry_date is None:
             self.log.warn(
                 f"Failed to get expiry for contract {futures_contract_plus}, returning approx date"
             )

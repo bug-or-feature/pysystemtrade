@@ -13,7 +13,7 @@ from syscore.objects import missing_data
 from sysdata.config.production_config import get_production_config
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.fsb_contract_prices import FsbContractPrices
-from syscore.objects import missing_contract
+from syscore.exceptions import missingContract
 from timeit import default_timer as timer
 
 
@@ -258,10 +258,10 @@ class IGConnection(object):
                 last_dealing_date = datetime.strptime(last_dealing, '%Y-%m-%dT%H:%M')
             except Exception as exc:
                 self.log.error(f"Problem getting expiry date for '{epic}': {exc}")
-                return missing_contract
+                raise missingContract
             return expiry_key, last_dealing_date.strftime("%Y-%m-%d %H:%M:%S")
         else:
-            return missing_contract
+            raise missingContract
 
     def get_recent_bid_ask_price_data(self, instr_code, epic):
 

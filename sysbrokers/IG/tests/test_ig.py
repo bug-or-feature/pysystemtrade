@@ -4,7 +4,7 @@ from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
 from sysbrokers.IG.ig_connection import IGConnection
 from sysobjects.contracts import futuresContract as fc
 from sysobjects.contract_dates_and_expiries import expiryDate
-from syscore.objects import missing_contract
+from syscore.exceptions import missingContract
 
 
 class TestIg:
@@ -86,7 +86,6 @@ class TestIg:
         with pytest.raises(Exception):
             contracts.get_barchart_id(fc.from_two_strings("AUD", "20201300"))
 
-
     def test_expiry_dates(self):
 
         contracts = IgFuturesContractData(
@@ -118,13 +117,13 @@ class TestIg:
         assert expiry == expiryDate.from_str("19900328")
 
         # unknown fsb instr
-        expiry = contracts.get_actual_expiry_date_for_single_contract(
-            fc.from_two_strings("CRAP_fsb", "20220300")
-        )
-        assert expiry == missing_contract
+        with pytest.raises(missingContract):
+            contracts.get_actual_expiry_date_for_single_contract(
+                fc.from_two_strings("CRAP_fsb", "20220300")
+            )
 
         # unknown futures instr
-        expiry = contracts.get_actual_expiry_date_for_single_contract(
-            fc.from_two_strings("CRAP", "20220300")
-        )
-        assert expiry == missing_contract
+        with pytest.raises(missingContract):
+            contracts.get_actual_expiry_date_for_single_contract(
+                fc.from_two_strings("CRAP", "20220300")
+            )

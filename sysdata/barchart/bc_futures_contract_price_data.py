@@ -1,6 +1,7 @@
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from syscore.merge_data import spike_in_data
-from syscore.objects import missing_data, missing_contract
+from syscore.objects import missing_data
+from syscore.exceptions import missingContract
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
@@ -142,11 +143,11 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
         :return: data
         """
 
-        contract_object_plus = (
-            self.futures_contract_data.get_contract_object_with_config_data(contract_object)
-        )
-
-        if contract_object_plus is missing_contract:
+        try:
+            contract_object_plus = (
+                self.futures_contract_data.get_contract_object_with_config_data(contract_object)
+            )
+        except missingContract:
             self.log.warn(f"Can't get data for {str(contract_object)}")
             return futuresContractPrices.create_empty()
 
