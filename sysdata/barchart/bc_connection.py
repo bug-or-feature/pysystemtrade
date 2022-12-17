@@ -125,62 +125,62 @@ class bcConnection(object):
         :rtype: pandas DataFrame
         """
 
-        if bar_freq == Frequency.Second or bar_freq == Frequency.Seconds_10:
-            raise NotImplementedError(
-                f"Barchart supported data frequencies: {self._valid_freqs()}"
+        try:
+            if bar_freq == Frequency.Second or bar_freq == Frequency.Seconds_10:
+                raise NotImplementedError(
+                    f"Barchart supported data frequencies: {self._valid_freqs()}"
+                )
+
+            if instr_symbol is None:
+                self.log.warn(f"get_historical_futures_data_for_contract() instr_symbol is required")
+                return missing_data
+
+            # GET the futures quote chart page, scrape to get XSRF token
+            # https://www.barchart.com/futures/quotes/GCM21/interactive-chart
+            chart_url = (
+                BARCHART_URL + f"futures/quotes/{instr_symbol}/interactive-chart"
+            )
+            chart_resp = self._session.get(chart_url)
+            xsrf = urllib.parse.unquote(chart_resp.cookies["XSRF-TOKEN"])
+
+            headers = {
+                "content-type": "text/plain; charset=UTF-8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Referer": chart_url,
+                "x-xsrf-token": xsrf,
+            }
+
+            payload = {
+                "symbol": instr_symbol,
+                "maxrecords": "640",
+                "volume": "contract",
+                "order": "asc",
+                "dividends": "false",
+                "backadjust": "false",
+                "days to expiration": "1",
+                "contractroll": "combined",
+            }
+
+            if bar_freq == Frequency.Day:
+                data_url = BARCHART_URL + "proxies/timeseries/queryeod.ashx"
+                payload["data"] = "daily"
+                payload["contractroll"] = "expiration"
+            else:
+                data_url = BARCHART_URL + "proxies/timeseries/queryminutes.ashx"
+                payload["interval"] = freq_mapping[bar_freq]
+                payload["contractroll"] = "combined"
+
+            # get prices for instrument from BC internal API
+            prices_resp = self._session.get(data_url, headers=headers, params=payload)
+            ratelimit = prices_resp.headers["x-ratelimit-remaining"]
+            if int(ratelimit) <= 15:
+                time.sleep(20)
+            self.log.msg(
+                f"GET {data_url} {instr_symbol}, {prices_resp.status_code}, ratelimit {ratelimit}"
             )
 
-        if instr_symbol is None:
-            self.log.warn(f"get_historical_futures_data_for_contract() instr_symbol is required")
-            return missing_data
-
-        # GET the futures quote chart page, scrape to get XSRF token
-        # https://www.barchart.com/futures/quotes/GCM21/interactive-chart
-        chart_url = (
-            BARCHART_URL + f"futures/quotes/{instr_symbol}/interactive-chart"
-        )
-        chart_resp = self._session.get(chart_url)
-        xsrf = urllib.parse.unquote(chart_resp.cookies["XSRF-TOKEN"])
-
-        headers = {
-            "content-type": "text/plain; charset=UTF-8",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Referer": chart_url,
-            "x-xsrf-token": xsrf,
-        }
-
-        payload = {
-            "symbol": instr_symbol,
-            "maxrecords": "640",
-            "volume": "contract",
-            "order": "asc",
-            "dividends": "false",
-            "backadjust": "false",
-            "days to expiration": "1",
-            "contractroll": "combined",
-        }
-
-        if bar_freq == Frequency.Day:
-            data_url = BARCHART_URL + "proxies/timeseries/queryeod.ashx"
-            payload["data"] = "daily"
-            payload["contractroll"] = "expiration"
-        else:
-            data_url = BARCHART_URL + "proxies/timeseries/queryminutes.ashx"
-            payload["interval"] = freq_mapping[bar_freq]
-            payload["contractroll"] = "combined"
-
-        # get prices for instrument from BC internal API
-        prices_resp = self._session.get(data_url, headers=headers, params=payload)
-        ratelimit = prices_resp.headers["x-ratelimit-remaining"]
-        if int(ratelimit) <= 15:
-            time.sleep(20)
-        self.log.msg(
-            f"GET {data_url} {instr_symbol}, {prices_resp.status_code}, ratelimit {ratelimit}"
-        )
-
-        # read response into dataframe
-        iostr = io.StringIO(prices_resp.text)
-        if len(prices_resp.text) > 0:
+            # read response into dataframe
+            iostr = io.StringIO(prices_resp.text)
             df = pd.read_csv(iostr, header=None)
 
             # convert to expected format
@@ -191,7 +191,8 @@ class bcConnection(object):
 
             return price_data_as_df
 
-        else:
+        except Exception as ex:
+            self.log.error(f"Problem getting historical data: {ex}")
             return missing_data
 
     @staticmethod
