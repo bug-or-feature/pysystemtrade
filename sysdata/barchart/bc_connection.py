@@ -125,12 +125,12 @@ class bcConnection(object):
         :rtype: pandas DataFrame
         """
 
-        try:
-            if bar_freq == Frequency.Second or bar_freq == Frequency.Seconds_10:
-                raise NotImplementedError(
-                    f"Barchart supported data frequencies: {self._valid_freqs()}"
-                )
+        if bar_freq == Frequency.Second or bar_freq == Frequency.Seconds_10:
+            raise NotImplementedError(
+                f"Barchart supported data frequencies: {self._valid_freqs()}"
+            )
 
+        try:
             if instr_symbol is None:
                 self.log.warn(f"get_historical_futures_data_for_contract() instr_symbol is required")
                 return missing_data
