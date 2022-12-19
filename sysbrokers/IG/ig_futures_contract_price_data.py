@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import pytz
 
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
-from syscore.exceptions import missingContract
+from syscore.exceptions import missingContract, missingData
 from syscore.objects import missing_data
 
 from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
@@ -122,11 +122,12 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
 
         ## Override this because don't want to check for existing data first
 
-        prices = self._get_prices_at_frequency_for_contract_object_no_checking(
-            futures_contract_object=contract_object,
-            frequency=frequency
-        )
-        if prices is missing_data:
+        try:
+            prices = self._get_prices_at_frequency_for_contract_object_no_checking(
+                futures_contract_object=contract_object,
+                frequency=frequency
+            )
+        except missingData:
             if return_empty:
                 return futuresContractPrices.create_empty()
             else:
