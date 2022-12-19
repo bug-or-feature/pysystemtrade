@@ -14,7 +14,7 @@ from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysobjects.roll_calendars import rollCalendar
-from sysinit.futures_spreadbet.fsb_contract_prices import build_import_config
+from sysinit.futures_spreadbet.fsb_contract_prices import build_import_config, build_norgate_import_config
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
@@ -158,14 +158,18 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # XXX_fsb
-    # 'RICE', 'ROBUSTA', 'SOYMEAL', 'SUGAR11', 'WHEAT_ICE'
-    instr_code = 'ROBUSTA_fsb'
+    # 'VIX', 'EURIBOR', 'FED', 'SONIA3', 'SUGAR', 'SWE30', 'EURGBP', 'JSE40',
+
+    # need instr/roll config: 'EURGBP', 'JSE40', 'SUGAR', 'SWE30'
+    instr_code = 'EURIBOR_fsb'
 
     prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
             get_production_config().get_element_or_missing_data("barchart_path")
+            #get_production_config().get_element_or_missing_data("norgate_path")
         ),
         config=build_import_config(instr_code)
+        #config=build_norgate_import_config(instr_code)
     )
 
     if method == "build":

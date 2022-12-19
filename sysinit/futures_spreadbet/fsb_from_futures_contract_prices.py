@@ -42,6 +42,6 @@ if __name__ == "__main__":
     #input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # 'XXX'
-    # ['RICE', 'ROBUSTA', 'SOYMEAL', 'SUGAR11', 'WHEAT_ICE']
-    for instr in ['RICE', 'ROBUSTA', 'SOYMEAL', 'SUGAR11', 'WHEAT_ICE']:
+    # ['VIX', 'XXX', 'XXX', 'XXX', 'XXX']
+    for instr in ['EURIBOR']:
         convert_futures_prices_to_fsb_single(instr)
