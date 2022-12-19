@@ -35,14 +35,18 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
     def update_epic_history(self, instrument_code: str, epic_history: FsbEpicsHistory, remove_duplicates=True):
         log = self.log.setup(instrument_code=instrument_code)
         existing = self.get_epic_history(instrument_code)
+        merged_data = pd.concat([existing, epic_history], axis=0)
+
+        # we need to only drop sequential rows that are duplicates. Sometimes IG
+        # initially publishes incorrect epic info, and later corrects it
         if remove_duplicates:
-            epic_history = epic_history.drop_duplicates()
-        count = epic_history.shape[0] - existing.shape[0]
+            merged_data = merged_data[~(merged_data.shift() == merged_data).all(axis=1)]
+        count = merged_data.shape[0] - existing.shape[0]
         if count > 0:
             log.msg(f"Adding {count} row(s) of epic history for {instrument_code}")
             self.add_epics_history(
                 instrument_code,
-                epic_history,
+                FsbEpicsHistory(merged_data),
                 ignore_duplication=True
             )
         else:

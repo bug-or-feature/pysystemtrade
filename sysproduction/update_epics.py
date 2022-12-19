@@ -77,12 +77,8 @@ class UpdateEpicHistory(object):
                     data[key] = row
                     df = pd.DataFrame.from_dict(data, orient='index', columns=col_headers)
                     df.index.name = 'Date'
-
-                    existing = self.data.db_fsb_epic_history.get_epic_history(instr)
-                    existing.index.name = 'Date'
-
-                    existing.loc[pd.to_datetime(key)] = row
-                    self.data.db_fsb_epic_history.update_epic_history(instr, existing)
+                    df.index = pd.to_datetime(df.index)
+                    self.data.db_fsb_epic_history.update_epic_history(instr, df)
                 except Exception as exc:
                     msg = f"Problem updating epic data for instrument '{instr}' " \
                           f"and periods {config.ig_data.periods} - check config: {exc}"
@@ -94,3 +90,7 @@ class UpdateEpicHistory(object):
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
         return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(instr)
+
+
+if __name__ == "__main__":
+    update_epics()
