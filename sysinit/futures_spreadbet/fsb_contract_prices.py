@@ -69,8 +69,8 @@ if __name__ == "__main__":
     )
 
     # XXX
-    # ['VIX', 'XXX', 'XXX', 'XXX', 'XXX']
-    for instr in ['EURIBOR']:
+    # ['VIX', 'EURIBOR', 'FED', 'SONIA3', 'XXX']
+    for instr in ['VIX', 'EURIBOR', 'FED', 'SONIA3']:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
 
