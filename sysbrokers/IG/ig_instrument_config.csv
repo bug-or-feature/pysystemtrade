@@ -127,8 +127,8 @@ SOYOIL,,,,,na,,ZL
 SOYOIL_fsb,CO.D.BO,GBP,100.0,False,Month1|Month2|Month3|Month4,0.1,ZL
 SP500,,,,,na,,ES
 SP500_fsb,IX.D.SPTRD,GBP,1.0,False,MONTH1|MONTH2,0.05,ES
-SUGAR,,,,,na,,SW
-SUGAR_fsb,CO.D.LSU,GBP,1.0,False,Month1|Month2|Month3|Month4|Month5|Month6,0.1,SW
+SUGAR_WHITE,,,,,na,,SW
+SUGAR_WHITE_fsb,CO.D.LSU,GBP,1.0,False,Month1|Month2|Month3|Month4|Month5|Month6,0.1,SW
 SUGAR11,,,,,na,,SB
 SUGAR11_fsb,CO.D.SB,GBP,100.0,False,Month1|Month2|Month3|Month4|Month5|Month6|Month7|Month8,0.1,SB
 SWE30,,,,,na,,OX
