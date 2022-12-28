@@ -1,0 +1,287 @@
+COCOA_LDN_fsb:
+  Monday:
+    - '09:30'
+    - '16:50'
+  Tuesday:
+    - '09:30'
+    - '16:50'
+  Wednesday:
+    - '09:30'
+    - '16:50'
+  Thursday:
+    - '09:30'
+    - '16:50'
+  Friday:
+    - '09:30'
+    - '16:50'
+COPPER_fsb:
+  Monday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Tuesday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Wednesday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Thursday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Friday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+
+# EUA_fsb/20221200              CO.D.CFI.Month1.IP  2022-12-16 17:00:00  EDITS_ONLY {'marketTimes': [{'openTime': '07:00', 'closeTime': '17:00'}]}
+EUA_fsb:
+  Monday:
+    - '07:00'
+    - '17:00'
+  Tuesday:
+    - '07:00'
+    - '17:00'
+  Wednesday:
+    - '07:00'
+    - '17:00'
+  Thursday:
+    - '07:00'
+    - '17:00'
+  Friday:
+    - '07:00'
+    - '17:00'
+# EURIBOR_fsb/20250900         IR.D.FEI.Month14.IP  2025-09-15 09:00:00     OFFLINE {'marketTimes': [{'openTime': '01:00', 'closeTime': '21:00'}]}
+EURIBOR_fsb:
+  Monday:
+    - '01:00'
+    - '21:00'
+  Tuesday:
+    - '01:00'
+    - '21:00'
+  Wednesday:
+    - '01:00'
+    - '21:00'
+  Thursday:
+    - '01:00'
+    - '21:00'
+  Friday:
+    - '01:00'
+    - '21:00'
+# GILT_fsb/20230600             IR.D.FLG.Month1.IP  2023-05-29 15:15:00     OFFLINE {'marketTimes': [{'openTime': '08:00', 'closeTime': '18:00'}]}
+GILT_fsb:
+  Monday:
+    - '08:00'
+    - '18:00'
+  Tuesday:
+    - '08:00'
+    - '18:00'
+  Wednesday:
+    - '08:00'
+    - '18:00'
+  Thursday:
+    - '08:00'
+    - '18:00'
+  Friday:
+    - '08:00'
+    - '18:00'
+# OAT_fsb/20230300             IR.D.FOAT.Month1.IP  2023-03-07 16:15:00   TRADEABLE {'marketTimes': [{'openTime': '00:15', 'closeTime': '21:00'}]}
+OAT_fsb:
+  Monday:
+    - '00:15'
+    - '21:00'
+  Tuesday:
+    - '00:15'
+    - '21:00'
+  Wednesday:
+    - '00:15'
+    - '21:00'
+  Thursday:
+    - '00:15'
+    - '21:00'
+  Friday:
+    - '00:15'
+    - '21:00'
+# PLAT_fsb/20230400              MT.D.PL.Month1.IP  2023-03-24 18:05:00     OFFLINE {'marketTimes': [{'openTime': '23:00', 'closeTime': '22:00'}]}
+PLAT_fsb:
+  Monday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Tuesday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Wednesday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Thursday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Friday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+# ROBUSTA_fsb/20230300          CO.D.LKD.Month1.IP  2023-02-23 17:30:00   TRADEABLE {'marketTimes': [{'openTime': '09:00', 'closeTime': '17:30'}]}
+ROBUSTA_fsb:
+  Monday:
+    - '09:00'
+    - '17:30'
+  Tuesday:
+    - '09:00'
+    - '17:30'
+  Wednesday:
+    - '09:00'
+    - '17:30'
+  Thursday:
+    - '09:00'
+    - '17:30'
+  Friday:
+    - '09:00'
+    - '17:30'
+# SILVER_fsb/20230500            MT.D.SI.Month1.IP  2023-04-27 17:25:00     OFFLINE {'marketTimes': [{'openTime': '23:00', 'closeTime': '22:00'}]}
+SILVER_fsb:
+  Monday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Tuesday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Wednesday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Thursday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Friday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+# SONIA3_fsb/20251200           IR.D.FSS.Month2.IP  2026-03-17 11:00:00     OFFLINE {'marketTimes': [{'openTime': '07:30', 'closeTime': '18:00'}]}
+SONIA3_fsb:
+  Monday:
+    - '07:30'
+    - '18:00'
+  Tuesday:
+    - '07:30'
+    - '18:00'
+  Wednesday:
+    - '07:30'
+    - '18:00'
+  Thursday:
+    - '07:30'
+    - '18:00'
+  Friday:
+    - '07:30'
+    - '18:00'
+# SOYBEAN_fsb/20230100            CO.D.S.Month1.IP  2022-12-29 18:15:00   TRADEABLE {'marketTimes': [{'openTime': '01:00', 'closeTime': '13:45'}, {'openTime': '14:30', 'closeTime': '19:20'}]}
+SOYBEAN_fsb:
+  Monday:
+    - - '01:00'
+      - '13:45'
+    - - '14:30'
+      - '19:20'
+  Tuesday:
+    - - '01:00'
+      - '13:45'
+    - - '14:30'
+      - '19:20'
+  Wednesday:
+    - - '01:00'
+      - '13:45'
+    - - '14:30'
+      - '19:20'
+  Thursday:
+    - - '01:00'
+      - '13:45'
+    - - '14:30'
+      - '19:20'
+  Friday:
+    - - '01:00'
+      - '13:45'
+    - - '14:30'
+      - '19:20'
+# SUGAR_fsb/20240300            CO.D.LSU.Month1.IP  2024-02-08 17:55:00     OFFLINE {'marketTimes': [{'openTime': '08:45', 'closeTime': '17:55'}]}
+SUGAR_WHITE_fsb:
+  Monday:
+    - '08:45'
+    - '17:55'
+  Tuesday:
+    - '08:45'
+    - '17:55'
+  Wednesday:
+    - '08:45'
+    - '17:55'
+  Thursday:
+    - '08:45'
+    - '17:55'
+  Friday:
+    - '08:45'
+    - '17:55'
+# VIX_fsb/20230300              IN.D.VIX.MONTH1.IP  2023-03-22 14:00:00     OFFLINE {'marketTimes': [{'openTime': '23:00', 'closeTime': '22:00'}]}
+VIX_fsb:
+  Monday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Tuesday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Wednesday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Thursday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+  Friday:
+    - - '23:00'
+      - '23:59'
+    - - '00:00'
+      - '22:00'
+
+Europe/London:
+  Monday:
+    - '00:00'
+    - '23:59'
+  Tuesday:
+    - '00:00'
+    - '23:59'
+  Wednesday:
+    - '00:00'
+    - '23:59'
+  Thursday:
+    - '00:00'
+    - '23:59'
+  Friday:
+    - '00:00'
+    - '23:59'
