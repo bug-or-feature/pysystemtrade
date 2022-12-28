@@ -145,7 +145,7 @@ def show_expected_rolls_for_config(
     )
 
     print(f"Approx roll calendar for: {instrument_code}")
-    print_full(approx_roll_calendar.tail(20))
+    print_full(approx_roll_calendar.tail(30))
 
 
 if __name__ == "__main__":
@@ -158,10 +158,9 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # XXX_fsb
-    # 'VIX', 'EURIBOR', 'FED', 'SONIA3', 'SUGAR', 'SWE30', 'EURGBP', 'JSE40',
-
-    # need instr/roll config: 'EURGBP', 'JSE40', 'SUGAR', 'SWE30'
-    instr_code = 'EURIBOR_fsb'
+    # 'VIX', 'EURIBOR', 'FED', 'SONIA3', 'SUGAR_WHITE', 'SWE30', 'EURGBP', 'JSE40',
+    # need instr/roll config: 'EURGBP', 'JSE40', 'SUGAR_WHITE', 'SWE30'
+    instr_code = 'VIX_fsb'
 
     prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
