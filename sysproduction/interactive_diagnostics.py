@@ -733,6 +733,10 @@ def get_trading_hours_for_all_instruments(data=arg_not_supplied):
 
     diag_prices = diagPrices(data)
     list_of_instruments = diag_prices.get_list_of_instruments_with_contract_prices()
+    # list_of_instruments = diag_prices.get_list_of_instruments_in_multiple_prices()
+    #list_of_instruments = ["AEX_fsb", "COCOA_LDN_fsb"]
+    #list_of_instruments = ["AEX_fsb"]
+    #list_of_instruments = ["GOLD_fsb", "EURIBOR_fsb", "COPPER_fsb", "SOYBEAN_fsb"]
 
     p = progressBar(len(list_of_instruments))
     all_trading_hours = {}
@@ -851,6 +855,7 @@ def interactive_diag_function(function_id):
 
 if __name__ == "__main__":
     interactive_diagnostics()
+    #print_trading_hours_for_all_instruments()
 
     #interactive_diag_function(30) # individual contract prices
     #interactive_diag_function(13)  # FSB history
