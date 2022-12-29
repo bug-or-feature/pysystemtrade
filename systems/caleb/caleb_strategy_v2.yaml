@@ -394,7 +394,7 @@ forecast_scalars:
 # Capital correction
 #
 percentage_vol_target: 25.0
-notional_trading_capital: 2000000
+notional_trading_capital: 3000000
 base_currency: "USD"
 #
 # Portfolio creation
