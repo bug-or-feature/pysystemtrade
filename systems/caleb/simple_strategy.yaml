@@ -1,0 +1,187 @@
+#YAML
+#start_date: 2021-05-03
+#use_forecast_weight_estimates: True
+#use_forecast_div_mult_estimates: True
+#use_instrument_weight_estimates: True
+#use_instrument_div_mult_estimates: True
+#use_forecast_scale_estimates: True
+#forecast_scalar_estimate:
+#   pool_instruments: True
+#forecast_correlation_estimate:
+#   pool_instruments: True
+#
+# Raw data
+#
+#
+# Trading rules
+#
+trading_rules:
+  breakout80:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 80
+  relmomentum40:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 40
+  mrinasset160:
+     function: systems.provided.rules.cs_mr.cross_sectional_mean_reversion
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 160
+  carry30:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 30
+  assettrend8:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  normmom8:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  momentum16:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  relcarry:
+     function: systems.provided.rules.carry.relative_carry
+     data:
+          - "rawdata.smoothed_carry"
+          - "rawdata.median_carry_for_asset_class"
+  accel32:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 32
+  mrwrings4:
+    function: systems.provided.rules.mr_wings.mr_wings
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 4
+#
+forecast_cap: 20.0
+#
+#
+# Capital correction
+#
+percentage_vol_target: 25.0
+notional_trading_capital: 3000000
+base_currency: "USD"
+#
+# Portfolio creation
+#
+
+
+instrument_weights:
+  BUND: 0.1
+  CHF: 0.1
+  CORN: 0.1
+  CRUDE_W: 0.1
+  EUROSTX: 0.1
+  GOLD_micro: 0.1
+  MXP: 0.1
+  SP500: 0.1
+  VIX: 0.1
+  US30: 0.1
+
+instrument_div_multiplier:
+  2.5
+
+# duplicated/excluded instruments are ignored in backtests
+# we still collect price data for them in production, do rolls etc
+# this is to avoid double counting of basically the same instrument
+# anything in the 'exclude' list is ignored in backtests
+# we use the 'include section to match up for reporting when deciding which to trade
+# Be careful when swapping between instruments, a bit dangerous if a position is held...
+# You can override this by modifying the backtest config .yaml file used in either sim or production
+#
+# THe following example shows how you would select one instrument out of a choice of 3
+#
+duplicate_instruments:
+  include:
+    copper: 'COPPER'
+    corn: 'CORN'
+    crude: 'CRUDE_W'
+    gas_us: 'GAS_US'
+    gasoiline: 'GASOILINE'
+    gold: 'GOLD_micro'
+    heatoil: 'HEATOIL'
+    jpy: 'JPY'
+    nasdaq: 'NASDAQ'
+    nikkei: 'NIKKEI'
+    silver: 'SILVER-mini'
+    soybean: 'SOYBEAN'
+    sp500: 'SP500'
+    vix: 'VIX'
+    wheat: 'WHEAT'
+  exclude:
+    copper: 'COPPER-mini'
+    corn: 'CORN_mini'
+    crude: 'CRUDE_W_mini'
+    gas_us: 'GAS_US_mini'
+    gasoiline: 'GASOILINE_mini'
+    gold: 'GOLD'
+    heatoil: 'HEATOIL_mini'
+    jpy: ['JPY_micro','JPY-SGX-TITAN', 'JPY-SGX']
+    nasdaq: 'NASDAQ_micro'
+    nikkei: 'NIKKEI-JPY'
+    silver: 'SILVER'
+    soybean: 'SOYBEAN_mini'
+    sp500: 'SP500_micro'
+    vix: 'VIX_mini'
+    wheat: 'WHEAT_mini'
+
+exclude_instrument_lists:
+  # ignore_instruments are ignored in backtests
+  # we still collect price data for them in production, do rolls etc
+  # You can override this by modifying the backtest config .yaml file used in either sim or production
+  # If you want to ignore because a duplicate market, use duplicate_instruments
+  # If you want to include in sim data, but not actually trade, use trading_restrictions
+  #
+  # BEST FOR INSTRUMENTS THAT LOOK EXPENSIVE, BUT WHERE WE HAVEN'T GOT ACCURATE DATA YET
+  #
+  # REVIEW REGULARLY AND CHECK THESE INSTRUMENTS AREN'T BETTER ELSEWHERE...
+  ignore_instruments:
+
+  #
+  # Here we put stuff we can't trade, but for which we still want to bring in prices in sim
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # NOTE: This will be regionally biased, you will probably want to override this in private_config.yaml
+  #
+  trading_restrictions:
+
+  # These are markets that are too expensive or illiquid to actually trade
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # Run interactive controls to get a list of suggested markets here
+  # To override this list, change in sim .yaml config (sim) and private_config.yaml (production)
+  bad_markets:
+
