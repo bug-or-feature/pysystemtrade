@@ -345,13 +345,6 @@ def update_expiry_for_contract(contract_object: futuresContract, data: dataBlob)
     try:
         broker_expiry_date = get_contract_expiry_from_broker(contract_object, data=data)
         db_expiry_date = get_contract_expiry_from_db(contract_object, data=data)
-    except missingContract:
-        log.msg(
-            "Can't find expiry for %s, could be a connection problem but could be because contract has already expired"
-            % (str(contract_object))
-        )
-
-        ## don't warn as probably expired we'll remove it from the sampling list
 
         if broker_expiry_date == db_expiry_date:
             log.msg(
@@ -361,13 +354,19 @@ def update_expiry_for_contract(contract_object: futuresContract, data: dataBlob)
         else:
             existing_expiry_source = contract_object.params.expiry_source
             if existing_expiry_source == "B" and broker_expiry_date.source == "E":
-                log.msg(f"Not updating expiry for {contract_object.key}, new date is estimated")
+                log.msg(
+                    f"Not updating expiry for {contract_object.key}, new date is estimated")
             else:
                 update_contract_object_with_new_expiry_date(
                     data=data,
                     broker_expiry_date=broker_expiry_date,
                     contract_object=contract_object,
                 )
+    except missingContract:
+        log.msg(
+            "Can't find expiry for %s, could be a connection problem but could be because contract has already expired"
+            % (str(contract_object))
+        )
 
 
 def get_contract_expiry_from_db(
@@ -475,7 +474,7 @@ def _mark_as_not_sampling(fsb_code):
 
 
 if __name__ == '__main__':
-    update_sampled_contracts()
-    #update_sampled_contracts(["BUXL_fsb"])
+    #update_sampled_contracts()
+    update_sampled_contracts(["FED_fsb"])
     #get_all_currently_sampling("BUXL_fsb")
     #mark_as_not_sampling("GOLD_fsb")
