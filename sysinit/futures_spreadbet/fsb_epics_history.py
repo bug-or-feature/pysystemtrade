@@ -58,8 +58,8 @@ def delete_epics_history_single(instrument_code):
 if __name__ == "__main__":
     #view_epics_history_single("SOYOIL_fsb")
     #for epic in ["GOLD_fsb" ]:
-    for epic in ["EDOLLAR_fsb"]:
+    for epic in ["SUGAR_WHITE_fsb"]:
          import_epics_history_single(epic)
     #import_epics_history_all()
-    #for instr in ["STERLING3_fsb", "US30_fsb", "USTB_fsb", "COTTON_fsb", "COCOA_NY_fsb", "WHEAT_LDN_fsb"]:
-    #    delete_epics_history_single(instr)
+    for instr in ["SUGAR_fsb"]:
+        delete_epics_history_single(instr)

@@ -62,6 +62,7 @@ SOYMEAL_fsb,0.25,0.0,Ags,0.0,Soybean Meal,0.0,GBP,40.0
 SOYOIL_fsb,1.0,0.0,Ags,0.0,Soybean Oil,0.0,GBP,5.0
 SP500_fsb,1.0,0.0,Equity,0.0,US equity index S&P 500,0.0,GBP,0.5
 SUGAR11_fsb,2.0,0.0,Ags,0.0,Sugar #11,0.0,GBP,2.5
+SUGAR_WHITE_fsb,15.0,0.0,Ags,0.0,Sugar #5 London ,0.0,GBP,0.6
 US2_fsb,0.5,0.0,Bond,0.0,US 2 year bond note,0.0,GBP,1.0
 US5_fsb,0.5,0.0,Bond,0.0,US 5 year Treasury note,0.0,GBP,1.0
 US10_fsb,0.5,0.0,Bond,0.0,US 10 year bond note,0.0,GBP,2.0

@@ -71,8 +71,8 @@ def process_adjusted_prices_single_instrument(
 if __name__ == "__main__":
 
     # XXX_fsb
-    # ['VIX_fsb', 'EURIBOR_fsb', 'FED_fsb', 'SONIA3_fsb', 'XXX_fsb']
-    for instrument_code in ['BRENT_W_fsb']:
+    # ['SUGAR_WHITE_fsb', 'XXX_fsb', 'XXX_fsb', 'XXX_fsb', 'XXX_fsb']
+    for instrument_code in ['SUGAR_WHITE_fsb']:
         print(f"Creating adjusted prices for {instrument_code}")
         process_adjusted_prices_single_instrument(
             instrument_code,
