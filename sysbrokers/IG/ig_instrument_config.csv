@@ -101,6 +101,8 @@ OATIES,,,,,na,,ZO
 OATIES_fsb,CO.D.O,GBP,1.0,False,Month1|Month2,0.1,ZO
 OJ,,,,,na,,OJ
 OJ_fsb,CO.D.OJ,GBP,100.0,False,Month1|Month2,0.1,OJ
+OMXS30,,,,,na,,OX
+OMXS30_fsb,IX.D.OMX,GBP,1.0,False,MONTH1|MONTH2,0.1,OX
 PALLAD,,,,,na,,PA
 PALLAD_fsb,MT.D.PA,GBP,1.0,False,Month1|Month2,0.1,PA
 PLAT,,,,,na,,PL
@@ -131,8 +133,6 @@ SUGAR11,,,,,na,,SB
 SUGAR11_fsb,CO.D.SB,GBP,100.0,False,Month1|Month2|Month3|Month4|Month5|Month6|Month7|Month8,0.1,SB
 SUGAR_WHITE,,,,,na,,SW
 SUGAR_WHITE_fsb,CO.D.LSU,GBP,1.0,False,Month1|Month2|Month3|Month4|Month5|Month6,0.1,SW
-SWE30,,,,,na,,OX
-SWE30_fsb,IX.D.OMX,GBP,1.0,False,MONTH1|MONTH2,0.1,OX
 US2,,,,,na,,ZT
 US2_fsb,IR.D.02YEAR100,GBP,100.0,False,Month1|Month2,0.2,ZT
 US5,,,,,na,,ZF
