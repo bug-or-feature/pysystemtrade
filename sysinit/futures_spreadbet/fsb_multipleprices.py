@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
     # XXX_fsb
     # ['VIX_fsb', 'EURIBOR_fsb', 'FED_fsb', 'SONIA3_fsb', 'XXX_fsb']
-    for instrument_code in ['SONIA3_fsb']:
+    for instrument_code in ['BRENT_W_fsb']:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,
