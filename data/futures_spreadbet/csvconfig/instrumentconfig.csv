@@ -23,6 +23,7 @@ DX_fsb,0.5,0.0,FX,0.0,UUS Dollar Index,0.0,GBP,4.25
 EDOLLAR_fsb,0.5,0.0,Bond,0.0,US STIR Eurodollar,0.0,GBP,0.8
 EUA_fsb,0.25,0.0,OilGas,0.0,ECX EU carbon emissions,0.0,GBP,5.5
 EUR_fsb,1.0,0.0,FX,0.0,EURUSD currency,0.0,GBP,5.45
+EURGBP_fsb,1.0,0.0,FX,0.0,EURGBP currency,0.0,GBP,4.25
 EURIBOR_fsb,0.5,0.0,Bond,0.0,Three Month EURIBOR,0.0,GBP,0.75
 EUROSTX_fsb,1.0,0.0,Equity,0.0,European equity index EUROSTOXX50,0.0,GBP,1.0
 FED_fsb,0.5,0.0,Bond,0.0,30 Day Fed Funds,0.0,GBP,0.8
@@ -38,6 +39,7 @@ HEATOIL_fsb,0.5,0.0,Ags,0.0,Heating oil,0.0,GBP,15.0
 IBXEX_fsb,1.0,0.0,Equity,0.0,Spanish equity index IBEX,0.0,GBP,2.0
 JGB_fsb,0.5,0.0,Bond,0.0,Japanese Government Bond,0.0,GBP,3.0
 JPY_fsb,1.0,0.0,FX,0.0,JPYUSD currency,0.0,GBP,5.0
+JSE40_fsb,0.25,0.0,Equity,0.0,South Africa JSE 40 equity index,0.0,GBP,50.0
 LEANHOG_fsb,0.1,0.0,Ags,0.0,Lean hogs,0.0,GBP,7.5
 LIVECOW_fsb,0.5,0.0,Ags,0.0,Live cattle,0.0,GBP,10.0
 LUMBER_fsb,0.1,0.0,Ags,0.0,Random Length Lumber,0.0,GBP,400.0
@@ -48,6 +50,7 @@ NZD_fsb,1.0,0.0,FX,0.0,NZDUSD currency,0.0,GBP,2.9
 OAT_fsb,0.5,0.0,Bond,0.0,French 10 year bond OAT,0.0,GBP,2.5
 OATIES_fsb,15.0,0.0,Ags,0.0,Oat Futures,0.0,GBP,4.0
 OJ_fsb,0.5,0.0,Ags,0.0,Orange Juice (FCOJ-A),0.0,GBP,20.0
+OMXS30_fsb,3.0,0.0,Equity,0.0,OMX Sweden 30 index,0.0,GBP,0.75
 PALLAD_fsb,2.0,0.0,Ags,0.0,Palladium,0.0,GBP,4.0
 PLAT_fsb,3.0,0.0,Ags,0.0,Platinum,0.0,GBP,1.25
 RICE_fsb,0.5,0.0,Ags,0.0,Rough Rice,0.0,GBP,20.0
@@ -62,7 +65,7 @@ SOYMEAL_fsb,0.25,0.0,Ags,0.0,Soybean Meal,0.0,GBP,40.0
 SOYOIL_fsb,1.0,0.0,Ags,0.0,Soybean Oil,0.0,GBP,5.0
 SP500_fsb,1.0,0.0,Equity,0.0,US equity index S&P 500,0.0,GBP,0.5
 SUGAR11_fsb,2.0,0.0,Ags,0.0,Sugar #11,0.0,GBP,2.5
-SUGAR_WHITE_fsb,15.0,0.0,Ags,0.0,Sugar #5 London ,0.0,GBP,0.6
+SUGAR_WHITE_fsb,15.0,0.0,Ags,0.0,Sugar #5 London,0.0,GBP,0.6
 US2_fsb,0.5,0.0,Bond,0.0,US 2 year bond note,0.0,GBP,1.0
 US5_fsb,0.5,0.0,Bond,0.0,US 5 year Treasury note,0.0,GBP,1.0
 US10_fsb,0.5,0.0,Bond,0.0,US 10 year bond note,0.0,GBP,2.0

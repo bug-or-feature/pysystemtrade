@@ -44,7 +44,8 @@ if __name__ == "__main__":
     # input("Will overwrite existing prices are you sure?! CTL-C to abort")
     datapath = get_filename_for_package(get_production_config().get_element_or_missing_data("ig_path"))
 
-    for instr in ['SUGAR_WHITE_fsb']:
+    # ['EURGBP_fsb', 'JSE40_fsb', 'OMXS30_fsb']
+    for instr in ['EURGBP_fsb', 'JSE40_fsb', 'OMXS30_fsb']:
         transfer_ig_prices_to_arctic_single(instr, datapath=datapath)
 
     # all instruments
