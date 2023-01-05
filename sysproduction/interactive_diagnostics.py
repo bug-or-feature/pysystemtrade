@@ -57,7 +57,6 @@ from sysproduction.reporting.report_configs import (
     costs_report_config,
     slippage_report_config,
     duplicate_market_report_config,
-    remove_markets_report_config,
     market_monitor_report_config,
     account_curve_report_config,
 )
@@ -65,6 +64,7 @@ from sysproduction.reporting.report_configs import (
 from sysproduction.reporting.report_configs_fsb import (
     instrument_risk_fsb_report_config,
     min_capital_fsb_report_config,
+    remove_fsb_markets_report_config,
     fsb_report_config
 )
 
@@ -274,7 +274,7 @@ def duplicate_market_report(data):
     run_report(report_config, data=data)
 
 def remove_markets_report(data):
-    report_config = email_or_print_or_file(remove_markets_report_config)
+    report_config = email_or_print_or_file(remove_fsb_markets_report_config)
     run_report(report_config, data=data)
 
 
