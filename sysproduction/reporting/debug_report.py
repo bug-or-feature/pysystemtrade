@@ -101,6 +101,8 @@ def run_duplicate_market_report():
 def run_remove_markets_report():
     do_report(remove_markets_report_config.new_config_with_modified_output("console"))
 
+def run_fsb_remove_markets_report():
+    do_report(remove_fsb_markets_report_config.new_config_with_modified_output("console"))
 
 def run_market_monitor_report():
     pass
@@ -167,11 +169,12 @@ if __name__ == "__main__":
     # run_remove_markets_report()
     # run_market_monitor_report()
     # run_account_curve_report()
-    #run_slippage_report()
+    # run_slippage_report()
 
     # run_fsb_report()
     # run_min_capital_fsb_report()
     # run_instrument_risk_fsb_report()
+    run_fsb_remove_markets_report()
 
     #run_adhoc_tradeable_report()
-    run_adhoc_tradeable_report(instr_code="GAS_US_fsb")
+    #run_adhoc_tradeable_report(instr_code="GAS_US_fsb")

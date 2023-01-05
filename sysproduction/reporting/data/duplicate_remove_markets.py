@@ -51,6 +51,7 @@ class RemoveMarketData:
         bad_markets = self.bad_markets(apply_lower_threshold=True)
 
         new_bad_markets = list(set(bad_markets).difference(set(existing_bad_markets)))
+        new_bad_markets.sort()
 
         return new_bad_markets
 
@@ -75,14 +76,14 @@ class RemoveMarketData:
         threshold_factor = calculate_threshold_factor(apply_lower_threshold = apply_lower_threshold,
                                                       apply_higher_threshold = apply_higher_threshold)
 
-        expensive = self.expensive_markets(threshold_factor = threshold_factor)
-        not_enough_trading_risk = self.markets_without_enough_volume_risk(threshold_factor = threshold_factor)
-        not_enough_trading_contracts = self.markets_without_enough_volume_contracts(threshold_factor = threshold_factor)
-        too_safe = self.too_safe_markets(threshold_factor = threshold_factor)
+        expensive = self.expensive_markets(threshold_factor=threshold_factor)
+        # not_enough_trading_risk = self.markets_without_enough_volume_risk(threshold_factor = threshold_factor)
+        # not_enough_trading_contracts = self.markets_without_enough_volume_contracts(threshold_factor = threshold_factor)
+        too_safe = self.too_safe_markets(threshold_factor=threshold_factor)
 
         bad_markets = list(set(expensive
-                               + not_enough_trading_risk
-                               + not_enough_trading_contracts
+                               # + not_enough_trading_risk
+                               # + not_enough_trading_contracts
                                + too_safe))
         bad_markets.sort()
 
