@@ -31,7 +31,7 @@ started sampling an instrument.
 
 load futures instrument configuration
 ```
-$ python sysinit/futures/instruments_csv_mongo.py
+$ python sysinit/futures/repocsv_instrument_config.py
 ```
 
 load FSB instrument configuration
