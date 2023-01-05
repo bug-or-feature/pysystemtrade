@@ -158,8 +158,6 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # XXX_fsb
-    # 'VIX', 'EURIBOR', 'FED', 'SONIA3', 'SUGAR_WHITE', 'SWE30', 'EURGBP', 'JSE40',
-    # need instr/roll config: 'EURGBP', 'JSE40', 'SUGAR_WHITE', 'SWE30'
     instr_code = 'VIX_fsb'
 
     prices = csvFuturesContractPriceData(
