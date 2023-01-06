@@ -146,7 +146,7 @@ nested_menu_of_options = {
         70: "All instrument risk",
         71: "Minimum capital required",
         72: "Duplicate markets",
-        73: "Remove markets",
+        73: "Remove FSB markets",
         74: "Market monitor",
         75: "P&L account curve",
         79: "FSB report",
