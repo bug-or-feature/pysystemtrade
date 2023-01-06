@@ -13,7 +13,7 @@ from syscore.objects import missing_data
 from sysdata.config.production_config import get_production_config
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.fsb_contract_prices import FsbContractPrices
-from syscore.exceptions import missingContract
+from syscore.exceptions import missingContract, missingData
 from timeit import default_timer as timer
 
 
@@ -190,11 +190,15 @@ class IGConnection(object):
                 ):
                     self.log.error(f"No historic data allowance remaining, yikes!")
 
+            if len(df) == 0:
+                self.log.warn(f"Zero length IG price data found for {epic}")
+                raise missingData
+
             return df
 
         except Exception as ex:
             self.log.error(f"Problem getting historical data: {ex}")
-            return missing_data
+            raise missingData
 
     def get_snapshot_price_data_for_contract(
             self,

@@ -10,7 +10,7 @@ from syscore.dateutils import Frequency
 from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from syslogdiag.log_to_screen import logger, logtoscreen
 from sysobjects.contracts import futuresContract
-from syscore.objects import missing_data
+from syscore.exceptions import missingContract, missingData
 
 BARCHART_URL = "https://www.barchart.com/"
 
@@ -130,10 +130,12 @@ class bcConnection(object):
                 f"Barchart supported data frequencies: {self._valid_freqs()}"
             )
 
+        if instr_symbol is None:
+            self.log.warn(
+                f"get_historical_futures_data_for_contract() instr_symbol is required")
+            raise missingData
+
         try:
-            if instr_symbol is None:
-                self.log.warn(f"get_historical_futures_data_for_contract() instr_symbol is required")
-                return missing_data
 
             # GET the futures quote chart page, scrape to get XSRF token
             # https://www.barchart.com/futures/quotes/GCM21/interactive-chart
@@ -187,13 +189,19 @@ class bcConnection(object):
             price_data_as_df = self._raw_barchart_data_to_df(
                 df, bar_freq=bar_freq, log=self.log
             )
+
+            if len(price_data_as_df) == 0:
+                raise missingData(
+                    f"Zero length Barchart price data found for {instr_symbol}"
+                )
+
             self.log.msg(f"Latest price {price_data_as_df.index[-1]} with {bar_freq}")
 
             return price_data_as_df
 
         except Exception as ex:
             self.log.error(f"Problem getting historical data: {ex}")
-            return missing_data
+            raise missingData
 
     @staticmethod
     def _raw_barchart_data_to_df(
@@ -202,7 +210,7 @@ class bcConnection(object):
 
         if price_data_raw is None:
             log.warn("No historical price data from Barchart")
-            return missing_data
+            raise missingData
 
         date_format = "%Y-%m-%d"
 

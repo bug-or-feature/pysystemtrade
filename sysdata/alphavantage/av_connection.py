@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 from ratelimit import limits, sleep_and_retry
 
-from syscore.objects import missing_data
+from syscore.exceptions import missingData
 from syslogdiag.log_to_screen import logtoscreen
 from sysdata.config.production_config import get_production_config
 
@@ -76,4 +76,4 @@ class avConnection(object):
 
         except Exception as e:
             self._log.error("Error: %s" % e)
-            return missing_data
+            raise missingData

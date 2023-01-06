@@ -1,6 +1,7 @@
 from sysexecution.stack_handler.stackHandlerCore import stackHandlerCore
 from sysobjects.contracts import futuresContract
 from syscore.objects import missing_data
+from syscore.exceptions import missingData
 
 
 class stackHandlerAdditionalSampling(stackHandlerCore):
@@ -62,13 +63,12 @@ class stackHandlerAdditionalSampling(stackHandlerCore):
 
     def get_average_spread(self, contract: futuresContract) -> float:
         data_broker = self.data_broker
-        tick_data = data_broker.get_recent_bid_ask_tick_data_for_contract_object(
-            contract
-        )
-
-        if tick_data is not missing_data:
+        try:
+            tick_data = data_broker.get_recent_bid_ask_tick_data_for_contract_object(
+                contract
+            )
             average_spread = tick_data.average_bid_offer_spread(remove_negative=True)
-        else:
+        except missingData:
             return missing_data
 
         ## Shouldn't happen, but just in case

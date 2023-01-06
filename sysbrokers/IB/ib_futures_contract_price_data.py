@@ -1,6 +1,5 @@
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ, MIXED_FREQ
 from syscore.exceptions import missingContract, missingData
-from syscore.objects import missing_data, failure
 
 from sysbrokers.IB.ib_futures_contracts_data import ibFuturesContractData
 from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData
@@ -183,7 +182,7 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
             if return_empty:
                 return futuresContractPrices.create_empty()
             else:
-                return missing_data
+                raise
 
         return prices
 
@@ -237,18 +236,18 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
 
         new_log = contract_object_with_ib_broker_config.log(self.log)
 
-        price_data = self.ib_client.broker_get_historical_futures_data_for_contract(
-            contract_object_with_ib_broker_config,
-            bar_freq=freq,
-            allow_expired=allow_expired,
-        )
-
-        if price_data is missing_data:
+        try:
+            price_data = self.ib_client.broker_get_historical_futures_data_for_contract(
+                contract_object_with_ib_broker_config,
+                bar_freq=freq,
+                allow_expired=allow_expired,
+            )
+        except missingData:
             new_log.warn(
                 "Something went wrong getting IB price data for %s"
                 % str(contract_object_with_ib_broker_config)
             )
-            return missing_data
+            raise
 
         if len(price_data) == 0:
             new_log.warn(
@@ -325,7 +324,7 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
                 contract_object_with_ib_data
             )
         except missingContract:
-            return missing_data
+            raise missingData
 
         tick_data_as_df = from_ib_bid_ask_tick_data_to_dataframe(tick_data)
 

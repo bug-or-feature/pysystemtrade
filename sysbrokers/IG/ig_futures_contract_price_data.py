@@ -3,7 +3,7 @@ import pytz
 
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from syscore.exceptions import missingContract, missingData
-from syscore.objects import missing_data
+#from syscore.objects import missing_data
 
 from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
 from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
@@ -131,7 +131,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             if return_empty:
                 return futuresContractPrices.create_empty()
             else:
-                return missing_data
+                raise
 
         return prices
 
@@ -200,7 +200,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
 
         if len(tick_list) < 3:
             new_log.warn(f"Not enough recent price tick data for {contract_object} to record spreads")
-            return missing_data
+            raise missingData
 
         tick_data_as_df = from_bid_ask_tick_data_to_dataframe(tick_list)
 
@@ -246,42 +246,36 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             )
 
         epic = self.futures_instrument_data.epic_mapping[contract_object.key]
-        prices_df = self.igconnection.get_historical_fsb_data_for_epic(
-            epic=epic,
-            bar_freq=freq,
-            start_date=start_date,
-            end_date=end_date)
-
-        if prices_df is missing_data:
+        try:
+            prices_df = self.igconnection.get_historical_fsb_data_for_epic(
+                epic=epic,
+                bar_freq=freq,
+                start_date=start_date,
+                end_date=end_date)
+        except missingData:
             self.log.warn(f"Problem getting IG price data for {str(contract_object)}",
                           instrument_code=contract_object.instrument_code,
                           contract_date=contract_object.contract_date.date_str)
-            price_data = FsbContractPrices.create_empty()
+            return FsbContractPrices.create_empty()
 
-        elif len(prices_df) == 0:
-            self.log.warn(f"No IG price data found for {str(contract_object)}",
-                          instrument_code=contract_object.instrument_code,
-                          contract_date=contract_object.contract_date.date_str
+        # sometimes the IG epics for info and historical prices don't match. the
+        # logic here attempts to prevent that scenario from messing up the data
+        last_df_date = prices_df.index[-1]
+        last_df_date = last_df_date.replace(tzinfo=pytz.UTC)
+        hist_diff = abs((last_df_date - end_date).days)
+        if hist_diff <= 3:
+            self.log.msg(
+                f"Found {prices_df.shape[0]} rows of data",
+                instrument_code=contract_object.instrument_code,
+                contract_date=contract_object.contract_date.date_str
             )
-            price_data = FsbContractPrices.create_empty()
+            price_data = FsbContractPrices(prices_df)
+
+            # TODO update allowance data
+
         else:
-            # sometimes the IG epics for info and historical prices don't match. the logic here attempts to
-            # prevent that scenario from messing up the data
-            last_df_date = prices_df.index[-1]
-            last_df_date = last_df_date.replace(tzinfo=pytz.UTC)
-            hist_diff = abs((last_df_date - end_date).days)
-            if hist_diff <= 3:
-                self.log.msg(f"Found {prices_df.shape[0]} rows of data",
-                             instrument_code=contract_object.instrument_code,
-                             contract_date=contract_object.contract_date.date_str
-                )
-                price_data = FsbContractPrices(prices_df)
-
-                # TODO update allowance data
-
-            else:
-                self.log.msg(f"Ignoring - IG epic/history config awaiting update")
-                price_data = FsbContractPrices.create_empty()
+            self.log.msg(f"Ignoring - IG epic/history config awaiting update")
+            return FsbContractPrices.create_empty()
 
         # It's important that the data is in local time zone so that this works
         price_data = price_data.remove_future_data()
@@ -308,32 +302,25 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         """
 
         barchart_id = self.fsb_contract_data.get_barchart_id(contract_object)
-        price_data = self._barchart.get_historical_futures_data_for_contract(
-            barchart_id, bar_freq=freq
-        )
-
-        if price_data is missing_data:
+        try:
+            price_data = self._barchart.get_historical_futures_data_for_contract(
+                barchart_id, bar_freq=freq
+            )
+        except missingData:
             self.log.warn(
                 f"Problem getting Barchart price data for {str(contract_object)}",
                 instrument_code=contract_object.instrument_code,
                 contract_date=contract_object.contract_date.date_str,
             )
-            price_data = futuresContractPrices.create_empty()
+            return futuresContractPrices.create_empty()
 
-        elif len(price_data) == 0:
-            self.log.warn(f"No Barchart price data found for {str(contract_object)}",
-                          instrument_code=contract_object.instrument_code,
-                          contract_date=contract_object.contract_date.date_str,
-            )
-            price_data = futuresContractPrices.create_empty()
-        else:
-            price_data = futuresContractPrices(price_data)
+        price_data = futuresContractPrices(price_data)
 
-            # It's important that the data is in local time zone so that this works
-            price_data = price_data.remove_future_data()
+        # It's important that the data is in local time zone so that this works
+        price_data = price_data.remove_future_data()
 
-            # Some contract data is marked to model, don't want this
-            price_data = price_data.remove_zero_volumes()
+        # Some contract data is marked to model, don't want this
+        price_data = price_data.remove_zero_volumes()
 
         return price_data
 

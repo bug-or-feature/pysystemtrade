@@ -8,6 +8,7 @@ from sysobjects.spot_fx_prices import fxPrices
 from syslogdiag.log_to_screen import logtoscreen
 from syscore.fileutils import get_filename_for_package
 from syscore.objects import missing_instrument, missing_file, missing_data
+from syscore.exceptions import missingData
 
 fxConfig = namedtuple("avFXConfig", ["ccy1", "ccy2", "invert"])
 
@@ -75,10 +76,11 @@ class AvFxPricesData(brokerFxPricesData):
         return fx_prices
 
     def _get_raw_fx_prices(self, config_for_code: fxConfig) -> pd.Series:
-        raw_fx_prices = self.avConnection.broker_get_daily_fx_data(
-            config_for_code.ccy1, ccy2=config_for_code.ccy2
-        )
-        if raw_fx_prices is missing_data:
+        try:
+            raw_fx_prices = self.avConnection.broker_get_daily_fx_data(
+                config_for_code.ccy1, ccy2=config_for_code.ccy2
+            )
+        except missingData:
             return pd.Series()
         raw_fx_prices_as_series = raw_fx_prices["close"]
 
