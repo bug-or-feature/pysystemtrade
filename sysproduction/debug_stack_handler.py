@@ -45,4 +45,6 @@ def do_refresh_additional_sampling_all_instruments():
 
 
 if __name__ == "__main__":
+    # to run for just one instrument, edit
+    # sysexecution/stack_handler/additional_sampling.py, line ~41
     do_refresh_additional_sampling_all_instruments()
