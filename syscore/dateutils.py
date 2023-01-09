@@ -378,10 +378,10 @@ def last_run_or_heartbeat_from_date_or_none(
         last_run_or_heartbeat: datetime.datetime,
         date_format=SHORT_DATE_PATTERN
 ):
-    if last_run_or_heartbeat is missing_data or last_run_or_heartbeat is None:
-        last_run_or_heartbeat = MISSING_STRING_PATTERN
-    else:
+    if isinstance(last_run_or_heartbeat, datetime.datetime):
         last_run_or_heartbeat = last_run_or_heartbeat.strftime(date_format)
+    else:
+        last_run_or_heartbeat = MISSING_STRING_PATTERN
 
     return last_run_or_heartbeat
 
