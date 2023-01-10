@@ -9,8 +9,7 @@ from syscontrol.monitor import processMonitor
 def create_dashboard_file():
 
     jinja_env = Environment(
-        loader=FileSystemLoader("../templates"),
-        autoescape=select_autoescape()
+        loader=FileSystemLoader("../templates"), autoescape=select_autoescape()
     )
     template = jinja_env.get_template("monitor_template.html")
 
@@ -23,7 +22,7 @@ def create_dashboard_file():
             "trading_server_description": describe_trading_server_login_data(),
             "dbase_description": str(process_observatory.data.mongo_db),
             "process_info": process_observatory.process_dict_as_df(),
-            "log_messages": process_observatory.log_messages
+            "log_messages": process_observatory.log_messages,
         }
 
         print(template.render(vars))

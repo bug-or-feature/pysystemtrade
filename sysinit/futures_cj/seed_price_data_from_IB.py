@@ -1,7 +1,8 @@
-#I (CJ) added the "import nest_asyncio, nest_asyncio.apply()" to resolve the excpetion error that running this script generated beforehand, saing that the loop was already running
+# I (CJ) added the "import nest_asyncio, nest_asyncio.apply()" to resolve the excpetion error that running this script generated beforehand, saing that the loop was already running
 import nest_asyncio
+
 nest_asyncio.apply()
-#__import__('IPython').embed()
+# __import__('IPython').embed()
 
 from sysdata.data_blob import dataBlob
 from sysbrokers.IB.ib_futures_contract_price_data import (
@@ -51,8 +52,9 @@ def seed_price_data_for_contract(data: dataBlob, contract: futuresContract):
             new_contract, prices, ignore_duplication=True
         )
 
-#(changing this so I don't have to enter each contract individually)
-#if __name__ == "__main__":
+
+# (changing this so I don't have to enter each contract individually)
+# if __name__ == "__main__":
 #    print("Get initial price data from IB")
 #    instrument_code = input("Instrument code? <return to abort> ")
 #    if instrument_code == "":
@@ -60,14 +62,14 @@ def seed_price_data_for_contract(data: dataBlob, contract: futuresContract):
 #
 #    seed_price_data_from_IB(instrument_code)
 
-    
+
 if __name__ == "__main__":
     print("Get initial price data from IB")
     f = open("futures.txt", "r")
     for instrument_code in f:
-        instrument_code=instrument_code.replace("\n", "")
+        instrument_code = instrument_code.replace("\n", "")
         try:
             seed_price_data_from_IB(instrument_code)
         except Exception as e:
-            print("Error seeding contract", instrument_code,":",e)
-    f.close()    
+            print("Error seeding contract", instrument_code, ":", e)
+    f.close()

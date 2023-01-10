@@ -17,7 +17,7 @@ Generate a 'best guess' roll calendar based on some price data for individual co
 
 def build_and_write_roll_calendar(
     instrument_code,
-#   output_datapath=arg_not_supplied,
+    #   output_datapath=arg_not_supplied,
     output_datapath="/home/caleb/pysystemtrade/sysinit/futures/tmp",
     check_before_writing=True,
     input_prices=arg_not_supplied,
@@ -119,15 +119,15 @@ def check_saved_roll_calendar(
 
 
 if __name__ == "__main__":
-    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    #instrument_code = get_valid_instrument_code_from_user(source="single")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # instrument_code = get_valid_instrument_code_from_user(source="single")
     ## MODIFY DATAPATH IF REQUIRED
     # build_and_write_roll_calendar(instrument_code, output_datapath=arg_not_supplied)
 
-    #for instr in ['DX', 'EUR', 'GBP', 'NZD']:
-    instrument_code = 'VIX'
+    # for instr in ['DX', 'EUR', 'GBP', 'NZD']:
+    instrument_code = "VIX"
     build_and_write_roll_calendar(
         instrument_code,
         output_datapath="data.futures_cj.roll_calendars_csv",
-        check_before_writing=False
+        check_before_writing=False,
     )

@@ -524,8 +524,8 @@ def closing_date_rows_in_pd_object(pd_object):
     #     ]
     # ]
 
-    idx = pd_object.index.floor('D')
-    subset = pd_object[~idx.duplicated(keep='last')]
+    idx = pd_object.index.floor("D")
+    subset = pd_object[~idx.duplicated(keep="last")]
     # subset = pd_object[~idx.duplicated(keep='last') | ~idx.duplicated(keep=False)]
     return subset
 
@@ -537,10 +537,9 @@ def intraday_date_rows_in_pd_object(pd_object):
     #         for index_entry in pd_object.index
     #     ]
     # ]
-    idx = pd_object.index.floor('D')
-    subset = pd_object[idx.duplicated(keep='last')]
+    idx = pd_object.index.floor("D")
+    subset = pd_object[idx.duplicated(keep="last")]
     return subset
-
 
 
 def get_intraday_df_at_frequency(df: pd.DataFrame, frequency="H"):

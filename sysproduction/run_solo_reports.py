@@ -8,11 +8,11 @@ from sysproduction.reporting.report_configs import reportConfig
 
 
 def run_solo_report(
-        format="console",
-        title=None,
-        function=None,
-        instrument_code=None,
-        use_db=True,
+    format="console",
+    title=None,
+    function=None,
+    instrument_code=None,
+    use_db=True,
 ):
 
     if instrument_code is None:
@@ -80,34 +80,34 @@ def run_risk_report():
 def run_instrument_risk_report():
     run_solo_report(
         title="Instrument Risk report",
-        function="sysproduction.reporting.instrument_risk_report.instrument_risk_report"
+        function="sysproduction.reporting.instrument_risk_report.instrument_risk_report",
     )
 
 
 def run_instrument_risk_fsb_report():
     run_solo_report(
         title="Instrument Risk FSB report",
-        function="sysproduction.reporting.instrument_risk_fsb_report.instrument_risk_fsb_report"
+        function="sysproduction.reporting.instrument_risk_fsb_report.instrument_risk_fsb_report",
     )
+
 
 def run_min_capital_report():
     run_solo_report(
         title="Minimum Capital report",
-        function="sysproduction.reporting.minimum_capital_report.minimum_capital_report"
+        function="sysproduction.reporting.minimum_capital_report.minimum_capital_report",
     )
 
 
 def run_min_capital_fsb_report():
     run_solo_report(
         title="Minimum Capital FSB report",
-        function="sysproduction.reporting.minimum_capital_fsb_report.minimum_capital_fsb_report"
+        function="sysproduction.reporting.minimum_capital_fsb_report.minimum_capital_fsb_report",
     )
 
 
 def run_fsb_report():
     run_solo_report(
-        title="FSB report",
-        function="sysproduction.reporting.fsb_report.do_fsb_report"
+        title="FSB report", function="sysproduction.reporting.fsb_report.do_fsb_report"
     )
 
 
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     # run_solo_report(title="Risk report", function="sysproduction.reporting.risk_report.risk_report")
 
     # run_min_capital_fsb_report:
-    #run_min_capital_fsb_report()
+    # run_min_capital_fsb_report()
 
     # fsb report
     run_fsb_report()

@@ -7,7 +7,6 @@ IGNORE_LIST = ["FTSE100"]
 
 
 class stackHandlerAdditionalSampling(stackHandlerCore):
-
     def refresh_additional_sampling_all_instruments(self):
         all_contracts = self.get_all_instruments_priced_contracts()
         for contract in all_contracts:

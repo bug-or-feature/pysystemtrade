@@ -15,7 +15,7 @@ from sysproduction.interactive_order_stack import interactive_order_stack
 @click.group()
 def pst():
     click.clear()
-    #click.echo("outer")
+    # click.echo("outer")
 
 
 @pst.command(name="c")

@@ -15,7 +15,9 @@ from sysinit.futures.contract_prices_from_csv_to_arctic import (
     init_arctic_with_csv_futures_contract_prices_for_code,
     init_arctic_with_csv_futures_contract_prices_for_contract,
 )
-from sysinit.futures_cj.barchart_futures_contract_prices_single import transfer_barchart_prices_to_arctic_single
+from sysinit.futures_cj.barchart_futures_contract_prices_single import (
+    transfer_barchart_prices_to_arctic_single,
+)
 from numpy import isnan
 from syscore.objects import arg_not_supplied
 
@@ -32,7 +34,7 @@ NORGATE_CONFIG = ConfigCsvFuturesPrices(
     input_date_format="%Y%m%d",
     input_column_mapping=dict(
         OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
-    )
+    ),
 )
 
 # Time,Open,High,Low,Close,Volume
@@ -43,8 +45,9 @@ BARCHART_CONFIG = ConfigCsvFuturesPrices(
     input_date_format="%Y-%m-%dT%H:%M:%S%z",
     input_column_mapping=dict(
         OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
-    )
+    ),
 )
+
 
 def rename_files(pathname, norgate_instr_code=None, dry_run=True):
 
@@ -90,8 +93,12 @@ def rename_files(pathname, norgate_instr_code=None, dry_run=True):
 
             instrument = market_map[identifier]
 
-            instr_config = instr_config_src._get_instrument_data_without_checking(instrument)
-            if isnan(instr_config.meta_data.PerBlock) or isnan(instr_config.meta_data.Slippage):
+            instr_config = instr_config_src._get_instrument_data_without_checking(
+                instrument
+            )
+            if isnan(instr_config.meta_data.PerBlock) or isnan(
+                instr_config.meta_data.Slippage
+            ):
                 misconfigured.append(f"{identifier} ({instrument})")
                 continue
 
@@ -124,150 +131,151 @@ def dedupe_and_sort(my_list):
     deduped = list(dict.fromkeys(my_list))
     return sorted(deduped)
 
+
 market_map = {
-    '6A': 'AUD',
-    '6B': 'GBP',
-    '6C': 'CAD',
-    '6E': 'EUR',
-    '6J': 'JPY',
-    '6M': 'MXP',
-    '6N': 'NZD',
-    '6S': 'CHF',
-    'AE': 'AEX',
+    "6A": "AUD",
+    "6B": "GBP",
+    "6C": "CAD",
+    "6E": "EUR",
+    "6J": "JPY",
+    "6M": "MXP",
+    "6N": "NZD",
+    "6S": "CHF",
+    "AE": "AEX",
     #'AFB': 'Eastern Australia Feed Barley',
     #'AWM': 'Eastern Australia Wheat',
-    'BAX': 'CADSTIR',
-    'BRN': 'BRENT',
-    'BTC': 'BITCOIN',
-    'CC': 'COCOA',
-    'CGB': 'CAD10',
-    'CL': 'CRUDE_W',
-    'CT': 'COTTON2',
-    'DC': 'MILK',
-    'DV': 'V2X',
-    'DX': 'DX',
-    'EH': 'ETHANOL',
-    'EMD': 'SP400',
-    'ES': 'SP500',
-    'ET': 'SP500_micro',
-    'EUA': 'EUA',
-    'FBTP': 'BTP',
+    "BAX": "CADSTIR",
+    "BRN": "BRENT",
+    "BTC": "BITCOIN",
+    "CC": "COCOA",
+    "CGB": "CAD10",
+    "CL": "CRUDE_W",
+    "CT": "COTTON2",
+    "DC": "MILK",
+    "DV": "V2X",
+    "DX": "DX",
+    "EH": "ETHANOL",
+    "EMD": "SP400",
+    "ES": "SP500",
+    "ET": "SP500_micro",
+    "EUA": "EUA",
+    "FBTP": "BTP",
     #'FBTP9': 'XXX',
-    'FCE': 'CAC',
-    'FDAX': 'DAX',
+    "FCE": "CAC",
+    "FDAX": "DAX",
     #'FDAX9': 'XXX',
-    'FESX': 'EUROSTX',
+    "FESX": "EUROSTX",
     #'FESX9': 'XXX',
-    'FGBL': 'BUND',
+    "FGBL": "BUND",
     #'FGBL9': 'XXX',
-    'FGBM': 'BOBL',
+    "FGBM": "BOBL",
     #'FGBM9': 'XXX',
-    'FGBS': 'SHATZ',
+    "FGBS": "SHATZ",
     #'FGBS9': 'XXX',
-    'FGBX': 'BUXL',
-    'FOAT': 'OAT',
+    "FGBX": "BUXL",
+    "FOAT": "OAT",
     #'FOAT9': 'XXX',
-    'FSMI': 'SMI',
+    "FSMI": "SMI",
     #'FTDX': 'TecDAX',
-    'GAS': 'GASOIL',
-    'GC': 'GOLD',
-    'GD': 'GICS',
-    'GE': 'EDOLLAR',
-    'GF': 'FEEDCOW',
-    'GWM': 'GAS_UK',
-    'HE': 'LEANHOG',
-    'HG': 'COPPER',
-    'HO': 'HEATOIL',
+    "GAS": "GASOIL",
+    "GC": "GOLD",
+    "GD": "GICS",
+    "GE": "EDOLLAR",
+    "GF": "FEEDCOW",
+    "GWM": "GAS_UK",
+    "HE": "LEANHOG",
+    "HG": "COPPER",
+    "HO": "HEATOIL",
     #'HTW': 'MSCI Taiwan Index',
     #'HTW4': 'XXX',
-    'HSI': 'HANG',
-    'KC': 'COFFEE',
-    'KE': 'REDWHEAT',
-    'KOS': 'KOSPI',
-    'LBS': 'LUMBER',
-    'LCC': 'COCOA_LDN',
-    'LE': 'LIVECOW',
-    'LES': 'EURCHF',
-    'LEU': 'EURIBOR',
+    "HSI": "HANG",
+    "KC": "COFFEE",
+    "KE": "REDWHEAT",
+    "KOS": "KOSPI",
+    "LBS": "LUMBER",
+    "LCC": "COCOA_LDN",
+    "LE": "LIVECOW",
+    "LES": "EURCHF",
+    "LEU": "EURIBOR",
     #'LEU9': 'XXX',
-    'LFT': 'FTSE100',
+    "LFT": "FTSE100",
     #'LFT9': 'XXX',
-    'LLG': 'GILT',
-    'LRC': 'ROBUSTA',
-    'LSS': 'STERLING3',
-    'LSU': 'SUGAR',
+    "LLG": "GILT",
+    "LRC": "ROBUSTA",
+    "LSS": "STERLING3",
+    "LSU": "SUGAR",
     #'LWB': 'Feed wheat',
     #'MHI': 'Hang Seng Index - Mini',
     #'MWE': 'Hard Red Spring Wheat',
-    'NG': 'GAS_US',
-    'NIY': 'NIKKEI-JPY',
-    'NKD': 'NIKKEI',
-    'NM': 'NASDAQ_micro',
-    'NQ': 'NASDAQ',
-    'OJ': 'OJ',
-    'PA': 'PALLAD',
-    'PL': 'PLAT',
-    'QG': 'GAS_US_mini',
-    'QM': 'CRUDE_W_mini',
-    'RB': 'GASOILINE',
-    'RS': 'CANOLA',
-    'RTY': 'RUSSELL',
-    'SB': 'SUGAR11',
-    'SCN': 'FTSECHINAA',
+    "NG": "GAS_US",
+    "NIY": "NIKKEI-JPY",
+    "NKD": "NIKKEI",
+    "NM": "NASDAQ_micro",
+    "NQ": "NASDAQ",
+    "OJ": "OJ",
+    "PA": "PALLAD",
+    "PL": "PLAT",
+    "QG": "GAS_US_mini",
+    "QM": "CRUDE_W_mini",
+    "RB": "GASOILINE",
+    "RS": "CANOLA",
+    "RTY": "RUSSELL",
+    "SB": "SUGAR11",
+    "SCN": "FTSECHINAA",
     #'SCN4': 'XXXX',
-    'SI': 'SILVER',
+    "SI": "SILVER",
     #'SIN': 'SGX Nifty 50 Index',
-    'SJB': 'JGB-mini',
+    "SJB": "JGB-mini",
     #'SNK': 'Nikkei 225 (SGX)',
     #'SNK4': 'XXXX',
     #'SO3': '3-Month SONIA',
     #'SP': 'XXXX',
     #'SP1': 'XXXX',
     #'SR3': '3-Month SOFR',
-    'SSG': 'MSCISING',
+    "SSG": "MSCISING",
     #'SSG4': 'XXXX',
     #'SXF': 'S&P/TSX 60 Index',
-    'TN': 'US10U',
-    'UB': 'US30',
-    'VX': 'VIX',
+    "TN": "US10U",
+    "UB": "US30",
+    "VX": "VIX",
     #'WBS': 'WTI Crude Oil',
-    'YAP': 'ASX',
+    "YAP": "ASX",
     #'YAP10': 'XXXX',
     #'YAP4': 'XXXX',
-    'YG': 'GOLD_micro',
-    'YI': 'SILVER-mini',
+    "YG": "GOLD_micro",
+    "YI": "SILVER-mini",
     #'YIB': 'ASX 30 Day Interbank Cash Rate',
     #'YIB4': 'XXXX',
     #'YIR': 'ASX 90 Day Bank Accepted Bills',
     #'YIR4': 'XXXX',
-    'YM': 'DOW',
-    'YXT': 'AUS10',
+    "YM": "DOW",
+    "YXT": "AUS10",
     #'YXT4': 'XXXX',
-    'YYT': 'AUS3',
+    "YYT": "AUS3",
     #'YYT4': 'XXXX',
-    'ZB': 'US20',
-    'ZC': 'CORN',
-    'ZF': 'US5',
-    'ZL': 'SOYOIL',
-    'ZM': 'SOYMEAL',
-    'ZN': 'US10',
-    'ZO': 'OATIES',
+    "ZB": "US20",
+    "ZC": "CORN",
+    "ZF": "US5",
+    "ZL": "SOYOIL",
+    "ZM": "SOYMEAL",
+    "ZN": "US10",
+    "ZO": "OATIES",
     #'ZQ': '30 Day Federal Funds',
-    'ZR': 'RICE',
-    'ZS': 'SOYBEAN',
-    'ZT': 'US2',
-    'ZW': 'WHEAT'
+    "ZR": "RICE",
+    "ZS": "SOYBEAN",
+    "ZT": "US2",
+    "ZW": "WHEAT",
 }
 
 
 norgate_multiplier_map = {
-    'COFFEE': 0.01,
-    'COPPER': 0.01,
-    'COTTON2': 0.01,
-    'JPY': 0.01,
-    'OJ': 0.01,
-    'RICE': 0.01,
-    'SUGAR11': 0.01,
+    "COFFEE": 0.01,
+    "COPPER": 0.01,
+    "COTTON2": 0.01,
+    "JPY": 0.01,
+    "OJ": 0.01,
+    "RICE": 0.01,
+    "SUGAR11": 0.01,
 }
 
 
@@ -279,16 +287,12 @@ def transfer_norgate_prices_to_arctic_single_contract(instr, contract, datapath)
 
 def transfer_norgate_prices_to_arctic_single(instr, datapath):
     init_arctic_with_csv_futures_contract_prices_for_code(
-        instr,
-        datapath,
-        csv_config=build_import_config(instr)
+        instr, datapath, csv_config=build_import_config(instr)
     )
 
 
 def transfer_norgate_prices_to_arctic(datapath):
-    init_arctic_with_csv_futures_contract_prices(
-        datapath, csv_config=NORGATE_CONFIG
-    )
+    init_arctic_with_csv_futures_contract_prices(datapath, csv_config=NORGATE_CONFIG)
 
 
 def transfer_barchart_prices_to_arctic_single_contract(instr, contract, datapath):
@@ -304,19 +308,24 @@ def convert_barchart_to_norgate_single_contract(contract_obj):
     source = csvFuturesContractPriceData(source_path, config=BARCHART_CONFIG)
     df = source.get_prices_for_contract_object(contract_obj)
 
-    logic = {'OPEN': 'first',
-             'HIGH': 'max',
-             'LOW': 'min',
-             'FINAL': 'last',
-             'VOLUME': 'sum'}
+    logic = {
+        "OPEN": "first",
+        "HIGH": "max",
+        "LOW": "min",
+        "FINAL": "last",
+        "VOLUME": "sum",
+    }
 
     df = df.resample("D").apply(logic)
     df = df.dropna()
 
-    dest_path = get_filename_for_package("/Users/ageach/Dev/work/pyhistprice/data/barchart_caleb_fx2")
+    dest_path = get_filename_for_package(
+        "/Users/ageach/Dev/work/pyhistprice/data/barchart_caleb_fx2"
+    )
     dest = csvFuturesContractPriceData(dest_path, config=NORGATE_CONFIG)
 
     dest.write_prices_for_contract_object(contract_obj, df, ignore_duplication=True)
+
 
 def build_import_config(instr):
     if instr in norgate_multiplier_map:
@@ -333,16 +342,16 @@ def build_import_config(instr):
             OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
         ),
         apply_multiplier=multiplier,
-
     )
+
 
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    #datapath = "/home/caleb/pysystemtrade/data/Norgate/Futures"
-    #datapath = "/home/caleb/pysystemtrade/data/Norgate/Future_conv"
+    # datapath = "/home/caleb/pysystemtrade/data/Norgate/Futures"
+    # datapath = "/home/caleb/pysystemtrade/data/Norgate/Future_conv"
     datapath = get_filename_for_package(
         get_production_config().get_element_or_missing_data("norgate_path")
-        #get_production_config().get_element_or_missing_data("barchart_path")
+        # get_production_config().get_element_or_missing_data("barchart_path")
     )
 
     # rename/move files, just for one (Norgate style) instrument code. Operates in 'dry_run' mode by default
@@ -352,31 +361,31 @@ if __name__ == "__main__":
 
     # rename/move all files. Operates in 'dry_run' mode by default
     # to actually do the rename, set dry_run=False
-    #rename_files(datapath)
-    #rename_files(datapath, dry_run=False)
+    # rename_files(datapath)
+    # rename_files(datapath, dry_run=False)
 
     # import just one contract file
-    #transfer_norgate_prices_to_arctic_single_contract("GOLD", "20211200", datapath=datapath)
+    # transfer_norgate_prices_to_arctic_single_contract("GOLD", "20211200", datapath=datapath)
 
     # import all contract files for one instrument
-    #transfer_norgate_prices_to_arctic_single(instrument_code, datapath=datapath)
+    # transfer_norgate_prices_to_arctic_single(instrument_code, datapath=datapath)
 
     # import all contract files for more than one instrument
     # for instr in ["GOLD", "SP500"]:
 
-    #for instr in ['STERLING3']:
-    #for instr in ['BOBL', 'BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
-    #for instr in # ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']:
-    #for instr in ['AUD', 'BITCOIN', 'CAD', 'CHF', 'JPY', 'MXP']:
-    #for instr in ['JPY', 'OJ', 'COFFEE', 'SUGAR11', 'COPPER', 'RICE']:
-    #for instr in ['JPY', 'OJ', 'COFFEE', 'SUGAR11', 'COPPER', 'RICE']:
-    #for instr in ["BOBL", "BTP", "BUND", "BUXL", "CAC", "CANOLA", "COTTON", "EURIBOR", "EUROSTX", "DAX", "FTSE100", "GASOIL", "NIKKEI", "OAT", "ROBUSTA", "SHATZ", "SMI", "VIX"]:
-    #for instr in ["BOBL", "BTP", "BUND", "BUXL", "OAT", "SHATZ"]:
-    #for instr in ['COTTON2']:
-    #for instr in ['EURIBOR']:
-    #for instr in ['NIKKEI']:
+    # for instr in ['STERLING3']:
+    # for instr in ['BOBL', 'BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
+    # for instr in # ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']:
+    # for instr in ['AUD', 'BITCOIN', 'CAD', 'CHF', 'JPY', 'MXP']:
+    # for instr in ['JPY', 'OJ', 'COFFEE', 'SUGAR11', 'COPPER', 'RICE']:
+    # for instr in ['JPY', 'OJ', 'COFFEE', 'SUGAR11', 'COPPER', 'RICE']:
+    # for instr in ["BOBL", "BTP", "BUND", "BUXL", "CAC", "CANOLA", "COTTON", "EURIBOR", "EUROSTX", "DAX", "FTSE100", "GASOIL", "NIKKEI", "OAT", "ROBUSTA", "SHATZ", "SMI", "VIX"]:
+    # for instr in ["BOBL", "BTP", "BUND", "BUXL", "OAT", "SHATZ"]:
+    # for instr in ['COTTON2']:
+    # for instr in ['EURIBOR']:
+    # for instr in ['NIKKEI']:
 
-    for instr in ['MXP', 'CHF', 'CAD', 'AUD']:
+    for instr in ["MXP", "CHF", "CAD", "AUD"]:
         transfer_norgate_prices_to_arctic_single(instr, datapath=datapath)
 
     # import all contract files for all instruments
@@ -390,12 +399,12 @@ if __name__ == "__main__":
     # EUR: failed, no contract files after September 2017   REDO 2017-06-10 - 2017-09-01, 2021-09-01 - 2022-01-01
     # GBP: failed, no contract files after December 2003    REDO '2003-09-01':'2004-01-01'
     # NZD: failed, no contract files after June 2013        REDO '2013-03-01':'2013-07-01'
-    #contract = futuresContract.from_two_strings("EUR", "20171200")
-    #for year in ['2017', '2018', '2019', '2020', '2021', '2022']:
-    #for year in ['2003', '2004', '2005', '2006','2007', '2008', '2009', '2010', '2011', '2012',
+    # contract = futuresContract.from_two_strings("EUR", "20171200")
+    # for year in ['2017', '2018', '2019', '2020', '2021', '2022']:
+    # for year in ['2003', '2004', '2005', '2006','2007', '2008', '2009', '2010', '2011', '2012',
     #    '2013', '2014', '2015', '2016','2017', '2018', '2019', '2020', '2021', '2022']:
-    #for year in ['2013', '2014', '2015', '2016','2017', '2018', '2019', '2020', '2021', '2022']:
-    #for instr in ['DX', 'EUR', 'GBP', 'NZD']:
+    # for year in ['2013', '2014', '2015', '2016','2017', '2018', '2019', '2020', '2021', '2022']:
+    # for instr in ['DX', 'EUR', 'GBP', 'NZD']:
     # for instr in ['DX']:
     #     for year in ['2013', '2014', '2015', '2016','2017', '2018', '2019', '2020', '2021', '2022']:
     #         for month in ['03', '06', '09', '12']:
@@ -404,4 +413,3 @@ if __name__ == "__main__":
     # bash rename COTTON_YYYYMMDD.csv to COTTON2_YYYYMMDD.csv
     # for i in *-doc-*.txt; do mv "$i" "${i/*-doc-/doc-}"; done
     # for i in COTTON_*.csv; do mv "$i" "${i/COTTON_/COTTON2_}"; done
-

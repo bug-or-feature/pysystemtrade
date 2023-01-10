@@ -6,7 +6,9 @@ from sysexecution.stack_handler.roll_orders import stackHandlerForRolls
 from sysexecution.stack_handler.create_broker_orders_from_contract_orders import (
     stackHandlerCreateBrokerOrders,
 )
-from sysexecution.stack_handler.additional_sampling import stackHandlerAdditionalSampling
+from sysexecution.stack_handler.additional_sampling import (
+    stackHandlerAdditionalSampling,
+)
 
 
 def do_check_external_position_break():
@@ -34,7 +36,7 @@ def do_refresh_additional_sampling_all_instruments():
     sampler.refresh_additional_sampling_all_instruments()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # do_check_external_position_break()
     # do_spawn_children_from_new_instrument_orders()
     # do_force_roll_orders()

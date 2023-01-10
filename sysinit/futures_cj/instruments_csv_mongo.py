@@ -14,7 +14,6 @@ print(data_in)
 instrument_list = data_in.get_list_of_instruments()
 
 
-
 if __name__ == "__main__":
     input("Will overwrite existing data are you sure?! CTL-C to abort")
     # modify flags as required

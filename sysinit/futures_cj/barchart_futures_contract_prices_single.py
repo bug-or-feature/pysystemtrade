@@ -17,8 +17,8 @@ def transfer_barchart_prices_to_arctic_single(instr, datapath):
             input_date_format="%Y-%m-%dT%H:%M:%S%z",
             input_column_mapping=dict(
                 OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
-            )
-        )
+            ),
+        ),
     )
 
 

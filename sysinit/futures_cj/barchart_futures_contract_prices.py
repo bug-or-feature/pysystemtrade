@@ -105,5 +105,5 @@ if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # modify flags as required
     datapath = "/home/caleb/pysystemtrade/sysinit/futures/tmpbarchart"
-    #datapath = "*** NEED TO DEFINE A DATAPATH ***"
+    # datapath = "*** NEED TO DEFINE A DATAPATH ***"
     transfer_barchart_prices_to_arctic(datapath)

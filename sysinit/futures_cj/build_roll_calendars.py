@@ -1,4 +1,4 @@
-#added pass to line 227 to avoid exception error
+# added pass to line 227 to avoid exception error
 from collections import namedtuple
 from copy import copy
 
@@ -226,9 +226,9 @@ def adjust_to_price_series(
 
     if len(adjusted_roll_calendar_as_list) == 0:
         pass
-        #raise Exception(
-            #"Error! Empty roll calendar after adjustment! Most likely corrupted roll calendar or maybe using old roll calendar .csv files with new price data?"
-        #)
+        # raise Exception(
+        # "Error! Empty roll calendar after adjustment! Most likely corrupted roll calendar or maybe using old roll calendar .csv files with new price data?"
+        # )
 
     new_calendar = adjusted_roll_calendar_as_list.to_pd_df()
 

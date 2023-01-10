@@ -4,7 +4,7 @@ my_system = simplesystem(log_level="on")
 print(my_system)
 print(my_system.portfolio.get_notional_position("EDOLLAR").tail(5))
 
-#from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
+# from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
 from sysdata.sim.db_futures_sim_data import dbFuturesSimData
 from sysdata.config.configdata import Config
 
@@ -13,7 +13,7 @@ Now loading config and data
 """
 
 my_config = Config("systems.provided.example.simplesystemconfig.yaml")
-#my_data = csvFuturesSimData()
+# my_data = csvFuturesSimData()
 my_data = dbFuturesSimData()
 my_system = simplesystem(config=my_config, data=my_data)
 print(my_system.portfolio.get_notional_position("EDOLLAR").tail(5))

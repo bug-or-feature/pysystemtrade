@@ -76,8 +76,7 @@ class mongoControlProcessData(controlProcessData):
                 new_control.running_mode_str,
                 new_control.status,
                 last_run_or_heartbeat_from_date_or_none(
-                    datetime.datetime.now(),
-                    date_format=ISO_DATE_FORMAT
+                    datetime.datetime.now(), date_format=ISO_DATE_FORMAT
                 ),
             )
-            self.log.terse(msg, sysmon='status_change')
+            self.log.terse(msg, sysmon="status_change")

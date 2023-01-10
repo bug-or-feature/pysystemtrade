@@ -10,9 +10,9 @@ from matplotlib.pyplot import show
 
 def static_system():
     from systems.provided.futures_chapter15.basesystem import futures_system
+
     system = futures_system(
-        data=dbFuturesSimData(),
-        config=Config("systems.caleb.simple_config.yaml")
+        data=dbFuturesSimData(), config=Config("systems.caleb.simple_config.yaml")
     )
     return system
 
@@ -20,12 +20,13 @@ def static_system():
 def do_system():
     from sysproduction.strategy_code.run_dynamic_optimised_system import futures_system
     from systems.provided.rob_system.run_system import futures_system
+
     system = futures_system(
-        #data=dbFuturesSimData(),
-        #data=csvFuturesSimData(),
-        #config=Config("systems.caleb.estimate_config.yaml")
-        #config=Config("systems.caleb.simple_config.yaml")
-        #config=Config("systems.caleb.andy_strategy_v1.yaml")
+        # data=dbFuturesSimData(),
+        # data=csvFuturesSimData(),
+        # config=Config("systems.caleb.estimate_config.yaml")
+        # config=Config("systems.caleb.simple_config.yaml")
+        # config=Config("systems.caleb.andy_strategy_v1.yaml")
         config_filename="systems.caleb.caleb_strategy_v2.yaml"
     )
     return system
@@ -47,7 +48,7 @@ def write_config(system):
             "forecast_mapping",
             "instrument_weights",
             "instrument_div_multiplier",
-        ]
+        ],
     )
 
 
@@ -56,9 +57,10 @@ def run_dynamic():
     portfolio = system.accounts.optimised_portfolio()
     print(portfolio.percent.stats())
     portfolio.curve().plot()
-    #write_config(system)
+    # write_config(system)
     show()
 
+
 if __name__ == "__main__":
-    #static_system()
+    # static_system()
     run_dynamic()

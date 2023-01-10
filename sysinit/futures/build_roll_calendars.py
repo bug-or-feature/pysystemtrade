@@ -209,7 +209,7 @@ def adjust_to_price_series(
             # without requiring prices for carry contracts to be available (Even though carry
             # contract is present the price  might not necessarily be available on otherwise
             # suitable roll dates)
-            _print_roll_date_carry_warning(local_row_data) # AHG
+            _print_roll_date_carry_warning(local_row_data)  # AHG
             adjusted_row = _adjust_row_of_approx_roll_calendar(
                 local_row_data, dict_of_futures_contract_prices, omit_carry=True
             )

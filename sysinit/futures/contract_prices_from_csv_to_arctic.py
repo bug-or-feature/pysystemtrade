@@ -69,7 +69,9 @@ def init_arctic_with_csv_futures_contract_prices_for_contract(
         if contract_date_str == date_str:
             print("Processing %s" % contract_date_str)
             print(".csv prices are \n %s" % str(prices_for_contract))
-            contract = futuresContract.from_two_strings(instrument_code, contract_date_str)
+            contract = futuresContract.from_two_strings(
+                instrument_code, contract_date_str
+            )
             print("Contract object is %s" % str(contract))
             print("Writing to arctic")
             arctic_prices.write_prices_for_contract_object(
@@ -78,6 +80,7 @@ def init_arctic_with_csv_futures_contract_prices_for_contract(
             print("Reading back prices from arctic to check")
             written_prices = arctic_prices.get_prices_for_contract_object(contract)
             print("Read back prices are \n %s" % str(written_prices))
+
 
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")

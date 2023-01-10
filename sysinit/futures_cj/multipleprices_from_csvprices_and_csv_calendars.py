@@ -31,13 +31,15 @@ We then store those multiple prices in: (depending on options)
 - arctic
 - csv
 """
+
+
 def _get_data_inputs(csv_roll_data_path, csv_multiple_data_path):
     csv_roll_calendars = csvRollCalendarData(csv_roll_data_path)
     csv_individual_prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
             get_production_config().get_element_or_missing_data("norgate_path")
         ),
-        config=NORGATE_CONFIG
+        config=NORGATE_CONFIG,
     )
     arctic_multiple_prices = arcticFuturesMultiplePricesData()
     csv_multiple_prices = csvFuturesMultiplePricesData(csv_multiple_data_path)
@@ -51,10 +53,10 @@ def _get_data_inputs(csv_roll_data_path, csv_multiple_data_path):
 
 
 def process_multiple_prices_all_instruments(
-        csv_multiple_data_path=arg_not_supplied,
-        csv_roll_data_path=arg_not_supplied,
-        ADD_TO_ARCTIC=True,
-        ADD_TO_CSV=True,
+    csv_multiple_data_path=arg_not_supplied,
+    csv_roll_data_path=arg_not_supplied,
+    ADD_TO_ARCTIC=True,
+    ADD_TO_CSV=True,
 ):
 
     (
@@ -79,12 +81,12 @@ def process_multiple_prices_all_instruments(
 
 
 def process_multiple_prices_single_instrument(
-        instrument_code,
-        adjust_calendar_to_prices=True,
-        csv_multiple_data_path=arg_not_supplied,
-        csv_roll_data_path=arg_not_supplied,
-        ADD_TO_ARCTIC=True,
-        ADD_TO_CSV=True,
+    instrument_code,
+    adjust_calendar_to_prices=True,
+    csv_multiple_data_path=arg_not_supplied,
+    csv_roll_data_path=arg_not_supplied,
+    ADD_TO_ARCTIC=True,
+    ADD_TO_CSV=True,
 ):
 
     (
@@ -92,16 +94,11 @@ def process_multiple_prices_single_instrument(
         csv_prices,
         arctic_multiple_prices,
         csv_multiple_prices,
-    ) = _get_data_inputs(
-        csv_roll_data_path,
-        csv_multiple_data_path
-    )
+    ) = _get_data_inputs(csv_roll_data_path, csv_multiple_data_path)
 
     print(f"Generating multiple prices for {instrument_code}")
-    dict_of_futures_contract_prices = (
-        csv_prices.get_all_prices_for_instrument(
-            instrument_code
-        )
+    dict_of_futures_contract_prices = csv_prices.get_all_prices_for_instrument(
+        instrument_code
     )
     dict_of_futures_contract_closing_prices = (
         dict_of_futures_contract_prices.final_prices()
@@ -117,11 +114,7 @@ def process_multiple_prices_single_instrument(
     )
 
     if adjust_calendar_to_prices:
-        roll_calendar = adjust_roll_calendar(
-            instrument_code,
-            roll_calendar,
-            csv_prices
-        )
+        roll_calendar = adjust_roll_calendar(instrument_code, roll_calendar, csv_prices)
 
     # Second phantom row is needed in order to process the whole set of closing prices (and not stop after the last roll-over)
     roll_calendar = add_phantom_row(
@@ -131,7 +124,6 @@ def process_multiple_prices_single_instrument(
     multiple_prices = futuresMultiplePrices.create_from_raw_data(
         roll_calendar, dict_of_futures_contract_closing_prices
     )
-
 
     pd.set_option("display.max_columns", None)
     pd.set_option("display.width", 2000)
@@ -152,9 +144,7 @@ def process_multiple_prices_single_instrument(
 
 def adjust_roll_calendar(instrument_code, roll_calendar, prices):
     print(f"Getting prices for '{instrument_code}' to adjust roll calendar")
-    dict_of_prices = prices.get_all_prices_for_instrument(
-        instrument_code
-    )
+    dict_of_prices = prices.get_all_prices_for_instrument(instrument_code)
     dict_of_futures_contract_prices = dict_of_prices.final_prices()
     roll_calendar = adjust_to_price_series(
         roll_calendar, dict_of_futures_contract_prices
@@ -164,9 +154,9 @@ def adjust_roll_calendar(instrument_code, roll_calendar, prices):
 
 
 def add_phantom_row(
-        roll_calendar,
-        dict_of_futures_contract_prices: dictFuturesContractFinalPrices,
-        roll_parameters: rollParameters,
+    roll_calendar,
+    dict_of_futures_contract_prices: dictFuturesContractFinalPrices,
+    roll_parameters: rollParameters,
 ):
     final_row = roll_calendar.iloc[-1]
     if datetime.datetime.now() < final_row.name:
@@ -201,7 +191,7 @@ def add_phantom_row(
 
 
 if __name__ == "__main__":
-    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # where to write multiple prices CSV
     csv_multiple_data_path = "data.futures_cj.multiple_prices_csv"
@@ -222,7 +212,7 @@ if __name__ == "__main__":
     # ['AUD', 'BITCOIN', 'CAD', 'CHF', 'DX', 'EUR', 'GBP', 'JPY', 'MXP', 'NZD']
     # failed ['DX', 'EUR', 'GBP', 'NZD']
 
-    for instrument_code in ['EUR', 'GBP', 'NZD']:
+    for instrument_code in ["EUR", "GBP", "NZD"]:
         print(f"Processing multiple prices for {instrument_code}")
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,

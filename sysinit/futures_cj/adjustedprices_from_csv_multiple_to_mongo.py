@@ -13,9 +13,7 @@ from sysobjects.adjusted_prices import futuresAdjustedPrices
 
 
 def _get_data_inputs(csv_mult_data_path, csv_adj_data_path):
-    csv_multiple_prices = csvFuturesMultiplePricesData(
-        datapath=csv_mult_data_path
-    )
+    csv_multiple_prices = csvFuturesMultiplePricesData(datapath=csv_mult_data_path)
     arctic_adjusted_prices = arcticFuturesAdjustedPricesData()
     csv_adjusted_prices = csvFuturesAdjustedPricesData(csv_adj_data_path)
 
@@ -23,7 +21,7 @@ def _get_data_inputs(csv_mult_data_path, csv_adj_data_path):
 
 
 def process_adjusted_prices_all_instruments(
-        csv_adj_data_path=arg_not_supplied, ADD_TO_ARCTIC=True, ADD_TO_CSV=False
+    csv_adj_data_path=arg_not_supplied, ADD_TO_ARCTIC=True, ADD_TO_CSV=False
 ):
     arctic_multiple_prices, _notused, _alsonotused = _get_data_inputs(csv_adj_data_path)
     instrument_list = arctic_multiple_prices.get_list_of_instruments()
@@ -38,11 +36,11 @@ def process_adjusted_prices_all_instruments(
 
 
 def process_adjusted_prices_single_instrument(
-        instrument_code,
-        csv_mult_data_path=arg_not_supplied,
-        csv_adj_data_path=arg_not_supplied,
-        ADD_TO_ARCTIC=True,
-        ADD_TO_CSV=False,
+    instrument_code,
+    csv_mult_data_path=arg_not_supplied,
+    csv_adj_data_path=arg_not_supplied,
+    ADD_TO_ARCTIC=True,
+    ADD_TO_CSV=False,
 ):
     (
         csv_multiple_prices,
@@ -74,15 +72,15 @@ if __name__ == "__main__":
 
     # for instrument_code in ['SP500']:
     # for instrument_code in ['BOBL', 'BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']:
-    #for instrument_code in ['STERLING3']:
-    #for instrument_code in ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']:
-    #for instrument_code in ['SILVER']:
+    # for instrument_code in ['STERLING3']:
+    # for instrument_code in ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']:
+    # for instrument_code in ['SILVER']:
     # for instrument_code in ['CANOLA', 'COCOA', 'COFFEE', 'COPPER', 'CORN', 'COTTON', 'CRUDE_W', 'FEEDCOW', 'GASOIL',
     #                         'GASOILINE', 'GAS_US', 'GOLD', 'GOLD_micro', 'HEATOIL', 'LEANHOG', 'LIVECOW', 'LUMBER',
     #                         'MILK', 'OATIES', 'OJ', 'PALLAD', 'PLAT', 'REDWHEAT', 'RICE', 'ROBUSTA', 'SILVER-mini',
     #                         'SOYBEAN', 'SOYMEAL', 'SOYOIL', 'SUGAR11', 'WHEAT']:
-    #for instrument_code in ['DX', 'EUR', 'GBP', 'NZD']:
-    for instrument_code in ['AUD', 'BITCOIN', 'CAD', 'CHF', 'JPY', 'MXP']:
+    # for instrument_code in ['DX', 'EUR', 'GBP', 'NZD']:
+    for instrument_code in ["AUD", "BITCOIN", "CAD", "CHF", "JPY", "MXP"]:
         process_adjusted_prices_single_instrument(
             instrument_code,
             ADD_TO_ARCTIC=True,

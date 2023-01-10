@@ -44,6 +44,7 @@ from sysexecution.orders.instrument_orders import (
     balance_order_type as instrument_balance_order_type,
 )
 from sysexecution.algos.allocate_algo_to_order import list_of_algos
+
 try:
     from sysbrokers.IB.ib_connection import connectionIB
 except ModuleNotFoundError:

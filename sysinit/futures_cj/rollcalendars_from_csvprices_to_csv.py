@@ -123,7 +123,7 @@ def check_saved_roll_calendar(
 
 if __name__ == "__main__":
 
-    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # done
     # ["SP500"]
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     # ['AUD', 'BITCOIN', 'CAD', 'CHF', 'DX', 'EUR', 'GBP', 'JPY', 'MXP', 'NZD']
 
     # DX, EUR, GBP, NZD
-    instrument_code = 'DX'
+    instrument_code = "DX"
 
     build_and_write_roll_calendar(
         instrument_code=instrument_code,
@@ -149,7 +149,7 @@ if __name__ == "__main__":
             datapath=get_filename_for_package(
                 get_production_config().get_element_or_missing_data("norgate_path")
             ),
-            config=NORGATE_CONFIG
+            config=NORGATE_CONFIG,
         ),
         check_before_writing=False,
     )
