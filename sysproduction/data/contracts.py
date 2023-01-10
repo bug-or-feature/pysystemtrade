@@ -173,12 +173,15 @@ class dataContracts(productionDataLayerGeneric):
 
         return current_contracts
 
-    def update_roll_parameters(self, instrument_code: str,
-                               roll_parameters: rollParameters):
+    def update_roll_parameters(
+        self, instrument_code: str, roll_parameters: rollParameters
+    ):
 
-        self.db_roll_parameters.add_roll_parameters(instrument_code=instrument_code,
-                                                    roll_parameters=roll_parameters,
-                                                    ignore_duplication=True)
+        self.db_roll_parameters.add_roll_parameters(
+            instrument_code=instrument_code,
+            roll_parameters=roll_parameters,
+            ignore_duplication=True,
+        )
 
     def get_roll_parameters(self, instrument_code: str) -> rollParameters:
         roll_parameters = self.db_roll_parameters.get_roll_parameters(instrument_code)
@@ -201,7 +204,7 @@ class dataContracts(productionDataLayerGeneric):
 
         return contract_object
 
-    def _get_actual_expiry(self, instrument_code: str, contract_id: str) -> expiryDate:
+    def get_actual_expiry(self, instrument_code: str, contract_id: str) -> expiryDate:
         contract_object = self.get_contract_from_db_given_code_and_id(
             instrument_code, contract_id
         )
@@ -228,11 +231,11 @@ class dataContracts(productionDataLayerGeneric):
 
     def get_priced_expiry(self, instrument_code: str) -> expiryDate:
         contract_id = self.get_priced_contract_id(instrument_code)
-        return self._get_actual_expiry(instrument_code, contract_id)
+        return self.get_actual_expiry(instrument_code, contract_id)
 
     def get_carry_expiry(self, instrument_code: str) -> expiryDate:
         contract_id = self._get_carry_contract_id(instrument_code)
-        return self._get_actual_expiry(instrument_code, contract_id)
+        return self.get_actual_expiry(instrument_code, contract_id)
 
     def when_to_roll_priced_contract(self, instrument_code: str) -> datetime.datetime:
         priced_contract_id = self.get_priced_contract_id(instrument_code)
@@ -270,8 +273,13 @@ class dataContracts(productionDataLayerGeneric):
 
         return contract_date
 
-    def delete_all_contracts_for_instrument(self, instrument_code: str, are_you_sure: bool = False):
-        self.db_contract_data.delete_all_contracts_for_instrument(instrument_code, areyoureallysure=are_you_sure)
+    def delete_all_contracts_for_instrument(
+        self, instrument_code: str, are_you_sure: bool = False
+    ):
+        self.db_contract_data.delete_all_contracts_for_instrument(
+            instrument_code, areyoureallysure=are_you_sure
+        )
+
 
 def get_valid_contract_object_from_user(
     data: dataBlob,
