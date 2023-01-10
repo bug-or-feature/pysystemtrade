@@ -5,8 +5,7 @@ from sysdata.config.configdata import Config
 
 def build_system():
     system = futures_system(
-        data=dbFuturesSimData(),
-        config=Config("systems.caleb.simplesystemconfig.yaml")
+        data=dbFuturesSimData(), config=Config("systems.caleb.simplesystemconfig.yaml")
     )
     return system
 
