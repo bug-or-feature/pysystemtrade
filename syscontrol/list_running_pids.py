@@ -3,7 +3,6 @@ import subprocess
 
 from syscore.exceptions import missingData
 from sysdata.config.production_config import get_production_config
-from syscore.objects import missing_data
 
 ## IF THIS FILE IS MOVED, NEED TO UPDATE THE NEXT LINE
 ## WARNING ONLY WORKS ON LINUX??
@@ -39,9 +38,7 @@ def list_of_all_running_pids():
 
 def get_trading_server_login_data():
     production_config = get_production_config()
-    trading_server_ip = production_config.get_element(
-        "trading_server_ip"
-    )
+    trading_server_ip = production_config.get_element("trading_server_ip")
 
     trading_server_username = production_config.trading_server_username
     trading_server_ssh_port = production_config.trading_server_ssh_port
