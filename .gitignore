@@ -25,6 +25,7 @@ restats
 # venv
 env/
 venv/
+.env*/
 
 # libreoffice
 .~lock.*
