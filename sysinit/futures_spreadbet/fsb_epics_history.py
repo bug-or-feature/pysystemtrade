@@ -1,16 +1,19 @@
 from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
-from sysdata.csv.csv_fsb_epics_history_data import CsvFsbEpicHistoryData, EPIC_HISTORY_DIRECTORY
+from sysdata.csv.csv_fsb_epics_history_data import (
+    CsvFsbEpicHistoryData,
+    EPIC_HISTORY_DIRECTORY,
+)
 from syscore.pdutils import print_full
 from sysdata.config.production_config import get_production_config
 from syscore.fileutils import get_filename_for_package
 
-prod_backup = get_filename_for_package(get_production_config().get_element_or_missing_data('prod_backup'))
-datapath = EPIC_HISTORY_DIRECTORY
-#datapath = f"{prod_backup}/epic_history"
-
-input_data = CsvFsbEpicHistoryData(
-    datapath=datapath
+prod_backup = get_filename_for_package(
+    get_production_config().get_element_or_missing_data("prod_backup")
 )
+datapath = EPIC_HISTORY_DIRECTORY
+# datapath = f"{prod_backup}/epic_history"
+
+input_data = CsvFsbEpicHistoryData(datapath=datapath)
 output_data = ArcticFsbEpicHistoryData()
 
 
@@ -22,7 +25,7 @@ def import_epics_history_single(instrument_code):
         instrument_code,
         # TODO remove duplicates before importing
         input_data.get_epic_history(instrument_code),
-        ignore_duplication=True
+        ignore_duplication=True,
     )
 
     df = output_data.get_epic_history(instrument_code)
@@ -56,10 +59,10 @@ def delete_epics_history_single(instrument_code):
 
 
 if __name__ == "__main__":
-    #view_epics_history_single("SOYOIL_fsb")
-    #for epic in ["GOLD_fsb" ]:
+    # view_epics_history_single("SOYOIL_fsb")
+    # for epic in ["GOLD_fsb" ]:
     for epic in ["OMXS30_fsb"]:
-         import_epics_history_single(epic)
-    #import_epics_history_all()
+        import_epics_history_single(epic)
+    # import_epics_history_all()
     for instr in ["SWE30_fsb"]:
         delete_epics_history_single(instr)

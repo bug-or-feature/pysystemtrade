@@ -9,7 +9,7 @@ from sysinit.futures_spreadbet.contract_prices_from_csv_to_arctic import (
 )
 from sysbrokers.IG.ig_instruments_data import (
     IgFuturesInstrumentData,
-    get_instrument_object_from_config
+    get_instrument_object_from_config,
 )
 
 
@@ -40,8 +40,9 @@ def build_import_config(instr):
                 OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
             ),
             apply_multiplier=config_data.multiplier,
-            apply_inverse=config_data.inverse
+            apply_inverse=config_data.inverse,
         )
+
 
 def build_norgate_import_config(instr):
     instr_data = IgFuturesInstrumentData()
@@ -56,22 +57,21 @@ def build_norgate_import_config(instr):
             input_date_format="%Y%m%d",  # 19810507
             input_column_mapping=dict(
                 OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
-            ), # Date,Symbol,Security Name,Open,High,Low,Close,Volume
+            ),  # Date,Symbol,Security Name,Open,High,Low,Close,Volume
             apply_multiplier=config_data.multiplier,
-            apply_inverse=config_data.inverse
+            apply_inverse=config_data.inverse,
         )
 
 
 if __name__ == "__main__":
-    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
     datapath = get_filename_for_package(
         get_production_config().get_element_or_missing_data("barchart_path")
     )
 
     # XXX
     # ['EURGBP', 'JSE40', 'OMXS30']
-    for instr in ['EURGBP', 'JSE40', 'OMXS30']:
+    for instr in ["EURGBP", "JSE40", "OMXS30"]:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
-
 
     # transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)

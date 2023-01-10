@@ -45,8 +45,4 @@ class MongoHistoricAllowanceData:
         return data_dict
 
     def write_allowance(self, environment: str, data_dict: dict):
-        self.mongo_data.add_data(
-            environment,
-            data_dict,
-            allow_overwrite=True
-        )
+        self.mongo_data.add_data(environment, data_dict, allow_overwrite=True)

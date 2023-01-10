@@ -27,8 +27,9 @@ class IgInstrumentConfigData:
             bc_code=self.bc_code,
             inverse=self.inverse,
             period_str=self.period_str,
-            margin=self.margin
+            margin=self.margin,
         )
+
 
 @dataclass
 class FsbInstrumentWithIgConfigData(object):

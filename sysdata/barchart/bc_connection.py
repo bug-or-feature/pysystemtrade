@@ -106,7 +106,9 @@ class bcConnection(object):
                 expiry_date_clean = match.group()
                 return expiry_date_clean
             if resp.status_code == 404:
-                self.log.warn(f"Missing Barchart page for {bc_symbol}, unable to get expiry")
+                self.log.warn(
+                    f"Missing Barchart page for {bc_symbol}, unable to get expiry"
+                )
 
         except Exception as e:
             self.log.error("Error: %s" % e)
@@ -132,7 +134,8 @@ class bcConnection(object):
 
         if instr_symbol is None:
             self.log.warn(
-                f"get_historical_futures_data_for_contract() instr_symbol is required")
+                f"get_historical_futures_data_for_contract() instr_symbol is required"
+            )
             raise missingData
 
         try:

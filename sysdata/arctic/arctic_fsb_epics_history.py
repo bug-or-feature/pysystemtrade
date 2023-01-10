@@ -32,7 +32,12 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
         data = self.arctic.read(instrument_code)
         return FsbEpicsHistory(data)
 
-    def update_epic_history(self, instrument_code: str, epic_history: FsbEpicsHistory, remove_duplicates=True):
+    def update_epic_history(
+        self,
+        instrument_code: str,
+        epic_history: FsbEpicsHistory,
+        remove_duplicates=True,
+    ):
         log = self.log.setup(instrument_code=instrument_code)
         existing = self.get_epic_history(instrument_code)
         merged_data = pd.concat([existing, epic_history], axis=0)
@@ -45,18 +50,16 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
         if count > 0:
             log.msg(f"Adding {count} row(s) of epic history for {instrument_code}")
             self.add_epics_history(
-                instrument_code,
-                FsbEpicsHistory(merged_data),
-                ignore_duplication=True
+                instrument_code, FsbEpicsHistory(merged_data), ignore_duplication=True
             )
         else:
             log.msg(f"No change to epic history for {instrument_code}")
 
     def add_epics_history(
-            self,
-            instrument_code: str,
-            epics_history: FsbEpicsHistory,
-            ignore_duplication=False
+        self,
+        instrument_code: str,
+        epics_history: FsbEpicsHistory,
+        ignore_duplication=False,
     ) -> status:
 
         log = self.log.setup(instrument_code=instrument_code)

@@ -18,7 +18,9 @@ from syslogdiag.log_to_screen import logtoscreen
 from sysdata.csv.csv_fsb_epics_history_data import CsvFsbEpicHistoryData
 from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 
-IG_INSTRUMENT_CONFIG_FILE = get_filename_for_package("sysbrokers.IG.ig_instrument_config.csv")
+IG_INSTRUMENT_CONFIG_FILE = get_filename_for_package(
+    "sysbrokers.IG.ig_instrument_config.csv"
+)
 
 
 class IGConfig(pd.DataFrame):
@@ -31,10 +33,10 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
     """
 
     def __init__(
-            self,
-            broker_conn: IGConnection = None,
-            log=logtoscreen("IgFsbInstrumentData"),
-            epic_history_datapath=None
+        self,
+        broker_conn: IGConnection = None,
+        log=logtoscreen("IgFsbInstrumentData"),
+        epic_history_datapath=None,
     ):
         super().__init__(log=log)
         self._igconnection = broker_conn
@@ -122,7 +124,9 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
             new_log.warn(f"Instrument {instrument_code} is not in IG config")
             return missing_instrument
 
-        instrument_object = get_instrument_object_from_config(instrument_code, config=self.config)
+        instrument_object = get_instrument_object_from_config(
+            instrument_code, config=self.config
+        )
 
         return instrument_object
 
@@ -143,7 +147,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
             df = self._epic_history.get_epic_history(instr)
             df = df.tail(1)
             df = df.reset_index()
-            del df['index']
+            del df["index"]
             instr_map = df.to_dict()
             config = self.get_futures_instrument_object_with_ig_data(instr)
             if config is missing_instrument:
@@ -154,8 +158,12 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
             for period in epic_periods:
                 if self._validate_entry(period, instr_map):
-                    expiry_code_date = datetime.strptime(f'01-{instr_map[period][0][:6]}', '%d-%b-%y')
-                    self._epic_mappings[f"{instr}/{expiry_code_date.strftime('%Y%m')}00"] = f"{epic_base}.{period}.IP"
+                    expiry_code_date = datetime.strptime(
+                        f"01-{instr_map[period][0][:6]}", "%d-%b-%y"
+                    )
+                    self._epic_mappings[
+                        f"{instr}/{expiry_code_date.strftime('%Y%m')}00"
+                    ] = f"{epic_base}.{period}.IP"
                 else:
                     msg = f"No expiry info for instrument'{instr}' and period '{period}' - check config"
                     self.log.critical(msg)
@@ -174,7 +182,9 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
                 for period in epic_periods:
                     if self._validate_row(period, row_as_dict):
-                        expiry_code_date = datetime.strptime(f'01-{row_as_dict[period][:6]}', '%d-%b-%y')
+                        expiry_code_date = datetime.strptime(
+                            f"01-{row_as_dict[period][:6]}", "%d-%b-%y"
+                        )
                         key = f"{instr}/{expiry_code_date.strftime('%Y%m')}00"
                         if key not in self._expiry_dates:
                             self._expiry_dates[key] = row_as_dict[period][8:27]
@@ -190,7 +200,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
 
 def get_instrument_object_from_config(
-        instrument_code: str, config: IGConfig = None
+    instrument_code: str, config: IGConfig = None
 ) -> FsbInstrumentWithIgConfigData:
 
     config_row = config[config.Instrument == f"{instrument_code}"]
@@ -209,7 +219,7 @@ def get_instrument_object_from_config(
             multiplier=multiplier,
             inverse=inverse,
             bc_code=bc_code,
-            period_str=period_str
+            period_str=period_str,
         )
 
         futures_instrument_with_ig_data = FsbInstrumentWithIgConfigData(

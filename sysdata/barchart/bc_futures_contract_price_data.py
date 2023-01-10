@@ -145,7 +145,9 @@ class BarchartFuturesContractPriceData(brokerFuturesContractPriceData):
 
         try:
             contract_object_plus = (
-                self.futures_contract_data.get_contract_object_with_config_data(contract_object)
+                self.futures_contract_data.get_contract_object_with_config_data(
+                    contract_object
+                )
             )
         except missingContract:
             self.log.warn(f"Can't get data for {str(contract_object)}")

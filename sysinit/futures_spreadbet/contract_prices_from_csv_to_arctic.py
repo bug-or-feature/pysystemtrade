@@ -10,6 +10,7 @@ from sysdata.arctic.arctic_fsb_per_contract_prices import (
 from sysobjects.contracts import futuresContract
 from syscore.text import remove_suffix
 
+
 def init_arctic_with_csv_futures_contract_prices(
     datapath: str, csv_config=arg_not_supplied
 ):
@@ -25,6 +26,7 @@ def init_arctic_with_csv_futures_contract_prices(
         init_arctic_with_csv_futures_contract_prices_for_code(
             instrument_code, datapath, csv_config=csv_config
         )
+
 
 def init_arctic_with_csv_fsb_contract_prices(
     datapath: str, csv_config=arg_not_supplied
@@ -119,14 +121,18 @@ def init_arctic_with_csv_futures_contract_prices_for_contract(
         if contract_date_str == date_str:
             print("Processing %s" % contract_date_str)
             print(".csv prices are \n %s" % str(prices_for_contract))
-            contract = futuresContract.from_two_strings(instrument_code, contract_date_str)
+            contract = futuresContract.from_two_strings(
+                instrument_code, contract_date_str
+            )
             print("Contract object is %s" % str(contract))
             print("Writing to arctic")
             arctic_prices.write_merged_prices_for_contract_object(
                 contract, prices_for_contract, ignore_duplication=True
             )
             print("Reading back prices from arctic to check")
-            written_prices = arctic_prices.get_merged_prices_for_contract_object(contract)
+            written_prices = arctic_prices.get_merged_prices_for_contract_object(
+                contract
+            )
             print("Read back prices are \n %s" % str(written_prices))
 
 

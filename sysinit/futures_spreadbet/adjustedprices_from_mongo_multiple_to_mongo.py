@@ -39,7 +39,7 @@ def process_adjusted_prices_all_instruments(
 def process_adjusted_prices_single_instrument(
     instrument_code,
     csv_adj_data_path=arg_not_supplied,
-    multiple_prices = arg_not_supplied,
+    multiple_prices=arg_not_supplied,
     ADD_TO_ARCTIC=True,
     ADD_TO_CSV=False,
 ):
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     # XXX_fsb
     # ['EURGBP_fsb', 'JSE40_fsb', 'OMXS30_fsb']
-    for instrument_code in ['EURGBP_fsb', 'JSE40_fsb', 'OMXS30_fsb']:
+    for instrument_code in ["EURGBP_fsb", "JSE40_fsb", "OMXS30_fsb"]:
         print(f"Creating adjusted prices for {instrument_code}")
         process_adjusted_prices_single_instrument(
             instrument_code,

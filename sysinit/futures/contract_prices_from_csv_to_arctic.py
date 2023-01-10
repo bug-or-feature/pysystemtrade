@@ -68,7 +68,9 @@ def init_arctic_with_csv_futures_contract_prices_for_contract(
         if contract_date_str == date_str:
             print("Processing %s" % contract_date_str)
             print(".csv prices are \n %s" % str(prices_for_contract))
-            contract = futuresContract.from_two_strings(instrument_code, contract_date_str)
+            contract = futuresContract.from_two_strings(
+                instrument_code, contract_date_str
+            )
             print("Contract object is %s" % str(contract))
             print("Writing to arctic")
             arctic_prices.write_prices_for_contract_object(

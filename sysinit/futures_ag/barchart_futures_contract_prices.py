@@ -4,7 +4,7 @@ from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 
 from sysinit.futures.contract_prices_from_csv_to_arctic import (
     init_arctic_with_csv_futures_contract_prices_for_code,
-    init_arctic_with_csv_futures_contract_prices_for_contract
+    init_arctic_with_csv_futures_contract_prices_for_contract,
 )
 
 
@@ -16,7 +16,7 @@ BARCHART_CONFIG = ConfigCsvFuturesPrices(
     input_date_format="%Y-%m-%dT%H:%M:%S%z",
     input_column_mapping=dict(
         OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
-    )
+    ),
 )
 
 
@@ -38,8 +38,8 @@ if __name__ == "__main__":
         get_production_config().get_element_or_missing_data("barchart_path")
     )
 
-    #for instr in ['FED']:
-    for instr in ['BOBL', 'BUND', 'EDOLLAR', 'OAT', 'SHATZ', 'US5', 'US30', 'US30U']:
+    # for instr in ['FED']:
+    for instr in ["BOBL", "BUND", "EDOLLAR", "OAT", "SHATZ", "US5", "US30", "US30U"]:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
-    #transfer_barchart_prices_to_arctic_single_contract('US10', '20221200', datapath)
+    # transfer_barchart_prices_to_arctic_single_contract('US10', '20221200', datapath)

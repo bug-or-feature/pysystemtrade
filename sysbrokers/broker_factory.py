@@ -12,7 +12,9 @@ def get_broker_class_list(data: dataBlob):
     """
     config = data.config
 
-    broker_factory_func = config.get_element_or_default('broker_factory_func', get_ib_class_list)
+    broker_factory_func = config.get_element_or_default(
+        "broker_factory_func", get_ib_class_list
+    )
 
     get_class_list = resolve_function(broker_factory_func)
 
@@ -26,7 +28,9 @@ def get_ib_class_list():
     try:
         from sysbrokers.IB.ib_capital_data import ibCapitalData
         from sysbrokers.IB.ib_Fx_prices_data import ibFxPricesData
-        from sysbrokers.IB.ib_futures_contract_price_data import ibFuturesContractPriceData
+        from sysbrokers.IB.ib_futures_contract_price_data import (
+            ibFuturesContractPriceData,
+        )
         from sysbrokers.IB.ib_futures_contracts_data import ibFuturesContractData
         from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData
         from sysbrokers.IB.ib_contract_position_data import ibContractPositionData

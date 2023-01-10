@@ -93,7 +93,9 @@ def process_multiple_prices_single_instrument(
     ) = _get_data_inputs(csv_roll_data_path, csv_multiple_data_path)
 
     dict_of_futures_contract_prices = (
-        arctic_individual_futures_prices.get_merged_prices_for_instrument(instrument_code)
+        arctic_individual_futures_prices.get_merged_prices_for_instrument(
+            instrument_code
+        )
     )
     dict_of_futures_contract_closing_prices = (
         dict_of_futures_contract_prices.final_prices()
@@ -198,9 +200,18 @@ if __name__ == "__main__":
     #                                          csv_roll_data_path=csv_roll_data_path,
     #                                          ADD_TO_CSV=True)
 
-    #instrument_code = get_valid_instrument_code_from_user(source="single")
+    # instrument_code = get_valid_instrument_code_from_user(source="single")
 
-    for instrument_code in ["BUXL_fsb","CAD_fsb","CRUDE_W_fsb","EUROSTX_fsb","GOLD_fsb","NASDAQ_fsb","NZD_fsb","US10_fsb"]:
+    for instrument_code in [
+        "BUXL_fsb",
+        "CAD_fsb",
+        "CRUDE_W_fsb",
+        "EUROSTX_fsb",
+        "GOLD_fsb",
+        "NASDAQ_fsb",
+        "NZD_fsb",
+        "US10_fsb",
+    ]:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,

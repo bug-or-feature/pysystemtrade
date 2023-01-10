@@ -16,7 +16,9 @@ from sysobjects.production.positions import contractPosition, listOfContractPosi
 
 
 class IgContractPositionData(brokerContractPositionData):
-    def __init__(self, broker_conn: IGConnection, log=logtoscreen("IgContractPositionData")):
+    def __init__(
+        self, broker_conn: IGConnection, log=logtoscreen("IgContractPositionData")
+    ):
         self._igconnection = broker_conn
         self._contract_data = mongoFuturesContractData()
         super().__init__(log=log)

@@ -15,9 +15,7 @@ from sysobjects.adjusted_prices import futuresAdjustedPrices
 
 
 def _get_data_inputs(csv_mult_data_path, csv_adj_data_path):
-    csv_multiple_prices = csvFuturesMultiplePricesData(
-        datapath=csv_mult_data_path
-    )
+    csv_multiple_prices = csvFuturesMultiplePricesData(datapath=csv_mult_data_path)
     arctic_adjusted_prices = arcticFuturesAdjustedPricesData()
     csv_adjusted_prices = csvFuturesAdjustedPricesData(csv_adj_data_path)
 
@@ -72,12 +70,21 @@ def process_adjusted_prices_single_instrument(
 
 
 if __name__ == "__main__":
-    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # modify flags and datapath as required
 
-    #instrument_code = get_valid_instrument_code_from_user(source="single")
-    #for instrument_code in ['EUROSTX_fsb']:
-    for instrument_code in ['BUXL_fsb','CAD_fsb','CRUDE_W_fsb','EUROSTX_fsb','GOLD_fsb','NASDAQ_fsb','NZD_fsb','US10_fsb']:
+    # instrument_code = get_valid_instrument_code_from_user(source="single")
+    # for instrument_code in ['EUROSTX_fsb']:
+    for instrument_code in [
+        "BUXL_fsb",
+        "CAD_fsb",
+        "CRUDE_W_fsb",
+        "EUROSTX_fsb",
+        "GOLD_fsb",
+        "NASDAQ_fsb",
+        "NZD_fsb",
+        "US10_fsb",
+    ]:
         process_adjusted_prices_single_instrument(
             instrument_code,
             ADD_TO_ARCTIC=True,

@@ -10,17 +10,17 @@ from syscore.exceptions import missingContract
 from syscore.dateutils import contract_month_from_number
 from sysbrokers.IG.ig_instruments_data import (
     IgFuturesInstrumentData,
-    get_instrument_object_from_config
+    get_instrument_object_from_config,
 )
 from sysdata.barchart.bc_connection import bcConnection
 
 
 class IgFuturesContractData(brokerFuturesContractData):
     def __init__(
-            self,
-            broker_conn: IGConnection,
-            instr_data: IgFuturesInstrumentData = None,
-            log = logtoscreen("IgFuturesContractData")
+        self,
+        broker_conn: IGConnection,
+        instr_data: IgFuturesInstrumentData = None,
+        log=logtoscreen("IgFuturesContractData"),
     ):
         super().__init__(log=log)
         self._igconnection = broker_conn
@@ -189,9 +189,9 @@ class IgFuturesContractData(brokerFuturesContractData):
         return 0.01
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
-        #print(f"futures_contract: {futures_contract.key}")
-        #expiry_dates = self.ig_instrument_data.expiry_dates
-        #has_expiry = futures_contract.key in self.ig_instrument_data.expiry_dates
+        # print(f"futures_contract: {futures_contract.key}")
+        # expiry_dates = self.ig_instrument_data.expiry_dates
+        # has_expiry = futures_contract.key in self.ig_instrument_data.expiry_dates
         # TODO improve, eg trading hours etc
         has_epic = futures_contract.key in self.ig_instrument_data.epic_mapping
         return has_epic
@@ -249,9 +249,8 @@ class IgFuturesContractData(brokerFuturesContractData):
         date_obj = datetime.strptime(futures_contract.contract_date.date_str, "%Y%m00")
 
         config_data = get_instrument_object_from_config(
-            futures_contract.instrument_code,
-            config=self.ig_instrument_data.config
+            futures_contract.instrument_code, config=self.ig_instrument_data.config
         )
-        #bc_symbol = config_data.bc_code
+        # bc_symbol = config_data.bc_code
         symbol = f"{config_data.bc_code}{contract_month_from_number(int(date_obj.strftime('%m')))}{date_obj.strftime('%y')}"
         return symbol

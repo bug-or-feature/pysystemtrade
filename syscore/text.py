@@ -178,5 +178,5 @@ def remove_suffix(input_str: str, suffix: str):
     :rtype: str
     """
     if input_str.endswith(suffix):
-        return re.sub(f"{suffix}$", '', input_str)
+        return re.sub(f"{suffix}$", "", input_str)
     return input_str

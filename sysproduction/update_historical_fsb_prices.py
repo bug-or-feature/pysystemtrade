@@ -21,13 +21,16 @@ def update_historical_fsb_prices():
 
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s %(levelname)s %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S')
+        format="%(asctime)s %(levelname)s %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
 
     with dataBlob(log_name="Update-Historical-FSB-Prices") as data:
         price_data = diagPrices(data)
         list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
-        update_historical_fsb_prices = updateHistoricalFsbPrices(data, list_of_codes_all)
+        update_historical_fsb_prices = updateHistoricalFsbPrices(
+            data, list_of_codes_all
+        )
         update_historical_fsb_prices.update_prices()
     return success
 
@@ -41,8 +44,9 @@ def update_historical_fsb_prices_single(instrument_list=None):
 
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s %(levelname)s %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S')
+        format="%(asctime)s %(levelname)s %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
 
     with dataBlob(log_name="Update-Historical-FSB-Prices") as data:
         update_historical_fsb_prices = updateHistoricalFsbPrices(data, instrument_list)
@@ -110,8 +114,8 @@ def update_historical_prices_for_instrument_and_contract(
     :return: None
     """
     diag_prices = diagPrices(data)
-    #intraday_frequency = diag_prices.get_intraday_frequency_for_historical_download()
-    #daily_frequency = DAILY_PRICE_FREQ
+    # intraday_frequency = diag_prices.get_intraday_frequency_for_historical_download()
+    # daily_frequency = DAILY_PRICE_FREQ
 
     # Get daily prices
     result = get_and_add_prices_for_frequency(
@@ -134,7 +138,10 @@ def get_and_add_prices_for_frequency(
     )
 
     if broker_prices is failure:
-        print("Something went wrong with getting prices for %s to check" % str(contract_object))
+        print(
+            "Something went wrong with getting prices for %s to check"
+            % str(contract_object)
+        )
         return failure
 
     if len(broker_prices) == 0:

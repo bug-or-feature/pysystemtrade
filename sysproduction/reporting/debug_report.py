@@ -13,7 +13,9 @@ from functools import cached_property
 from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.IG.ig_futures_contract_price_data import IgFuturesContractPriceData
 from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
-from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData
+from sysdata.arctic.arctic_futures_per_contract_prices import (
+    arcticFuturesContractPriceData,
+)
 from sysdata.data_blob import dataBlob
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.prices import diagPrices
@@ -101,8 +103,12 @@ def run_duplicate_market_report():
 def run_remove_markets_report():
     do_report(remove_markets_report_config.new_config_with_modified_output("console"))
 
+
 def run_fsb_remove_markets_report():
-    do_report(remove_fsb_markets_report_config.new_config_with_modified_output("console"))
+    do_report(
+        remove_fsb_markets_report_config.new_config_with_modified_output("console")
+    )
+
 
 def run_market_monitor_report():
     pass
@@ -121,15 +127,25 @@ def run_fsb_report():
 
 
 def run_instrument_risk_fsb_report():
-    do_report(instrument_risk_fsb_report_config.new_config_with_modified_output("console"))
+    do_report(
+        instrument_risk_fsb_report_config.new_config_with_modified_output("console")
+    )
+
 
 def run_adhoc_tradeable_report(instr_code: str):
     data = dataBlob()
     broker = dataBroker(data=data)
-    expiries = broker.broker_futures_contract_price_data.futures_instrument_data.expiry_dates
+    expiries = (
+        broker.broker_futures_contract_price_data.futures_instrument_data.expiry_dates
+    )
 
     rows = []
-    for key, value in broker.broker_futures_contract_price_data.futures_instrument_data.epic_mapping.items():
+    for (
+        key,
+        value,
+    ) in (
+        broker.broker_futures_contract_price_data.futures_instrument_data.epic_mapping.items()
+    ):
 
         if instr_code is None or key.startswith(instr_code):
             epic_info = data.broker_conn.rest_service.fetch_market_by_epic(value)
@@ -142,7 +158,7 @@ def run_adhoc_tradeable_report(instr_code: str):
                     Epic=value,
                     Expiry=expiries[key],
                     Status=status,
-                    Hours=opening_hours
+                    Hours=opening_hours,
                 )
             )
 
@@ -176,5 +192,5 @@ if __name__ == "__main__":
     # run_instrument_risk_fsb_report()
     run_fsb_remove_markets_report()
 
-    #run_adhoc_tradeable_report()
-    #run_adhoc_tradeable_report(instr_code="GAS_US_fsb")
+    # run_adhoc_tradeable_report()
+    # run_adhoc_tradeable_report(instr_code="GAS_US_fsb")

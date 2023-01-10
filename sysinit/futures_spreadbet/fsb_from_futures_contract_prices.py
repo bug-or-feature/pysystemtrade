@@ -1,8 +1,10 @@
 from sysbrokers.IG.ig_instruments_data import (
     IgFuturesInstrumentData,
-    get_instrument_object_from_config
+    get_instrument_object_from_config,
 )
-from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData
+from sysdata.arctic.arctic_futures_per_contract_prices import (
+    arcticFuturesContractPriceData,
+)
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 from syscore.objects import missing_instrument
@@ -19,9 +21,13 @@ def convert_futures_prices_to_fsb_single(instr):
     if config is missing_instrument:
         print(f"FSB instrument {fsb_code} not configured, exiting")
         return
-    print(f"IG instrument config for {fsb_code}; multiplier: {config.multiplier}, inverse {config.inverse}")
+    print(
+        f"IG instrument config for {fsb_code}; multiplier: {config.multiplier}, inverse {config.inverse}"
+    )
 
-    print(f"Creating FSB prices from futures price for {instr}, found {len(instr_prices)} contracts")
+    print(
+        f"Creating FSB prices from futures price for {instr}, found {len(instr_prices)} contracts"
+    )
 
     for contract_date_str, futures_prices in instr_prices.items():
         fsb_contract = futuresContract.from_two_strings(fsb_code, contract_date_str)
@@ -32,16 +38,18 @@ def convert_futures_prices_to_fsb_single(instr):
 
         fsb_price_data = futuresContractPrices(futures_prices)
 
-        print(f"Writing prices for contract {fsb_contract}, lines {len(fsb_price_data)}")
+        print(
+            f"Writing prices for contract {fsb_contract}, lines {len(fsb_price_data)}"
+        )
         arctic_prices.write_merged_prices_for_contract_object(
             fsb_contract, fsb_price_data, ignore_duplication=True
         )
 
 
 if __name__ == "__main__":
-    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # 'XXX'
     # ['EURGBP', 'JSE40', 'OMXS30']
-    for instr in ['EURGBP', 'JSE40', 'OMXS30']:
+    for instr in ["EURGBP", "JSE40", "OMXS30"]:
         convert_futures_prices_to_fsb_single(instr)

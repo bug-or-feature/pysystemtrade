@@ -18,7 +18,6 @@ Generate a 'best guess' roll calendar based on some price data for individual co
 """
 
 
-
 def build_and_write_roll_calendar(
     instrument_code,
     output_datapath=arg_not_supplied,
@@ -123,7 +122,7 @@ def check_saved_roll_calendar(
 
 if __name__ == "__main__":
 
-    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # ['BUXL', 'GOLD', 'NASDAQ', 'NZD', 'US10']
 
@@ -135,7 +134,7 @@ if __name__ == "__main__":
 
     # ['BOBL', 'BUND', 'EDOLLAR', 'OAT', 'SHATZ', 'US5', 'US30', 'US30U']
 
-    instrument_code = 'FED'
+    instrument_code = "FED"
     # TODO: ['EURIBOR', 'FED', 'SONIA3']
 
     build_and_write_roll_calendar(
@@ -145,7 +144,7 @@ if __name__ == "__main__":
             datapath=get_filename_for_package(
                 get_production_config().get_element_or_missing_data("barchart_path")
             ),
-            config=BARCHART_CONFIG
+            config=BARCHART_CONFIG,
         ),
         check_before_writing=False,
     )

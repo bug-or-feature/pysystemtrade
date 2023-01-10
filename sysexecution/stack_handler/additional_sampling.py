@@ -38,7 +38,7 @@ class stackHandlerAdditionalSampling(stackHandlerCore):
     def _get_all_instruments(self):
         diag_prices = self.diag_prices
         instrument_list = diag_prices.get_list_of_instruments_in_multiple_prices()
-        #instrument_list = ["GOLD_fsb"]
+        # instrument_list = ["GOLD_fsb"]
 
         return instrument_list
 

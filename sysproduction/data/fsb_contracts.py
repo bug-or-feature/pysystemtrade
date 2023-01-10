@@ -20,7 +20,6 @@ missing_expiry = datetime.datetime(1900, 1, 1)
 
 
 class DataFsbContracts(dataContracts, productionDataLayerGeneric):
-
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(
             [
@@ -62,6 +61,7 @@ def get_valid_contract_object_from_user(
     )
     contract = futuresContract(instrument_code, contract_date_str)
     return contract
+
 
 def get_valid_fsb_contract_object_from_user(
     data: dataBlob,
@@ -124,6 +124,7 @@ def get_valid_fsb_instrument_code_and_contractid_from_user(
 
     return instrument_code, contract_date
 
+
 def get_dates_to_choose_from(
     data: dataBlob, instrument_code: str, only_priced_contracts: bool = False
 ) -> listOfContractDateStr:
@@ -146,7 +147,3 @@ def get_dates_to_choose_from(
     dates_to_choose_from = dates_to_choose_from.sorted_date_str()
 
     return dates_to_choose_from
-
-
-
-

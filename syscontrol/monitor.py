@@ -77,8 +77,10 @@ class processMonitor(dict):
 
     def get_recent_log_messages(self):
         msgs = [
-            entry.text for entry in self.log_store.get_log_items(
-                attribute_dict={"sysmon": "status_change"})
+            entry.text
+            for entry in self.log_store.get_log_items(
+                attribute_dict={"sysmon": "status_change"}
+            )
         ]
         return msgs
 
@@ -109,8 +111,7 @@ def check_if_pid_running_and_if_not_finish(process_observatory: processMonitor):
 
 def generate_html(process_observatory: processMonitor):
     jinja = Environment(
-        loader=PackageLoader("syscontrol", "templates"),
-        autoescape=select_autoescape()
+        loader=PackageLoader("syscontrol", "templates"), autoescape=select_autoescape()
     )
     template = jinja.get_template("monitor_template.html")
     with open(get_html_file_path(), "w") as file:
@@ -120,7 +121,9 @@ def generate_html(process_observatory: processMonitor):
                     "trading_server_description": describe_trading_server_login_data(),
                     "dbase_description": str(process_observatory.data.mongo_db),
                     "process_info": process_observatory.process_dict_as_df(),
-                    "log_messages": process_observatory.get_recent_log_messages()[-MAX_LOG_LENGTH:]
+                    "log_messages": process_observatory.get_recent_log_messages()[
+                        -MAX_LOG_LENGTH:
+                    ],
                 }
             )
         )

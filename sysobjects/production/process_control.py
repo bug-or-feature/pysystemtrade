@@ -15,7 +15,11 @@ import pandas as pd
 
 from syscontrol.list_running_pids import list_of_all_running_pids
 from syscore.fileutils import html_table
-from syscore.dateutils import SECONDS_PER_DAY, last_run_or_heartbeat_from_date_or_none, ISO_DATE_FORMAT
+from syscore.dateutils import (
+    SECONDS_PER_DAY,
+    last_run_or_heartbeat_from_date_or_none,
+    ISO_DATE_FORMAT,
+)
 
 from syscore.objects import (
     success,
@@ -128,7 +132,9 @@ class controlProcess(object):
 
     def has_same_status(self, other):
         if isinstance(other, controlProcess):
-            return (self.running_mode_str == other.running_mode_str) & (self.status == other.status)
+            return (self.running_mode_str == other.running_mode_str) & (
+                self.status == other.status
+            )
         return False
 
     @property
@@ -324,12 +330,10 @@ class controlProcess(object):
         run_string = self.running_mode_str
         return dict(
             start=last_run_or_heartbeat_from_date_or_none(
-                self.last_start_time,
-                date_format=ISO_DATE_FORMAT
+                self.last_start_time, date_format=ISO_DATE_FORMAT
             ),
             end=last_run_or_heartbeat_from_date_or_none(
-                self.last_end_time,
-                date_format=ISO_DATE_FORMAT
+                self.last_end_time, date_format=ISO_DATE_FORMAT
             ),
             status=self.status,
             PID=int(self.process_id),

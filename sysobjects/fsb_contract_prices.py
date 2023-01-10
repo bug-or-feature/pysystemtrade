@@ -7,13 +7,19 @@ from syscore.pdutils import (
 )
 from syscore.merge_data import merge_newer_data, full_merge_of_existing_data
 
-PRICE_DATA_COLUMNS = sorted([
-    "Open.bid", "Open.ask",
-    "High.bid", "High.ask",
-    "Low.bid", "Low.ask",
-    "Close.bid", "Close.ask",
-    "Volume"
-])
+PRICE_DATA_COLUMNS = sorted(
+    [
+        "Open.bid",
+        "Open.ask",
+        "High.bid",
+        "High.ask",
+        "Low.bid",
+        "Low.ask",
+        "Close.bid",
+        "Close.ask",
+        "Volume",
+    ]
+)
 CLOSE_COLUMNS = ["Close.bid", "Close.ask"]
 VOLUME_COLUMN = "Volume"
 

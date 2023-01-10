@@ -12,7 +12,9 @@ from sysproduction.data.prices import (
     get_valid_instrument_code_from_user,
 )
 from sysdata.tools.cleaner import interactively_get_config_overrides_for_cleaning
-from sysproduction.update_historical_prices import update_historical_prices_for_instrument
+from sysproduction.update_historical_prices import (
+    update_historical_prices_for_instrument,
+)
 from sysproduction.update_multiple_adjusted_prices import (
     update_multiple_adjusted_prices,
 )
@@ -42,21 +44,22 @@ def interactive_manual_check_historical_prices():
             else:
                 check_instrument_ok_for_broker(data, instrument_code)
                 data.log.label(instrument_code=instrument_code)
-                update_historical_prices_for_instrument(instrument_code=instrument_code,
-                                                        cleaning_config=cleaning_config,
-                                                        data = data,
-                                                        interactive_mode=True)
+                update_historical_prices_for_instrument(
+                    instrument_code=instrument_code,
+                    cleaning_config=cleaning_config,
+                    data=data,
+                    interactive_mode=True,
+                )
                 instr_list.append(instrument_code)
 
-        if instr_list:
-            print(f"Now generating FSB prices from: {instr_list}")
-            fsb_updater = GenerateFsbUpdates(data)
-            for instr in instr_list:
-                fsb_updater.update(instr + "_fsb")
+            if instr_list:
+                print(f"Now generating FSB prices from: {instr_list}")
+                fsb_updater = GenerateFsbUpdates(data)
+                for instr in instr_list:
+                    fsb_updater.update(instr + "_fsb")
 
-            print(f"Now updating multiple and adjusted prices for: {instr_list}")
-            update_multiple_adjusted_prices(instr_list)
-
+                print(f"Now updating multiple and adjusted prices for: {instr_list}")
+                update_multiple_adjusted_prices(instr_list)
     return success
 
 
@@ -68,5 +71,5 @@ def check_instrument_ok_for_broker(data: dataBlob, instrument_code: str):
         raise Exception()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     interactive_manual_check_historical_prices()

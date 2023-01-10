@@ -56,12 +56,12 @@ def get_spreadbet_costs(source="db"):
     calculates spreadbet costs using formulas from Leveraged Trading
     """
 
-    #config = Config("systems.futures_spreadbet.leveraged_trading_config.yaml")
+    # config = Config("systems.futures_spreadbet.leveraged_trading_config.yaml")
     config = Config("systems.futures_spreadbet.simple_fsb_system_config.yaml")
 
     # ig_prices = CsvFsbContractPriceData()
 
-    #data = dbFsbSimData()
+    # data = dbFsbSimData()
     data = csvFuturesSimData(
         csv_data_paths=dict(
             csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
@@ -72,11 +72,7 @@ def get_spreadbet_costs(source="db"):
         )
     )
 
-
-
-    system = futures_system(
-        data=data
-    )
+    system = futures_system(data=data)
 
     # roll_config = mongoRollParametersData()
 
@@ -85,13 +81,13 @@ def get_spreadbet_costs(source="db"):
 
     # for instr in system.data.get_instrument_list():
     list = system.get_instrument_list()
-    #for instr in system.get_instrument_list():
+    # for instr in system.get_instrument_list():
     for instr in system.get_instrument_list():
 
         # if instr not in ['GOLD']:
-        #if instr not in ["GOLD", "BUND", "NZD", "SP500"]:
-            # if instr not in ["AEX","CAC","CORN","EUROSTX","GOLD","NASDAQ","PALLAD","PLAT","SMI","SOYBEAN","SP500","V2X","VIX","WHEAT"]:
-            #continue
+        # if instr not in ["GOLD", "BUND", "NZD", "SP500"]:
+        # if instr not in ["AEX","CAC","CORN","EUROSTX","GOLD","NASDAQ","PALLAD","PLAT","SMI","SOYBEAN","SP500","V2X","VIX","WHEAT"]:
+        # continue
 
         # prices
         warn = ""
@@ -207,7 +203,7 @@ def get_spreadbet_costs(source="db"):
 
     # group, sort
     # cost_results = cost_results.sort_values(by='Instr') # Instr
-    #cost_results = cost_results.sort_values(by="Ctotal")  # Ctotal, NMinCap
+    # cost_results = cost_results.sort_values(by="Ctotal")  # Ctotal, NMinCap
     # cost_results = cost_results.groupby('Class').apply(lambda x: x.sort_values(by='MinCap'))
     write_file(cost_results, "costs", write=False)
 

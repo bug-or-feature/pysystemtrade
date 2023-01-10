@@ -13,7 +13,6 @@ from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysinit.futures.contract_prices_from_csv_to_arctic import (
     init_arctic_with_csv_futures_contract_prices,
     init_arctic_with_csv_futures_contract_prices_for_code,
-
 )
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysobjects.contracts import futuresContract
@@ -27,7 +26,7 @@ NORGATE_CONFIG = ConfigCsvFuturesPrices(
     input_date_format="%Y%m%d",
     input_column_mapping=dict(
         OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
-    )
+    ),
 )
 
 BARCHART_CONFIG = ConfigCsvFuturesPrices(
@@ -49,12 +48,16 @@ def convert_norgate_to_barchart(instrument_code: str, date_str: str):
         get_production_config().get_element_or_missing_data("barchart_path")
     )
     norgate_csv_prices = csvFuturesContractPriceData(norgate_dir, config=NORGATE_CONFIG)
-    barchart_csv_prices = csvFuturesContractPriceData(barchart_dir, config=BARCHART_CONFIG)
+    barchart_csv_prices = csvFuturesContractPriceData(
+        barchart_dir, config=BARCHART_CONFIG
+    )
 
-    csv_price_dict = norgate_csv_prices.get_merged_prices_for_instrument(instrument_code)
+    csv_price_dict = norgate_csv_prices.get_merged_prices_for_instrument(
+        instrument_code
+    )
     prices_for_contract = csv_price_dict[date_str]
-    prices_for_contract = prices_for_contract.shift(6, freq='H')
-    prices_for_contract.index = prices_for_contract.index.tz_localize(tz='UTC')
+    prices_for_contract = prices_for_contract.shift(6, freq="H")
+    prices_for_contract.index = prices_for_contract.index.tz_localize(tz="UTC")
     prices_for_contract = prices_for_contract.rename(
         columns={
             "OPEN": "Open",
@@ -75,7 +78,6 @@ def convert_norgate_to_barchart(instrument_code: str, date_str: str):
     )
 
 
-
 if __name__ == "__main__":
 
     # for date in ["19990200", "19990300", "19990400", "19990500", "19990600", "19990700", "19990800", "19990900",
@@ -83,7 +85,7 @@ if __name__ == "__main__":
     # #for date in ["19990100"]:
     #     convert_norgate_to_barchart("CAC", date)
 
-    #for year in range ["1999","2000","2001","2002","2003","2004","2005","200","2000","2000","2000",]:
+    # for year in range ["1999","2000","2001","2002","2003","2004","2005","200","2000","2000","2000",]:
     # for year in range(2002, 2015):
     #     for month in ["03", "06", "09", "12"]:
     #         month_str = f"{str(year)}{month}00"

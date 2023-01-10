@@ -3,16 +3,16 @@ from syscore.objects import arg_not_supplied, body_text
 from sysproduction.reporting.api_fsb import ReportingApiFsb
 
 ALL_CORR_HEADER_TEXT = body_text(
-    "Price: correlation between spread bet price and the underlying future, per contract\n" +
-    "Returns: correlation between spread bet returns and the underlying future, per contract\n" +
-    "Sorted by contract"
+    "Price: correlation between spread bet price and the underlying future, per contract\n"
+    + "Returns: correlation between spread bet returns and the underlying future, per contract\n"
+    + "Sorted by contract"
 )
 
 BELOW_MIN_CORR_HEADER_TEXT = body_text(
-    "Possible problem correlations. The contracts below have possible data or config issues\n" +
-    "Price: correlation between spread bet price and the underlying future, per contract\n" +
-    "Returns: correlation between spread bet returns and the underlying future, per contract\n" +
-    "Showing only those with Price < 0.8 or Returns < 0.6, sorted by Returns"
+    "Possible problem correlations. The contracts below have possible data or config issues\n"
+    + "Price: correlation between spread bet price and the underlying future, per contract\n"
+    + "Returns: correlation between spread bet returns and the underlying future, per contract\n"
+    + "Showing only those with Price < 0.8 or Returns < 0.6, sorted by Returns"
 )
 
 
@@ -22,9 +22,7 @@ def do_fsb_report(
 
     if data is arg_not_supplied:
         data = dataBlob()
-    reporting_api_fsb = ReportingApiFsb(
-        data
-    )
+    reporting_api_fsb = ReportingApiFsb(data)
     formatted_output = []
 
     formatted_output.append(reporting_api_fsb.terse_header("FSB report"))
@@ -38,9 +36,7 @@ def do_fsb_report(
     formatted_output.append(reporting_api_fsb.table_of_fsb_correlations())
 
     # fsb mappings and expiries
-    formatted_output.append(
-        reporting_api_fsb.fsb_mappings_and_expiries()
-    )
+    formatted_output.append(reporting_api_fsb.fsb_mappings_and_expiries())
 
     formatted_output.append(reporting_api_fsb.footer())
 

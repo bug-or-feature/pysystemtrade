@@ -23,9 +23,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
     Read and write FSB price data to and from Arctic / MongoDB
     """
 
-    def __init__(
-        self, mongo_db=None, log=logtoscreen("ArcticFsbContractPriceData")
-    ):
+    def __init__(self, mongo_db=None, log=logtoscreen("ArcticFsbContractPriceData")):
         super().__init__(log=log)
         self._arctic_connection = arcticData(CONTRACT_COLLECTION, mongo_db=mongo_db)
 
@@ -94,7 +92,9 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
 
         return list_of_contracts
 
-    def has_merged_price_data_for_contract(self, contract_object: futuresContract) -> bool:
+    def has_merged_price_data_for_contract(
+        self, contract_object: futuresContract
+    ) -> bool:
         return self.arctic_connection.has_keyname(from_contract_to_key(contract_object))
 
     def _get_contract_tuples_with_price_data(self) -> list:
@@ -210,9 +210,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
         return merged_futures_prices
 
     def get_merged_prices_for_contract_object(
-            self,
-            contract_object: futuresContract,
-            return_empty: bool = True
+        self, contract_object: futuresContract, return_empty: bool = True
     ):
         """
         get all prices without worrying about frequency
@@ -223,7 +221,9 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
         """
 
         if self.has_merged_price_data_for_contract(contract_object):
-            prices = self._get_merged_prices_for_contract_object_no_checking(contract_object)
+            prices = self._get_merged_prices_for_contract_object_no_checking(
+                contract_object
+            )
         else:
             if return_empty:
                 return FsbContractPrices.create_empty()

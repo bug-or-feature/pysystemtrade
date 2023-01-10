@@ -1,7 +1,10 @@
 from syscore.dateutils import MIXED_FREQ, Frequency
 from syscore.objects import arg_not_supplied
 from syscore.pdutils import pd_readcsv
-from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData, ConfigCsvFuturesPrices
+from sysdata.csv.csv_futures_contract_prices import (
+    csvFuturesContractPriceData,
+    ConfigCsvFuturesPrices,
+)
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contracts import futuresContract
 from sysobjects.fsb_contract_prices import FsbContractPrices, PRICE_DATA_COLUMNS
@@ -34,19 +37,15 @@ class CsvFsbContractPriceData(csvFuturesContractPriceData):
         """
 
         return self._get_prices_at_frequency_for_contract_object_no_checking(
-            futures_contract_object,
-            MIXED_FREQ
+            futures_contract_object, MIXED_FREQ
         )
 
     def _get_prices_at_frequency_for_contract_object_no_checking(
-            self,
-            futures_contract_object: futuresContract,
-            frequency: Frequency
+        self, futures_contract_object: futuresContract, frequency: Frequency
     ) -> FsbContractPrices:
 
         keyname = self._keyname_given_contract_object_and_freq(
-            futures_contract_object,
-            frequency=frequency
+            futures_contract_object, frequency=frequency
         )
         filename = self._filename_given_key_name(keyname)
         config = self.config
@@ -107,12 +106,11 @@ class CsvFsbContractPriceData(csvFuturesContractPriceData):
         self,
         futures_contract_object: futuresContract,
         futures_price_data: FsbContractPrices,
-        frequency: Frequency
+        frequency: Frequency,
     ):
 
         keyname = self._keyname_given_contract_object_and_freq(
-            futures_contract_object,
-            frequency=frequency
+            futures_contract_object, frequency=frequency
         )
         filename = self._filename_given_key_name(keyname)
         futures_price_data.to_csv(

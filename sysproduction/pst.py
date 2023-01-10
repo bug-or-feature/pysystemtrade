@@ -16,7 +16,7 @@ from sysproduction.interactive_fsb import show_optimals
 @click.group()
 def pst():
     click.clear()
-    #click.echo("outer")
+    # click.echo("outer")
 
 
 @pst.command(name="c")

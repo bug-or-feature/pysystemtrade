@@ -5,7 +5,7 @@ from sysdata.arctic.arctic_adjusted_prices import (
 )
 from sysdata.arctic.arctic_fsb_epics_history import (
     ArcticFsbEpicHistoryData,
-    FsbEpicsHistoryData
+    FsbEpicsHistoryData,
 )
 from sysdata.arctic.arctic_fsb_per_contract_prices import (
     ArcticFsbContractPriceData,
@@ -32,7 +32,7 @@ class DiagFsbPrices(productionDataLayerGeneric):
                 mongoFuturesContractData,
                 arcticFuturesAdjustedPricesData,
                 arcticFuturesMultiplePricesData,
-                ArcticFsbEpicHistoryData
+                ArcticFsbEpicHistoryData,
             ]
         )
         return data
@@ -85,7 +85,9 @@ class DiagFsbPrices(productionDataLayerGeneric):
         return self.db_futures_multiple_prices_data.get_list_of_instruments()
 
     def get_list_of_instruments_with_contract_prices(self) -> list:
-        return self.db_futures_contract_price_data.get_list_of_instrument_codes_with_merged_price_data()
+        return (
+            self.db_futures_contract_price_data.get_list_of_instrument_codes_with_merged_price_data()
+        )
 
     def get_list_of_instruments_with_epic_history(self) -> list:
         return self.db_fsb_epic_history_data.get_list_of_instruments()
@@ -97,7 +99,7 @@ class UpdateFsbPrices(productionDataLayerGeneric):
             [
                 ArcticFsbContractPriceData,
                 mongoFuturesContractData,
-                #arcticSpreadsForInstrumentData,
+                # arcticSpreadsForInstrumentData,
             ]
         )
 
@@ -174,9 +176,9 @@ def get_valid_fsb_instrument_code_from_user(
 
 
 def get_list_of_instruments(
-        data: dataBlob = arg_not_supplied,
-        source="multiple",
-        use_db=True,
+    data: dataBlob = arg_not_supplied,
+    source="multiple",
+    use_db=True,
 ) -> list:
     if use_db:
         price_data = DiagFsbPrices(data)
@@ -191,7 +193,7 @@ def get_list_of_instruments(
     else:
         price_data = csvFuturesSimData()
         instrument_list = price_data.get_instrument_list()
-        #instrument_list = ["GOLD"]
+        # instrument_list = ["GOLD"]
 
     instrument_list.sort()
 

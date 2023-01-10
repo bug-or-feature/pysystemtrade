@@ -327,7 +327,7 @@ def size_penalty(instr_code, maximum_position):
         print(f"{instr_code} size penalty awarded")
         return 9999
 
-    return 0.125 / maximum_position ** 2
+    return 0.125 / maximum_position**2
     # return 0.25 / maximum_position ** 2
 
 

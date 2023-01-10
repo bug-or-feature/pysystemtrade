@@ -4,7 +4,9 @@ import pandas as pd
 
 from syscore.objects import arg_not_supplied
 from syscore.text import remove_suffix
-from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData
+from sysdata.arctic.arctic_futures_per_contract_prices import (
+    arcticFuturesContractPriceData,
+)
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
 from sysdata.csv.csv_multiple_prices import csvFuturesMultiplePricesData
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
@@ -28,6 +30,8 @@ We then store those multiple prices in: (depending on options)
 - arctic
 - csv
 """
+
+
 def _get_data_inputs(csv_roll_data_path, csv_multiple_data_path):
     roll_calendars = csvRollCalendarData(csv_roll_data_path)
     contract_prices = arcticFuturesContractPriceData()
@@ -84,10 +88,7 @@ def process_multiple_prices_single_instrument(
         contract_prices,
         arctic_multiple_prices,
         csv_multiple_prices,
-    ) = _get_data_inputs(
-        csv_roll_data_path,
-        csv_multiple_data_path
-    )
+    ) = _get_data_inputs(csv_roll_data_path, csv_multiple_data_path)
 
     print(f"Generating multiple prices for {instrument_code}")
     dict_of_futures_contract_prices = contract_prices.get_merged_prices_for_instrument(
@@ -100,7 +101,7 @@ def process_multiple_prices_single_instrument(
     roll_calendar = roll_calendars.get_roll_calendar(instrument_code)
 
     # Add first phantom row so that the last calendar entry won't be consumed by adjust_roll_calendar()
-    #m = mongoRollParametersData()
+    # m = mongoRollParametersData()
     roll_config = csvRollParametersData(datapath="data.futures_spreadbet.csvconfig")
     roll_parameters = roll_config.get_roll_parameters(instrument_code)
     print(f"{instrument_code}: {roll_parameters}")
@@ -109,9 +110,8 @@ def process_multiple_prices_single_instrument(
     )
 
     if adjust_calendar_to_prices:
-        roll_calendar = adjust_roll_calendar(instrument_code,
-            roll_calendar,
-            contract_prices
+        roll_calendar = adjust_roll_calendar(
+            instrument_code, roll_calendar, contract_prices
         )
 
     # Second phantom row is needed in order to process the whole set of closing prices (and not stop after the last roll-over)
@@ -188,7 +188,7 @@ def add_phantom_row(
 
 
 if __name__ == "__main__":
-    #input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # change if you want to write elsewhere
     csv_multiple_data_path = "data.futures_spreadbet.multiple_prices_csv"
@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
     # XXX_fsb
     # ['EURGBP_fsb', 'JSE40_fsb', 'OMXS30_fsb']
-    for instrument_code in ['EURGBP_fsb', 'JSE40_fsb', 'OMXS30_fsb']:
+    for instrument_code in ["EURGBP_fsb", "JSE40_fsb", "OMXS30_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=True,

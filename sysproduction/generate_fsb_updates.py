@@ -20,8 +20,9 @@ def generate_fsb_updates():
 
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s %(levelname)s %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S')
+        format="%(asctime)s %(levelname)s %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
 
     with dataBlob(log_name="Generate-FSB-Updates") as data:
         fsb_updater = GenerateFsbUpdates(data)
@@ -64,7 +65,9 @@ class GenerateFsbUpdates(object):
         self.data.log.label(instrument_code=instr_code)
 
         futures_code = remove_suffix(instr_code, "_fsb")
-        self.data.log.msg(f"Starting generation of FSB price updates from {futures_code}")
+        self.data.log.msg(
+            f"Starting generation of FSB price updates from {futures_code}"
+        )
 
         fsb_chain = get_contract_chain(self.data, instr_code)
         self.data.log.msg(f"FSB contract chain: {fsb_chain}")
@@ -73,7 +76,9 @@ class GenerateFsbUpdates(object):
 
             self.data.log.msg(f"Generating FSB price updates for {fsb_contract}")
 
-            fut_contract = futuresContract.from_two_strings(futures_code, fsb_contract.date_str)
+            fut_contract = futuresContract.from_two_strings(
+                futures_code, fsb_contract.date_str
+            )
 
             fut_prices = self.price_data.get_merged_prices_for_contract_object(
                 fut_contract
@@ -88,19 +93,25 @@ class GenerateFsbUpdates(object):
                     fut_contract,
                     fut_prices,
                     instr_config.multiplier,
-                    instr_config.inverse
+                    instr_config.inverse,
                 )
 
             # do we have FSB prices for this contract?
-            fsb_prices = self.price_data.get_merged_prices_for_contract_object(fsb_contract)
+            fsb_prices = self.price_data.get_merged_prices_for_contract_object(
+                fsb_contract
+            )
 
             if fsb_prices.shape[0] > 0:
                 existing_size = fsb_prices.shape[0]
-                self.data.log.msg(f"Existing FSB prices found ({existing_size} rows) for {fsb_contract}")
+                self.data.log.msg(
+                    f"Existing FSB prices found ({existing_size} rows) for {fsb_contract}"
+                )
 
                 # get last index date of FSB
                 last_date = fsb_prices.index[-1]
-                self.data.log.msg(f"Latest FSB price timestamp for {fsb_contract}: {last_date}")
+                self.data.log.msg(
+                    f"Latest FSB price timestamp for {fsb_contract}: {last_date}"
+                )
                 last_date = last_date + timedelta(hours=1)
 
                 # add to end of existing prices
@@ -114,9 +125,7 @@ class GenerateFsbUpdates(object):
 
             # create/update contract price object in db
             self.price_data.write_merged_prices_for_contract_object(
-                fsb_contract,
-                updated,
-                ignore_duplication=True
+                fsb_contract, updated, ignore_duplication=True
             )
 
     def _get_instr_config(self, instr_code) -> FsbInstrumentWithIgConfigData:
@@ -124,11 +133,11 @@ class GenerateFsbUpdates(object):
         return instr_config
 
     def _do_price_massage(
-            self,
-            contract_object: futuresContract,
-            prices,
-            multiplier: float = 1.0,
-            inverse: bool = False,
+        self,
+        contract_object: futuresContract,
+        prices,
+        multiplier: float = 1.0,
+        inverse: bool = False,
     ):
         self.data.log.msg(
             f"Massaging prices for IG: multiplier {multiplier}, inverse {inverse}",
@@ -145,5 +154,5 @@ class GenerateFsbUpdates(object):
         return prices
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     generate_fsb_updates()

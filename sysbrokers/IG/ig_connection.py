@@ -22,9 +22,7 @@ class IGConnection(object):
     PRICE_RESOLUTIONS = ["D", "4H", "3H", "2H", "1H"]
 
     def __init__(
-            self,
-            log=logtoscreen("ConnectionIG", log_level="on"),
-            auto_connect=True
+        self, log=logtoscreen("ConnectionIG", log_level="on"), auto_connect=True
     ):
         production_config = get_production_config()
         self._ig_username = production_config.get_element_or_missing_data("ig_username")
@@ -116,7 +114,9 @@ class IGConnection(object):
         return result_list
 
     def get_activity(self):
-        activities = self.rest_service.fetch_account_activity_by_period(48 * 60 * 60 * 1000)
+        activities = self.rest_service.fetch_account_activity_by_period(
+            48 * 60 * 60 * 1000
+        )
         test_epics = ["CS.D.GBPUSD.TODAY.IP", "IX.D.FTSE.DAILY.IP"]
         activities = activities.loc[~activities["epic"].isin(test_epics)]
 
@@ -205,15 +205,13 @@ class IGConnection(object):
             raise missingData
 
     def get_snapshot_price_data_for_contract(
-            self,
-            epic: str,
+        self,
+        epic: str,
     ) -> pd.DataFrame:
 
         if epic is not None:
 
-            self.log.msg(
-                f"Getting snapshot price data for {epic}"
-            )
+            self.log.msg(f"Getting snapshot price data for {epic}")
             snapshot_rows = []
             now = datetime.now()
             try:
@@ -233,7 +231,7 @@ class IGConnection(object):
                         "HIGH": high,
                         "LOW": low,
                         "FINAL": mid,
-                        "VOLUME": 1
+                        "VOLUME": 1,
                     }
                 )
 
@@ -263,7 +261,7 @@ class IGConnection(object):
                 info = self.rest_service.fetch_market_by_epic(epic)
                 expiry_key = info["instrument"]["expiry"]
                 last_dealing = info["instrument"]["expiryDetails"]["lastDealingDate"]
-                last_dealing_date = datetime.strptime(last_dealing, '%Y-%m-%dT%H:%M')
+                last_dealing_date = datetime.strptime(last_dealing, "%Y-%m-%dT%H:%M")
             except Exception as exc:
                 self.log.error(f"Problem getting expiry date for '{epic}': {exc}")
                 raise missingContract
@@ -298,18 +296,22 @@ class IGConnection(object):
             self._spread_storage.clear()
             self.stream_service.ls_client.unsubscribe(sub_key)
             duration = timer() - start
-            self.log.msg(f"Collection of spread data for {instr_code} ({epic}) took {duration} seconds")
+            self.log.msg(
+                f"Collection of spread data for {instr_code} ({epic}) took {duration} seconds"
+            )
 
             return result
 
         else:
-            self.log.warn(f"Unable to sample spreads for {instr_code} ({epic}), market is not tradeable")
+            self.log.warn(
+                f"Unable to sample spreads for {instr_code} ({epic}), market is not tradeable"
+            )
             return []
 
     def _is_tradeable(self, epic):
         market_info = self.rest_service.fetch_market_by_epic(epic)
         status = market_info.snapshot.marketStatus
-        return status == 'TRADEABLE'
+        return status == "TRADEABLE"
 
     @staticmethod
     def broker_fx_balances(account_id: str):
@@ -331,7 +333,7 @@ class IGConnection(object):
             columns={
                 "closePrice.bid": "priceBid",
                 "closePrice.ask": "priceAsk",
-                "lastTradedVolume": "sizeAsk"
+                "lastTradedVolume": "sizeAsk",
             }
         )
         df["sizeBid"] = df["sizeAsk"]
@@ -347,7 +349,7 @@ class IGConnection(object):
                 "openPrice.lastTraded",
                 "closePrice.lastTraded",
                 "highPrice.lastTraded",
-                "lowPrice.lastTraded"
+                "lowPrice.lastTraded",
             ]
         )
         df = df[["priceBid", "priceAsk", "sizeAsk", "sizeBid"]]
@@ -376,7 +378,7 @@ class IGConnection(object):
                 "lowPrice.ask": "Low.ask",
                 "closePrice.bid": "Close.bid",
                 "closePrice.ask": "Close.ask",
-                "lastTradedVolume": "Volume"
+                "lastTradedVolume": "Volume",
             }
         )
         df = df.drop(
@@ -385,16 +387,20 @@ class IGConnection(object):
                 "openPrice.lastTraded",
                 "closePrice.lastTraded",
                 "highPrice.lastTraded",
-                "lowPrice.lastTraded"
+                "lowPrice.lastTraded",
             ]
         )
         df = df[
             [
-                "Open.bid", "Open.ask",
-                "High.bid", "High.ask",
-                "Low.bid", "Low.ask",
-                "Close.bid", "Close.ask",
-                "Volume"
+                "Open.bid",
+                "Open.ask",
+                "High.bid",
+                "High.ask",
+                "Low.bid",
+                "Low.ask",
+                "Close.bid",
+                "Close.ask",
+                "Volume",
             ]
         ]
 
@@ -409,7 +415,7 @@ class IGConnection(object):
                 update_values["UTM"],
                 update_values["BID"],
                 update_values["OFR"],
-                update_values["LTV"]
+                update_values["LTV"],
             )
             self._spread_storage.append(tick)
         except TypeError as err:
@@ -426,13 +432,7 @@ class BidAskTick:
     sizeBid: int
     sizeAsk: int
 
-    def __init__(
-            self,
-            date_str: str,
-            bid_str: str,
-            ask_str: str,
-            size_str: str
-    ):
+    def __init__(self, date_str: str, bid_str: str, ask_str: str, size_str: str):
 
         self.timestamp = datetime.fromtimestamp(int(date_str) / 1000)
         self.priceBid = float(bid_str)

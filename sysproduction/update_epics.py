@@ -17,8 +17,9 @@ def update_epics():
 
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s %(levelname)s %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S')
+        format="%(asctime)s %(levelname)s %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
 
     with dataBlob(log_name="Update-Epic-Mappings") as data:
         update_epic_history = UpdateEpicHistory(data)
@@ -26,8 +27,8 @@ def update_epics():
 
     return success
 
-class UpdateEpicHistory(object):
 
+class UpdateEpicHistory(object):
     def __init__(self, data):
         self.data = data
         self.data.add_class_object(ArcticFsbEpicHistoryData)
@@ -50,9 +51,9 @@ class UpdateEpicHistory(object):
             row = []
             col_headers = []
             valid = True
-            key = now.strftime('%Y-%m-%d %H:%M:%S')
+            key = now.strftime("%Y-%m-%d %H:%M:%S")
 
-            if not hasattr(config, 'ig_data'):
+            if not hasattr(config, "ig_data"):
                 self.data.log.msg(f"Skipping {instr}, no IG config")
                 continue
 
@@ -75,21 +76,29 @@ class UpdateEpicHistory(object):
             if valid:
                 try:
                     data[key] = row
-                    df = pd.DataFrame.from_dict(data, orient='index', columns=col_headers)
-                    df.index.name = 'Date'
+                    df = pd.DataFrame.from_dict(
+                        data, orient="index", columns=col_headers
+                    )
+                    df.index.name = "Date"
                     df.index = pd.to_datetime(df.index)
                     self.data.db_fsb_epic_history.update_epic_history(instr, df)
                 except Exception as exc:
-                    msg = f"Problem updating epic data for instrument '{instr}' " \
-                          f"and periods {config.ig_data.periods} - check config: {exc}"
+                    msg = (
+                        f"Problem updating epic data for instrument '{instr}' "
+                        f"and periods {config.ig_data.periods} - check config: {exc}"
+                    )
                     self.data.log.critical(msg)
             else:
-                msg = f"Problem getting expiry data for instrument '{instr}' " \
-                      f"and periods {config.ig_data.periods} - check config"
+                msg = (
+                    f"Problem getting expiry data for instrument '{instr}' "
+                    f"and periods {config.ig_data.periods} - check config"
+                )
                 self.data.log.critical(msg)
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
-        return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(instr)
+        return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(
+            instr
+        )
 
 
 if __name__ == "__main__":

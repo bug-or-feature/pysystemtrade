@@ -48,9 +48,7 @@ def run_system():
     config_files = [rules, capital, ignore]
 
     if do_estimate:
-        estimates = config_from_file(
-            "systems.futures_spreadbet.config_estimates.yaml"
-        )
+        estimates = config_from_file("systems.futures_spreadbet.config_estimates.yaml")
         config_files.append(estimates)
     else:
         # config_files.append("systems.futures_spreadbet.config_empty_instruments.yaml")
@@ -76,10 +74,7 @@ def run_system():
     bet_label = "BetPerPoint"
     type_label = "estimate"
 
-    system = futures_system(
-        config=config,
-        data=data
-    )
+    system = futures_system(config=config, data=data)
     # curve_group = system.accounts.portfolio()
     # calc_forecasts(system)
     portfolio = system.accounts.portfolio()

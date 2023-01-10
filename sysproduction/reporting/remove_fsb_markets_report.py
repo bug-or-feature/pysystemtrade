@@ -3,8 +3,10 @@ from sysdata.data_blob import dataBlob
 from syscore.objects import arg_not_supplied, body_text
 from sysproduction.reporting.api import reportingApi
 
-HEADER_TEXT = body_text("List of markets which should be marked as untradeable "
-                        "due to risk, liquidity or cost issues")
+HEADER_TEXT = body_text(
+    "List of markets which should be marked as untradeable "
+    "due to risk, liquidity or cost issues"
+)
 
 
 def remove_fsb_markets_report(
@@ -18,7 +20,7 @@ def remove_fsb_markets_report(
 
     formatted_output = [
         reporting_api.terse_header("Remove FSB markets report"),
-        HEADER_TEXT
+        HEADER_TEXT,
     ]
 
     list_of_func_names = [
@@ -26,7 +28,7 @@ def remove_fsb_markets_report(
         "body_text_removed_markets_addback",
         "body_text_expensive_markets",
         "body_text_too_safe_markets",
-        "body_text_explain_safety"
+        "body_text_explain_safety",
     ]
 
     for func_name in list_of_func_names:
@@ -39,5 +41,5 @@ def remove_fsb_markets_report(
     return formatted_output
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     remove_fsb_markets_report()

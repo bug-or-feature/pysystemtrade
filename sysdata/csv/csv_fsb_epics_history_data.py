@@ -13,7 +13,6 @@ DATE_INDEX_NAME = "Date"
 
 
 class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
-
     def __init__(
         self,
         datapath=arg_not_supplied,
@@ -42,7 +41,12 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
         df = self._read_epic_history(instrument_code)
         return FsbEpicsHistory(df)
 
-    def update_epic_history(self, instrument_code: str, epic_history: FsbEpicsHistory, remove_duplicates=True):
+    def update_epic_history(
+        self,
+        instrument_code: str,
+        epic_history: FsbEpicsHistory,
+        remove_duplicates=True,
+    ):
         filename = self._filename_given_instrument_code(instrument_code)
         if remove_duplicates:
             epic_history = epic_history.drop_duplicates()
@@ -50,7 +54,7 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
 
         self.log.msg(
             f"Written epic history for {instrument_code} to {filename}",
-            instrument_code=instrument_code
+            instrument_code=instrument_code,
         )
 
     def _read_epic_history(self, instrument_code: str) -> pd.DataFrame:
@@ -67,7 +71,9 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
 
         return instr_all_price_data
 
-    def add_epics_history(self, instrument_code: str, epics_history: FsbEpicsHistory) -> status:
+    def add_epics_history(
+        self, instrument_code: str, epics_history: FsbEpicsHistory
+    ) -> status:
         filename = self._filename_given_instrument_code(instrument_code)
         epics_history.to_csv(filename, index_label=DATE_INDEX_NAME)
 

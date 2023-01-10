@@ -8,7 +8,6 @@ from syscore.exceptions import missingContract
 
 
 class TestIg:
-
     def test_ig_instrument_data(self):
         instr_data = IgFuturesInstrumentData(
             epic_history_datapath="data.futures_spreadbets.epic_history_csv"
@@ -38,20 +37,38 @@ class TestIg:
             broker_conn=IGConnection(auto_connect=False),
             instr_data=IgFuturesInstrumentData(
                 epic_history_datapath="data.futures_spreadbets.epic_history_csv"
-            )
+            ),
         )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("GOLD_fsb", "20210600")) == "GCM21"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("GOLD_fsb", "20210600"))
+            == "GCM21"
+        )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("EDOLLAR_fsb", "20200300")) == "GEH20"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("EDOLLAR_fsb", "20200300"))
+            == "GEH20"
+        )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("AEX_fsb", "20190900")) == "AEU19"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("AEX_fsb", "20190900"))
+            == "AEU19"
+        )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("GBP_fsb", "20181200")) == "B6Z18"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("GBP_fsb", "20181200"))
+            == "B6Z18"
+        )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("LEANHOG_fsb", "20000200")) == "HEG00"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("LEANHOG_fsb", "20000200"))
+            == "HEG00"
+        )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("PLAT_fsb", "20020400")) == "PLJ02"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("PLAT_fsb", "20020400"))
+            == "PLJ02"
+        )
 
         with pytest.raises(Exception):
             contracts.get_barchart_id(fc.from_two_strings("BLAH_fsb", "20210600"))
@@ -65,20 +82,36 @@ class TestIg:
             broker_conn=IGConnection(auto_connect=False),
             instr_data=IgFuturesInstrumentData(
                 epic_history_datapath="data.futures_spreadbets.epic_history_csv"
-            )
+            ),
         )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("GOLD", "20210600")) == "GCM21"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("GOLD", "20210600"))
+            == "GCM21"
+        )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("EDOLLAR", "20200300")) == "GEH20"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("EDOLLAR", "20200300"))
+            == "GEH20"
+        )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("AEX", "20190900")) == "AEU19"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("AEX", "20190900")) == "AEU19"
+        )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("GBP", "20181200")) == "B6Z18"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("GBP", "20181200")) == "B6Z18"
+        )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("LEANHOG", "20000200")) == "HEG00"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("LEANHOG", "20000200"))
+            == "HEG00"
+        )
 
-        assert contracts.get_barchart_id(fc.from_two_strings("PLAT", "20020400")) == "PLJ02"
+        assert (
+            contracts.get_barchart_id(fc.from_two_strings("PLAT", "20020400"))
+            == "PLJ02"
+        )
 
         with pytest.raises(Exception):
             contracts.get_barchart_id(fc.from_two_strings("BLAH", "20210600"))
@@ -92,7 +125,7 @@ class TestIg:
             broker_conn=IGConnection(auto_connect=False),
             instr_data=IgFuturesInstrumentData(
                 epic_history_datapath="sysbrokers.IG.tests.epic_history_csv_good"
-            )
+            ),
         )
 
         expiry = contracts.get_actual_expiry_date_for_single_contract(

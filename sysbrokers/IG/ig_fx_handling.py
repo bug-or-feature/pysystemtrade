@@ -6,7 +6,6 @@ from sysbrokers.broker_fx_handling import brokerFxHandlingData
 
 
 class IgFxHandlingData(brokerFxHandlingData):
-
     def __init__(self, broker_conn: IGConnection, log=logtoscreen("IgFxHandlingData")):
         self._igconnection = broker_conn
         super().__init__(log=log)
@@ -19,7 +18,7 @@ class IgFxHandlingData(brokerFxHandlingData):
         return self._igconnection
 
     def broker_fx_balances(self, account_id: str = arg_not_supplied) -> dict:
-        #return self.igconnection.broker_fx_balances(account_id)
+        # return self.igconnection.broker_fx_balances(account_id)
         return {"USD": 0.0}
 
     def broker_fx_market_order(

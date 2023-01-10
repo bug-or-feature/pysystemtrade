@@ -28,7 +28,7 @@ def fsb_static_system(
 
     if data is arg_not_supplied:
         data = dbFuturesSimData()
-        #data = build_fsb_csv_sim_data()
+        # data = build_fsb_csv_sim_data()
 
     if config is arg_not_supplied:
         config = Config("systems.futures_spreadbet.fsb_config.yaml")
@@ -65,8 +65,9 @@ def build_fsb_csv_sim_data():
         )
     )
 
-#system = fsb_dynamic_system()
-#print(system.accounts.portfolio().percent.stats())
+
+# system = fsb_dynamic_system()
+# print(system.accounts.portfolio().percent.stats())
 
 # Yes those are before buffering and the algo
 
@@ -75,7 +76,7 @@ def build_fsb_csv_sim_data():
 # After greedy algo (dynamic system):
 # system.optimisedPositions.get_optimised_position_df()
 
-#Note in production I don't do this - I run the buffering and or greedy algo on the unrounded positions,
+# Note in production I don't do this - I run the buffering and or greedy algo on the unrounded positions,
 # taking into account my actual live current positions, rather than what the backtest thought it had on yesterday
 
 #

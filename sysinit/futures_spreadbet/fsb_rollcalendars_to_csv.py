@@ -14,7 +14,10 @@ from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysobjects.roll_calendars import rollCalendar
-from sysinit.futures_spreadbet.fsb_contract_prices import build_import_config, build_norgate_import_config
+from sysinit.futures_spreadbet.fsb_contract_prices import (
+    build_import_config,
+    build_norgate_import_config,
+)
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
@@ -125,9 +128,7 @@ def check_saved_roll_calendar(
 
 
 def show_expected_rolls_for_config(
-    instrument_code,
-    path=arg_not_supplied,
-    input_prices=arg_not_supplied
+    instrument_code, path=arg_not_supplied, input_prices=arg_not_supplied
 ):
 
     rollparameters = csvRollParametersData(datapath=path)
@@ -158,15 +159,15 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # XXX_fsb
-    instr_code = 'VIX_fsb'
+    instr_code = "VIX_fsb"
 
     prices = csvFuturesContractPriceData(
         datapath=get_filename_for_package(
             get_production_config().get_element_or_missing_data("barchart_path")
-            #get_production_config().get_element_or_missing_data("norgate_path")
+            # get_production_config().get_element_or_missing_data("norgate_path")
         ),
         config=build_import_config(instr_code)
-        #config=build_norgate_import_config(instr_code)
+        # config=build_norgate_import_config(instr_code)
     )
 
     if method == "build":
@@ -175,7 +176,9 @@ if __name__ == "__main__":
             output_datapath="data.futures_spreadbet.roll_calendars_csv",
             input_prices=prices,
             check_before_writing=False,
-            input_config=csvRollParametersData(datapath="data.futures_spreadbet.csvconfig")
+            input_config=csvRollParametersData(
+                datapath="data.futures_spreadbet.csvconfig"
+            ),
         )
     else:
         show_expected_rolls_for_config(

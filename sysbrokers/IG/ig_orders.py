@@ -13,10 +13,10 @@ from syslogdiag.log_to_screen import logtoscreen
 
 class IgOrderWithControls(orderWithControls):
     def __init__(
-            self,
-            control_object,
-            broker_order: brokerOrder = None,
-            ticker_object: tickerObject = None
+        self,
+        control_object,
+        broker_order: brokerOrder = None,
+        ticker_object: tickerObject = None,
     ):
         super().__init__(broker_order, control_object, ticker_object)
 
@@ -32,12 +32,17 @@ class IgOrderWithControls(orderWithControls):
 
 
 class IgExecutionStackData(brokerExecutionStackData):
-
-    def __init__(self, broker_conn: IGConnection, log=logtoscreen("IgExecutionStackData")):
+    def __init__(
+        self, broker_conn: IGConnection, log=logtoscreen("IgExecutionStackData")
+    ):
         super().__init__(log=log)
         self._igconnection = broker_conn
-        self._ig_futures_instrument_data = IgFuturesInstrumentData(broker_conn, log=self.log)
-        self._ig_futures_contract_data = IgFuturesContractData(broker_conn, log=self.log)
+        self._ig_futures_instrument_data = IgFuturesInstrumentData(
+            broker_conn, log=self.log
+        )
+        self._ig_futures_contract_data = IgFuturesContractData(
+            broker_conn, log=self.log
+        )
 
     def __repr__(self):
         return "IG orders %s" % str(self._igconnection)
@@ -73,9 +78,7 @@ class IgExecutionStackData(brokerExecutionStackData):
     ) -> listOfOrders:
         pass
 
-    def _create_broker_control_order_object(
-        self, trade_with_contract_from_ib
-    ):
+    def _create_broker_control_order_object(self, trade_with_contract_from_ib):
         pass
 
     def get_list_of_orders_from_storage(self) -> listOfOrders:
@@ -84,7 +87,9 @@ class IgExecutionStackData(brokerExecutionStackData):
     def cancel_order_on_stack(self, broker_order: brokerOrder):
         pass
 
-    def cancel_order_given_control_object(self, broker_orders_with_controls: IgOrderWithControls):
+    def cancel_order_given_control_object(
+        self, broker_orders_with_controls: IgOrderWithControls
+    ):
         pass
 
     def check_order_is_cancelled(self, broker_order: brokerOrder) -> bool:
@@ -120,5 +125,7 @@ class IgExecutionStackData(brokerExecutionStackData):
     def _get_next_order_id(self):
         pass
 
-    def match_db_broker_order_to_order_from_brokers(self, broker_order_to_match: brokerOrder) -> brokerOrder:
+    def match_db_broker_order_to_order_from_brokers(
+        self, broker_order_to_match: brokerOrder
+    ) -> brokerOrder:
         pass
