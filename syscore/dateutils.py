@@ -383,9 +383,11 @@ SHORT_DATE_PATTERN = "%m/%d %H:%M:%S"
 MISSING_STRING_PATTERN = "     ???      "
 
 
-def last_run_or_heartbeat_from_date_or_none(last_run_or_heartbeat: datetime.datetime):
+def last_run_or_heartbeat_from_date_or_none(
+    last_run_or_heartbeat: datetime.datetime, date_format=SHORT_DATE_PATTERN
+):
     if isinstance(last_run_or_heartbeat, datetime.datetime):
-        last_run_or_heartbeat = last_run_or_heartbeat.strftime(SHORT_DATE_PATTERN)
+        last_run_or_heartbeat = last_run_or_heartbeat.strftime(date_format)
     else:
         last_run_or_heartbeat = MISSING_STRING_PATTERN
 
