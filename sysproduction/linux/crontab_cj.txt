@@ -22,7 +22,7 @@ PYSYS_PRIVATE_CONFIG_DIR=/home/caleb/harbor-macro/pst-prod
 30 21  * * 1-5     conda activate base; $SCRIPT_PATH/run_reports  >> $ECHO_PATH/run_reports.txt 2>&1; conda deactivate
 15 22  * * 1-5     $SCRIPT_PATH/manage_report_files.sh >> $ECHO_PATH/manage_report_files.txt 2>&1
 30 22  * * 1-5     $SCRIPT_PATH/sync_from_backup.sh >> $ECHO_PATH/sync_from_backup.txt 2>&1
-45 22  * * 1-5     $SCRIPT_PATH/sync_aws_s3.sh >> $ECHO_PATH/sync_aws_s3.txt 2>&1
+#45 22  * * 1-5     $SCRIPT_PATH/sync_aws_s3.sh >> $ECHO_PATH/sync_aws_s3.txt 2>&1
 */5 *  * * *       conda activate base; python $PYSYS_CODE/syscontrol/monitor.py >> $ECHO_PATH/run_monitor.txt 2>&1
 1,6,11,16,21,26,31,36,41,46,51,56 * * * 1-5    $SCRIPT_PATH/push_site.sh >> $ECHO_PATH/push_site.txt 2>&1
 #15 10  * * 1-7    conda activate base; $SCRIPT_PATH/run_bc_downloads >> $ECHO_PATH/run_bc_downloads.txt 2>&1; conda deactivate
