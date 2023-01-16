@@ -1,0 +1,11 @@
+# crontab for the jupyter notebook user
+#
+SHELL=/bin/bash
+HOME=/home/jupyter-johnson
+PYSYS_CODE=$HOME/pst-jupyter
+SCRIPT_PATH=$PYSYS_CODE/sysproduction/linux/scripts
+LOG_PATH=$HOME/logs
+
+00 23  * * 1-5     $SCRIPT_PATH/sync_notebook_data.sh >> $LOG_PATH/sync_notebook_data.txt 2>&1
+
+
