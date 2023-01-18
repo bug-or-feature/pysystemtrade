@@ -1,4 +1,5 @@
 from datetime import datetime
+import pytz
 from syscore.objects import arg_not_supplied
 from sysdata.futures_spreadbet.market_info_data import MarketInfoData
 from sysdata.mongodb.mongo_generic import mongoDataWithMultipleKeys
@@ -56,28 +57,28 @@ class mongoMarketInfoData(MarketInfoData):
     def get_expiry_details(self, epic: str):
         if epic is not None:
             try:
-                info = self.get_market_info_for_epic(epic)
-                expiry_key = info["expiry_key"]
-                expiry = info["expiry"]
-                # expiry = pytz.utc.localize(expiry)
+                market_info = self.get_market_info_for_epic(epic)
+                expiry_key = market_info["instrument"]["expiry"]
+                last_dealing = market_info["instrument"]["expiryDetails"][
+                    "lastDealingDate"
+                ]
+                expiry_date = pytz.utc.localize(
+                    datetime.strptime(last_dealing, "%Y-%m-%dT%H:%M")
+                )
             except Exception as exc:
                 self.log.error(f"Problem getting expiry date for '{epic}': {exc}")
                 raise missingContract
-            return expiry_key, expiry
+            return expiry_key, expiry_date
         else:
             raise missingData
 
     def _save(
         self, instrument_code: str, epic: str, market_info: dict, allow_overwrite=False
     ):
-        expiry_key = market_info["instrument"]["expiry"]
-        last_dealing = market_info["instrument"]["expiryDetails"]["lastDealingDate"]
-        last_dealing_date = datetime.strptime(last_dealing, "%Y-%m-%dT%H:%M")
+        market_info["last_modified_utc"] = datetime.utcnow()
         dict_of_keys = {
             "instrument_code": instrument_code,
             "epic": epic,
-            "expiry": last_dealing_date,
-            "expiry_key": expiry_key,
         }
         self.mongo_data.add_data(
             dict_of_keys=dict_of_keys,
