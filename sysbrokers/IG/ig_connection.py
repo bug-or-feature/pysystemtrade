@@ -249,9 +249,9 @@ class IGConnection(object):
         else:
             return missing_data
 
-    def get_expiry_details(self, epic: str):
+    def get_market_info(self, epic: str):
         """
-        Get the actual expiry date for a given contract, according to IG
+        Get the full set of market info for a given epic
         :param epic:
         :return: str
         """
@@ -259,13 +259,10 @@ class IGConnection(object):
         if epic is not None:
             try:
                 info = self.rest_service.fetch_market_by_epic(epic)
-                expiry_key = info["instrument"]["expiry"]
-                last_dealing = info["instrument"]["expiryDetails"]["lastDealingDate"]
-                last_dealing_date = datetime.strptime(last_dealing, "%Y-%m-%dT%H:%M")
+                return info
             except Exception as exc:
-                self.log.error(f"Problem getting expiry date for '{epic}': {exc}")
+                self.log.error(f"Problem getting market info for '{epic}': {exc}")
                 raise missingContract
-            return expiry_key, last_dealing_date.strftime("%Y-%m-%d %H:%M:%S")
         else:
             raise missingContract
 
