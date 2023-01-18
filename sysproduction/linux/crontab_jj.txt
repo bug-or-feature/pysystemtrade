@@ -2,10 +2,11 @@
 #
 SHELL=/bin/bash
 HOME=/home/jupyter-johnson
-PYSYS_CODE=$HOME/pst-jupyter
-SCRIPT_PATH=$PYSYS_CODE/sysproduction/linux/scripts
-LOG_PATH=$HOME/logs
+PYSYS_CODE=/home/jupyter-johnson/pst-jupyter
+SCRIPT_PATH=/home/jupyter-johnson/pst-jupyter/sysproduction/linux/scripts
+LOG_PATH=/home/jupyter-johnson/logs
 
-00 23  * * 1-5     $SCRIPT_PATH/sync_notebook_data.sh >> $LOG_PATH/sync_notebook_data.txt 2>&1
+00 23  * * 1-5 $SCRIPT_PATH/sync_notebook_data.sh >> $LOG_PATH/sync_notebook_data.txt 2>&1
+#* * * * 1-5 $SCRIPT_PATH/test_cron.sh >> $LOG_PATH/test_cron.txt 2>&1
 
 
