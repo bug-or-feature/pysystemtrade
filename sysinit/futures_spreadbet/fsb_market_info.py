@@ -44,7 +44,7 @@ def _get_instr_config(broker, instr) -> FsbInstrumentWithIgConfigData:
 
 def _do_single(data, broker, instr):
 
-    print(f"Importing market info for {instr}")
+    data.log.msg(f"Importing market info for {instr}")
 
     config = _get_instr_config(broker, instr)
 
