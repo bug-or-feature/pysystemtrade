@@ -1,20 +1,15 @@
-from datetime import datetime
 import logging
-
-import numpy as np
-import pandas as pd
 
 from sysbrokers.IG.ig_instruments import (
     FsbInstrumentWithIgConfigData,
 )
-from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
 from syscore.objects import success
 
 
-def update_epics():
+def update_fsb_market_info():
 
     logging.basicConfig(
         level=logging.INFO,
@@ -22,18 +17,16 @@ def update_epics():
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    with dataBlob(log_name="Update-Epic-Mappings") as data:
-        data.add_class_object(mongoMarketInfoData)
-        update_epic_history = UpdateEpicHistory(data)
-        update_epic_history.update_epic_history()
+    with dataBlob(log_name="Update-FSB-Market-Info") as data:
+        update_epic_config = UpdateFsbMarketInfo(data)
+        update_epic_config.update_market_info()
 
     return success
 
 
-class UpdateEpicHistory(object):
+class UpdateFsbMarketInfo(object):
     def __init__(self, data):
         self.data = data
-        self.data.add_class_object(ArcticFsbEpicHistoryData)
         self.data.add_class_object(mongoMarketInfoData)
         self._broker = dataBroker(self.data)
 
@@ -41,20 +34,22 @@ class UpdateEpicHistory(object):
     def broker(self) -> dataBroker:
         return self._broker
 
-    def update_epic_history(self):
+    def update_market_info(self):
 
-        now = datetime.now()
-        instr_list = self.data.db_fsb_epic_history.get_list_of_instruments()
+        # instr_list = [
+        #     instr_code for instr_code in
+        #     self.data.broker_futures_instrument.get_list_of_instruments() if
+        #     instr_code.endswith("_fsb")
+        # ]
+
+        instr_list = ["GOLD_fsb"]
+
         for instr in sorted(instr_list):
 
             self.data.log.msg(f"Starting processing for '{instr}'")
 
             config = self.get_instr_config(instr)
-            data = {}
-            row = []
             col_headers = []
-            valid = True
-            key = now.strftime("%Y-%m-%d %H:%M:%S")
 
             if not hasattr(config, "ig_data"):
                 self.data.log.msg(f"Skipping {instr}, no IG config")
@@ -69,35 +64,14 @@ class UpdateEpicHistory(object):
                 epic = f"{config.ig_data.epic}.{period}.IP"
 
                 try:
-                    expiry_key, expiry = self.data.db_market_info.get_expiry_details(epic)
-                    expiry = expiry.replace(tzinfo=None)
-                    row.append(f"{expiry_key} ({expiry})")
-
-                except Exception as exc:
-                    row.append(np.nan)
-                    valid = False
-
-            if valid:
-                try:
-                    data[key] = row
-                    df = pd.DataFrame.from_dict(
-                        data, orient="index", columns=col_headers
-                    )
-                    df.index.name = "Date"
-                    df.index = pd.to_datetime(df.index)
-                    self.data.db_fsb_epic_history.update_epic_history(instr, df)
+                    info = self.data.broker_conn.get_market_info(epic)
+                    self.data.db_market_info.update_market_info(instr, epic, info)
                 except Exception as exc:
                     msg = (
-                        f"Problem updating epic data for instrument '{instr}' "
+                        f"Problem updating market info for instrument '{instr}' "
                         f"and periods {config.ig_data.periods} - check config: {exc}"
                     )
                     self.data.log.critical(msg)
-            else:
-                msg = (
-                    f"Problem getting expiry data for instrument '{instr}' "
-                    f"and periods {config.ig_data.periods} - check config"
-                )
-                self.data.log.critical(msg)
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
         return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(
@@ -106,4 +80,4 @@ class UpdateEpicHistory(object):
 
 
 if __name__ == "__main__":
-    update_epics()
+    update_fsb_market_info()
