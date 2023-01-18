@@ -37,9 +37,9 @@ class UpdateFsbMarketInfo(object):
     def update_market_info(self):
 
         instr_list = [
-            instr_code for instr_code in
-            self.data.broker_futures_instrument.get_list_of_instruments() if
-            instr_code.endswith("_fsb")
+            instr_code
+            for instr_code in self.data.broker_futures_instrument.get_list_of_instruments()
+            if instr_code.endswith("_fsb")
         ]
 
         # TODO remove

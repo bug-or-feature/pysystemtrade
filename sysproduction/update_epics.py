@@ -69,7 +69,9 @@ class UpdateEpicHistory(object):
                 epic = f"{config.ig_data.epic}.{period}.IP"
 
                 try:
-                    expiry_key, expiry = self.data.db_market_info.get_expiry_details(epic)
+                    expiry_key, expiry = self.data.db_market_info.get_expiry_details(
+                        epic
+                    )
                     expiry = expiry.replace(tzinfo=None)
                     row.append(f"{expiry_key} ({expiry})")
 

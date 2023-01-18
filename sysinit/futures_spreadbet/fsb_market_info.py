@@ -89,6 +89,7 @@ def test_get_instruments():
         results = data.db_market_info.get_list_of_instruments()
         print(results)
 
+
 def test_get_expiry_details():
     with dataBlob() as data:
         data.add_class_object(mongoMarketInfoData)
@@ -108,4 +109,4 @@ if __name__ == "__main__":
 
     # test_get_instruments()
 
-    #test_get_expiry_details()
+    # test_get_expiry_details()
