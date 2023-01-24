@@ -15,7 +15,7 @@ class TestIg:
             auto_connect=False,
             csv_data_paths=dict(
                 csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
-            )
+            ),
         )
         data.add_class_object(IgFuturesInstrumentData)
         instr_list = data.broker_futures_instrument.get_list_of_instruments()
@@ -26,7 +26,7 @@ class TestIg:
             auto_connect=False,
             csv_data_paths=dict(
                 jsonMarketInfoData="sysbrokers.IG.tests.market_info_json_good"
-            )
+            ),
         )
         data.add_class_object(jsonMarketInfoData)
 
@@ -39,7 +39,7 @@ class TestIg:
             auto_connect=False,
             csv_data_paths=dict(
                 jsonMarketInfoData="sysbrokers.IG.tests.market_info_json_bad"
-            )
+            ),
         )
         data.add_class_object(jsonMarketInfoData)
 
@@ -51,7 +51,7 @@ class TestIg:
             auto_connect=False,
             csv_data_paths=dict(
                 csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
-            )
+            ),
         )
         data.add_class_list([IgFuturesContractData, IgFuturesInstrumentData])
 
@@ -112,7 +112,7 @@ class TestIg:
             auto_connect=False,
             csv_data_paths=dict(
                 csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
-            )
+            ),
         )
         data.add_class_list([IgFuturesContractData, IgFuturesInstrumentData])
 
@@ -173,7 +173,7 @@ class TestIg:
             auto_connect=False,
             csv_data_paths=dict(
                 csvFuturesInstrumentData="sysbrokers.IG.tests.epic_history_csv_good"
-            )
+            ),
         )
         data.add_class_list(
             [

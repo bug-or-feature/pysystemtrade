@@ -10,6 +10,7 @@ from sysdata.mongodb.mongo_log import logToMongod
 from syslogdiag.logger import logger
 from syslogdiag.log_to_screen import logtoscreen
 
+
 class dataBlob(object):
     def __init__(
         self,
@@ -20,7 +21,7 @@ class dataBlob(object):
         mongo_db: mongoDb = arg_not_supplied,
         log: logger = arg_not_supplied,
         keep_original_prefix: bool = False,
-        auto_connect: bool = True
+        auto_connect: bool = True,
     ):
         """
         Set up of a data pipeline with standard attribute names, logging, links to DB etc
