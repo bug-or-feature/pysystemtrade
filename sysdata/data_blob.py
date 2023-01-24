@@ -8,7 +8,7 @@ from sysdata.config.production_config import get_production_config, Config
 from sysdata.mongodb.mongo_connection import mongoDb
 from sysdata.mongodb.mongo_log import logToMongod
 from syslogdiag.logger import logger
-
+from syslogdiag.log_to_screen import logtoscreen
 
 class dataBlob(object):
     def __init__(
@@ -20,6 +20,7 @@ class dataBlob(object):
         mongo_db: mongoDb = arg_not_supplied,
         log: logger = arg_not_supplied,
         keep_original_prefix: bool = False,
+        auto_connect: bool = True
     ):
         """
         Set up of a data pipeline with standard attribute names, logging, links to DB etc
@@ -63,6 +64,7 @@ class dataBlob(object):
         self._log_name = log_name
         self._csv_data_paths = csv_data_paths
         self._keep_original_prefix = keep_original_prefix
+        self._auto_connect = auto_connect
 
         self._attr_list = []
 
@@ -304,7 +306,7 @@ class dataBlob(object):
     @property
     def broker_conn(self) -> IGConnection:
         broker_conn = getattr(self, "_broker_conn", arg_not_supplied)
-        if broker_conn is arg_not_supplied:
+        if broker_conn is arg_not_supplied and self._auto_connect:
             broker_conn = self._get_new_broker_conn()
             self._broker_conn = broker_conn
 
@@ -321,7 +323,7 @@ class dataBlob(object):
     @property
     def mongo_db(self) -> mongoDb:
         mongo_db = getattr(self, "_mongo_db", arg_not_supplied)
-        if mongo_db is arg_not_supplied:
+        if mongo_db is arg_not_supplied and self._auto_connect:
             mongo_db = self._get_new_mongo_db()
             self._mongo_db = mongo_db
 
@@ -349,7 +351,10 @@ class dataBlob(object):
     def log(self):
         log = getattr(self, "_log", arg_not_supplied)
         if log is arg_not_supplied:
-            log = logToMongod(self.log_name, mongo_db=self.mongo_db, data=self)
+            if self._auto_connect:
+                log = logToMongod(self.log_name, mongo_db=self.mongo_db, data=self)
+            else:
+                log = logtoscreen(self.log_name)
             log.set_logging_level("on")
             self._log = log
 

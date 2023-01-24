@@ -12,6 +12,7 @@ from sysdata.json.json_market_info import jsonMarketInfoData
 class TestIg:
     def test_ig_instrument_data(self):
         data = dataBlob(
+            auto_connect=False,
             csv_data_paths=dict(
                 csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
             )
@@ -22,6 +23,7 @@ class TestIg:
 
     def test_ig_epic_mapping_good(self):
         data = dataBlob(
+            auto_connect=False,
             csv_data_paths=dict(
                 jsonMarketInfoData="sysbrokers.IG.tests.market_info_json_good"
             )
@@ -34,6 +36,7 @@ class TestIg:
 
     def test_ig_epic_mapping_bad(self):
         data = dataBlob(
+            auto_connect=False,
             csv_data_paths=dict(
                 jsonMarketInfoData="sysbrokers.IG.tests.market_info_json_bad"
             )
@@ -45,6 +48,7 @@ class TestIg:
 
     def test_fsb_contract_ids(self):
         data = dataBlob(
+            auto_connect=False,
             csv_data_paths=dict(
                 csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
             )
@@ -105,6 +109,7 @@ class TestIg:
 
     def test_futures_contract_ids(self):
         data = dataBlob(
+            auto_connect=False,
             csv_data_paths=dict(
                 csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
             )
@@ -165,6 +170,7 @@ class TestIg:
 
     def test_expiry_dates(self):
         data = dataBlob(
+            auto_connect=False,
             csv_data_paths=dict(
                 csvFuturesInstrumentData="sysbrokers.IG.tests.epic_history_csv_good"
             )
