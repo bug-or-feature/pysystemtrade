@@ -14,7 +14,7 @@ from sysproduction.data.broker import dataBroker
 from syscore.objects import success
 
 
-def update_epics():
+def update_epics(instrument_list=None):
 
     logging.basicConfig(
         level=logging.INFO,
@@ -24,28 +24,32 @@ def update_epics():
 
     with dataBlob(log_name="Update-Epic-Mappings") as data:
         data.add_class_object(mongoMarketInfoData)
-        update_epic_history = UpdateEpicHistory(data)
+        update_epic_history = UpdateEpicHistory(data, instrument_list)
         update_epic_history.update_epic_history()
 
     return success
 
 
 class UpdateEpicHistory(object):
-    def __init__(self, data):
+    def __init__(self, data, instrument_list=None):
         self.data = data
         self.data.add_class_object(ArcticFsbEpicHistoryData)
         self.data.add_class_object(mongoMarketInfoData)
         self._broker = dataBroker(self.data)
+        if instrument_list is None:
+            self._instrument_list = (
+                self.data.db_fsb_epic_history.get_list_of_instruments()
+            )
+        else:
+            self._instrument_list = instrument_list
 
     @property
     def broker(self) -> dataBroker:
         return self._broker
 
     def update_epic_history(self):
-
         now = datetime.now()
-        instr_list = self.data.db_fsb_epic_history.get_list_of_instruments()
-        for instr in sorted(instr_list):
+        for instr in sorted(self._instrument_list):
 
             self.data.log.msg(f"Starting processing for '{instr}'")
 

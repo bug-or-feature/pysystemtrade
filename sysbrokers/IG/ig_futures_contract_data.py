@@ -1,15 +1,17 @@
-import datetime
 from datetime import datetime
 from sysbrokers.broker_futures_contract_data import brokerFuturesContractData
+from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
+from sysdata.futures_spreadbet.market_info_data import marketInfoData
+from sysdata.data_blob import dataBlob
 from sysobjects.contract_dates_and_expiries import expiryDate
 from sysobjects.contracts import futuresContract
+from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 from syslogdiag.log_to_screen import logtoscreen
 from sysbrokers.IG.ig_connection import IGConnection
 from syscore.objects import missing_instrument
 from syscore.exceptions import missingContract
 from syscore.dateutils import contract_month_from_number
 from sysbrokers.IG.ig_instruments_data import (
-    IgFuturesInstrumentData,
     get_instrument_object_from_config,
 )
 from sysdata.barchart.bc_connection import bcConnection
@@ -18,32 +20,37 @@ from sysdata.barchart.bc_connection import bcConnection
 class IgFuturesContractData(brokerFuturesContractData):
     def __init__(
         self,
+        data_blob: dataBlob,
         broker_conn: IGConnection,
-        instr_data: IgFuturesInstrumentData = None,
         log=logtoscreen("IgFuturesContractData"),
     ):
         super().__init__(log=log)
-        self._igconnection = broker_conn
+        self._dataBlob = data_blob
+        self._broker_conn = broker_conn
         self._barchart = bcConnection()
-        if instr_data is None:
-            self._instrument_data = IgFuturesInstrumentData(broker_conn, log=self.log)
-        else:
-            self._instrument_data = instr_data
 
     def __repr__(self):
-        return f"IG FSB per contract data: {self._igconnection}"
+        return f"IG FSB per contract data: {self._broker_conn}"
 
     @property
-    def igconnection(self):
-        return self._igconnection
+    def broker_conn(self):
+        return self._broker_conn
 
     @property
     def barchart(self):
         return self._barchart
 
     @property
-    def ig_instrument_data(self) -> IgFuturesInstrumentData:
-        return self._instrument_data
+    def data(self):
+        return self._dataBlob
+
+    @property
+    def ig_instrument_data(self) -> brokerFuturesInstrumentData:
+        return self.data.broker_futures_instrument
+
+    @property
+    def market_info_data(self) -> marketInfoData:
+        return self.data.db_market_info
 
     def get_actual_expiry_date_for_single_contract(
         self, futures_contract: futuresContract
@@ -173,8 +180,8 @@ class IgFuturesContractData(brokerFuturesContractData):
         return expiry_date
 
     def _get_expiry_fsb(self, futures_contract_plus: futuresContract) -> str:
-        if futures_contract_plus.key in self.ig_instrument_data.expiry_dates:
-            date_str = self.ig_instrument_data.expiry_dates[futures_contract_plus.key]
+        if futures_contract_plus.key in self.market_info_data.expiry_dates:
+            date_str = self.market_info_data.expiry_dates[futures_contract_plus.key]
         else:
             date_str = None
 
@@ -189,12 +196,7 @@ class IgFuturesContractData(brokerFuturesContractData):
         return 0.01
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
-        # print(f"futures_contract: {futures_contract.key}")
-        # expiry_dates = self.ig_instrument_data.expiry_dates
-        # has_expiry = futures_contract.key in self.ig_instrument_data.expiry_dates
-        # TODO improve, eg trading hours etc
-        has_epic = futures_contract.key in self.ig_instrument_data.epic_mapping
-        return has_epic
+        raise NotImplementedError("Not implemented! build it now")
 
     def is_contract_conservatively_okay_to_trade(
         self, futures_contract: futuresContract
@@ -206,13 +208,10 @@ class IgFuturesContractData(brokerFuturesContractData):
     ) -> bool:
         raise NotImplementedError("Not implemented! build it now")
 
-    def get_trading_hours_for_contract(self, futures_contract: futuresContract) -> list:
-        raise NotImplementedError("Not implemented! build it now")
-
-    def get_conservative_trading_hours_for_contract(
+    def get_trading_hours_for_contract(
         self, futures_contract: futuresContract
-    ) -> list:
-        raise NotImplementedError("Not implemented! build it now")
+    ) -> listOfTradingHours:
+        return self.market_info_data.get_trading_hours_for_epic(futures_contract)
 
     def get_list_of_contract_dates_for_instrument_code(self, instrument_code: str):
         raise NotImplementedError("Consider implementing for consistent interface")

@@ -278,4 +278,4 @@ def write_merged_prices_for_contract(
 
 if __name__ == "__main__":
     update_historical_prices()
-    # update_historical_prices(["GOLD_fsb"])
+    # update_historical_prices(["SP500_fsb"])

@@ -1,0 +1,131 @@
+{
+    "instrument": {
+        "epic": "CF.D.NZDUSD.SEP.IP",
+        "expiry": "SEP-23",
+        "name": "NZD/USD Forward",
+        "forceOpenAllowed": true,
+        "stopsLimitsAllowed": true,
+        "lotSize": 1.0,
+        "unit": "AMOUNT",
+        "type": "CURRENCIES",
+        "controlledRiskAllowed": true,
+        "streamingPricesAvailable": true,
+        "marketId": "NZDUSD",
+        "currencies": [
+            {
+                "code": "USD",
+                "symbol": "$",
+                "baseExchangeRate": 1.2370095,
+                "exchangeRate": 0.77,
+                "isDefault": false
+            },
+            {
+                "code": "GBP",
+                "symbol": "£",
+                "baseExchangeRate": 1.0,
+                "exchangeRate": 1.0,
+                "isDefault": true
+            }
+        ],
+        "sprintMarketsMinimumExpiryTime": null,
+        "sprintMarketsMaximumExpiryTime": null,
+        "marginDepositBands": [
+            {
+                "min": 0,
+                "max": 190,
+                "margin": 5,
+                "currency": "USD"
+            },
+            {
+                "min": 190,
+                "max": 950,
+                "margin": 5,
+                "currency": "USD"
+            },
+            {
+                "min": 950,
+                "max": 1900,
+                "margin": 5,
+                "currency": "USD"
+            },
+            {
+                "min": 1900,
+                "max": null,
+                "margin": 15,
+                "currency": "USD"
+            }
+        ],
+        "marginFactor": 5,
+        "marginFactorUnit": "PERCENTAGE",
+        "slippageFactor": {
+            "unit": "pct",
+            "value": 50.0
+        },
+        "limitedRiskPremium": {
+            "value": 2.5,
+            "unit": "POINTS"
+        },
+        "openingHours": null,
+        "expiryDetails": {
+            "lastDealingDate": "2023-09-15T19:00",
+            "settlementInfo": "Settles basis our 8pm (UK time) price on the last dealing day of the current contract +/- closing spread."
+        },
+        "rolloverDetails": {
+            "lastRolloverTime": "2023-09-15T18:45",
+            "rolloverInfo": "Usually, initial position closed at our 8pm (UK time) price on the current contract +/- closing spread; new position in next contract opened at the 8pm (UK time) price of the following contract +/- opening spread."
+        },
+        "newsCode": "NZD=",
+        "chartCode": "NZDUSD",
+        "country": null,
+        "valueOfOnePip": null,
+        "onePipMeans": null,
+        "contractSize": null,
+        "specialInfo": [
+            "MAX KNOCK OUT LEVEL DISTANCE",
+            "DEFAULT KNOCK OUT LEVEL DISTANCE"
+        ]
+    },
+    "dealingRules": {
+        "minStepDistance": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "minDealSize": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "minControlledRiskStopDistance": {
+            "unit": "PERCENTAGE",
+            "value": 0.5
+        },
+        "minNormalStopOrLimitDistance": {
+            "unit": "POINTS",
+            "value": 10.0
+        },
+        "maxStopOrLimitDistance": {
+            "unit": "PERCENTAGE",
+            "value": 75.0
+        },
+        "controlledRiskSpacing": {
+            "unit": "POINTS",
+            "value": 30.0
+        },
+        "marketOrderPreference": "AVAILABLE_DEFAULT_OFF",
+        "trailingStopsPreference": "AVAILABLE"
+    },
+    "snapshot": {
+        "marketStatus": "OFFLINE",
+        "netChange": 9.3,
+        "percentageChange": 0.14,
+        "updateTime": "16:37:18",
+        "delayTime": 0,
+        "bid": 6474.4,
+        "offer": 6480.2,
+        "high": 6498.9,
+        "low": 6428.6,
+        "binaryOdds": null,
+        "decimalPlacesFactor": 1,
+        "scalingFactor": 1,
+        "controlledRiskExtraSpread": 5
+    }
+}

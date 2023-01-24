@@ -2,6 +2,7 @@ from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_capital_data import brokerCapitalData
 
 from syscore.objects import arg_not_supplied
+from sysdata.data_blob import dataBlob
 from sysdata.production.timed_storage import classStrWithListOfEntriesAsListOfDicts
 
 from sysobjects.spot_fx_prices import currencyValue, listOfCurrencyValues
@@ -12,14 +13,22 @@ from syslogdiag.log_to_screen import logtoscreen
 
 class IgCapitalData(brokerCapitalData):
     def __init__(
-        self, broker_conn: IGConnection, log: logger = logtoscreen("IGCapitalData")
+        self,
+        data_blob: dataBlob,
+        broker_conn: IGConnection,
+        log: logger = logtoscreen("IGCapitalData"),
     ):
         super().__init__(log=log)
-        self._igconnection = broker_conn
+        self._dataBlob = data_blob
+        self._broker_conn = broker_conn
 
     @property
-    def igconnection(self) -> IGConnection:
-        return self._igconnection
+    def broker_conn(self) -> IGConnection:
+        return self._broker_conn
+
+    @property
+    def data(self):
+        return self._dataBlob
 
     def __repr__(self):
         return "IG capital data"
@@ -29,7 +38,7 @@ class IgCapitalData(brokerCapitalData):
     ) -> listOfCurrencyValues:
         list_of_values_per_currency = list(
             [
-                currencyValue(currency, self.igconnection.get_capital(account_id))
+                currencyValue(currency, self.broker_conn.get_capital(account_id))
                 for currency in ["GBP"]
             ]
         )

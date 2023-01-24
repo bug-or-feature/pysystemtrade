@@ -1,8 +1,6 @@
 import pandas as pd
 from functools import cached_property
 
-from sysbrokers.IG.ig_connection import IGConnection
-from sysbrokers.IG.ig_futures_contract_price_data import IgFuturesContractPriceData
 from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
@@ -100,11 +98,11 @@ class ReportingApiFsb(reportingApi):
     def fsb_mappings_and_expiries(
         self, table_header="FSB mappings and expiries"
     ) -> table:
-        contract_prices = IgFuturesContractPriceData(IGConnection())
-        expiries = contract_prices.futures_instrument_data.expiry_dates
+        epics = self.data.db_market_info.epic_mapping
+        expiries = self.data.db_market_info.expiry_dates
 
         rows = []
-        for key, value in contract_prices.futures_instrument_data.epic_mapping.items():
+        for key, value in epics.items():
             rows.append(dict(Contract=key, Epic=value, Expiry=expiries[key]))
 
         results = pd.DataFrame(rows)

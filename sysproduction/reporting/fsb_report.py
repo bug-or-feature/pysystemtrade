@@ -1,6 +1,9 @@
 from sysdata.data_blob import dataBlob
 from syscore.objects import arg_not_supplied, body_text
 from sysproduction.reporting.api_fsb import ReportingApiFsb
+from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
+from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
+from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 
 ALL_CORR_HEADER_TEXT = body_text(
     "Price: correlation between spread bet price and the underlying future, per contract\n"
@@ -22,6 +25,10 @@ def do_fsb_report(
 
     if data is arg_not_supplied:
         data = dataBlob()
+
+    data.add_class_list(
+        [IgFuturesInstrumentData, ArcticFsbEpicHistoryData, mongoMarketInfoData]
+    )
     reporting_api_fsb = ReportingApiFsb(data)
     formatted_output = []
 

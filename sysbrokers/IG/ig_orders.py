@@ -1,8 +1,9 @@
 from sysbrokers.IG.ig_connection import IGConnection
-from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
-from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysbrokers.broker_execution_stack import brokerExecutionStackData
 from syscore.objects import arg_not_supplied
+from sysdata.data_blob import dataBlob
+from sysdata.futures.contracts import futuresContractData
+from sysdata.futures.instruments import futuresInstrumentData
 from sysexecution.order_stacks.broker_order_stack import orderWithControls
 from sysexecution.orders.base_orders import Order
 from sysexecution.orders.broker_orders import brokerOrder
@@ -33,23 +34,25 @@ class IgOrderWithControls(orderWithControls):
 
 class IgExecutionStackData(brokerExecutionStackData):
     def __init__(
-        self, broker_conn: IGConnection, log=logtoscreen("IgExecutionStackData")
+        self,
+        data_blob: dataBlob,
+        broker_conn: IGConnection,
+        log=logtoscreen("IgExecutionStackData"),
     ):
         super().__init__(log=log)
-        self._igconnection = broker_conn
-        self._ig_futures_instrument_data = IgFuturesInstrumentData(
-            broker_conn, log=self.log
-        )
-        self._ig_futures_contract_data = IgFuturesContractData(
-            broker_conn, log=self.log
-        )
+        self._dataBlob = data_blob
+        self._broker_conn = broker_conn
 
     def __repr__(self):
-        return "IG orders %s" % str(self._igconnection)
+        return f"IG orders {self.broker_conn}"
 
     @property
-    def igconnection(self) -> IGConnection:
-        return self._igconnection
+    def broker_conn(self) -> IGConnection:
+        return self._broker_conn
+
+    @property
+    def data(self):
+        return self._dataBlob
 
     @property
     def traded_object_store(self) -> dict:
@@ -66,12 +69,12 @@ class IgExecutionStackData(brokerExecutionStackData):
         self.traded_object_store[storage_key] = order_with_controls
 
     @property
-    def futures_contract_data(self) -> IgFuturesContractData:
-        return self._ig_futures_contract_data
+    def futures_contract_data(self) -> futuresContractData:
+        return self.data.broker_futures_contract
 
     @property
-    def futures_instrument_data(self) -> IgFuturesInstrumentData:
-        return self._ig_futures_instrument_data
+    def futures_instrument_data(self) -> futuresInstrumentData:
+        return self.data.broker_futures_instrument
 
     def get_list_of_broker_orders_with_account_id(
         self, account_id: str = arg_not_supplied

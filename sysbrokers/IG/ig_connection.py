@@ -73,9 +73,9 @@ class IGConnection(object):
         return self._stream_session
 
     def logout(self):
-        self.log.msg(f"Logging out of IG REST service")
+        self.log.msg("Logging out of IG REST service")
         self.rest_service.logout()
-        self.log.msg(f"Logging out of IG Stream service")
+        self.log.msg("Logging out of IG Stream service")
         self.stream_service.disconnect()
 
     def get_account_number(self):
@@ -169,9 +169,6 @@ class IGConnection(object):
                     f"IG supported data frequencies: {self.PRICE_RESOLUTIONS}"
                 )
 
-            # if hasattr(contract_object.instrument, 'freq') and contract_object.instrument.freq:
-            #     bar_freq = from_config_frequency_to_frequency(contract_object.instrument.freq)
-
             self.log.msg(
                 f"Getting historic data for {epic} ('{start_date.strftime('%Y-%m-%dT%H:%M:%S')}' "
                 f"to '{end_date.strftime('%Y-%m-%dT%H:%M:%S')}')"
@@ -192,7 +189,7 @@ class IGConnection(object):
                     str(exc)
                     == "error.public-api.exceeded-account-historical-data-allowance"
                 ):
-                    self.log.error(f"No historic data allowance remaining, yikes!")
+                    self.log.error("No historic data allowance remaining, yikes!")
 
             if len(df) == 0:
                 self.log.warn(f"Zero length IG price data found for {epic}")

@@ -1,0 +1,145 @@
+{
+    "instrument": {
+        "epic": "MT.D.GC.Month2.IP",
+        "expiry": "APR-23",
+        "name": "Gold",
+        "forceOpenAllowed": true,
+        "stopsLimitsAllowed": true,
+        "lotSize": 1.0,
+        "unit": "AMOUNT",
+        "type": "COMMODITIES",
+        "controlledRiskAllowed": true,
+        "streamingPricesAvailable": true,
+        "marketId": "GC",
+        "currencies": [
+            {
+                "code": "USD",
+                "symbol": "$",
+                "baseExchangeRate": 1.237007,
+                "exchangeRate": 0.77,
+                "isDefault": false
+            },
+            {
+                "code": "AUD",
+                "symbol": "A$",
+                "baseExchangeRate": 1.76059,
+                "exchangeRate": 0.55,
+                "isDefault": false
+            },
+            {
+                "code": "EUR",
+                "symbol": "E",
+                "baseExchangeRate": 1.13828,
+                "exchangeRate": 0.81,
+                "isDefault": false
+            },
+            {
+                "code": "GBP",
+                "symbol": "£",
+                "baseExchangeRate": 1.0,
+                "exchangeRate": 1.0,
+                "isDefault": true
+            }
+        ],
+        "sprintMarketsMinimumExpiryTime": null,
+        "sprintMarketsMaximumExpiryTime": null,
+        "marginDepositBands": [
+            {
+                "min": 0,
+                "max": 1000,
+                "margin": 5,
+                "currency": "USD"
+            },
+            {
+                "min": 1000,
+                "max": 10000,
+                "margin": 5,
+                "currency": "USD"
+            },
+            {
+                "min": 10000,
+                "max": 15000,
+                "margin": 5,
+                "currency": "USD"
+            },
+            {
+                "min": 15000,
+                "max": null,
+                "margin": 15,
+                "currency": "USD"
+            }
+        ],
+        "marginFactor": 5,
+        "marginFactorUnit": "PERCENTAGE",
+        "slippageFactor": {
+            "unit": "pct",
+            "value": 50.0
+        },
+        "limitedRiskPremium": {
+            "value": 0.6,
+            "unit": "POINTS"
+        },
+        "openingHours": null,
+        "expiryDetails": {
+            "lastDealingDate": "2023-03-28T17:30",
+            "settlementInfo": "Settles based on the official closing price of the Gold futures contract as reported by COMEX +/- IG dealing spread."
+        },
+        "rolloverDetails": {
+            "lastRolloverTime": "2023-03-28T17:15",
+            "rolloverInfo": "Usually, initial position closed at official closing level of day before last dealing day +/- closing spread; new position in next contract opened at official closing level of the new contract from same day, +/- opening spread."
+        },
+        "newsCode": "GOL",
+        "chartCode": "GOLD",
+        "country": null,
+        "valueOfOnePip": null,
+        "onePipMeans": null,
+        "contractSize": null,
+        "specialInfo": [
+            "MAX KNOCK OUT LEVEL DISTANCE",
+            "DEFAULT KNOCK OUT LEVEL DISTANCE"
+        ]
+    },
+    "dealingRules": {
+        "minStepDistance": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "minDealSize": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "minControlledRiskStopDistance": {
+            "unit": "POINTS",
+            "value": 2.0
+        },
+        "minNormalStopOrLimitDistance": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "maxStopOrLimitDistance": {
+            "unit": "PERCENTAGE",
+            "value": 75.0
+        },
+        "controlledRiskSpacing": {
+            "unit": "POINTS",
+            "value": 3.0
+        },
+        "marketOrderPreference": "AVAILABLE_DEFAULT_OFF",
+        "trailingStopsPreference": "AVAILABLE"
+    },
+    "snapshot": {
+        "marketStatus": "TRADEABLE",
+        "netChange": -3.6,
+        "percentageChange": -0.19,
+        "updateTime": "16:37:19",
+        "delayTime": 0,
+        "bid": 1940.8,
+        "offer": 1941.4,
+        "high": 1953.8,
+        "low": 1928.9,
+        "binaryOdds": null,
+        "decimalPlacesFactor": 1,
+        "scalingFactor": 1,
+        "controlledRiskExtraSpread": 0.3
+    }
+}

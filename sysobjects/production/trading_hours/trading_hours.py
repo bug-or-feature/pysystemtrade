@@ -10,6 +10,7 @@ from syscore.dateutils import (
 )
 from syscore.genutils import intersection_intervals
 from syscore.objects import market_closed
+from syscore.dateutils import ISO_DATE_FORMAT
 
 
 @dataclass()
@@ -21,6 +22,12 @@ class tradingHours:
     def create_zero_length_day(cls, some_date: datetime.date):
         midnight_on_date = following_midnight_of_date(some_date)
         return cls(midnight_on_date, midnight_on_date)
+
+    def __repr__(self) -> str:
+        return (
+            f"open={self.opening_time.strftime(ISO_DATE_FORMAT)}, "
+            f"close={self.closing_time.strftime(ISO_DATE_FORMAT)}"
+        )
 
     def okay_to_trade_now(self) -> bool:
         datetime_now = datetime.datetime.now()

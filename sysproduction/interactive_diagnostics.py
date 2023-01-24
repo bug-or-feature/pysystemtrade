@@ -720,25 +720,25 @@ MAX_WIDTH_OF_PRINTABLE_TRADING_HOURS = 3
 
 def nice_print_list_of_trading_hours(trading_hours: listOfTradingHours) -> str:
     list_of_nice_str = [
-        nice_print_trading_hours(trading_hour_entry)
+        nice_print_trading_hours(trading_hour_entry, date_format="%Y-%m-%d %H:%M")
         for trading_hour_entry in trading_hours[:MAX_WIDTH_OF_PRINTABLE_TRADING_HOURS]
     ]
     nice_string = " ".join(list_of_nice_str)
     return nice_string
 
 
-def nice_print_trading_hours(trading_hour_entry: tradingHours) -> str:
+def nice_print_trading_hours(
+    trading_hour_entry: tradingHours, date_format="%d/%m %H:%M"
+) -> str:
     start_datetime = trading_hour_entry.opening_time
     end_datetime = trading_hour_entry.closing_time
     diff_time = end_datetime - start_datetime
     hours_in_between = (diff_time.total_seconds()) / SECONDS_PER_HOUR
 
-    NICE_FORMAT = "%d/%m %H:%M"
+    start_formatted = start_datetime.strftime(date_format)
+    end_formatted = end_datetime.strftime(date_format)
 
-    start_formatted = start_datetime.strftime(NICE_FORMAT)
-    end_formatted = end_datetime.strftime(NICE_FORMAT)
-
-    nice_string = "%s to %s (%.1f hours)" % (
+    nice_string = "%s to %s (%.1f hr)" % (
         start_formatted,
         end_formatted,
         hours_in_between,
@@ -752,11 +752,8 @@ def get_trading_hours_for_all_instruments(data=arg_not_supplied):
         data = dataBlob()
 
     diag_prices = diagPrices(data)
-    list_of_instruments = diag_prices.get_list_of_instruments_with_contract_prices()
-    # list_of_instruments = diag_prices.get_list_of_instruments_in_multiple_prices()
+    list_of_instruments = diag_prices.get_list_of_instruments_in_multiple_prices()
     # list_of_instruments = ["AEX_fsb", "COCOA_LDN_fsb"]
-    # list_of_instruments = ["AEX_fsb"]
-    # list_of_instruments = ["GOLD_fsb", "EURIBOR_fsb", "COPPER_fsb", "SOYBEAN_fsb"]
 
     p = progressBar(len(list_of_instruments))
     all_trading_hours = {}
@@ -765,7 +762,7 @@ def get_trading_hours_for_all_instruments(data=arg_not_supplied):
         try:
             trading_hours = get_trading_hours_for_instrument(data, instrument_code)
         except missingContract:
-            print("*** NO EXPIRY FOR %s ***" % instrument_code)
+            print("*** NO TRADING HOURS FOR %s ***" % instrument_code)
             continue
 
         ## will have several days use first one
@@ -804,8 +801,8 @@ def get_trading_hours_for_instrument(
 
     contract = futuresContract(instrument_code, contract_id)
 
-    data_broker = dataBroker(data)
-    trading_hours = data_broker.get_trading_hours_for_contract(contract)
+    diag_instruments = diagInstruments(data)
+    trading_hours = diag_instruments.get_trading_hours_for_epic(contract)
 
     return trading_hours
 
@@ -876,8 +873,9 @@ def interactive_diag_function(function_id):
 
 if __name__ == "__main__":
     interactive_diagnostics()
-    # print_trading_hours_for_all_instruments()
-
     # interactive_diag_function(30) # individual contract prices
     # interactive_diag_function(13)  # FSB history
     # interactive_diag_function(10)  # view_instrument_config
+    # interactive_diag_function(12)  # view trading hours
+    # interactive_diag_function(30)  # prices
+    # interactive_diag_function(35)  # FSB prices

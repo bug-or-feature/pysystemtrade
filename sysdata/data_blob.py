@@ -102,6 +102,7 @@ class dataBlob(object):
             arctic=self._add_arctic_class,
             mongo=self._add_mongo_class,
             av=self._add_alt_data_source_class,
+            json=self._add_json_class,
         )
 
         method_to_add_with = class_dict.get(prefix, None)
@@ -123,7 +124,7 @@ class dataBlob(object):
     def _add_ig_class(self, class_object):
         log = self._get_specific_logger(class_object)
         try:
-            resolved_instance = class_object(self.broker_conn, log=log)
+            resolved_instance = class_object(self, self.broker_conn, log=log)
         except Exception as e:
             class_name = get_class_name(class_object)
             msg = (
@@ -219,6 +220,24 @@ class dataBlob(object):
             return arg_not_supplied
 
         return datapath
+
+    def _add_json_class(self, class_object):
+        datapath = self._get_csv_paths_for_class(class_object)
+        log = self._get_specific_logger(class_object)
+
+        try:
+            resolved_instance = class_object(datapath=datapath, log=log)
+        except Exception as e:
+            class_name = get_class_name(class_object)
+            msg = (
+                "Error %s couldn't evaluate %s(datapath = datapath, log = self.log.setup(component = %s)) \
+                        This might be because import is missing\
+                         or arguments don't follow pattern"
+                % (str(e), class_name, class_name)
+            )
+            self._raise_and_log_error(msg)
+
+        return resolved_instance
 
     @property
     def csv_data_paths(self) -> dict:
@@ -350,6 +369,7 @@ source_dict = dict(
     barchart="broker",
     av="broker",
     ig="broker",
+    json="db",
 )
 
 

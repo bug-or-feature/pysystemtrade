@@ -40,7 +40,7 @@ class DiagFsbPrices(productionDataLayerGeneric):
     def get_prices_for_contract_object(
         self, contract_object: futuresContract
     ) -> FsbContractPrices:
-        prices = self.db_fsb_contract_price_data.get_prices_for_contract_object(
+        prices = self.db_fsb_contract_price_data.get_merged_prices_for_contract_object(
             contract_object
         )
 
@@ -75,7 +75,7 @@ class DiagFsbPrices(productionDataLayerGeneric):
     def contract_dates_with_price_data_for_instrument_code(
         self, instrument_code: str
     ) -> listOfContractDateStr:
-        list_of_contract_date_str = self.db_fsb_contract_price_data.contract_dates_with_price_data_for_instrument_code(
+        list_of_contract_date_str = self.db_fsb_contract_price_data.contract_dates_with_merged_price_data_for_instrument_code(
             instrument_code
         )
 

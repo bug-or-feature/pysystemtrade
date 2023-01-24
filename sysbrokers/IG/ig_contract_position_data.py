@@ -1,13 +1,13 @@
 from datetime import datetime
 
 from sysbrokers.IG.ig_connection import IGConnection
-from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysbrokers.IG.ig_positions import from_ig_positions_to_dict
 from sysbrokers.broker_contract_position_data import brokerContractPositionData
+from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 from syscore.objects import arg_not_supplied
 from syscore.exceptions import missingContract
+from sysdata.data_blob import dataBlob
 from sysdata.futures.contracts import futuresContractData
-from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 from sysdata.production.timed_storage import classStrWithListOfEntriesAsListOfDicts
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contract_dates_and_expiries import contractDate
@@ -17,26 +17,33 @@ from sysobjects.production.positions import contractPosition, listOfContractPosi
 
 class IgContractPositionData(brokerContractPositionData):
     def __init__(
-        self, broker_conn: IGConnection, log=logtoscreen("IgContractPositionData")
+        self,
+        data_blob: dataBlob,
+        broker_conn: IGConnection,
+        log=logtoscreen("IgContractPositionData"),
     ):
-        self._igconnection = broker_conn
-        self._contract_data = mongoFuturesContractData()
         super().__init__(log=log)
+        self._dataBlob = data_blob
+        self._broker_conn = broker_conn
 
     @property
-    def igconnection(self) -> IGConnection:
-        return self._igconnection
+    def broker_conn(self) -> IGConnection:
+        return self._broker_conn
+
+    @property
+    def data(self):
+        return self._dataBlob
 
     def __repr__(self):
-        return "IG Futures per contract position data %s" % str(self.igconnection)
+        return f"IG Futures per contract position data {self.broker_conn}"
 
     @property
     def contract_data(self) -> futuresContractData:
-        return self._contract_data
+        return self.data.db_futures_contract
 
     @property
-    def futures_instrument_data(self) -> IgFuturesInstrumentData:
-        return IgFuturesInstrumentData(self.igconnection, log=self.log)
+    def futures_instrument_data(self) -> brokerFuturesInstrumentData:
+        return self.data.broker_futures_instrument
 
     def get_all_current_positions_as_list_with_contract_objects(
         self, account_id=arg_not_supplied
@@ -92,7 +99,7 @@ class IgContractPositionData(brokerContractPositionData):
     def _get_all_futures_positions_as_raw_list(
         self, account_id: str = arg_not_supplied
     ) -> list:
-        raw_positions = self.igconnection.get_positions()
+        raw_positions = self.broker_conn.get_positions()
         dict_of_positions = from_ig_positions_to_dict(
             raw_positions, account_id=account_id
         )

@@ -1,0 +1,138 @@
+{
+    "instrument": {
+        "epic": "EN.D.CL.Month3.IP",
+        "expiry": "APR-23",
+        "name": "Oil - US Crude",
+        "forceOpenAllowed": true,
+        "stopsLimitsAllowed": true,
+        "lotSize": 1.0,
+        "unit": "AMOUNT",
+        "type": "COMMODITIES",
+        "controlledRiskAllowed": true,
+        "streamingPricesAvailable": true,
+        "marketId": "CL",
+        "currencies": [
+            {
+                "code": "USD",
+                "symbol": "$",
+                "baseExchangeRate": 1.237007,
+                "exchangeRate": 0.77,
+                "isDefault": false
+            },
+            {
+                "code": "AUD",
+                "symbol": "A$",
+                "baseExchangeRate": 1.76059,
+                "exchangeRate": 0.55,
+                "isDefault": false
+            },
+            {
+                "code": "GBP",
+                "symbol": "£",
+                "baseExchangeRate": 1.0,
+                "exchangeRate": 1.0,
+                "isDefault": true
+            }
+        ],
+        "sprintMarketsMinimumExpiryTime": null,
+        "sprintMarketsMaximumExpiryTime": null,
+        "marginDepositBands": [
+            {
+                "min": 0,
+                "max": 700,
+                "margin": 10,
+                "currency": "USD"
+            },
+            {
+                "min": 700,
+                "max": 1400,
+                "margin": 10,
+                "currency": "USD"
+            },
+            {
+                "min": 1400,
+                "max": 2100,
+                "margin": 10,
+                "currency": "USD"
+            },
+            {
+                "min": 2100,
+                "max": null,
+                "margin": 15,
+                "currency": "USD"
+            }
+        ],
+        "marginFactor": 10,
+        "marginFactorUnit": "PERCENTAGE",
+        "slippageFactor": {
+            "unit": "pct",
+            "value": 100.0
+        },
+        "limitedRiskPremium": {
+            "value": 6,
+            "unit": "POINTS"
+        },
+        "openingHours": null,
+        "expiryDetails": {
+            "lastDealingDate": "2023-03-20T19:30",
+            "settlementInfo": "Settles  based on the official closing price of the NYMEX Crude Oil future on the last dealing day +/- IG dealing spread."
+        },
+        "rolloverDetails": {
+            "lastRolloverTime": "2023-03-20T19:15",
+            "rolloverInfo": "Usually, initial position closed at official closing level of day before last dealing day +/- closing spread; new position in next contract opened at official closing level of the new contract from same day, +/- opening spread."
+        },
+        "newsCode": "CRU",
+        "chartCode": null,
+        "country": null,
+        "valueOfOnePip": null,
+        "onePipMeans": null,
+        "contractSize": null,
+        "specialInfo": [
+            "MAX KNOCK OUT LEVEL DISTANCE",
+            "DEFAULT KNOCK OUT LEVEL DISTANCE"
+        ]
+    },
+    "dealingRules": {
+        "minStepDistance": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "minDealSize": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "minControlledRiskStopDistance": {
+            "unit": "POINTS",
+            "value": 10.0
+        },
+        "minNormalStopOrLimitDistance": {
+            "unit": "POINTS",
+            "value": 6.0
+        },
+        "maxStopOrLimitDistance": {
+            "unit": "PERCENTAGE",
+            "value": 75.0
+        },
+        "controlledRiskSpacing": {
+            "unit": "POINTS",
+            "value": 20.0
+        },
+        "marketOrderPreference": "AVAILABLE_DEFAULT_OFF",
+        "trailingStopsPreference": "AVAILABLE"
+    },
+    "snapshot": {
+        "marketStatus": "TRADEABLE",
+        "netChange": 80,
+        "percentageChange": 0.98,
+        "updateTime": "16:37:20",
+        "delayTime": 0,
+        "bid": 8267.0,
+        "offer": 8273.0,
+        "high": 8292.0,
+        "low": 8129.0,
+        "binaryOdds": null,
+        "decimalPlacesFactor": 1,
+        "scalingFactor": 1,
+        "controlledRiskExtraSpread": 4
+    }
+}

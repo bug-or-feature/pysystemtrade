@@ -1,0 +1,131 @@
+{
+    "instrument": {
+        "epic": "CF.D.USDCAD.MAR.IP",
+        "expiry": "MAR-23",
+        "name": "USD/CAD Forward",
+        "forceOpenAllowed": true,
+        "stopsLimitsAllowed": true,
+        "lotSize": 1.0,
+        "unit": "AMOUNT",
+        "type": "CURRENCIES",
+        "controlledRiskAllowed": true,
+        "streamingPricesAvailable": true,
+        "marketId": "USDCAD",
+        "currencies": [
+            {
+                "code": "CAD",
+                "symbol": "CD",
+                "baseExchangeRate": 1.654455,
+                "exchangeRate": 0.63,
+                "isDefault": false
+            },
+            {
+                "code": "GBP",
+                "symbol": "£",
+                "baseExchangeRate": 1.0,
+                "exchangeRate": 1.0,
+                "isDefault": true
+            }
+        ],
+        "sprintMarketsMinimumExpiryTime": null,
+        "sprintMarketsMaximumExpiryTime": null,
+        "marginDepositBands": [
+            {
+                "min": 0,
+                "max": 130,
+                "margin": 3.33,
+                "currency": "CAD"
+            },
+            {
+                "min": 130,
+                "max": 1300,
+                "margin": 3.33,
+                "currency": "CAD"
+            },
+            {
+                "min": 1300,
+                "max": 1950,
+                "margin": 3.33,
+                "currency": "CAD"
+            },
+            {
+                "min": 1950,
+                "max": null,
+                "margin": 15,
+                "currency": "CAD"
+            }
+        ],
+        "marginFactor": 3.33,
+        "marginFactorUnit": "PERCENTAGE",
+        "slippageFactor": {
+            "unit": "pct",
+            "value": 50.0
+        },
+        "limitedRiskPremium": {
+            "value": 3,
+            "unit": "POINTS"
+        },
+        "openingHours": null,
+        "expiryDetails": {
+            "lastDealingDate": "2023-03-10T20:00",
+            "settlementInfo": "Settles basis our 8pm (UK time) price on the last dealing day of the current contract +/- closing spread."
+        },
+        "rolloverDetails": {
+            "lastRolloverTime": "2023-03-10T19:45",
+            "rolloverInfo": "Usually, initial position closed at our 8pm (UK time) price on the current contract +/- closing spread; new position in next contract opened at the 8pm (UK time) price of the following contract +/- opening spread."
+        },
+        "newsCode": "CAD=",
+        "chartCode": null,
+        "country": null,
+        "valueOfOnePip": null,
+        "onePipMeans": null,
+        "contractSize": null,
+        "specialInfo": [
+            "MAX KNOCK OUT LEVEL DISTANCE",
+            "DEFAULT KNOCK OUT LEVEL DISTANCE"
+        ]
+    },
+    "dealingRules": {
+        "minStepDistance": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "minDealSize": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "minControlledRiskStopDistance": {
+            "unit": "POINTS",
+            "value": 20.0
+        },
+        "minNormalStopOrLimitDistance": {
+            "unit": "POINTS",
+            "value": 10.0
+        },
+        "maxStopOrLimitDistance": {
+            "unit": "PERCENTAGE",
+            "value": 75.0
+        },
+        "controlledRiskSpacing": {
+            "unit": "POINTS",
+            "value": 30.0
+        },
+        "marketOrderPreference": "AVAILABLE_DEFAULT_OFF",
+        "trailingStopsPreference": "AVAILABLE"
+    },
+    "snapshot": {
+        "marketStatus": "TRADEABLE",
+        "netChange": -8.2,
+        "percentageChange": -0.06,
+        "updateTime": "16:37:19",
+        "delayTime": 0,
+        "bid": 13367.1,
+        "offer": 13375.2,
+        "high": 13418.2,
+        "low": 13337.4,
+        "binaryOdds": null,
+        "decimalPlacesFactor": 1,
+        "scalingFactor": 1,
+        "controlledRiskExtraSpread": 6
+    }
+}

@@ -4,16 +4,15 @@ import pytz
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from syscore.exceptions import missingContract, missingData
 
-# from syscore.objects import missing_data
-
-from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
-from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
+from sysbrokers.broker_futures_contract_data import brokerFuturesContractData
+from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_futures_contract_price_data import brokerFuturesContractPriceData
-
+from sysdata.data_blob import dataBlob
 from sysdata.barchart.bc_connection import bcConnection
-from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
+from sysdata.futures_spreadbet.market_info_data import marketInfoData
 
+from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
 from sysexecution.tick_data import dataFrameOfRecentTicks, tickerObject
 from sysexecution.orders.contract_orders import contractOrder
 from sysexecution.orders.broker_orders import brokerOrder
@@ -28,41 +27,45 @@ from syslogdiag.log_to_screen import logtoscreen
 class IgFuturesContractPriceData(brokerFuturesContractPriceData):
     def __init__(
         self,
+        data_blob: dataBlob,
         broker_conn: IGConnection,
         log=logtoscreen("IgFuturesContractPriceData", log_level="on"),
     ):
         super().__init__(log=log)
-        self._igconnection = broker_conn
+        self._dataBlob = data_blob
+        self._broker_conn = broker_conn
         self._barchart = bcConnection()
-        self._fsb_contract_data = IgFuturesContractData(broker_conn, log=self.log)
-        self._futures_instrument_data = IgFuturesInstrumentData(
-            broker_conn, log=self.log
-        )
-        self._existing_prices = ArcticFsbContractPriceData()
-        # self._hist_allowance = DataHistoricAllowance()
 
     def __repr__(self):
         return "IG/Barchart Spreadbet Futures per contract price data"
 
     @property
-    def igconnection(self) -> IGConnection:
-        return self._igconnection
+    def broker_conn(self) -> IGConnection:
+        return self._broker_conn
 
     @property
-    def fsb_contract_data(self) -> IgFuturesContractData:
-        return self._fsb_contract_data
+    def data(self):
+        return self._dataBlob
+
+    @property
+    def fsb_contract_data(self) -> brokerFuturesContractData:
+        return self.data.broker_futures_contract
 
     @property
     def barchart(self):
         return self._barchart
 
     @property
-    def futures_instrument_data(self) -> IgFuturesInstrumentData:
-        return self._futures_instrument_data
+    def futures_instrument_data(self) -> brokerFuturesInstrumentData:
+        return self.data.broker_futures_instrument
 
     @property
-    def existing_prices(self) -> ArcticFsbContractPriceData:
-        return self._existing_prices
+    def market_info_data(self) -> marketInfoData:
+        return self.data.db_market_info
+
+    @property
+    def existing_prices(self) -> futuresContractPriceData:
+        return self.data.db_fsb_contract_price
 
     def has_merged_price_data_for_contract(
         self, futures_contract: futuresContract
@@ -80,28 +83,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         # return list of instruments for which pricing is configured
         list_of_instruments = self.futures_instrument_data.get_list_of_instruments()
         return list_of_instruments
-
-    # didn't exist before split stuff - inherit from superclass for now
-    # def contracts_with_merged_price_data_for_instrument_code(
-    #     self, instrument_code: str, allow_expired=True
-    # ) -> listOfFuturesContracts:
-    #
-    #     futures_instrument_with_ig_data = (
-    #         self.futures_instrument_data.get_futures_instrument_object_with_ig_data(
-    #             instrument_code
-    #         )
-    #     )
-    #     list_of_date_str = self.ib_client.broker_get_futures_contract_list(
-    #         futures_instrument_with_ig_data, allow_expired=allow_expired
-    #     )
-    #
-    #     list_of_contracts = [
-    #         futuresContract(instrument_code, date_str) for date_str in list_of_date_str
-    #     ]
-    #
-    #     list_of_contracts = listOfFuturesContracts(list_of_contracts)
-    #
-    #     return list_of_contracts
 
     def get_contracts_with_merged_price_data(self):
         raise NotImplementedError(
@@ -131,8 +112,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         return_empty: bool = True,
     ):
 
-        ## Override this because don't want to check for existing data first
-
+        # Override this because don't want to check for existing data first
         try:
             prices = self._get_prices_at_frequency_for_contract_object_no_checking(
                 futures_contract_object=contract_object, frequency=frequency
@@ -206,8 +186,8 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             new_log.warn("Can't get recent price data for %s" % str(contract_object))
             return dataFrameOfRecentTicks.create_empty()
 
-        epic = self.futures_instrument_data.epic_mapping[contract_object.key]
-        tick_list = self.igconnection.get_recent_bid_ask_price_data(
+        epic = self.market_info_data.get_epic_for_contract(contract_object)
+        tick_list = self.broker_conn.get_recent_bid_ask_price_data(
             contract_object.instrument_code, epic
         )
 
@@ -229,7 +209,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         :return: data
         """
 
-        if contract_object.key not in self.futures_instrument_data.epic_mapping:
+        if contract_object.key not in self.market_info_data.epic_mapping:
             self.log.warn(
                 f"No epic mapped for {str(contract_object.key)}",
                 instrument_code=contract_object.instrument_code,
@@ -267,9 +247,9 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
                 contract_date=contract_object.contract_date.date_str,
             )
 
-        epic = self.futures_instrument_data.epic_mapping[contract_object.key]
+        epic = self.market_info_data.epic_mapping[contract_object.key]
         try:
-            prices_df = self.igconnection.get_historical_fsb_data_for_epic(
+            prices_df = self.broker_conn.get_historical_fsb_data_for_epic(
                 epic=epic, bar_freq=freq, start_date=start_date, end_date=end_date
             )
         except missingData:
@@ -296,7 +276,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             # TODO update allowance data
 
         else:
-            self.log.msg(f"Ignoring - IG epic/history config awaiting update")
+            self.log.msg("Ignoring - IG epic/history config awaiting update")
             return FsbContractPrices.create_empty()
 
         # It's important that the data is in local time zone so that this works

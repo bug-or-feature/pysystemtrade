@@ -1,11 +1,15 @@
 from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
-
+from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.data_blob import dataBlob
+from sysdata.futures.instruments import futuresInstrumentData
+from sysdata.futures_spreadbet.market_info_data import marketInfoData
 from sysproduction.data.currency_data import dataCurrency
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
-from sysdata.futures.instruments import futuresInstrumentData
 from sysobjects.spot_fx_prices import currencyValue
 from sysobjects.instruments import instrumentCosts
+from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
+from sysobjects.contracts import futuresContract
+from syscore.exceptions import missingData
 
 
 class dataInstruments(productionDataLayerGeneric):
@@ -25,12 +29,21 @@ class dataInstruments(productionDataLayerGeneric):
 
 class diagInstruments(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
-        data.add_class_object(mongoFuturesInstrumentData)
+        data.add_class_list(
+            [
+                mongoFuturesInstrumentData,
+                mongoMarketInfoData,
+            ]
+        )
         return data
 
     @property
     def db_futures_instrument_data(self) -> futuresInstrumentData:
         return self.data.db_futures_instrument
+
+    @property
+    def db_market_info_data(self) -> marketInfoData:
+        return self.data.db_market_info
 
     def get_cost_object(self, instrument_code: str) -> instrumentCosts:
         meta_data = self.get_meta_data(instrument_code)
@@ -88,6 +101,19 @@ class diagInstruments(productionDataLayerGeneric):
         ]
 
         return instrument_codes
+
+    def get_expiry_details(self, epic: str):
+        return self.db_market_info_data.get_expiry_details(epic)
+
+    def get_trading_hours_for_epic(self, key) -> listOfTradingHours:
+        if isinstance(key, futuresContract):
+            try:
+                epic = self.db_market_info_data.get_epic_for_contract(key)
+                return self.db_market_info_data.get_trading_hours_for_epic(epic)
+            except missingData as exc:
+                self.log.warn(f"Problem getting trading hours: {exc}")
+
+        return self.db_market_info_data.get_trading_hours_for_epic(key)
 
 
 def get_block_size(data, instrument_code):

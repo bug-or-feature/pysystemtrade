@@ -1,0 +1,131 @@
+{
+    "instrument": {
+        "epic": "IR.D.FGBX.Month1.IP",
+        "expiry": "MAR-23",
+        "name": "Buxl",
+        "forceOpenAllowed": true,
+        "stopsLimitsAllowed": true,
+        "lotSize": 1.0,
+        "unit": "AMOUNT",
+        "type": "RATES",
+        "controlledRiskAllowed": true,
+        "streamingPricesAvailable": true,
+        "marketId": "FGBX",
+        "currencies": [
+            {
+                "code": "EUR",
+                "symbol": "E",
+                "baseExchangeRate": 1.138285,
+                "exchangeRate": 0.81,
+                "isDefault": false
+            },
+            {
+                "code": "GBP",
+                "symbol": "£",
+                "baseExchangeRate": 1.0,
+                "exchangeRate": 1.0,
+                "isDefault": true
+            }
+        ],
+        "sprintMarketsMinimumExpiryTime": null,
+        "sprintMarketsMaximumExpiryTime": null,
+        "marginDepositBands": [
+            {
+                "min": 0,
+                "max": 100,
+                "margin": 20,
+                "currency": "EUR"
+            },
+            {
+                "min": 100,
+                "max": 200,
+                "margin": 20,
+                "currency": "EUR"
+            },
+            {
+                "min": 200,
+                "max": 300,
+                "margin": 20,
+                "currency": "EUR"
+            },
+            {
+                "min": 300,
+                "max": null,
+                "margin": 20,
+                "currency": "EUR"
+            }
+        ],
+        "marginFactor": 20,
+        "marginFactorUnit": "PERCENTAGE",
+        "slippageFactor": {
+            "unit": "pct",
+            "value": 50.0
+        },
+        "limitedRiskPremium": {
+            "value": 3,
+            "unit": "POINTS"
+        },
+        "openingHours": null,
+        "expiryDetails": {
+            "lastDealingDate": "2023-03-07T16:15",
+            "settlementInfo": "Settles based on the official settlement price of the Eurex Buxl futures contract on the last dealing day +/- IG dealing spread."
+        },
+        "rolloverDetails": {
+            "lastRolloverTime": "2023-03-07T16:00",
+            "rolloverInfo": "Usually, initial position closed at official closing level of day before last dealing day +/- closing spread; new position in next contract opened at official closing level of the new contract from same day, +/- opening spread."
+        },
+        "newsCode": "GVD/EUR",
+        "chartCode": null,
+        "country": "DE",
+        "valueOfOnePip": null,
+        "onePipMeans": null,
+        "contractSize": null,
+        "specialInfo": [
+            "MAX KNOCK OUT LEVEL DISTANCE",
+            "DEFAULT KNOCK OUT LEVEL DISTANCE"
+        ]
+    },
+    "dealingRules": {
+        "minStepDistance": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "minDealSize": {
+            "unit": "POINTS",
+            "value": 0.5
+        },
+        "minControlledRiskStopDistance": {
+            "unit": "POINTS",
+            "value": 25.0
+        },
+        "minNormalStopOrLimitDistance": {
+            "unit": "POINTS",
+            "value": 12.0
+        },
+        "maxStopOrLimitDistance": {
+            "unit": "PERCENTAGE",
+            "value": 75.0
+        },
+        "controlledRiskSpacing": {
+            "unit": "POINTS",
+            "value": 25.0
+        },
+        "marketOrderPreference": "AVAILABLE_DEFAULT_OFF",
+        "trailingStopsPreference": "AVAILABLE"
+    },
+    "snapshot": {
+        "marketStatus": "TRADEABLE",
+        "netChange": -113,
+        "percentageChange": -0.77,
+        "updateTime": "16:37:18",
+        "delayTime": 0,
+        "bid": 14609.0,
+        "offer": 14613.0,
+        "high": 14773.0,
+        "low": 14551.0,
+        "binaryOdds": null,
+        "decimalPlacesFactor": 1,
+        "scalingFactor": 1,
+        "controlledRiskExtraSpread": 3
+    }
+}

@@ -1,0 +1,133 @@
+{
+    "instrument": {
+        "epic": "IX.D.STXE.MONTH3.IP",
+        "expiry": "JUN-23",
+        "name": "EU Stocks 50",
+        "forceOpenAllowed": true,
+        "stopsLimitsAllowed": true,
+        "lotSize": 1.0,
+        "unit": "AMOUNT",
+        "type": "INDICES",
+        "controlledRiskAllowed": true,
+        "streamingPricesAvailable": true,
+        "marketId": "EU50",
+        "currencies": [
+            {
+                "code": "EUR",
+                "symbol": "E",
+                "baseExchangeRate": 1.13828,
+                "exchangeRate": 0.81,
+                "isDefault": false
+            },
+            {
+                "code": "GBP",
+                "symbol": "£",
+                "baseExchangeRate": 1.0,
+                "exchangeRate": 1.0,
+                "isDefault": true
+            }
+        ],
+        "sprintMarketsMinimumExpiryTime": null,
+        "sprintMarketsMaximumExpiryTime": null,
+        "marginDepositBands": [
+            {
+                "min": 0,
+                "max": 370,
+                "margin": 5,
+                "currency": "EUR"
+            },
+            {
+                "min": 370,
+                "max": 3700,
+                "margin": 5,
+                "currency": "EUR"
+            },
+            {
+                "min": 3700,
+                "max": 5550,
+                "margin": 5,
+                "currency": "EUR"
+            },
+            {
+                "min": 5550,
+                "max": null,
+                "margin": 15,
+                "currency": "EUR"
+            }
+        ],
+        "marginFactor": 5,
+        "marginFactorUnit": "PERCENTAGE",
+        "slippageFactor": {
+            "unit": "pct",
+            "value": 50.0
+        },
+        "limitedRiskPremium": {
+            "value": 1,
+            "unit": "POINTS"
+        },
+        "openingHours": null,
+        "expiryDetails": {
+            "lastDealingDate": "2023-06-16T09:50",
+            "settlementInfo": "Settles based on the final settlement level of the Euro STOXX 50 future as reported by Eurex +/- IG dealing spread."
+        },
+        "rolloverDetails": {
+            "lastRolloverTime": "2023-06-16T09:35",
+            "rolloverInfo": "Usually, initial position closed at official closing level of day before last dealing day +/- closing spread; new position in next contract opened at official closing level of the new contract from same day, +/- opening spread."
+        },
+        "newsCode": ".STOXX",
+        "chartCode": null,
+        "country": null,
+        "valueOfOnePip": null,
+        "onePipMeans": null,
+        "contractSize": null,
+        "specialInfo": [
+            "MIN KNOCK OUT LEVEL DISTANCE",
+            "Expiry",
+            "MAX KNOCK OUT LEVEL DISTANCE",
+            "DEFAULT KNOCK OUT LEVEL DISTANCE"
+        ]
+    },
+    "dealingRules": {
+        "minStepDistance": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "minDealSize": {
+            "unit": "POINTS",
+            "value": 1.0
+        },
+        "minControlledRiskStopDistance": {
+            "unit": "POINTS",
+            "value": 3.0
+        },
+        "minNormalStopOrLimitDistance": {
+            "unit": "POINTS",
+            "value": 3.0
+        },
+        "maxStopOrLimitDistance": {
+            "unit": "PERCENTAGE",
+            "value": 75.0
+        },
+        "controlledRiskSpacing": {
+            "unit": "POINTS",
+            "value": 10.0
+        },
+        "marketOrderPreference": "AVAILABLE_DEFAULT_OFF",
+        "trailingStopsPreference": "AVAILABLE"
+    },
+    "snapshot": {
+        "marketStatus": "OFFLINE",
+        "netChange": 10.7,
+        "percentageChange": 0.26,
+        "updateTime": "16:36:01",
+        "delayTime": 0,
+        "bid": 4150.5,
+        "offer": 4152.5,
+        "high": 4161.5,
+        "low": 4123.5,
+        "binaryOdds": null,
+        "decimalPlacesFactor": 2,
+        "scalingFactor": 1,
+        "controlledRiskExtraSpread": 1
+    }
+}

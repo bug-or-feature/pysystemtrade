@@ -1,3 +1,5 @@
+from munch import munchify
+
 from sysbrokers.IG.ig_instruments import (
     FsbInstrumentWithIgConfigData,
 )
@@ -5,6 +7,8 @@ from sysdata.data_blob import dataBlob
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysproduction.data.broker import dataBroker
 from syscore.exceptions import existingData
+from sysdata.json.json_market_info import jsonMarketInfoData
+
 
 """
 Initialise mongdb with market data for each epic
@@ -97,6 +101,27 @@ def test_get_expiry_details():
         print(result)
 
 
+def test_get_market_hours():
+    with dataBlob() as data:
+        data.add_class_object(mongoMarketInfoData)
+        result = data.db_market_info.get_trading_hours_for_epic("CO.D.LCC.Month6.IP")
+        print(result)
+
+
+def test_write_json():
+    output = jsonMarketInfoData()
+    with dataBlob() as data:
+        data.add_class_object(mongoMarketInfoData)
+        for instr in output.get_list_of_instruments():
+            for doc in data.db_market_info.get_market_info_for_instrument_code(instr):
+                doc_munch = munchify(doc)
+                output.update_market_info(
+                    instr,
+                    doc_munch.epic,
+                    data.broker_conn.get_market_info(doc_munch.epic),
+                )
+
+
 if __name__ == "__main__":
     # import_market_info_single("GOLD_fsb")
 
@@ -110,3 +135,5 @@ if __name__ == "__main__":
     # test_get_instruments()
 
     # test_get_expiry_details()
+
+    # test_write_json()
