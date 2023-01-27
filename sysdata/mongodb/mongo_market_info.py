@@ -96,13 +96,17 @@ class mongoMarketInfoData(marketInfoData):
                 try:
                     self._in_hours[contract_date_str] = doc["in_hours"]
                 except KeyError:
-                    self.log.error(f"Problem getting 'in_hours' for {contract_date_str}")
+                    self.log.error(
+                        f"Problem getting 'in_hours' for {contract_date_str}"
+                    )
                     self._in_hours[contract_date_str] = "n/a"
 
                 try:
                     self._in_hours_status[contract_date_str] = doc["in_hours_status"]
                 except:
-                    self.log.error(f"Problem getting 'in_hours_status' for {contract_date_str}")
+                    self.log.error(
+                        f"Problem getting 'in_hours_status' for {contract_date_str}"
+                    )
                     self._in_hours_status[contract_date_str] = "n/a"
 
     def add_market_info(self, instrument_code: str, epic: str, market_info: dict):
