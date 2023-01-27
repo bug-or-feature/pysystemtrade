@@ -8,6 +8,10 @@ from sysproduction.reporting.reporting_functions import (
     run_report_with_data_blob,
     pandas_display_for_reports,
 )
+from sysproduction.reporting.data.fsb_correlation_data import (
+    fsb_correlation_data,
+    contract_key,
+)
 
 """
 
@@ -163,6 +167,10 @@ def run_adhoc_tradeable_report(instr_code: str):
     print_full(results)
 
 
+def run_adhoc_correlation_report(key: str):
+    fsb_correlation_data(contract_key(key), draw=True)
+
+
 if __name__ == "__main__":
     # run_slippage_report()
     # run_costs_report()
@@ -190,3 +198,4 @@ if __name__ == "__main__":
 
     # run_adhoc_tradeable_report()
     # run_adhoc_tradeable_report(instr_code="GAS_US_fsb")
+    # run_adhoc_correlation_report("JSE40_fsb/20230300")

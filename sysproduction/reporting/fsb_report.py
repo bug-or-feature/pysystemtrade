@@ -18,6 +18,20 @@ BELOW_MIN_CORR_HEADER_TEXT = body_text(
     + "Showing only those with Price < 0.8 or Returns < 0.6, sorted by Returns"
 )
 
+BELOW_MIN_CORR_PR_HEADER_TEXT = body_text(
+    "Possible problem correlations. The priced contracts below have possible data or config issues\n"
+    + "Price: correlation between spread bet price and the underlying future, per contract\n"
+    + "Returns: correlation between spread bet returns and the underlying future, per contract\n"
+    + "Showing only those with Price < 0.8 or Returns < 0.6, sorted by Returns"
+)
+
+BELOW_MIN_CORR_FWD_HEADER_TEXT = body_text(
+    "Possible problem correlations. The forward contracts below have possible data or config issues\n"
+    + "Price: correlation between spread bet price and the underlying future, per contract\n"
+    + "Returns: correlation between spread bet returns and the underlying future, per contract\n"
+    + "Showing only those with Price < 0.8 or Returns < 0.6, sorted by Returns"
+)
+
 
 def do_fsb_report(
     data: dataBlob = arg_not_supplied,
@@ -34,9 +48,17 @@ def do_fsb_report(
 
     formatted_output.append(reporting_api_fsb.terse_header("FSB report"))
 
-    # problem correlations for currently sampled contracts
-    formatted_output.append(BELOW_MIN_CORR_HEADER_TEXT)
-    formatted_output.append(reporting_api_fsb.table_of_problem_fsb_correlations())
+    # problem correlations for priced contracts
+    formatted_output.append(BELOW_MIN_CORR_PR_HEADER_TEXT)
+    formatted_output.append(
+        reporting_api_fsb.table_of_problem_priced_fsb_correlations()
+    )
+
+    # problem correlations for forward contracts
+    formatted_output.append(BELOW_MIN_CORR_FWD_HEADER_TEXT)
+    formatted_output.append(
+        reporting_api_fsb.table_of_problem_forward_fsb_correlations()
+    )
 
     # price and returns correlation for currently sampled contracts
     formatted_output.append(ALL_CORR_HEADER_TEXT)

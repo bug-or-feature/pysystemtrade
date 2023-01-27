@@ -106,6 +106,42 @@ class ReportingApiFsb(reportingApi):
 
         return table("Problem FSB Correlations", df)
 
+    def table_of_problem_priced_fsb_correlations(
+        self, min_price_corr=0.8, min_returns_corr=0.6
+    ) -> table:
+
+        df = pd.DataFrame(self.correlation_data)
+        df.set_index("Contract", inplace=True)
+        df.Price = df.Price.round(2)
+        df.Returns = df.Returns.round(2)
+        df = df.loc[
+            df["IsPriced"]
+            & ((df["Price"] < min_price_corr) | (df["Returns"] < min_returns_corr))
+        ]
+        df = df.sort_values("Returns")
+
+        return table(
+            "Problem FSB Correlations for priced contracts", df[["Price", "Returns"]]
+        )
+
+    def table_of_problem_forward_fsb_correlations(
+        self, min_price_corr=0.8, min_returns_corr=0.6
+    ) -> table:
+
+        df = pd.DataFrame(self.correlation_data)
+        df.set_index("Contract", inplace=True)
+        df.Price = df.Price.round(2)
+        df.Returns = df.Returns.round(2)
+        df = df.loc[
+            df["IsFwd"]
+            & ((df["Price"] < min_price_corr) | (df["Returns"] < min_returns_corr))
+        ]
+        df = df.sort_values("Returns")
+
+        return table(
+            "Problem FSB Correlations for forward contracts", df[["Price", "Returns"]]
+        )
+
     # all FSB correlations
     def table_of_fsb_correlations(self) -> table:
         df = pd.DataFrame(self.correlation_data)
@@ -113,7 +149,7 @@ class ReportingApiFsb(reportingApi):
         df.Price = df.Price.round(2)
         df.Returns = df.Returns.round(2)
 
-        return table("FSB Correlations", df)
+        return table("FSB Correlations", df[["Price", "Returns"]])
 
     # FSB mappings_and_expiries
     def fsb_mappings_and_expiries(
@@ -152,6 +188,10 @@ class ReportingApiFsb(reportingApi):
             diag_contracts = dataContracts(data)
 
             for instr_code in price_data.get_list_of_instruments_in_multiple_prices():
+
+                contract_priced = diag_contracts.get_priced_contract_id(instr_code)
+                contract_fwd = diag_contracts.get_forward_contract_id(instr_code)
+
                 all_contracts_list = (
                     diag_contracts.get_all_contract_objects_for_instrument_code(
                         instr_code
@@ -161,8 +201,18 @@ class ReportingApiFsb(reportingApi):
                     if futures_prices.has_merged_price_data_for_contract(
                         contract
                     ) and fsb_prices.has_merged_price_data_for_contract(contract):
+
+                        is_priced = contract.date_str == contract_priced
+                        is_fwd = contract.date_str == contract_fwd
+
                         rows.append(
-                            fsb_correlation_data(contract, futures_prices, fsb_prices)
+                            fsb_correlation_data(
+                                contract,
+                                futures_prices=futures_prices,
+                                fsb_prices=fsb_prices,
+                                is_priced=is_priced,
+                                is_fwd=is_fwd,
+                            )
                         )
         return rows
 

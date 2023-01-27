@@ -15,7 +15,12 @@ from sysproduction.data.prices import diagPrices
 
 
 def fsb_correlation_data(
-    contract_obj, futures_prices=None, fsb_prices=None, draw=False
+    contract_obj,
+    futures_prices=None,
+    fsb_prices=None,
+    is_priced=False,
+    is_fwd=False,
+    draw=False,
 ):
 
     if futures_prices is None:
@@ -63,6 +68,8 @@ def fsb_correlation_data(
         Contract=contract_obj.key,
         Price=price_corr.iloc[0, 1],
         Returns=returns_corr.iloc[0, 1],
+        IsPriced=is_priced,
+        IsFwd=is_fwd,
     )
 
     return results
@@ -114,7 +121,11 @@ def currently_sampling_report():
                     contract
                 ) and fsb_prices.has_merged_price_data_for_contract(contract):
                     rows.append(
-                        fsb_correlation_data(contract, futures_prices, fsb_prices)
+                        fsb_correlation_data(
+                            contract,
+                            futures_prices=futures_prices,
+                            fsb_prices=fsb_prices,
+                        )
                     )
 
     results = pd.DataFrame(rows)
