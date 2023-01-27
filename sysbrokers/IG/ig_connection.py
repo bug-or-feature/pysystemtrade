@@ -240,7 +240,9 @@ class IGConnection(object):
                 df = df[new_cols]
 
             except Exception as exc:
-                self.log.error(f"Problem getting expiry date for '{epic}': {exc}")
+                self.log.error(
+                    f"Problem getting snapshot price data for '{epic}': {exc}"
+                )
                 return missing_data
             return df
         else:
