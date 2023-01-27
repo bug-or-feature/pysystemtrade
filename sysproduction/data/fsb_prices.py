@@ -18,6 +18,7 @@ from sysdata.data_blob import dataBlob
 from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
 from sysdata.futures.multiple_prices import futuresMultiplePricesData
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
+from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
 from sysobjects.contract_dates_and_expiries import listOfContractDateStr
 from sysobjects.contracts import futuresContract
@@ -33,6 +34,7 @@ class DiagFsbPrices(productionDataLayerGeneric):
                 arcticFuturesAdjustedPricesData,
                 arcticFuturesMultiplePricesData,
                 ArcticFsbEpicHistoryData,
+                mongoMarketInfoData
             ]
         )
         return data
