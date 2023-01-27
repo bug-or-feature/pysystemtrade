@@ -16,6 +16,21 @@ Initialise mongdb with market data for each epic
 """
 
 
+def file_import_market_info_single(instr):
+    data_in = jsonMarketInfoData()
+    data_out = mongoMarketInfoData()
+    for doc in data_in.get_market_info_for_instrument_code(instr):
+        print(doc)
+        info = munchify(doc)
+        data_out.add_market_info(instr, info.instrument.epic, doc)
+
+
+def file_import_market_info_all():
+    data_in = jsonMarketInfoData()
+    for instr in data_in.get_list_of_instruments():
+        file_import_market_info_single(instr)
+
+
 def import_market_info_single(instr):
     with dataBlob() as data:
         data.add_class_object(mongoMarketInfoData)
@@ -77,7 +92,7 @@ def _do_single(data, broker, instr):
                 f"Problem updating market info for instrument '{instr}' "
                 f"and epic '{epic}' - check config: {exc}"
             )
-            data.log.critical(msg)
+            data.log.error(msg)
 
 
 def test_get_for_instr_code():
@@ -123,7 +138,10 @@ def test_write_json():
 
 
 if __name__ == "__main__":
-    # import_market_info_single("GOLD_fsb")
+
+    # file_import_market_info_single("GOLD_fsb")
+
+    # import_market_info_single("VIX_fsb")
 
     # for instr in ["GOLD_fsb", "AUD_fsb", "BOBL_fsb", "NASDAQ_fsb"]:
     #      import_market_info_single(instr)
