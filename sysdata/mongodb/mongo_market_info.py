@@ -32,6 +32,8 @@ class mongoMarketInfoData(marketInfoData):
         )
         self._epic_mappings = {}
         self._expiry_dates = {}
+        self._in_hours = {}
+        self._in_hours_status = {}
 
     def __repr__(self):
         return f"mongoMarketInfoData {str(self.mongo_data)}"
@@ -52,6 +54,18 @@ class mongoMarketInfoData(marketInfoData):
             self._parse_market_info_for_mappings()
         return self._expiry_dates
 
+    @cached_property
+    def in_hours(self) -> dict:
+        if len(self._in_hours) == 0:
+            self._parse_market_info_for_mappings()
+        return self._in_hours
+
+    @cached_property
+    def in_hours_status(self) -> dict:
+        if len(self._in_hours_status) == 0:
+            self._parse_market_info_for_mappings()
+        return self._in_hours_status
+
     def _parse_market_info_for_mappings(self):
         for instr in self.get_list_of_instruments():
             for result in self.mongo_data._mongo.collection.find(
@@ -59,6 +73,8 @@ class mongoMarketInfoData(marketInfoData):
                 {
                     "_id": 0,
                     "epic": 1,
+                    "in_hours": 1,
+                    "in_hours_status": 1,
                     "instrument.expiry": 1,
                     "instrument.expiryDetails.lastDealingDate": 1,
                 },
@@ -76,6 +92,18 @@ class mongoMarketInfoData(marketInfoData):
                 self._expiry_dates[contract_date_str] = last_dealing.strftime(
                     ISO_DATE_FORMAT
                 )
+
+                try:
+                    self._in_hours[contract_date_str] = doc["in_hours"]
+                except KeyError:
+                    self.log.error(f"Problem getting 'in_hours' for {contract_date_str}")
+                    self._in_hours[contract_date_str] = "n/a"
+
+                try:
+                    self._in_hours_status[contract_date_str] = doc["in_hours_status"]
+                except:
+                    self.log.error(f"Problem getting 'in_hours_status' for {contract_date_str}")
+                    self._in_hours_status[contract_date_str] = "n/a"
 
     def add_market_info(self, instrument_code: str, epic: str, market_info: dict):
         self.log.msg(f"Adding market info for '{epic}'")
@@ -111,7 +139,7 @@ class mongoMarketInfoData(marketInfoData):
                     datetime.strptime(last_dealing, "%Y-%m-%dT%H:%M")
                 )
             except Exception as exc:
-                self.log.error(f"Problem getting expiry date for '{epic}': {exc}")
+                self.log.error(f"Problem getting expiry details for '{epic}': {exc}")
                 raise missingContract
             return expiry_key, expiry_date
         else:
@@ -124,7 +152,7 @@ class mongoMarketInfoData(marketInfoData):
             trading_hours = parse_trading_hours(market_info.instrument.openingHours)
             return trading_hours
         except Exception as exc:
-            self.log.error(f"Problem getting expiry date for '{epic}': {exc}")
+            self.log.error(f"Problem getting trading hours for '{epic}': {exc}")
             raise missingContract
 
     def get_epic_for_contract(self, contract) -> str:
@@ -142,9 +170,9 @@ class mongoMarketInfoData(marketInfoData):
             raise missingData(f"No epic found for {instr_code} ({expiry_key})")
 
     def _save(
-        self, instrument_code: str, epic: str, market_info: dict, allow_overwrite=False
+        self, instrument_code: str, epic: str, market_info: dict, allow_overwrite=True
     ):
-        market_info["last_modified_utc"] = datetime.utcnow()
+        market_info = self._adjust_for_hours(market_info)
         dict_of_keys = {
             "instrument_code": instrument_code,
             "epic": epic,
@@ -154,3 +182,22 @@ class mongoMarketInfoData(marketInfoData):
             data_dict=market_info,
             allow_overwrite=allow_overwrite,
         )
+
+    def _adjust_for_hours(self, data: dict):
+        data["last_modified_utc"] = datetime.utcnow()
+        try:
+            market_info = munchify(data)
+            trading_hours = parse_trading_hours(market_info.instrument.openingHours)
+            if trading_hours.okay_to_trade_now():
+                data["in_hours"] = "TRUE"
+                data["in_hours_status"] = market_info.snapshot.marketStatus
+            else:
+                data["in_hours"] = "FALSE"
+                try:
+                    data["in_hours_status"] = market_info.in_hours_status
+                except:
+                    data["in_hours_status"] = "n/a"
+        except:
+            self.log.error(f"No existing market info found, not adjusting")
+
+        return data

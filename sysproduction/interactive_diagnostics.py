@@ -78,6 +78,7 @@ from sysproduction.reporting.report_configs_fsb import (
     min_capital_fsb_report_config,
     remove_fsb_markets_report_config,
     fsb_report_config,
+    fsb_roll_report_config,
 )
 
 
@@ -199,7 +200,7 @@ def roll_report(data):
     instrument_code = get_valid_instrument_code_from_user(
         data, allow_all=True, all_code=ALL_ROLL_INSTRUMENTS
     )
-    report_config = email_or_print_or_file(roll_report_config)
+    report_config = email_or_print_or_file(fsb_roll_report_config)
     report_config.modify_kwargs(instrument_code=instrument_code)
     run_report(report_config, data=data)
 

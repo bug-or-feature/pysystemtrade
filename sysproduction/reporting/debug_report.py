@@ -1,28 +1,13 @@
+import pandas as pd
+from syscore.pdutils import print_full
 from sysdata.data_blob import dataBlob
+from sysproduction.data.broker import dataBroker
+from sysproduction.reporting.report_configs import *
+from sysproduction.reporting.report_configs_fsb import *
 from sysproduction.reporting.reporting_functions import (
     run_report_with_data_blob,
     pandas_display_for_reports,
 )
-from sysproduction.reporting.report_configs import *
-from sysproduction.reporting.report_configs_fsb import *
-
-
-import pandas as pd
-from functools import cached_property
-
-from sysbrokers.IG.ig_connection import IGConnection
-from sysbrokers.IG.ig_futures_contract_price_data import IgFuturesContractPriceData
-from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
-from sysdata.arctic.arctic_futures_per_contract_prices import (
-    arcticFuturesContractPriceData,
-)
-from sysdata.data_blob import dataBlob
-from sysproduction.data.contracts import dataContracts
-from sysproduction.data.prices import diagPrices
-from sysdata.data_blob import dataBlob
-from sysproduction.data.broker import dataBroker
-from syscore.pdutils import print_full
-
 
 """
 
@@ -57,7 +42,10 @@ def run_costs_report():
 
 
 def run_roll_report():
-    do_report(roll_report_config.new_config_with_modified_output("console"))
+    config = roll_report_config.new_config_with_modified_output("console")
+    # config = config.new_config_with_modify_kwargs(instrument_code=ALL_ROLL_INSTRUMENTS)
+    config = config.new_config_with_modify_kwargs(instrument_code="BRENT_W_fsb")
+    do_report(config)
 
 
 def run_daily_pandl_report():
@@ -132,6 +120,13 @@ def run_instrument_risk_fsb_report():
     )
 
 
+def run_fsb_roll_report():
+    config = fsb_roll_report_config.new_config_with_modified_output("console")
+    config = config.new_config_with_modify_kwargs(instrument_code=ALL_ROLL_INSTRUMENTS)
+    # config = config.new_config_with_modify_kwargs(instrument_code="BRENT_W_fsb")
+    do_report(config)
+
+
 def run_adhoc_tradeable_report(instr_code: str):
     data = dataBlob()
     broker = dataBroker(data=data)
@@ -190,7 +185,8 @@ if __name__ == "__main__":
     # run_fsb_report()
     # run_min_capital_fsb_report()
     # run_instrument_risk_fsb_report()
-    run_fsb_remove_markets_report()
+    # run_fsb_remove_markets_report()
+    run_fsb_roll_report()
 
     # run_adhoc_tradeable_report()
     # run_adhoc_tradeable_report(instr_code="GAS_US_fsb")

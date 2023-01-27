@@ -8,15 +8,19 @@ from sysdata.arctic.arctic_futures_per_contract_prices import (
 from sysdata.data_blob import dataBlob
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.prices import diagPrices
+from sysproduction.data.fsb_prices import DiagFsbPrices
 from sysproduction.reporting.api import reportingApi
 from sysproduction.reporting.data.fsb_correlation_data import fsb_correlation_data
 from sysproduction.reporting.data.risk_fsb import minimum_capital_table
 from sysproduction.reporting.reporting_functions import table
+from sysproduction.reporting.data.rolls_fsb import (
+    get_roll_data_for_fsb_instrument,
+)
 
 
 class ReportingApiFsb(reportingApi):
 
-    # MINIMUM CAPITAL
+    ### MINIMUM CAPITAL
     def table_of_minimum_capital_fsb(self) -> table:
         min_capital = minimum_capital_table(
             self.data, instrument_weight=0.1, only_held_instruments=False
@@ -28,6 +32,23 @@ class ReportingApiFsb(reportingApi):
         min_capital_table = table("Minimum capital in base currency", min_capital)
 
         return min_capital_table
+
+    def _get_roll_data_dict(self):
+        list_of_instruments = self._list_of_all_instruments()
+        data = self.data
+
+        roll_data_dict = {}
+        for instrument_code in list_of_instruments:
+            roll_data = get_roll_data_for_fsb_instrument(instrument_code, data)
+            roll_data_dict[instrument_code] = roll_data
+
+        return roll_data_dict
+
+    def _list_of_all_instruments(self):
+        diag_prices = DiagFsbPrices(self.data)
+        list_of_instruments = diag_prices.get_list_of_instruments_in_multiple_prices()
+
+        return list_of_instruments
 
     def table_of_risk_all_fsb_instruments(
         self,
@@ -100,10 +121,20 @@ class ReportingApiFsb(reportingApi):
     ) -> table:
         epics = self.data.db_market_info.epic_mapping
         expiries = self.data.db_market_info.expiry_dates
+        in_hours = self.data.db_market_info.in_hours
+        in_hours_status = self.data.db_market_info.in_hours_status
 
         rows = []
         for key, value in epics.items():
-            rows.append(dict(Contract=key, Epic=value, Expiry=expiries[key]))
+            rows.append(
+                dict(
+                    Contract=key,
+                    Epic=value,
+                    Expiry=expiries[key],
+                    Status=in_hours_status[key],
+                    In_Hours=in_hours[key],
+                )
+            )
 
         results = pd.DataFrame(rows)
         results.set_index("Contract", inplace=True)

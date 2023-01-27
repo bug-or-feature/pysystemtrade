@@ -1,4 +1,5 @@
 from sysproduction.reporting.report_configs import reportConfig
+from syscore.objects import ALL_ROLL_INSTRUMENTS
 
 instrument_risk_fsb_report_config = reportConfig(
     title="FSB Instrument risk report",
@@ -22,4 +23,11 @@ fsb_report_config = reportConfig(
     title="Futures spread bet report",
     function="sysproduction.reporting.fsb_report.do_fsb_report",
     output="file",
+)
+
+fsb_roll_report_config = reportConfig(
+    title="FSB Roll report",
+    function="sysproduction.reporting.fsb_roll_report.fsb_roll_report",
+    instrument_code=ALL_ROLL_INSTRUMENTS,
+    output="email",
 )

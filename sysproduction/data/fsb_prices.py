@@ -34,7 +34,7 @@ class DiagFsbPrices(productionDataLayerGeneric):
                 arcticFuturesAdjustedPricesData,
                 arcticFuturesMultiplePricesData,
                 ArcticFsbEpicHistoryData,
-                mongoMarketInfoData
+                mongoMarketInfoData,
             ]
         )
         return data
