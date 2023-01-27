@@ -15,6 +15,7 @@ from syscore.fileutils import (
     files_with_extension_in_pathname,
     get_resolved_pathname,
 )
+from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 
 MARKET_INFO_DIRECTORY = "data.futures_spreadbet.market_info_json"
 
@@ -51,7 +52,12 @@ class jsonMarketInfoData(marketInfoData):
 
     def get_list_of_instruments(self) -> list:
         # return ["GOLD_fsb"]
-        return files_with_extension_in_pathname(self._datapath, ".json")
+        return list(
+            set(
+                file[:-9]
+                for file in files_with_extension_in_pathname(self._datapath, ".json")
+            )
+        )
 
     def _filename_given_instrument_code(self, instr_code: str, expiry_key: str):
         contract_date_str = contract_date_from_expiry_key(expiry_key)
@@ -67,13 +73,26 @@ class jsonMarketInfoData(marketInfoData):
         with open(filename, "w", encoding="utf-8") as file:
             json.dump(market_info, file, ensure_ascii=False, indent=4, skipkeys=True)
 
+    def get_market_info_for_instrument_code(self, instr_code: str):
+        results = []
+        for filename in files_with_extension_in_pathname(self.datapath, ".json"):
+            if filename.startswith(instr_code):
+                with open(
+                    f"{get_resolved_pathname(self.datapath)}/{filename}.json", "r"
+                ) as file_obj:
+                    info = munchify(json.loads(file_obj.read()))
+                    info.instrument_code = instr_code
+                    results.append(dict(info))
+
+        return results
+
     def _parse_market_info_for_mappings(self):
-        for file in files_with_extension_in_pathname(self.datapath, ".json"):
-            key = f"{file[:-9]}/{file[-8:]}"
+        for filename in files_with_extension_in_pathname(self.datapath, ".json"):
+            key = f"{filename[:-9]}/{filename[-8:]}"
             with open(
-                f"{get_resolved_pathname(self.datapath)}/{file}.json", "r"
-            ) as file:
-                info = munchify(json.loads(file.read()))
+                f"{get_resolved_pathname(self.datapath)}/{filename}.json", "r"
+            ) as file_obj:
+                info = munchify(json.loads(file_obj.read()))
 
                 date_str = info.instrument.expiryDetails.lastDealingDate
                 last_dealing = datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
@@ -83,3 +102,15 @@ class jsonMarketInfoData(marketInfoData):
 
         if len(self._epic_mappings) == 0:
             raise Exception("Invalid market info")
+
+    def add_market_info(self, instrument_code: str, epic: str, market_info: dict):
+        raise NotImplementedError("Consider implementing for consistent interface")
+
+    def get_expiry_details(self, epic: str):
+        raise NotImplementedError("Consider implementing for consistent interface")
+
+    def get_trading_hours_for_epic(self, epic) -> listOfTradingHours:
+        raise NotImplementedError("Consider implementing for consistent interface")
+
+    def get_epic_for_contract(self, contract) -> str:
+        raise NotImplementedError("Consider implementing for consistent interface")
