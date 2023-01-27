@@ -55,6 +55,6 @@ def build_hours_for_day(dt: datetime, open: str, close: str):
     dt_close = datetime.strptime(f"{day} {close}:00", ISO_DATE_FORMAT)
 
     if dt_close < dt_open:
-        return tradingHours(dt_open, dt_close.replace(day=dt_close.day + 1))
+        return tradingHours(dt_open.replace(day=dt_open.day - 1), dt_close)
     else:
         return tradingHours(dt_open, dt_close)
