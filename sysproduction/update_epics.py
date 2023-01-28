@@ -59,6 +59,7 @@ class UpdateEpicHistory(object):
             col_headers = []
             valid = True
             key = now.strftime("%Y-%m-%d %H:%M:%S")
+            remove_dupes = True
 
             if not hasattr(config, "ig_data"):
                 self.data.log.msg(f"Skipping {instr}, no IG config")
@@ -67,6 +68,21 @@ class UpdateEpicHistory(object):
             if len(config.ig_data.periods) == 0:
                 self.data.log.msg(f"Skipping {instr}, no epics defined")
                 continue
+
+            current_df = self.data.db_fsb_epic_history.get_epic_history(instr)
+            current_cols = list(current_df.columns)
+            diff = list(set(config.ig_data.periods) - set(current_cols))
+            if len(diff) > 0:
+                self.data.log.warn(
+                    f"Column mismatch between current and config for {instr}, adjusting"
+                )
+                remove_dupes = False
+                for new_col in diff:
+                    current_df[new_col] = "unmapped"
+
+                self.data.db_fsb_epic_history.add_epics_history(
+                    instr, current_df, ignore_duplication=True
+                )
 
             for period in config.ig_data.periods:
                 col_headers.append(period)
@@ -91,7 +107,9 @@ class UpdateEpicHistory(object):
                     )
                     df.index.name = "Date"
                     df.index = pd.to_datetime(df.index)
-                    self.data.db_fsb_epic_history.update_epic_history(instr, df)
+                    self.data.db_fsb_epic_history.update_epic_history(
+                        instr, df, remove_duplicates=remove_dupes
+                    )
                 except Exception as exc:
                     msg = (
                         f"Problem updating epic data for instrument '{instr}' "
@@ -112,4 +130,5 @@ class UpdateEpicHistory(object):
 
 
 if __name__ == "__main__":
-    update_epics()
+    # update_epics()
+    update_epics(["EDOLLAR_fsb"])

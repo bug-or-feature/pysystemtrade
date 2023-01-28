@@ -9,7 +9,7 @@ from sysproduction.data.broker import dataBroker
 from syscore.objects import success
 
 
-def update_fsb_market_info():
+def update_fsb_market_info(instr_list=None):
 
     logging.basicConfig(
         level=logging.INFO,
@@ -19,7 +19,7 @@ def update_fsb_market_info():
 
     with dataBlob(log_name="Update-FSB-Market-Info") as data:
         update_epic_config = UpdateFsbMarketInfo(data)
-        update_epic_config.do_updates()
+        update_epic_config.do_updates(instr_list)
 
     return success
 
@@ -34,16 +34,16 @@ class UpdateFsbMarketInfo(object):
     def broker(self) -> dataBroker:
         return self._broker
 
-    def do_updates(self):
+    def do_updates(self, instrument_list):
 
-        instr_list = [
-            instr_code
-            for instr_code in self.data.broker_futures_instrument.get_list_of_instruments()
-            if instr_code.endswith("_fsb")
-        ]
-
-        # TODO remove
-        # instr_list = ["GOLD_fsb"]
+        if instrument_list is None:
+            instr_list = [
+                instr_code
+                for instr_code in self.data.broker_futures_instrument.get_list_of_instruments()
+                if instr_code.endswith("_fsb")
+            ]
+        else:
+            instr_list = instrument_list
 
         for instr in sorted(instr_list):
 
@@ -81,4 +81,5 @@ class UpdateFsbMarketInfo(object):
 
 
 if __name__ == "__main__":
-    update_fsb_market_info()
+    # update_fsb_market_info()
+    update_fsb_market_info(["EDOLLAR_fsb"])
