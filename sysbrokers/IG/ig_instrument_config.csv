@@ -42,7 +42,7 @@ DOW_fsb,IX.D.DOW,GBP,1.0,False,MONTH1|MONTH2,0.05,YM
 DX,,,,,na,,DX
 DX_fsb,CO.D.DX,GBP,100.0,False,Month1|Month2,0.1,DX
 EDOLLAR,,,,,na,,GE
-EDOLLAR_fsb,IR.D.ED,GBP,100.0,False,Month1|Month3|MONTH7|MonthM|Month12|Month13|Month14|Month15|Month16|Month17,0.2,GE
+EDOLLAR_fsb,IR.D.ED,GBP,100.0,False,Month1|Month3|MONTH7|MonthM|Month12|Month13|Month14|Month15|Month16|Month17|Mnth10|Mnth11,0.2,GE
 EUA,,,,,na,,CK
 EUA_fsb,CO.D.CFI,GBP,100.0,False,Month1|Month2|Month3,0.1,CK
 EUR,,,,,na,,E6
