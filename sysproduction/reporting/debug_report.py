@@ -1,6 +1,7 @@
 import pandas as pd
 from syscore.pdutils import print_full
 from sysdata.data_blob import dataBlob
+from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysproduction.data.broker import dataBroker
 from sysproduction.reporting.report_configs import *
 from sysproduction.reporting.report_configs_fsb import *
@@ -133,18 +134,14 @@ def run_fsb_roll_report():
 
 def run_adhoc_tradeable_report(instr_code: str):
     data = dataBlob()
-    broker = dataBroker(data=data)
-    expiries = (
-        broker.broker_futures_contract_price_data.futures_instrument_data.expiry_dates
-    )
+    data.add_class_object(mongoMarketInfoData)
+    expiries = data.db_market_info.expiry_dates
 
     rows = []
     for (
         key,
         value,
-    ) in (
-        broker.broker_futures_contract_price_data.futures_instrument_data.epic_mapping.items()
-    ):
+    ) in data.db_market_info.epic_mapping.items():
 
         if instr_code is None or key.startswith(instr_code):
             epic_info = data.broker_conn.rest_service.fetch_market_by_epic(value)
@@ -194,8 +191,8 @@ if __name__ == "__main__":
     # run_min_capital_fsb_report()
     # run_instrument_risk_fsb_report()
     # run_fsb_remove_markets_report()
-    run_fsb_roll_report()
+    # run_fsb_roll_report()
 
     # run_adhoc_tradeable_report()
-    # run_adhoc_tradeable_report(instr_code="GAS_US_fsb")
+    run_adhoc_tradeable_report(instr_code="EDOLLAR_fsb")
     # run_adhoc_correlation_report("JSE40_fsb/20230300")
