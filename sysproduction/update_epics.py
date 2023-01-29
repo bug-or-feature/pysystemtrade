@@ -131,4 +131,4 @@ class UpdateEpicHistory(object):
 
 if __name__ == "__main__":
     # update_epics()
-    update_epics(["EDOLLAR_fsb"])
+    update_epics(["GOLD_fsb"])

@@ -61,7 +61,7 @@ def delete_epics_history_single(instrument_code):
 if __name__ == "__main__":
     # view_epics_history_single("SOYOIL_fsb")
     # for epic in ["GOLD_fsb" ]:
-    for epic in ["EDOLLAR_fsb"]:
+    for epic in ["GOLD_fsb"]:
         import_epics_history_single(epic)
     # import_epics_history_all()
     # for instr in ["SWE30_fsb"]:
