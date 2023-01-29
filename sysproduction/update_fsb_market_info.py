@@ -72,7 +72,7 @@ class UpdateFsbMarketInfo(object):
                         f"Problem updating market info for instrument '{instr}' "
                         f"and periods {config.ig_data.periods} - check config: {exc}"
                     )
-                    self.data.log.critical(msg)
+                    self.data.log.error(msg)
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
         return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(
