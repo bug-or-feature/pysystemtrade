@@ -146,7 +146,7 @@ if __name__ == "__main__":
     # for instr in ["GOLD_fsb", "AUD_fsb", "BOBL_fsb", "NASDAQ_fsb"]:
     #      import_market_info_single(instr)
 
-    #import_market_info_all()
+    # import_market_info_all()
 
     # test_get_for_instr_code()
 
