@@ -159,16 +159,18 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # XXX_fsb
-    instr_code = "VIX_fsb"
+    instr_code = "LEANHOG_fsb"
 
-    prices = csvFuturesContractPriceData(
-        datapath=get_filename_for_package(
-            get_production_config().get_element_or_missing_data("barchart_path")
-            # get_production_config().get_element_or_missing_data("norgate_path")
-        ),
-        config=build_import_config(instr_code)
-        # config=build_norgate_import_config(instr_code)
-    )
+    prices = arcticFuturesContractPriceData()
+
+    # prices = csvFuturesContractPriceData(
+    #     datapath=get_filename_for_package(
+    #         get_production_config().get_element_or_missing_data("barchart_path")
+    #         # get_production_config().get_element_or_missing_data("norgate_path")
+    #     ),
+    #     config=build_import_config(instr_code)
+    #     # config=build_norgate_import_config(instr_code)
+    # )
 
     if method == "build":
         build_and_write_roll_calendar(

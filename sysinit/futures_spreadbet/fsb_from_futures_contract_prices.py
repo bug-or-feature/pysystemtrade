@@ -2,6 +2,7 @@ from sysbrokers.IG.ig_instruments_data import (
     IgFuturesInstrumentData,
     get_instrument_object_from_config,
 )
+from sysdata.data_blob import dataBlob
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
@@ -13,7 +14,7 @@ from syscore.objects import missing_instrument
 def convert_futures_prices_to_fsb_single(instr):
 
     arctic_prices = arcticFuturesContractPriceData()
-    instr_data = IgFuturesInstrumentData()
+    instr_data = IgFuturesInstrumentData(dataBlob())
     instr_prices = arctic_prices.get_merged_prices_for_instrument(instr)
     fsb_code = f"{instr}_fsb"
 
@@ -51,5 +52,5 @@ if __name__ == "__main__":
 
     # 'XXX'
     # ['EURGBP', 'JSE40', 'OMXS30']
-    for instr in ["EURGBP", "JSE40", "OMXS30"]:
+    for instr in ["LEANHOG"]:
         convert_futures_prices_to_fsb_single(instr)

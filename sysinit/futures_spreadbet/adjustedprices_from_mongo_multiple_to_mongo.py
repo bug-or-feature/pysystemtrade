@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     # XXX_fsb
     # ['EURGBP_fsb', 'JSE40_fsb', 'OMXS30_fsb']
-    for instrument_code in ["EURGBP_fsb", "JSE40_fsb", "OMXS30_fsb"]:
+    for instrument_code in ["LEANHOG_fsb"]:
         print(f"Creating adjusted prices for {instrument_code}")
         process_adjusted_prices_single_instrument(
             instrument_code,

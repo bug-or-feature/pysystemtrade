@@ -1,4 +1,5 @@
 from sysdata.config.production_config import get_production_config
+from sysdata.data_blob import dataBlob
 from syscore.fileutils import get_filename_for_package
 from syscore.objects import missing_instrument
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
@@ -26,7 +27,7 @@ def transfer_barchart_prices_to_arctic_single_contract(instr, contract, datapath
 
 
 def build_import_config(instr):
-    instr_data = IgFuturesInstrumentData()
+    instr_data = IgFuturesInstrumentData(dataBlob())
     config_data = get_instrument_object_from_config(instr, config=instr_data.config)
     if config_data is missing_instrument:
         print(f"No config for {instr}")
@@ -71,7 +72,7 @@ if __name__ == "__main__":
 
     # XXX
     # ['EURGBP', 'JSE40', 'OMXS30']
-    for instr in ["EURGBP", "JSE40", "OMXS30"]:
+    for instr in ["LEANHOG"]:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
     # transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)
