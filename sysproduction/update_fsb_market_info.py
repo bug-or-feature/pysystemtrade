@@ -34,7 +34,7 @@ class UpdateFsbMarketInfo(object):
     def broker(self) -> dataBroker:
         return self._broker
 
-    def do_market_info_updates(self, instrument_list):
+    def do_market_info_updates(self, instrument_list=None):
 
         if instrument_list is None:
             instr_list = [
@@ -83,5 +83,5 @@ class UpdateFsbMarketInfo(object):
 
 
 if __name__ == "__main__":
-    # update_fsb_market_info()
-    update_fsb_market_info(["GOLD_fsb"])
+    update_fsb_market_info()
+    # update_fsb_market_info(["GOLD_fsb"])
