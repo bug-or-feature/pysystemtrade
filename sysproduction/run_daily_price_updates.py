@@ -1,6 +1,5 @@
 from syscontrol.run_process import processToRun
 from sysproduction.update_fx_prices import updateFxPrices
-from sysproduction.update_fsb_market_info import UpdateFsbMarketInfo
 from sysproduction.update_epics import UpdateEpicHistory
 from sysproduction.update_sampled_contracts import updateSampledContracts
 from sysproduction.update_historical_prices import updateHistoricalPrices
@@ -20,7 +19,6 @@ def run_daily_price_updates():
 
 def get_list_of_timer_functions_for_price_update():
     data_fx = dataBlob(log_name="update_fx_prices")
-    data_fsb_market_info = dataBlob(log_name="data_fsb_market_info")
     data_epics = dataBlob(log_name="update_epics")
     data_contracts = dataBlob(log_name="update_sampled_contracts")
     data_historical = dataBlob(log_name="update_historical_prices")
@@ -28,7 +26,6 @@ def get_list_of_timer_functions_for_price_update():
     data_multiple = dataBlob(log_name="update_multiple_adjusted_prices")
 
     fx_update_object = updateFxPrices(data_fx)
-    fsb_market_info_object = UpdateFsbMarketInfo(data_fsb_market_info)
     epic_update_object = UpdateEpicHistory(data_epics)
     contracts_update_object = updateSampledContracts(data_contracts)
     historical_update_object = updateHistoricalPrices(data_historical)
@@ -37,7 +34,6 @@ def get_list_of_timer_functions_for_price_update():
 
     list_of_timer_names_and_functions = [
         ("update_fx_prices", fx_update_object),
-        ("update_market_info", fsb_market_info_object),
         ("update_epic_history", epic_update_object),
         ("update_sampled_contracts", contracts_update_object),
         ("update_historical_prices", historical_update_object),
