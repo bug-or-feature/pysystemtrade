@@ -2,8 +2,9 @@ from copy import copy
 import datetime
 import pandas as pd
 
-from syscore.objects import arg_not_supplied, failure, missing_data
-from syscore.pdutils import uniquets
+from syscore.exceptions import missingData
+from syscore.constants import missing_data, arg_not_supplied, failure
+from syscore.pandas.pdutils import uniquets
 
 from sysdata.data_blob import dataBlob
 from sysdata.production.capital import capitalEntry, capitalForStrategy
@@ -81,8 +82,9 @@ class capitalData(listOfEntriesData):
         return self.get_current_capital_for_strategy(ACC_PROFIT_VALUES)
 
     def get_current_capital_for_strategy(self, strategy_name: str) -> float:
-        current_capital_entry = self.get_last_entry_for_strategy(strategy_name)
-        if current_capital_entry is missing_data:
+        try:
+            current_capital_entry = self.get_last_entry_for_strategy(strategy_name)
+        except missingData:
             return missing_data
 
         capital_value = current_capital_entry.capital_value
@@ -92,8 +94,9 @@ class capitalData(listOfEntriesData):
     def get_date_of_last_entry_for_strategy(
         self, strategy_name: str
     ) -> datetime.datetime:
-        current_capital_entry = self.get_last_entry_for_strategy(strategy_name)
-        if current_capital_entry is missing_data:
+        try:
+            current_capital_entry = self.get_last_entry_for_strategy(strategy_name)
+        except missingData:
             return missing_data
 
         entry_date = current_capital_entry.date
