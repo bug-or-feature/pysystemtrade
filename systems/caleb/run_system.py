@@ -27,7 +27,8 @@ def do_system():
         # config=Config("systems.caleb.estimate_config.yaml")
         # config=Config("systems.caleb.simple_config.yaml")
         # config=Config("systems.caleb.andy_strategy_v1.yaml")
-        config_filename="systems.caleb.caleb_strategy_v2.yaml"
+        # config_filename="systems.caleb.caleb_strategy_v2.yaml"
+        config_filename="systems.caleb.simple_strategy.yaml"
     )
     return system
 
@@ -56,6 +57,13 @@ def run_dynamic():
     system = do_system()
     portfolio = system.accounts.optimised_portfolio()
     print(portfolio.percent.stats())
+    curve = portfolio.curve()
+
+    # filename = f"{PYSYS_CODE}/data/saved_backtests/backtest_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    # curve.to_csv(
+    #     filename, index_label="Date"
+    # )
+
     portfolio.curve().plot()
     # write_config(system)
     show()
