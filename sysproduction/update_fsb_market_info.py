@@ -73,6 +73,8 @@ class UpdateFsbMarketInfo(object):
                         f"and periods {config.ig_data.periods} - check config: {exc}"
                     )
                     self.data.log.error(msg)
+                    # TODO should we delete market info for epics that are no
+                    #  longer valid?
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
         return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(
@@ -82,4 +84,4 @@ class UpdateFsbMarketInfo(object):
 
 if __name__ == "__main__":
     # update_fsb_market_info()
-    update_fsb_market_info(["EDOLLAR_fsb"])
+    update_fsb_market_info(["GOLD_fsb"])
