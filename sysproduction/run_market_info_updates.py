@@ -16,7 +16,7 @@ def get_list_of_timer_functions():
     fsb_market_info_object = UpdateFsbMarketInfo(data_fsb_market_info)
 
     list_of_timer_names_and_functions = [
-        ("do_updates", fsb_market_info_object),
+        ("do_market_info_updates", fsb_market_info_object),
     ]
 
     return list_of_timer_names_and_functions
