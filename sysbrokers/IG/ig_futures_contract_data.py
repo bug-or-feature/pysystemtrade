@@ -196,7 +196,8 @@ class IgFuturesContractData(brokerFuturesContractData):
         return 0.01
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
-        raise NotImplementedError("Not implemented! build it now")
+        trading_hours = self.market_info_data.get_trading_hours_for_epic(futures_contract)
+        return trading_hours.okay_to_trade_now()
 
     def is_contract_conservatively_okay_to_trade(
         self, futures_contract: futuresContract
