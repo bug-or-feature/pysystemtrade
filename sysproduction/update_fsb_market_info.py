@@ -19,7 +19,7 @@ def update_fsb_market_info(instr_list=None):
 
     with dataBlob(log_name="Update-FSB-Market-Info") as data:
         update_epic_config = UpdateFsbMarketInfo(data)
-        update_epic_config.do_updates(instr_list)
+        update_epic_config.do_market_info_updates(instr_list)
 
     return success
 
@@ -34,7 +34,7 @@ class UpdateFsbMarketInfo(object):
     def broker(self) -> dataBroker:
         return self._broker
 
-    def do_updates(self, instrument_list):
+    def do_market_info_updates(self, instrument_list):
 
         if instrument_list is None:
             instr_list = [
