@@ -8,6 +8,7 @@ class stackHandlerAdditionalSampling(stackHandlerCore):
     def refresh_additional_sampling_all_instruments(self):
         try:
             all_contracts = self.get_all_instruments_priced_contracts()
+            # all_contracts = [futuresContract.from_two_strings("AUD_fsb","20230300")]
             for contract in all_contracts:
                 self.refresh_sampling_for_contract(contract)
         except Exception as ex:

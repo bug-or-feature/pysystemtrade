@@ -196,7 +196,8 @@ class IgFuturesContractData(brokerFuturesContractData):
         return 0.01
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
-        trading_hours = self.market_info_data.get_trading_hours_for_epic(futures_contract)
+        epic = self.market_info_data.get_epic_for_contract(futures_contract)
+        trading_hours = self.market_info_data.get_trading_hours_for_epic(epic)
         return trading_hours.okay_to_trade_now()
 
     def is_contract_conservatively_okay_to_trade(
