@@ -36,7 +36,8 @@ def parse_trading_hours(
     now = datetime.now()
     list_of_open_times = []
 
-    for day in pd.date_range(now, periods=MARKET_HOURS_DAY_COUNT, freq="D"):
+    date_range = pd.date_range(now, periods=5, freq="B")
+    for day in date_range:
         if trading_hours is None:
             list_of_open_times.append(build_hours_for_day(day, "00:00", "23:59"))
         else:
