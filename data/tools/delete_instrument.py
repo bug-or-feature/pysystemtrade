@@ -6,7 +6,7 @@ from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesDat
 from sysdata.arctic.arctic_spreads import arcticSpreadsForInstrumentData
 from sysdata.data_blob import dataBlob
 from sysproduction.data.prices import get_valid_instrument_code_from_user
-from syscore.interactive import true_if_answer_is_yes
+from syscore.interactive.input import true_if_answer_is_yes
 
 
 def delete_instrument():

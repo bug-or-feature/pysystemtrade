@@ -4,7 +4,7 @@ from copy import copy
 import numpy as np
 import pandas as pd
 
-from syscore.objects import missing_data
+from syscore.constants import missing_data
 from sysobjects.contract_dates_and_expiries import contractDate
 from sysobjects.dict_of_futures_per_contract_prices import (
     dictFuturesContractFinalPrices,
@@ -15,7 +15,7 @@ from sysobjects.roll_parameters_with_price_data import (
     contractWithRollParametersAndPrices,
 )
 from sysobjects.rolls import rollParameters, contractDateWithRollParameters
-from syscore.pdutils import print_full
+from syscore.pandas.pdutils import print_full
 
 
 def generate_approximate_calendar(

@@ -2,8 +2,8 @@ import datetime
 
 import pandas as pd
 
-from syscore.fileutils import get_filename_for_package
-from syscore.objects import arg_not_supplied
+from syscore.fileutils import resolve_path_and_filename_for_package
+from syscore.constants import arg_not_supplied
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
 from sysdata.config.production_config import get_production_config
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
@@ -36,7 +36,7 @@ We then store those multiple prices in: (depending on options)
 def _get_data_inputs(csv_roll_data_path, csv_multiple_data_path):
     csv_roll_calendars = csvRollCalendarData(csv_roll_data_path)
     csv_individual_prices = csvFuturesContractPriceData(
-        datapath=get_filename_for_package(
+        datapath=resolve_path_and_filename_for_package(
             get_production_config().get_element_or_missing_data("norgate_path")
         ),
         config=NORGATE_CONFIG,

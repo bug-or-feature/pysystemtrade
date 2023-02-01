@@ -1,12 +1,12 @@
 import pandas as pd
 import numpy as np
 
+import syscore.pandas.list_of_df
 from systems.accounts.curves.account_curve_group import accountCurveGroup
 from syscore.genutils import flatten_list
 from syscore.dateutils import ROOT_BDAYS_INYEAR
 
-from syscore.pdutils import listOfDataFrames
-
+from syscore.pandas.list_of_df import listOfDataFrames
 
 SINGLE_NAME = "asset"
 

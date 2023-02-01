@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from syscore.fileutils import get_filename_for_package
+from syscore.fileutils import resolve_path_and_filename_for_package
 
 from sysdata.config.production_config import Config
 from sysdata.sim.db_futures_sim_data import dbFuturesSimData
@@ -36,7 +36,7 @@ def do_system():
 def write_config(system):
     now = datetime.now()
     sysdiag = systemDiag(system)
-    output_file = get_filename_for_package(
+    output_file = resolve_path_and_filename_for_package(
         f"systems.caleb.estimate-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
     )
     print(f"writing estimate params to: {output_file}")

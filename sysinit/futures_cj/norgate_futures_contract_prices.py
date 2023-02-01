@@ -5,7 +5,7 @@ from syscore.fileutils import (
     files_with_extension_in_resolved_pathname,
     get_resolved_pathname,
 )
-from syscore.fileutils import get_filename_for_package
+from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.config.production_config import get_production_config
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
@@ -19,7 +19,6 @@ from sysinit.futures_cj.barchart_futures_contract_prices_single import (
     transfer_barchart_prices_to_arctic_single,
 )
 from numpy import isnan
-from syscore.objects import arg_not_supplied
 
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysdata.arctic.arctic_futures_per_contract_prices import (
@@ -302,7 +301,7 @@ def transfer_barchart_prices_to_arctic_single_contract(instr, contract, datapath
 
 
 def convert_barchart_to_norgate_single_contract(contract_obj):
-    source_path = get_filename_for_package(
+    source_path = resolve_path_and_filename_for_package(
         get_production_config().get_element_or_missing_data("barchart_path")
     )
     source = csvFuturesContractPriceData(source_path, config=BARCHART_CONFIG)
@@ -319,7 +318,7 @@ def convert_barchart_to_norgate_single_contract(contract_obj):
     df = df.resample("D").apply(logic)
     df = df.dropna()
 
-    dest_path = get_filename_for_package(
+    dest_path = resolve_path_and_filename_for_package(
         "/Users/ageach/Dev/work/pyhistprice/data/barchart_caleb_fx2"
     )
     dest = csvFuturesContractPriceData(dest_path, config=NORGATE_CONFIG)
@@ -349,7 +348,7 @@ if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # datapath = "/home/caleb/pysystemtrade/data/Norgate/Futures"
     # datapath = "/home/caleb/pysystemtrade/data/Norgate/Future_conv"
-    datapath = get_filename_for_package(
+    datapath = resolve_path_and_filename_for_package(
         get_production_config().get_element_or_missing_data("norgate_path")
         # get_production_config().get_element_or_missing_data("barchart_path")
     )

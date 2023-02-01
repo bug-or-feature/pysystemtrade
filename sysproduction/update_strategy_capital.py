@@ -1,7 +1,8 @@
 from copy import copy
 import datetime
 
-from syscore.objects import success, missing_data
+from syscore.exceptions import missingData
+from syscore.constants import missing_data, success
 
 from sysdata.data_blob import dataBlob
 from sysproduction.data.capital import dataCapital, dataMargin
@@ -82,11 +83,11 @@ def get_total_current_capital(data: dataBlob) -> float:
 
 def get_total_current_margin(data: dataBlob) -> float:
     data_margin = dataMargin(data)
-    total_margin = data_margin.get_current_total_margin()
-
-    if total_margin is missing_data:
+    try:
+        total_margin = data_margin.get_current_total_margin()
+    except missingData:
         data.log.critical("Can't allocate strategy margin without total margin")
-        raise Exception()
+        raise
 
     return total_margin
 

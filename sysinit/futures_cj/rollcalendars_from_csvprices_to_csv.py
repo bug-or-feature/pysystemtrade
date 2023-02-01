@@ -1,5 +1,5 @@
-from syscore.interactive import true_if_answer_is_yes
-from syscore.objects import arg_not_supplied
+from syscore.interactive.input import true_if_answer_is_yes
+from syscore.constants import arg_not_supplied
 
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
@@ -8,7 +8,7 @@ from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysobjects.roll_calendars import rollCalendar
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
-from syscore.fileutils import get_filename_for_package
+from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.config.production_config import get_production_config
 from sysinit.futures_cj.norgate_futures_contract_prices import NORGATE_CONFIG
 
@@ -146,7 +146,7 @@ if __name__ == "__main__":
         instrument_code=instrument_code,
         output_datapath="data.futures_cj.roll_calendars_csv",
         input_prices=csvFuturesContractPriceData(
-            datapath=get_filename_for_package(
+            datapath=resolve_path_and_filename_for_package(
                 get_production_config().get_element_or_missing_data("norgate_path")
             ),
             config=NORGATE_CONFIG,
