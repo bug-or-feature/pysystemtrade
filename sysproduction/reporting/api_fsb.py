@@ -9,6 +9,7 @@ from sysdata.data_blob import dataBlob
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.prices import diagPrices
 from sysproduction.data.fsb_prices import DiagFsbPrices
+# from sysproduction.data.fsb_epics import DiagFsbEpics
 from sysproduction.reporting.api import reportingApi
 from sysproduction.reporting.data.fsb_correlation_data import fsb_correlation_data
 from sysproduction.reporting.data.risk_fsb import minimum_capital_table
@@ -92,6 +93,14 @@ class ReportingApiFsb(reportingApi):
 
         return instrument_risk_sorted_table
 
+    # def table_of_problem_fsb_rolls(self) -> table:
+    #
+    #     df = pd.DataFrame(self.roll_data)
+    #     # df.set_index("Instrument", inplace=True)
+    #     # df = df.sort_values("Returns")
+    #
+    #     return table("Problem FSB Rolls", df)
+
     # all FSB correlations
     def table_of_problem_fsb_correlations(
         self, min_price_corr=0.8, min_returns_corr=0.6
@@ -155,6 +164,9 @@ class ReportingApiFsb(reportingApi):
     def fsb_mappings_and_expiries(
         self, table_header="FSB mappings and expiries"
     ) -> table:
+
+        roll_data = self._get_roll_data_dict()
+
         epics = self.data.db_market_info.epic_mapping
         expiries = self.data.db_market_info.expiry_dates
         in_hours = self.data.db_market_info.in_hours
@@ -162,6 +174,12 @@ class ReportingApiFsb(reportingApi):
 
         rows = []
         for key, value in epics.items():
+            if roll_data[key[:-9]]["contract_priced"] == key[-8:]:
+                pos = "priced"
+            elif roll_data[key[:-9]]["contract_fwd"] == key[-8:]:
+                pos = "fwd"
+            else:
+                pos = "-"
             rows.append(
                 dict(
                     Contract=key,
@@ -169,6 +187,7 @@ class ReportingApiFsb(reportingApi):
                     Expiry=expiries[key],
                     Status=in_hours_status[key],
                     In_Hours=in_hours[key],
+                    Pos=pos
                 )
             )
 
@@ -176,6 +195,25 @@ class ReportingApiFsb(reportingApi):
         results.set_index("Contract", inplace=True)
 
         return table(table_header, results)
+
+    # @cached_property
+    # def roll_data(self): # TODO
+    #     #futures_prices = arcticFuturesContractPriceData()
+    #     #fsb_prices = ArcticFsbContractPriceData()
+    #
+    #     rows = []
+    #     with dataBlob(log_name="FSB-Report") as data:
+    #         diagFsbEpics = DiagFsbEpics(data)
+    #         #diag_contracts = dataContracts(data)
+    #
+    #         for instr in ["GOLD_fsb", "NASDAQ_fsb"]:
+    #             epic_history = diagFsbEpics.get_epic_history(instr)
+    #             print(epic_history)
+    #
+    #             chain = epic_history.extract_roll_chain()
+    #
+    #
+    #     return rows
 
     @cached_property
     def correlation_data(self):
