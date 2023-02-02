@@ -2,7 +2,10 @@ import datetime
 from sysobjects.production.process_control import controlProcess
 from sysdata.production.process_control_data import controlProcessData
 from syscore.constants import arg_not_supplied
-from syscore.dateutils import ISO_DATE_FORMAT, date_as_short_pattern_or_question_if_missing
+from syscore.dateutils import (
+    ISO_DATE_FORMAT,
+    date_as_short_pattern_or_question_if_missing,
+)
 from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey
 from syslogdiag.log_to_screen import logtoscreen
 

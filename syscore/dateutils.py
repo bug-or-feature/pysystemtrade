@@ -542,8 +542,7 @@ MISSING_STRING_PATTERN = "     ???      "
 
 
 def date_as_short_pattern_or_question_if_missing(
-    last_run_or_heartbeat: datetime.datetime,
-    date_format=SHORT_DATE_PATTERN
+    last_run_or_heartbeat: datetime.datetime, date_format=SHORT_DATE_PATTERN
 ) -> str:
     """
     Check time matches at one second resolution (good enough)
