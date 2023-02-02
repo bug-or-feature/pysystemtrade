@@ -9,7 +9,7 @@ from sysdata.data_blob import dataBlob
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.prices import diagPrices
 from sysproduction.data.fsb_prices import DiagFsbPrices
-# from sysproduction.data.fsb_epics import DiagFsbEpics
+from sysproduction.data.fsb_epics import DiagFsbEpics
 from sysproduction.reporting.api import reportingApi
 from sysproduction.reporting.data.fsb_correlation_data import fsb_correlation_data
 from sysproduction.reporting.data.risk_fsb import minimum_capital_table
@@ -17,6 +17,11 @@ from sysproduction.reporting.reporting_functions import table
 from sysproduction.reporting.data.rolls_fsb import (
     get_roll_data_for_fsb_instrument,
 )
+from sysproduction.update_sampled_contracts import (
+    get_furthest_out_contract_with_roll_parameters,
+    create_contract_date_chain,
+)
+from syscore.dateutils import contract_month_from_number
 
 
 class ReportingApiFsb(reportingApi):
@@ -93,13 +98,12 @@ class ReportingApiFsb(reportingApi):
 
         return instrument_risk_sorted_table
 
-    # def table_of_problem_fsb_rolls(self) -> table:
-    #
-    #     df = pd.DataFrame(self.roll_data)
-    #     # df.set_index("Instrument", inplace=True)
-    #     # df = df.sort_values("Returns")
-    #
-    #     return table("Problem FSB Rolls", df)
+    def table_of_problem_fsb_rolls(self) -> table:
+        df = pd.DataFrame(self.chain_data)
+        df.set_index("Instrument", inplace=True)
+        df = df.sort_values("Instrument")
+
+        return table("Problem FSB Rolls", df)
 
     # all FSB correlations
     def table_of_problem_fsb_correlations(
@@ -187,7 +191,7 @@ class ReportingApiFsb(reportingApi):
                     Expiry=expiries[key],
                     Status=in_hours_status[key],
                     In_Hours=in_hours[key],
-                    Pos=pos
+                    Pos=pos,
                 )
             )
 
@@ -196,24 +200,46 @@ class ReportingApiFsb(reportingApi):
 
         return table(table_header, results)
 
-    # @cached_property
-    # def roll_data(self): # TODO
-    #     #futures_prices = arcticFuturesContractPriceData()
-    #     #fsb_prices = ArcticFsbContractPriceData()
-    #
-    #     rows = []
-    #     with dataBlob(log_name="FSB-Report") as data:
-    #         diagFsbEpics = DiagFsbEpics(data)
-    #         #diag_contracts = dataContracts(data)
-    #
-    #         for instr in ["GOLD_fsb", "NASDAQ_fsb"]:
-    #             epic_history = diagFsbEpics.get_epic_history(instr)
-    #             print(epic_history)
-    #
-    #             chain = epic_history.extract_roll_chain()
-    #
-    #
-    #     return rows
+    @cached_property
+    def chain_data(self):
+        rows = []
+        with dataBlob(log_name="FSB-Report") as data:
+            diagFsbEpics = DiagFsbEpics(data)
+            # for instr in ["CAD_fsb"]:
+            for instr in self._list_of_all_instruments():
+                epic_history = diagFsbEpics.get_epic_history(instr)
+
+                furthest_out_contract = get_furthest_out_contract_with_roll_parameters(
+                    data, instr
+                )
+                contract_date_chain = create_contract_date_chain(furthest_out_contract)
+                date_str_chain = [
+                    contract_date.date_str for contract_date in contract_date_chain
+                ]
+
+                expected_chain = list(reversed(date_str_chain))
+                actual_chain = epic_history.roll_chain()
+
+                length = min(len(expected_chain), len(actual_chain))
+
+                if expected_chain[:length] == actual_chain[:length]:
+                    continue
+                else:
+                    rows.append(
+                        dict(
+                            Instrument=instr,
+                            Expected=self.pretty_print(expected_chain[:length]),
+                            Actual=self.pretty_print(actual_chain[:length]),
+                        )
+                    )
+
+        return rows
+
+    def pretty_print(self, contract_date_str_list):
+        return [
+            contract_month_from_number(int(contract[4:6]))
+            for contract in contract_date_str_list
+        ]
 
     @cached_property
     def correlation_data(self):

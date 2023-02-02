@@ -188,12 +188,12 @@ if __name__ == "__main__":
     # run_account_curve_report()
     # run_slippage_report()
 
-    # run_fsb_report()
+    run_fsb_report()
     # run_min_capital_fsb_report()
     # run_instrument_risk_fsb_report()
     # run_fsb_remove_markets_report()
     # run_fsb_roll_report()
-    run_fsb_roll_report(instr_code="LEANHOG_fsb")
+    # run_fsb_roll_report(instr_code="LEANHOG_fsb")
 
     # run_adhoc_tradeable_report()
     # run_adhoc_tradeable_report(instr_code="EDOLLAR_fsb")

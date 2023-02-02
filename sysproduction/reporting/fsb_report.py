@@ -5,6 +5,11 @@ from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 
+PROBLEM_ROLL_HEADER_TEXT = body_text(
+    "Possible unexpected IG roll schedule, or roll config\n"
+)
+
+
 ALL_CORR_HEADER_TEXT = body_text(
     "Price: correlation between spread bet price and the underlying future, per contract\n"
     + "Returns: correlation between spread bet returns and the underlying future, per contract\n"
@@ -47,6 +52,10 @@ def do_fsb_report(
     formatted_output = []
 
     formatted_output.append(reporting_api_fsb.terse_header("FSB report"))
+
+    # roll calendar mismatches
+    formatted_output.append(PROBLEM_ROLL_HEADER_TEXT)
+    formatted_output.append(reporting_api_fsb.table_of_problem_fsb_rolls())
 
     # problem correlations for priced contracts
     formatted_output.append(BELOW_MIN_CORR_PR_HEADER_TEXT)
