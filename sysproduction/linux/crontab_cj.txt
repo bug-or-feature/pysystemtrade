@@ -14,7 +14,7 @@ PYSYS_PRIVATE_CONFIG_DIR=/home/caleb/harbor-macro/pst-prod
 0,15,30,45 * * * 1-7 export DISPLAY=:0 && /bin/bash /opt/ibc/gatewaystart.sh
 00 03  * * 1-5     conda activate base; $SCRIPT_PATH/run_stack_handler  >> $ECHO_PATH/run_stack_handler.txt 2>&1; conda deactivate
 50 03  * * 1-5     conda activate base; $SCRIPT_PATH/run_capital_update  >> $ECHO_PATH/run_capital_update.txt 2>&1; conda deactivate
-05 07  * * 1-5     conda activate base; $SCRIPT_PATH/run_daily_price_updates >> $ECHO_PATH/run_daily_price_updates.txt 2>&1; conda deactivate
+05 20  * * 1-5     conda activate base; $SCRIPT_PATH/run_daily_price_updates >> $ECHO_PATH/run_daily_price_updates.txt 2>&1; conda deactivate
 05 07  * * 1-5     conda activate base; $SCRIPT_PATH/run_daily_fx_and_contract_updates >> $ECHO_PATH/run_daily_fx_and_contract_updates.txt 2>&1; conda deactivate
 00 23  * * 1-5     conda activate base; $SCRIPT_PATH/run_daily_update_multiple_adjusted_prices >> $ECHO_PATH/run_daily_update_multiple_adjusted_prices.txt 2>&1; conda deactivate
 30 20  * * 1-5     conda activate base; $SCRIPT_PATH/run_systems  >> $ECHO_PATH/run_systems.txt 2>&1; conda deactivate
