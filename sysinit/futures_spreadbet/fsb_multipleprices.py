@@ -198,10 +198,10 @@ if __name__ == "__main__":
 
     # XXX_fsb
     # ['EURGBP_fsb', 'JSE40_fsb', 'OMXS30_fsb']
-    for instrument_code in ["LEANHOG_fsb"]:
+    for instrument_code in ["AEX_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
-            adjust_calendar_to_prices=True,
+            adjust_calendar_to_prices=False,
             csv_multiple_data_path=csv_multiple_data_path,
             csv_roll_data_path=csv_roll_data_path,
             ADD_TO_ARCTIC=True,
