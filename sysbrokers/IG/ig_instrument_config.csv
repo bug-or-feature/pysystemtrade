@@ -85,8 +85,8 @@ LEANHOG,,,,,na,,HE
 LEANHOG_fsb,CO.D.LH,GBP,100.0,False,Month1|Month2,0.1,HE
 LIVECOW,,,,,na,,LE
 LIVECOW_fsb,CO.D.LC,GBP,100.0,False,Month1|Month2,0.1,LE
-LUMBER,,,,,na,,LB
-LUMBER_fsb,CO.D.LB,GBP,100.0,False,Month1|Month2,0.1,LB
+LUMBER,,,,,na,,LS
+LUMBER_fsb,CO.D.LB,GBP,100.0,False,Month1|Month2,0.1,LS
 MSCISING,,,,,na,,SV
 MSCISING_fsb,IX.D.SINGAPORE,GBP,1.0,False,MONTH1|MONTH2,0.1,SV
 NASDAQ,,,,,na,,NQ
