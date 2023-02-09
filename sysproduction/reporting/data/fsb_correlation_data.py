@@ -1,18 +1,23 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.pyplot import show
-
+from syscore.text import remove_suffix
+from syscore.fileutils import get_filename_for_package
 from syscore.pdutils import print_full
 from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
+from sysdata.config.production_config import get_production_config
+from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData, ConfigCsvFuturesPrices
 from sysdata.data_blob import dataBlob
 from sysobjects.contracts import futuresContract as fc
 from sysobjects.contracts import get_code_and_id_from_contract_key as from_key
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.prices import diagPrices
-
+from sysinit.futures_spreadbet.fsb_contract_prices import (
+    build_import_config,
+)
 
 def fsb_correlation_data(
     contract_obj,
@@ -29,20 +34,53 @@ def fsb_correlation_data(
     if fsb_prices is None:
         fsb_prices = ArcticFsbContractPriceData()
 
+    bc_datapath = get_filename_for_package(
+            get_production_config().get_element_or_missing_data("barchart_path")
+            # get_production_config().get_element_or_missing_data("norgate_path")
+        ),
+
+    import_config = build_import_config(contract_obj.instrument_code)
+
+    # ib_prices = csvFuturesContractPriceData(
+    #     #datapath=bc_datapath,
+    #     datapath="/Users/ageach/Dev/work/pyhistprice/data/barchart/",
+    #     #datapath="/Users/ageach/Documents/backup/pst_caleb/csv/backups_csv/contract_prices/",
+    #     config=import_config,
+    #     # #config=ConfigCsvFuturesPrices(
+    #     #     #input_date_index_name="DATETIME",
+    #     #     input_date_index_name="Time",
+    #     #     #input_skiprows=0,
+    #     #     #input_skipfooter=0,
+    #     #     input_date_format="%Y-%m-%d",  # 19810507
+    #     #     input_date_format="%Y-%m-%dT%H:%M:%S",  # 2022-01-18T00:00:00+0000
+    #     #     #input_column_mapping=dict(
+    #     #     #    OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
+    #     #     #),  # Date,Symbol,Security Name,Open,High,Low,Close,Volume
+    #     #     apply_multiplier=100.0,
+    #     #     apply_inverse=False,
+    #     # )
+    # )
+
+
     futures_df = futures_prices.get_merged_prices_for_contract_object(contract_obj)
     fsb_df = fsb_prices.get_merged_prices_for_contract_object(contract_obj)
 
+    remove_suffix(contract_obj.instrument_code, "_fsb")
+    ib_contract = fc.from_two_strings(remove_suffix(contract_obj.instrument_code, "_fsb"), contract_obj.date_str)
+    #ib_df = ib_prices.get_merged_prices_for_contract_object(ib_contract)
+
     fut = futures_df.return_final_prices().resample("1B").last()
+    fut.name = "Barchart"
+
     fsb = fsb_df.return_final_prices().resample("1B").last()
+    fsb.name = "IG"
+
+    #ib = ib_df.return_final_prices().resample("1B").last()
+    #ib.name = "IB"
 
     prices = pd.concat([fut, fsb], axis=1)
-    prices.rename(
-        columns={
-            prices.columns[0]: "Future",
-            prices.columns[1]: "FSB",
-        },
-        inplace=True,
-    )
+    #prices = pd.concat([fut, fsb, ib], axis=1)
+
     sliced_prices = prices[fsb_df.index[0] : fsb_df.index[-1]]
 
     returns = pd.concat([fut.diff(), fsb.diff()], axis=1)
@@ -80,9 +118,10 @@ def do_plot(contract_obj, prices, returns, price_corr, returns_corr):
     ax = fig.add_subplot(211)
     ax.set_title(f"Prices for {contract_obj.key}")
     ax.plot(
-        prices["Future"], linestyle="-", label="Future", color="black", linewidth=2.0
+        prices["Barchart"], linestyle="-", label="Barchart", color="black", linewidth=2.0
     )
-    ax.plot(prices["FSB"], linestyle="--", label="FSB", color="red", linewidth=2.0)
+    ax.plot(prices["IG"], linestyle="--", label="IG", color="red", linewidth=2.0)
+    # ax.plot(prices["IB"], linestyle=":", label="IB", color="green", linewidth=3.0)
     # ax.text(2, 6, f"Correlation: {price_corr.iloc[0,1]}", fontsize=15)
     ax.legend()
     ax.grid(True)
