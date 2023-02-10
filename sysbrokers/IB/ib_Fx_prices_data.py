@@ -4,21 +4,26 @@ import pandas as pd
 from sysbrokers.IB.client.ib_fx_client import ibFxClient
 from sysbrokers.broker_fx_prices_data import brokerFxPricesData
 from syscore.exceptions import missingData
-
+from sysdata.data_blob import dataBlob
 from sysobjects.spot_fx_prices import fxPrices
 from syslogdiag.log_to_screen import logtoscreen
-from syscore.fileutils import get_filename_for_package
-from syscore.objects import missing_instrument, missing_file
+from syscore.fileutils import resolve_path_and_filename_for_package
+from syscore.constants import missing_instrument, missing_file
 
-IB_CCY_CONFIG_FILE = get_filename_for_package("sysbrokers.IB.ib_config_spot_FX.csv")
+IB_CCY_CONFIG_FILE = resolve_path_and_filename_for_package(
+    "sysbrokers.IB.ib_config_spot_FX.csv"
+)
 
 ibFXConfig = namedtuple("ibFXConfig", ["ccy1", "ccy2", "invert"])
 
 
 class ibFxPricesData(brokerFxPricesData):
-    def __init__(self, ibconnection, log=logtoscreen("ibFxPricesData")):
-        self._ibconnection = ibconnection
+    def __init__(
+        self, ibconnection, data_blob: dataBlob, log=logtoscreen("ibFxPricesData")
+    ):
         super().__init__(log=log)
+        self._ibconnection = ibconnection
+        self._dataBlob = data_blob
 
     def __repr__(self):
         return "IB FX price data"

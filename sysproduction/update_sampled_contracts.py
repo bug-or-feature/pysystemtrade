@@ -1,5 +1,5 @@
 from syscore.exceptions import missingContract
-from syscore.objects import success
+from syscore.constants import success
 from syscore.text import remove_suffix
 
 from sysobjects.contract_dates_and_expiries import contractDate, expiryDate

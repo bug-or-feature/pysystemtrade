@@ -4,7 +4,7 @@ from copy import copy
 from sysdata.data_blob import dataBlob
 from sysdata.config.production_config import get_production_config
 
-from syscore.fileutils import get_filename_for_package
+from syscore.fileutils import resolve_path_and_filename_for_package
 from sysproduction.data.control_process import dataControlProcess
 from sysproduction.data.control_process import diagControlProcess
 from sysproduction.data.logs import diagLogs
@@ -131,7 +131,7 @@ def generate_html(process_observatory: processMonitor):
 
 def get_html_file_path():
     path = get_production_config().get_element_or_missing_data("monitor_output_path")
-    resolved_path = get_filename_for_package(path)
+    resolved_path = resolve_path_and_filename_for_package(path)
     return resolved_path
 
 

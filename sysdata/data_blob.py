@@ -2,7 +2,8 @@ from copy import copy
 from functools import lru_cache
 
 from sysbrokers.IG.ig_connection import IGConnection
-from syscore.objects import arg_not_supplied, get_class_name
+from syscore.objects import get_class_name
+from syscore.constants import arg_not_supplied
 from syscore.text import camel_case_split
 from sysdata.config.production_config import get_production_config, Config
 from sysdata.mongodb.mongo_connection import mongoDb
@@ -131,7 +132,7 @@ class dataBlob(object):
         except Exception as e:
             class_name = get_class_name(class_object)
             msg = (
-                "Error %s couldn't evaluate %s(self.broker_conn, log = self.log.setup(component = %s)) This might be because (a) import is missing \
+                "Error %s couldn't evaluate %s(self, self.broker_conn, log = self.log.setup(component = %s)) This might be because (a) import is missing \
                          or (b) arguments don't follow pattern"
                 % (str(e), class_name, class_name)
             )
