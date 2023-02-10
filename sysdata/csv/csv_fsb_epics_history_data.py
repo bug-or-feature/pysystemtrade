@@ -37,7 +37,7 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
         # return ["BUXL_fsb", "CAD_fsb", "CRUDE_W_fsb", "EUROSTX_fsb", "GOLD_fsb", "NASDAQ_fsb", "NZD_fsb", "US10_fsb"]
         return files_with_extension_in_pathname(self._datapath, ".csv")
 
-    def get_epic_history(self, instrument_code: str):
+    def get_epic_history(self, instrument_code: str) -> FsbEpicsHistory:
         df = self._read_epic_history(instrument_code)
         return FsbEpicsHistory(df)
 

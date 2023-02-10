@@ -149,6 +149,18 @@ class mongoMarketInfoData(marketInfoData):
         else:
             raise missingData
 
+    def get_status_for_epic(self, epic: str) -> str:
+        if epic is not None:
+            try:
+                market_info = munchify(self.get_market_info_for_epic(epic))
+                status = market_info.snapshot.marketStatus
+            except Exception as exc:
+                self.log.error(f"Problem getting status for '{epic}': {exc}")
+                raise missingContract
+            return status
+        else:
+            raise missingData
+
     # TODO change name
     def get_trading_hours_for_epic(self, epic) -> listOfTradingHours:
         try:

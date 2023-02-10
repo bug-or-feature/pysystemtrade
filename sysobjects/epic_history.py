@@ -45,18 +45,20 @@ class BetExpiry:
     epic_key_date: datetime = field(init=False)
     expiry_date: datetime = field(init=False)
     month_key: str = field(init=False)
-    # status: str = field(init=False)
+    status: str = field(init=False)
     pst_date_key: str = field(init=False)
 
     def __post_init__(self, str_val):
 
         if str_val != "unmapped":
-            self.epic_key = str_val[:6]
-            self.expiry_date = datetime.strptime(str_val[8:27], "%Y-%m-%d %H:%M:%S")
+            split = str_val.split("|")
+            self.epic_key = split[0]
+            self.expiry_date = datetime.strptime(split[1], "%Y-%m-%d %H:%M:%S")
             self.epic_key_date = datetime.strptime(self.epic_key, "%b-%y")
             self.month_key = contract_month_from_number(self.epic_key_date.month)
             self.pst_date_key = self.epic_key_date.strftime("%Y%m00")
             self.sort_index = self.epic_key_date
+            self.status = split[2]
         else:
             raise Exception("Bad row")
 
