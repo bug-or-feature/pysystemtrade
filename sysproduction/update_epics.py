@@ -90,7 +90,7 @@ class UpdateEpicHistory(object):
 
                 try:
                     expiry_key, expiry = self.data.db_market_info.get_expiry_details(
-                         epic
+                        epic
                     )
                     expiry = expiry.replace(tzinfo=None)
                     status = self.data.db_market_info.get_status_for_epic(epic)
