@@ -1,6 +1,6 @@
 from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_execution_stack import brokerExecutionStackData
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 from sysdata.data_blob import dataBlob
 from sysdata.futures.contracts import futuresContractData
 from sysdata.futures.instruments import futuresInstrumentData

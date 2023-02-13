@@ -1,8 +1,8 @@
 import sys
 
-from syscore.interactive import true_if_answer_is_yes
-from syscore.fileutils import get_filename_for_package
-from syscore.objects import arg_not_supplied
+from syscore.interactive.input import true_if_answer_is_yes
+from syscore.fileutils import resolve_path_and_filename_for_package
+from syscore.constants import arg_not_supplied
 from syscore.pdutils import print_full
 from syscore.text import remove_suffix
 from sysdata.arctic.arctic_futures_per_contract_prices import (
@@ -164,7 +164,7 @@ if __name__ == "__main__":
     prices = arcticFuturesContractPriceData()
 
     # prices = csvFuturesContractPriceData(
-    #     datapath=get_filename_for_package(
+    #     datapath=resolve_path_and_filename_for_package(
     #         get_production_config().get_element_or_missing_data("barchart_path")
     #         # get_production_config().get_element_or_missing_data("norgate_path")
     #     ),

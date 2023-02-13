@@ -7,11 +7,11 @@ from sysdata.csv.csv_fsb_epics_history_data import (
 )
 from syscore.pdutils import print_full
 from sysdata.config.production_config import get_production_config
-from syscore.fileutils import get_filename_for_package
+from syscore.fileutils import resolve_path_and_filename_for_package
 from sysobjects.epic_history import FsbEpicsHistory, BetExpiry
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 
-prod_backup = get_filename_for_package(
+prod_backup = resolve_path_and_filename_for_package(
     get_production_config().get_element_or_missing_data("prod_backup")
 )
 datapath = EPIC_HISTORY_DIRECTORY

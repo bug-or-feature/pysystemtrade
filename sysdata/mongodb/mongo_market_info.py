@@ -3,7 +3,7 @@ import pytz
 from functools import cached_property
 from munch import munchify
 
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 from syscore.dateutils import ISO_DATE_FORMAT
 from syscore.exceptions import missingContract, missingData
 from sysdata.mongodb.mongo_generic import mongoDataWithMultipleKeys

@@ -1,8 +1,11 @@
 import pandas as pd
 
-from syscore.fileutils import get_filename_for_package, files_with_extension_in_pathname
-from syscore.objects import arg_not_supplied, status, success
-from syscore.pdutils import pd_readcsv
+from syscore.fileutils import (
+    resolve_path_and_filename_for_package,
+    files_with_extension_in_pathname,
+)
+from syscore.constants import arg_not_supplied, status, success
+from syscore.pandas.pdutils import pd_readcsv
 from sysdata.futures_spreadbet.fsb_epic_history_data import FsbEpicsHistoryData
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.epic_history import FsbEpicsHistory
@@ -85,4 +88,6 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
         return success
 
     def _filename_given_instrument_code(self, instrument_code: str):
-        return get_filename_for_package(self._datapath, f"{instrument_code}.csv")
+        return resolve_path_and_filename_for_package(
+            self._datapath, f"{instrument_code}.csv"
+        )

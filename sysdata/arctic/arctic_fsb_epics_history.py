@@ -2,7 +2,7 @@ from sysdata.futures_spreadbet.fsb_epic_history_data import FsbEpicsHistoryData
 from sysobjects.epic_history import FsbEpicsHistory
 from sysdata.arctic.arctic_connection import arcticData
 from syslogdiag.log_to_screen import logtoscreen
-from syscore.objects import success, failure, status
+from syscore.constants import success, failure, status
 import pandas as pd
 
 EPICS_HISTORY_COLLECTION = "fsb_epics_history"

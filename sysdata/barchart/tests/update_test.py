@@ -1,16 +1,5 @@
 from sysdata.barchart.bc_connection import bcConnection
-from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
-from sysdata.barchart.bc_futures_contracts_data import BarchartFuturesContractData
-from sysdata.barchart.bc_futures_contract_price_data import (
-    BarchartFuturesContractPriceData,
-)
-
 from sysobjects.contracts import futuresContract as fc
-from syscore.dateutils import Frequency
-
-import pandas as pd
-import pytest
-import datetime
 
 
 def check_current_contracts():
@@ -31,5 +20,4 @@ def check_current_contracts():
 
 
 if __name__ == "__main__":
-
     check_current_contracts()

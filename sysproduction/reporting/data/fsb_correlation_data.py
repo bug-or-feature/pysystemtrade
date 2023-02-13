@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.pyplot import show
 from syscore.text import remove_suffix
-from syscore.fileutils import get_filename_for_package
+from syscore.fileutils import resolve_path_and_filename_for_package
 from syscore.pdutils import print_full
 from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
 from sysdata.arctic.arctic_futures_per_contract_prices import (
@@ -39,7 +39,7 @@ def fsb_correlation_data(
         fsb_prices = ArcticFsbContractPriceData()
 
     bc_datapath = (
-        get_filename_for_package(
+        resolve_path_and_filename_for_package(
             get_production_config().get_element_or_missing_data("barchart_path")
             # get_production_config().get_element_or_missing_data("norgate_path")
         ),

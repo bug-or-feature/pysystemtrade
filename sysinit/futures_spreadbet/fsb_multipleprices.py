@@ -2,7 +2,7 @@ import datetime
 
 import pandas as pd
 
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 from syscore.text import remove_suffix
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,

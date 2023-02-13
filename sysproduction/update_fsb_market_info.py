@@ -6,7 +6,7 @@ from sysbrokers.IG.ig_instruments import (
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
-from syscore.objects import success
+from syscore.constants import success
 
 
 def update_fsb_market_info(instr_list=None):

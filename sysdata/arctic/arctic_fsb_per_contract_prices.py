@@ -10,8 +10,8 @@ from sysdata.futures.futures_per_contract_prices import (
 from sysobjects.fsb_contract_prices import FsbContractPrices
 from sysobjects.contracts import futuresContract
 from syslogdiag.log_to_screen import logtoscreen
-from syscore.merge_data import merge_newer_data, spike_in_data
-from syscore.objects import missing_data
+from syscore.pandas.merge_data_keeping_past_data import merge_newer_data, SPIKE_IN_DATA
+from syscore.constants import missing_data
 import pandas as pd
 
 CONTRACT_COLLECTION = "fsb_contract_prices"
@@ -155,11 +155,11 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
             new_futures_per_contract_prices, check_for_spike=check_for_spike
         )
 
-        if merged_prices is spike_in_data:
+        if merged_prices is SPIKE_IN_DATA:
             new_log.msg(
                 "Price has moved too much - will need to manually check - no price update done"
             )
-            return spike_in_data
+            return SPIKE_IN_DATA
 
         rows_added = len(merged_prices) - len(old_prices)
 
@@ -202,8 +202,8 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
             check_for_spike=False,
         )
 
-        if merged_futures_prices is spike_in_data:
-            return spike_in_data
+        if merged_futures_prices is SPIKE_IN_DATA:
+            return SPIKE_IN_DATA
 
         merged_futures_prices = FsbContractPrices(merged_futures_prices)
 

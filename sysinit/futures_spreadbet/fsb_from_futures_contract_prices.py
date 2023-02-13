@@ -8,7 +8,7 @@ from sysdata.arctic.arctic_futures_per_contract_prices import (
 )
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
-from syscore.objects import missing_instrument
+from syscore.constants import missing_instrument
 
 
 def convert_futures_prices_to_fsb_single(instr):

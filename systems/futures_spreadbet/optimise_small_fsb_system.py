@@ -9,7 +9,7 @@ from sysquant.optimisation.shared import neg_SR
 from syscore.dateutils import WEEKS_IN_YEAR
 from systems.provided.futures_chapter15.basesystem import futures_system
 from systems.futures_spreadbet.run_system import calc_forecasts
-from syscore.fileutils import get_filename_for_package
+from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.config.production_config import Config
 
 ## THIS MIGHT NEED TWEAKING, DEPENDING ON CAPITAL
@@ -339,7 +339,7 @@ def cost_penalty(instr_code, trading_cost):
 
 
 def config_from_file(path_string):
-    path = get_filename_for_package(path_string)
+    path = resolve_path_and_filename_for_package(path_string)
     with open(path) as file_to_parse:
         config_dict = yaml.load(file_to_parse, Loader=yaml.CLoader)
     return config_dict

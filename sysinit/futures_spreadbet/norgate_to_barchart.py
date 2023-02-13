@@ -5,7 +5,7 @@ from syscore.fileutils import (
     files_with_extension_in_resolved_pathname,
     get_resolved_pathname,
 )
-from syscore.fileutils import get_filename_for_package
+from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.config.production_config import get_production_config
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
@@ -41,10 +41,10 @@ BARCHART_CONFIG = ConfigCsvFuturesPrices(
 
 
 def convert_norgate_to_barchart(instrument_code: str, date_str: str):
-    norgate_dir = get_filename_for_package(
+    norgate_dir = resolve_path_and_filename_for_package(
         get_production_config().get_element_or_missing_data("norgate_path")
     )
-    barchart_dir = get_filename_for_package(
+    barchart_dir = resolve_path_and_filename_for_package(
         get_production_config().get_element_or_missing_data("barchart_path")
     )
     norgate_csv_prices = csvFuturesContractPriceData(norgate_dir, config=NORGATE_CONFIG)

@@ -1,8 +1,8 @@
 import logging
 
 from syscore.dateutils import DAILY_PRICE_FREQ, Frequency
-from syscore.merge_data import spike_in_data
-from syscore.objects import success, failure
+from syscore.pandas.merge_data_keeping_past_data import SPIKE_IN_DATA
+from syscore.constants import success, failure
 from sysdata.data_blob import dataBlob
 from syslogdiag.email_via_db_interface import send_production_mail_msg
 from sysobjects.contracts import futuresContract
@@ -154,7 +154,7 @@ def get_and_add_prices_for_frequency(
         contract_object, broker_prices, check_for_spike=False
     )
 
-    if error_or_rows_added is spike_in_data:
+    if error_or_rows_added is SPIKE_IN_DATA:
         report_price_spike(data, contract_object)
         return failure
 

@@ -6,8 +6,8 @@ from sysbrokers.broker_fx_prices_data import brokerFxPricesData
 
 from sysobjects.spot_fx_prices import fxPrices
 from syslogdiag.log_to_screen import logtoscreen
-from syscore.fileutils import get_filename_for_package
-from syscore.objects import missing_instrument, missing_file, missing_data
+from syscore.fileutils import resolve_path_and_filename_for_package
+from syscore.constants import missing_instrument, missing_file
 from syscore.exceptions import missingData
 
 fxConfig = namedtuple("avFXConfig", ["ccy1", "ccy2", "invert"])
@@ -141,4 +141,6 @@ class AvFxPricesData(brokerFxPricesData):
         raise NotImplementedError("Alpha Vantage is a read only source of prices")
 
     def _get_fx_config_filename(self):
-        return get_filename_for_package("sysdata.alphavantage.av_config_spot_FX.csv")
+        return resolve_path_and_filename_for_package(
+            "sysdata.alphavantage.av_config_spot_FX.csv"
+        )

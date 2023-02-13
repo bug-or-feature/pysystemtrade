@@ -6,7 +6,7 @@ from sysobjects.production.trading_hours.trading_hours import (
     tradingHours,
     listOfTradingHours,
 )
-from syscore.fileutils import does_file_exist
+from syscore.fileutils import does_filename_exist
 from sysdata.production.trading_hours import read_trading_hours
 from syscore.dateutils import ISO_DATE_FORMAT
 
@@ -19,7 +19,7 @@ MARKET_HOURS_DAY_COUNT = 5
 
 
 def get_saved_trading_hours():
-    if does_file_exist(PRIVATE_CONFIG_TRADING_HOURS_FILE):
+    if does_filename_exist(PRIVATE_CONFIG_TRADING_HOURS_FILE):
         return read_trading_hours(PRIVATE_CONFIG_TRADING_HOURS_FILE)
     else:
         return read_trading_hours(IB_CONFIG_TRADING_HOURS_FILE)

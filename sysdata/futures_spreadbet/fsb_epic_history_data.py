@@ -1,6 +1,6 @@
 from sysdata.base_data import baseData
 from sysobjects.epic_history import FsbEpicsHistory
-from syscore.objects import status
+from syscore.constants import status
 
 USE_CHILD_CLASS_ERROR = "You need to use a child class of FsbHistoryData"
 

@@ -1,5 +1,5 @@
 from sysproduction.reporting.report_configs import reportConfig
-from syscore.objects import ALL_ROLL_INSTRUMENTS
+from sysobjects.production.roll_state import ALL_ROLL_INSTRUMENTS
 
 instrument_risk_fsb_report_config = reportConfig(
     title="FSB Instrument risk report",

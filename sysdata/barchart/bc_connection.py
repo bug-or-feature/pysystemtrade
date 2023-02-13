@@ -7,10 +7,8 @@ import requests
 from bs4 import BeautifulSoup as Scraper
 
 from syscore.dateutils import Frequency
-from sysdata.barchart.bc_instruments_data import BarchartFuturesInstrumentData
 from syslogdiag.log_to_screen import logger, logtoscreen
-from sysobjects.contracts import futuresContract
-from syscore.exceptions import missingContract, missingData
+from syscore.exceptions import missingData
 
 BARCHART_URL = "https://www.barchart.com/"
 
@@ -43,44 +41,6 @@ class bcConnection(object):
     @property
     def log(self):
         return self._log
-
-    @property
-    def barchart_futures_instrument_data(self) -> BarchartFuturesInstrumentData:
-        return BarchartFuturesInstrumentData(log=self.log)
-
-    def has_data_for_contract(self, futures_contract: futuresContract) -> bool:
-        """
-        Does Barchart have data for a given contract?
-        This implementation just checks for the existence of a top level info page for the given contract
-        :param futures_contract: internal contract identifier
-        :type futures_contract: futuresContract
-        :return: whether Barchart knows about the contract
-        :rtype: bool
-        """
-        try:
-            contract_id = self.get_barchart_id(futures_contract)
-            resp = self._get_overview(contract_id)
-            return resp.status_code == 200
-
-        except Exception as e:
-            self.log.error("Error: %s" % e)
-            return False
-
-    def get_expiry_date(self, futures_contract: futuresContract):
-        """
-        Get the actual expiry date for a given contract, according to Barchart
-
-        This implementation just scrapes the info page for the given contract to grab the date
-        :param futures_contract:
-        :return: str
-        """
-        try:
-            return self._get_expiry_date_for_symbol(
-                self.get_barchart_id(futures_contract)
-            )
-        except Exception as e:
-            self.log.error("Error: %s" % e)
-            return None
 
     def get_expiry_date_for_symbol(self, bc_symbol: str):
         """

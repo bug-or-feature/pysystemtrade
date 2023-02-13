@@ -11,7 +11,7 @@ from syscore.pdutils import print_full
 from matplotlib.pyplot import show
 from systems.diagoutput import systemDiag
 from datetime import datetime
-from syscore.fileutils import get_filename_for_package
+from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.config.production_config import get_production_config, Config
 import yaml
 
@@ -238,7 +238,7 @@ def calc_pos_for_fc(system, instrument_code, forecast, instr_weight=0.1):
 def write_estimate_file(system):
     now = datetime.now()
     sysdiag = systemDiag(system)
-    output_file = get_filename_for_package(
+    output_file = resolve_path_and_filename_for_package(
         f"systems.futures_spreadbet.estimate-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
     )
     print(f"writing estimate params to: {output_file}")
@@ -247,7 +247,7 @@ def write_estimate_file(system):
 
 def write_full_config_file(system):
     now = datetime.now()
-    output_file = get_filename_for_package(
+    output_file = resolve_path_and_filename_for_package(
         f"systems.futures_spreadbet.full_config-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
     )
     print(f"writing config to: {output_file}")
@@ -270,7 +270,7 @@ def write_file(df, run_type, product, write=True):
 
 
 def config_from_file(path_string):
-    path = get_filename_for_package(path_string)
+    path = resolve_path_and_filename_for_package(path_string)
     with open(path) as file_to_parse:
         config_dict = yaml.load(file_to_parse, Loader=yaml.CLoader)
     return config_dict
@@ -286,7 +286,7 @@ def get_daily_backtest_path():
 
 def calc_forecasts(system):
     saved_system = get_daily_backtest_path()
-    if os.path.isfile(get_filename_for_package(saved_system)):
+    if os.path.isfile(resolve_path_and_filename_for_package(saved_system)):
         system.cache.unpickle(saved_system)
     else:
         for instr in system.portfolio.get_instrument_list(for_instrument_weights=True):

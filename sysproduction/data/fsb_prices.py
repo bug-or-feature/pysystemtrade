@@ -1,5 +1,5 @@
 import pandas as pd
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 from sysdata.arctic.arctic_adjusted_prices import (
     arcticFuturesAdjustedPricesData,
 )

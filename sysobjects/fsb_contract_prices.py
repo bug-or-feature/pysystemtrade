@@ -1,11 +1,12 @@
 import pandas as pd
 import datetime
 
-from syscore.merge_data import spike_in_data
-from syscore.pdutils import (
+from syscore.pandas.merge_data_keeping_past_data import SPIKE_IN_DATA
+from syscore.pandas.frequency import (
     sumup_business_days_over_pd_series_without_double_counting_of_closing_data,
 )
-from syscore.merge_data import merge_newer_data, full_merge_of_existing_data
+from syscore.pandas.merge_data_keeping_past_data import merge_newer_data
+from syscore.pandas.full_merge_with_replacement import full_merge_of_existing_data
 
 PRICE_DATA_COLUMNS = sorted(
     [
@@ -130,8 +131,8 @@ class FsbContractPrices(pd.DataFrame):
             keep_older=keep_older,
         )
 
-        if merged_data is spike_in_data:
-            return spike_in_data
+        if merged_data is SPIKE_IN_DATA:
+            return SPIKE_IN_DATA
 
         return FsbContractPrices(merged_data)
 
@@ -168,8 +169,8 @@ class FsbContractPrices(pd.DataFrame):
             column_to_check=CLOSE_COLUMNS[0],
         )
 
-        if merged_futures_prices is spike_in_data:
-            return spike_in_data
+        if merged_futures_prices is SPIKE_IN_DATA:
+            return SPIKE_IN_DATA
 
         merged_futures_prices = FsbContractPrices(merged_futures_prices)
 

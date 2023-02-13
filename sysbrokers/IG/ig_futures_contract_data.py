@@ -8,7 +8,7 @@ from sysobjects.contracts import futuresContract
 from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 from syslogdiag.log_to_screen import logtoscreen
 from sysbrokers.IG.ig_connection import IGConnection
-from syscore.objects import missing_instrument
+from syscore.constants import missing_instrument
 from syscore.exceptions import missingContract
 from syscore.dateutils import contract_month_from_number
 from sysbrokers.IG.ig_instruments_data import (

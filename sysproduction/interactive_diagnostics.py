@@ -8,7 +8,8 @@ from syscore.interactive.input import (
     true_if_answer_is_yes,
 )
 from syscore.interactive.progress_bar import progressBar
-from syscore.pdutils import set_pd_print_options, print_full
+from syscore.pdutils import print_full
+from syscore.interactive.display import set_pd_print_options
 from syscore.interactive.date_input import get_report_dates
 from syscore.interactive.menus import (
     interactiveMenu,

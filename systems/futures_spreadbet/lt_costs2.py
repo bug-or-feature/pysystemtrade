@@ -6,7 +6,7 @@ import pandas as pd
 
 from sysbrokers.IG.ig_connection import IGConnection
 from syscore.dateutils import ROOT_BDAYS_INYEAR
-from syscore.fileutils import get_filename_for_package
+from syscore.fileutils import resolve_path_and_filename_for_package
 from syscore.pdutils import print_full
 from sysdata.config.configdata import Config
 from sysdata.config.production_config import get_production_config

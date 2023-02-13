@@ -3,7 +3,7 @@ from datetime import datetime
 from functools import cached_property
 from munch import munchify
 
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 from syscore.dateutils import ISO_DATE_FORMAT
 from sysdata.futures_spreadbet.market_info_data import (
     marketInfoData,
@@ -11,7 +11,7 @@ from sysdata.futures_spreadbet.market_info_data import (
 )
 from syslogdiag.log_to_screen import logtoscreen
 from syscore.fileutils import (
-    get_filename_for_package,
+    resolve_path_and_filename_for_package,
     files_with_extension_in_pathname,
     get_resolved_pathname,
 )
@@ -61,7 +61,7 @@ class jsonMarketInfoData(marketInfoData):
 
     def _filename_given_instrument_code(self, instr_code: str, expiry_key: str):
         contract_date_str = contract_date_from_expiry_key(expiry_key)
-        return get_filename_for_package(
+        return resolve_path_and_filename_for_package(
             f"{self._datapath}", f"{instr_code}_{contract_date_str}.json"
         )
 

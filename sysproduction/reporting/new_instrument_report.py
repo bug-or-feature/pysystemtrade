@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import show
 import pandas as pd
 from syscore.dateutils import ROOT_BDAYS_INYEAR
-from syscore.dateutils import adjust_timestamp_to_include_notional_close_and_time_offset
+from syscore.dateutils import replace_midnight_with_notional_closing_time
 from sysdata.csv.csv_futures_contract_prices import (
     csvFuturesContractPriceData,
     ConfigCsvFuturesPrices,
@@ -12,8 +12,8 @@ from sysdata.csv.csv_futures_contract_prices import (
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 from sysobjects.dict_of_futures_per_contract_prices import dictFuturesContractPrices
 from sysdata.config.production_config import get_production_config
-from syscore.fileutils import get_filename_for_package
-from sysinit.futures_ag.barchart_futures_contract_prices import BARCHART_CONFIG
+from syscore.fileutils import resolve_path_and_filename_for_package
+from sysinit.futures_spreadbet.barchart_futures_contract_prices import BARCHART_CONFIG
 
 DEPOSIT_FACTOR_MAP = {
     "Ags": 0.1,
@@ -30,7 +30,7 @@ def process_barchart_data(instrument):
     original_close = pd.DateOffset(hours=23, minutes=0, seconds=1)
     csv_time_offset = pd.DateOffset(hours=6)
     actual_close = pd.DateOffset(hours=0, minutes=0, seconds=0)
-    datapath = get_filename_for_package(
+    datapath = resolve_path_and_filename_for_package(
         get_production_config().get_element_or_missing_data("barchart_path")
     )
 
@@ -71,8 +71,8 @@ def index_to_closing(data_object, time_offset, original_close, actual_close):
     new_index = []
     for index_entry in data_object.index:
         # Check for genuine daily data
-        new_index_entry = adjust_timestamp_to_include_notional_close_and_time_offset(
-            index_entry, actual_close, original_close, time_offset
+        new_index_entry = replace_midnight_with_notional_closing_time(
+            index_entry, actual_close
         )
         new_index.append(new_index_entry)
 

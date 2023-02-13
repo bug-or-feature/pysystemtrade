@@ -4,7 +4,7 @@ from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.IG.ig_positions import from_ig_positions_to_dict
 from sysbrokers.broker_contract_position_data import brokerContractPositionData
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 from syscore.exceptions import missingContract
 from sysdata.data_blob import dataBlob
 from sysdata.futures.contracts import futuresContractData

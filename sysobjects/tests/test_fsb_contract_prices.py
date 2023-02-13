@@ -2,12 +2,12 @@ from sysobjects.fsb_contract_prices import FsbContractPrices, FsbContractFinalPr
 from sysdata.csv.csv_fsb_contract_prices import CsvFsbContractPriceData
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysobjects.contracts import futuresContract as fc
-from syscore.fileutils import get_filename_for_package
+from syscore.fileutils import resolve_path_and_filename_for_package
 
 
 class TestFsbContractPrices:
     def test_csv(self):
-        datapath = get_filename_for_package("sysobjects.tests.data")
+        datapath = resolve_path_and_filename_for_package("sysobjects.tests.data")
         data = CsvFsbContractPriceData(
             datapath=datapath,
             config=ConfigCsvFuturesPrices(

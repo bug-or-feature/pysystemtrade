@@ -1,5 +1,5 @@
 from syscore.genutils import highest_common_factor_for_list, sign
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 from sysexecution.trade_qty import tradeQuantity
 
 

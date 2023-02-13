@@ -1,5 +1,6 @@
 from sysdata.data_blob import dataBlob
-from syscore.objects import arg_not_supplied, body_text
+from syscore.constants import arg_not_supplied
+from sysproduction.reporting.reporting_functions import body_text
 from sysproduction.reporting.api_fsb import ReportingApiFsb
 from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData

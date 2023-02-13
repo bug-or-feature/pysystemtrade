@@ -8,8 +8,8 @@ from sysbrokers.IG.ig_instruments import (
 from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 
-from syscore.fileutils import get_filename_for_package
-from syscore.objects import missing_instrument, missing_file
+from syscore.fileutils import resolve_path_and_filename_for_package
+from syscore.constants import missing_instrument, missing_file
 
 from sysobjects.instruments import futuresInstrument
 
@@ -17,7 +17,7 @@ from syslogdiag.log_to_screen import logtoscreen
 from sysdata.futures_spreadbet.fsb_epic_history_data import FsbEpicsHistoryData
 from sysdata.data_blob import dataBlob
 
-IG_INSTRUMENT_CONFIG_FILE = get_filename_for_package(
+IG_INSTRUMENT_CONFIG_FILE = resolve_path_and_filename_for_package(
     "sysbrokers.IG.ig_instrument_config.csv"
 )
 

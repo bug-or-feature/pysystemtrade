@@ -1,6 +1,6 @@
 import pytest
 
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 from sysdata.config.configdata import Config
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
 from systems.accounts.accounts_stage import Account

@@ -2,7 +2,7 @@ import logging
 from datetime import timedelta
 
 from sysbrokers.IG.ig_instruments import FsbInstrumentWithIgConfigData
-from syscore.objects import success
+from syscore.constants import success
 from syscore.text import remove_suffix
 from sysdata.data_blob import dataBlob
 from sysobjects.contracts import futuresContract

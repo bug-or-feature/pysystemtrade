@@ -4,8 +4,7 @@ We create adjusted prices using multiple prices stored in arctic
 We then store those adjusted prices in arctic and/or csv
 
 """
-from syscore.objects import arg_not_supplied
-from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
+from syscore.constants import arg_not_supplied
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
 from sysdata.csv.csv_multiple_prices import csvFuturesMultiplePricesData
 from sysdata.csv.csv_adjusted_prices import csvFuturesAdjustedPricesData

@@ -1,7 +1,7 @@
 from sysdata.config.production_config import get_production_config
 from sysdata.data_blob import dataBlob
-from syscore.fileutils import get_filename_for_package
-from syscore.objects import missing_instrument
+from syscore.fileutils import resolve_path_and_filename_for_package
+from syscore.constants import missing_instrument
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 
 from sysinit.futures_spreadbet.contract_prices_from_csv_to_arctic import (
@@ -66,7 +66,7 @@ def build_norgate_import_config(instr):
 
 if __name__ == "__main__":
     # input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    datapath = get_filename_for_package(
+    datapath = resolve_path_and_filename_for_package(
         get_production_config().get_element_or_missing_data("barchart_path")
     )
 

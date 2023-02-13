@@ -9,7 +9,6 @@ from trading_ig.rest import IGService, ApiExceededException
 from trading_ig.stream import IGStreamService
 from trading_ig.lightstreamer import Subscription
 
-from syscore.objects import missing_data
 from sysdata.config.production_config import get_production_config
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.fsb_contract_prices import FsbContractPrices
@@ -243,10 +242,10 @@ class IGConnection(object):
                 self.log.error(
                     f"Problem getting snapshot price data for '{epic}': {exc}"
                 )
-                return missing_data
+                raise missingData
             return df
         else:
-            return missing_data
+            raise missingData
 
     def get_market_info(self, epic: str):
         """

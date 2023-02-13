@@ -1,7 +1,7 @@
 from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_capital_data import brokerCapitalData
 
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 from sysdata.data_blob import dataBlob
 from sysdata.production.timed_storage import classStrWithListOfEntriesAsListOfDicts
 

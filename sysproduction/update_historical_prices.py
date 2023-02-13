@@ -69,7 +69,11 @@ def download_all_instrument_prices_now(data: dataBlob):
 
     price_data = diagPrices(data)
 
-    list_of_instrument_codes = price_data.get_list_of_instruments_in_multiple_prices()
+    list_of_instrument_codes = [
+        remove_suffix(instr, "_fsb")
+        for instr in price_data.get_list_of_instruments_in_multiple_prices()
+    ]
+    print(list_of_instrument_codes)
     update_historical_prices_for_list_of_instrument_codes(
         data=data,
         list_of_instrument_codes=list_of_instrument_codes,

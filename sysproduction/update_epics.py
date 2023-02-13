@@ -11,7 +11,7 @@ from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
-from syscore.objects import success
+from syscore.constants import success
 
 
 def update_epics(instrument_list=None):
