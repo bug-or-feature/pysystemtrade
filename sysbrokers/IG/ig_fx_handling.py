@@ -9,12 +9,11 @@ from sysdata.data_blob import dataBlob
 class IgFxHandlingData(brokerFxHandlingData):
     def __init__(
         self,
-        data_blob: dataBlob,
         broker_conn: IGConnection,
+        data: dataBlob,
         log=logtoscreen("IgFxHandlingData"),
     ):
-        super().__init__(log=log)
-        self._dataBlob = data_blob
+        super().__init__(log=log, data=data)
         self._broker_conn = broker_conn
 
     def __repr__(self):
@@ -23,10 +22,6 @@ class IgFxHandlingData(brokerFxHandlingData):
     @property
     def broker_conn(self) -> IGConnection:
         return self._broker_conn
-
-    @property
-    def data(self):
-        return self._dataBlob
 
     def broker_fx_balances(self, account_id: str = arg_not_supplied) -> dict:
         # return self.broker_conn.broker_fx_balances(account_id)

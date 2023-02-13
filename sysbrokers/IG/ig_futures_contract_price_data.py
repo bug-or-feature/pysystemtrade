@@ -27,12 +27,11 @@ from syslogdiag.log_to_screen import logtoscreen
 class IgFuturesContractPriceData(brokerFuturesContractPriceData):
     def __init__(
         self,
-        data_blob: dataBlob,
         broker_conn: IGConnection,
+        data: dataBlob,
         log=logtoscreen("IgFuturesContractPriceData", log_level="on"),
     ):
-        super().__init__(log=log)
-        self._dataBlob = data_blob
+        super().__init__(log=log, data=data)
         self._broker_conn = broker_conn
         self._barchart = bcConnection()
 
@@ -42,10 +41,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
     @property
     def broker_conn(self) -> IGConnection:
         return self._broker_conn
-
-    @property
-    def data(self):
-        return self._dataBlob
 
     @property
     def fsb_contract_data(self) -> brokerFuturesContractData:

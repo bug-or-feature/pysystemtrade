@@ -1,6 +1,7 @@
 from collections import namedtuple
 import pandas as pd
 
+from sysdata.data_blob import dataBlob
 from sysdata.alphavantage.av_connection import avConnection
 from sysbrokers.broker_fx_prices_data import brokerFxPricesData
 
@@ -14,8 +15,8 @@ fxConfig = namedtuple("avFXConfig", ["ccy1", "ccy2", "invert"])
 
 
 class AvFxPricesData(brokerFxPricesData):
-    def __init__(self, log=logtoscreen("avFxPricesData")):
-        super().__init__(log=log)
+    def __init__(self, data: dataBlob, log=logtoscreen("avFxPricesData")):
+        super().__init__(log=log, data=data)
         self._avConnection = avConnection()
 
     def __repr__(self):

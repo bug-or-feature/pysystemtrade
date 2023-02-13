@@ -78,6 +78,7 @@ class Test(unittest.TestCase):
             ],
             self.data,
         )
+        # TODO make this work
         ans_dict2 = system2.positionSize.get_vol_target_dict()
         # self.assertEqual(ans_dict2["base_currency"], "USD")
         # self.assertEqual(ans_dict2["annual_cash_vol_target"], 160000.0)

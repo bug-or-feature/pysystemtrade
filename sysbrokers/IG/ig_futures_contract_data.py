@@ -20,12 +20,11 @@ from sysdata.barchart.bc_connection import bcConnection
 class IgFuturesContractData(brokerFuturesContractData):
     def __init__(
         self,
-        data_blob: dataBlob,
         broker_conn: IGConnection,
+        data: dataBlob,
         log=logtoscreen("IgFuturesContractData"),
     ):
-        super().__init__(log=log)
-        self._dataBlob = data_blob
+        super().__init__(log=log, data=data)
         self._broker_conn = broker_conn
         self._barchart = bcConnection()
 
@@ -39,10 +38,6 @@ class IgFuturesContractData(brokerFuturesContractData):
     @property
     def barchart(self):
         return self._barchart
-
-    @property
-    def data(self):
-        return self._dataBlob
 
     @property
     def ig_instrument_data(self) -> brokerFuturesInstrumentData:

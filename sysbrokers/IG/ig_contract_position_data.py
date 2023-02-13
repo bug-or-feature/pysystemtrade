@@ -18,21 +18,16 @@ from sysobjects.production.positions import contractPosition, listOfContractPosi
 class IgContractPositionData(brokerContractPositionData):
     def __init__(
         self,
-        data_blob: dataBlob,
         broker_conn: IGConnection,
+        data: dataBlob,
         log=logtoscreen("IgContractPositionData"),
     ):
-        super().__init__(log=log)
-        self._dataBlob = data_blob
+        super().__init__(log=log, data=data)
         self._broker_conn = broker_conn
 
     @property
     def broker_conn(self) -> IGConnection:
         return self._broker_conn
-
-    @property
-    def data(self):
-        return self._dataBlob
 
     def __repr__(self):
         return f"IG Futures per contract position data {self.broker_conn}"

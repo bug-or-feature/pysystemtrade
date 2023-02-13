@@ -33,12 +33,11 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
     def __init__(
         self,
-        data_blob: dataBlob,
-        broker_conn: IGConnection = None,
+        broker_conn: IGConnection,
+        data: dataBlob,
         log=logtoscreen("IgFsbInstrumentData"),
     ):
-        super().__init__(log=log)
-        self._dataBlob = data_blob
+        super().__init__(log=log, data=data)
         self._broker_conn = broker_conn
 
     def __repr__(self):
@@ -56,10 +55,6 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
             config_data = missing_file
 
         return config_data
-
-    @property
-    def data(self):
-        return self._dataBlob
 
     @property
     def fsb_epic_history(self) -> FsbEpicsHistoryData:
