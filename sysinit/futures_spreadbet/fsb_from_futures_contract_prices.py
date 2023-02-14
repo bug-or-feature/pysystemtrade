@@ -14,7 +14,7 @@ from syscore.constants import missing_instrument
 def convert_futures_prices_to_fsb_single(instr):
 
     arctic_prices = arcticFuturesContractPriceData()
-    instr_data = IgFuturesInstrumentData(dataBlob())
+    instr_data = IgFuturesInstrumentData(None, data=dataBlob())
     instr_prices = arctic_prices.get_merged_prices_for_instrument(instr)
     fsb_code = f"{instr}_fsb"
 
@@ -51,6 +51,5 @@ if __name__ == "__main__":
     # input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # 'XXX'
-    # ['EURGBP', 'JSE40', 'OMXS30']
-    for instr in ["LEANHOG"]:
+    for instr in ["LUMBER"]:
         convert_futures_prices_to_fsb_single(instr)

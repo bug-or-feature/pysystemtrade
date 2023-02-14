@@ -71,8 +71,7 @@ if __name__ == "__main__":
     )
 
     # XXX
-    # ['EURGBP', 'JSE40', 'OMXS30']
-    for instr in ["LEANHOG"]:
+    for instr in ["LUMBER"]:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
     # transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)

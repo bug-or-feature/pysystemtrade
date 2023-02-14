@@ -197,7 +197,7 @@ if __name__ == "__main__":
     csv_roll_data_path = "data.futures_spreadbet.roll_calendars_csv"
 
     # XXX_fsb
-    for instrument_code in ["AEX_fsb"]:
+    for instrument_code in ["LUMBER_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=False,
