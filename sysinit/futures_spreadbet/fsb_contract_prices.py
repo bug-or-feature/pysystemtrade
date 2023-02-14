@@ -27,7 +27,7 @@ def transfer_barchart_prices_to_arctic_single_contract(instr, contract, datapath
 
 
 def build_import_config(instr):
-    instr_data = IgFuturesInstrumentData(dataBlob())
+    instr_data = IgFuturesInstrumentData(None, data=dataBlob())
     config_data = get_instrument_object_from_config(instr, config=instr_data.config)
     if config_data is missing_instrument:
         print(f"No config for {instr}")
@@ -46,7 +46,7 @@ def build_import_config(instr):
 
 
 def build_norgate_import_config(instr):
-    instr_data = IgFuturesInstrumentData()
+    instr_data = IgFuturesInstrumentData(None, data=dataBlob())
     config_data = get_instrument_object_from_config(instr, config=instr_data.config)
     if config_data is missing_instrument:
         print(f"No config for {instr}")
