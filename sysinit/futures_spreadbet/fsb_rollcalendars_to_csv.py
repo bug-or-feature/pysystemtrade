@@ -162,7 +162,7 @@ if __name__ == "__main__":
     instr_code = "LUMBER_fsb"
 
     # run with database prices
-    #prices = arcticFuturesContractPriceData()
+    # prices = arcticFuturesContractPriceData()
 
     # run with csv prices
     prices = csvFuturesContractPriceData(

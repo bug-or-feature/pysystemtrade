@@ -115,9 +115,8 @@ update sampled contracts
 ```
 >>> from sysproduction.update_sampled_contracts import update_sampled_contracts
 >>> update_sampled_contracts()
->>> update_sampled_contracts(['BRENT_W_fsb'])
->>> update_sampled_contracts(['COCOA_LDN_fsb'])
->>> update_sampled_contracts(['BREN_fsb', 'BUND_fsb', 'EDOLLAR_fsb', 'OAT_fsb', 'SHATZ_fsb', 'US5_fsb', 'US30_fsb', 'US30U_fsb'])
+>>> update_sampled_contracts(['LUMBER_fsb'])
+>>> update_sampled_contracts(['BRENT_fsb', 'BUND_fsb'])
 ```
 
 update historic prices
