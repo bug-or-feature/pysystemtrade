@@ -22,7 +22,7 @@ addopts = "--doctest-modules --ignore=systems/provided/moretradingrules/temp.py"
 doctest_optionflags = ["ELLIPSIS", "NUMBER", "NORMALIZE_WHITESPACE"]
 testpaths = [
     # "syscore",
-    # "syscore/interactive/display",
+    "syscore/interactive/display",
     "syscore/pandas",
     "syscore/tests",
     # "sysdata",
@@ -30,7 +30,7 @@ testpaths = [
     # "sysdata/sim",
     "sysdata/tests",
     "sysinit/futures/tests",
-    # "syslogdiag",
+    "syslogdiag",
     "systems/tests",
     "sysobjects/production",
     "sysobjects/tests",

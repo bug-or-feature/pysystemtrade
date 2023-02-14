@@ -11,16 +11,16 @@ class logtoscreen(logger):
         >>> log.log("this wont print")
         >>> log.terse("nor this")
         >>> log.warn("this will")
-        this will
+        2...this will
         >>> log.error("and this")
-        and this
+        2... and this
         >>> log=logtoscreen(log, log_level="terse")
         >>> log.msg("this wont print")
         >>> log.terse("this will")
-        this will
+        2... this will
         >>> log=logtoscreen("",log_level="on")
         >>> log.msg("now prints every little thing")
-        now prints every little thing
+        2... now prints every little thing
         """
         log_level = self.logging_level
 
