@@ -126,9 +126,9 @@ class FsbContractPrices(pd.DataFrame):
         merged_data = full_merge_of_existing_data(
             self,
             new_futures_per_contract_prices,
-            check_for_spike=check_for_spike,
-            column_to_check=CLOSE_COLUMNS[0],
             keep_older=keep_older,
+            check_for_spike=check_for_spike,
+            column_to_check_for_spike=CLOSE_COLUMNS[0],
         )
 
         if merged_data is SPIKE_IN_DATA:
