@@ -166,7 +166,7 @@ class FsbContractPrices(pd.DataFrame):
             pd.DataFrame(self),
             new_futures_per_contract_prices,
             check_for_spike=check_for_spike,
-            column_to_check=CLOSE_COLUMNS[0],
+            column_to_check_for_spike=CLOSE_COLUMNS[0],
         )
 
         if merged_futures_prices is SPIKE_IN_DATA:
