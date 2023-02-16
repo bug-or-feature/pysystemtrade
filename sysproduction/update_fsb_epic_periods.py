@@ -30,7 +30,6 @@ class updateFsbEpicPeriods(object):
 
     MAX_COUNT_PER_RUN = 10
 
-
     def __init__(self, data):
         self._data = data
         self.data.add_class_object(mongoEpicPeriodsData)
@@ -52,9 +51,9 @@ class updateFsbEpicPeriods(object):
                 instrument_code
                 for instrument_code in self.data.db_epic_periods.get_list_of_instruments()
             ]
-            instr_list = full_list[:self.MAX_COUNT_PER_RUN]
+            instr_list = full_list[: self.MAX_COUNT_PER_RUN]
         else:
-            instr_list = instrument_list[:self.MAX_COUNT_PER_RUN]
+            instr_list = instrument_list[: self.MAX_COUNT_PER_RUN]
 
         for instr in instr_list:
 
@@ -84,10 +83,7 @@ class updateFsbEpicPeriods(object):
 
             self.data.log.msg(f"Epic periods: {periods}")
 
-            record = {
-                "epic_periods": periods,
-                "timestamp": datetime.now()
-            }
+            record = {"epic_periods": periods, "timestamp": datetime.now()}
 
             self.data.db_epic_periods.update_epic_periods(instr, record)
 
@@ -109,11 +105,11 @@ class updateFsbEpicPeriods(object):
             for month in month_types:
                 results.append(f"{month}{num}")
 
-        results.append('VNEAR')
-        results.append('NEAR')
-        results.append('FAR')
-        results.append('VFAR')
-        results.append('VVFAR')
+        results.append("VNEAR")
+        results.append("NEAR")
+        results.append("FAR")
+        results.append("VFAR")
+        results.append("VVFAR")
 
         self.data.log.msg(f"Periods to try: {results}")
         return results

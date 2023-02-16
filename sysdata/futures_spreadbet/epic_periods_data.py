@@ -1,12 +1,9 @@
 from sysdata.base_data import baseData
-from datetime import datetime
-from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 
 USE_CHILD_CLASS_ERROR = "You need to use a child class of epicPeriodsData"
 
 
 class epicPeriodsData(baseData):
-
     def get_list_of_instruments(self) -> list:
         raise NotImplementedError(USE_CHILD_CLASS_ERROR)
 

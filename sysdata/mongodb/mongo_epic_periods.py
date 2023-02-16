@@ -1,12 +1,6 @@
-from datetime import datetime
-import pytz
-from functools import cached_property
-from munch import munchify
 import pymongo
 
 from syscore.constants import arg_not_supplied
-from syscore.dateutils import ISO_DATE_FORMAT
-from syscore.exceptions import missingContract, missingData
 from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey
 
 from sysdata.futures_spreadbet.epic_periods_data import epicPeriodsData
@@ -46,11 +40,15 @@ class mongoEpicPeriodsData(epicPeriodsData):
         self._save(instr_code, epic_periods)
 
     def get_epic_periods_for_instrument_code(self, instr_code: str):
-        return self.mongo_data._mongo.collection.find_one({"instrument_code": instr_code})
+        return self.mongo_data._mongo.collection.find_one(
+            {"instrument_code": instr_code}
+        )
 
     def get_list_of_instruments(self):
         results = []
-        for doc in self.mongo_data._mongo.collection.find().sort('timestamp', pymongo.DESCENDING):
+        for doc in self.mongo_data._mongo.collection.find().sort(
+            "timestamp", pymongo.DESCENDING
+        ):
             results.append(doc["instrument_code"])
 
         return results
