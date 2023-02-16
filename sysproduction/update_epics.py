@@ -93,9 +93,10 @@ class UpdateEpicHistory(object):
                     epic = f"{config.ig_data.epic}.{period}.IP"
 
                     try:
-                        expiry_key, expiry = self.data.db_market_info.get_expiry_details(
-                            epic
-                        )
+                        (
+                            expiry_key,
+                            expiry,
+                        ) = self.data.db_market_info.get_expiry_details(epic)
                         expiry = expiry.replace(tzinfo=None)
                         status = self.data.db_market_info.get_status_for_epic(epic)
                         row.append(f"{expiry_key}|{expiry}|{status}")
@@ -135,5 +136,5 @@ class UpdateEpicHistory(object):
 
 
 if __name__ == "__main__":
-    #update_epics()
+    # update_epics()
     update_epics(["GOLD_fsb"])
