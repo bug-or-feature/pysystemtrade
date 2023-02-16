@@ -68,7 +68,7 @@ GBP_fsb,CF.D.GBPUSD,GBP,10000.0,False,MAR|JUN|SEP|DEC,0.033,B6
 GILT,,,,,na,,G
 GILT_fsb,IR.D.FLG,GBP,100.0,False,Month1|Month2,0.2,G
 GOLD,,,,,na,,GC
-GOLD_fsb,MT.D.GC,GBP,1.0,False,MONTH1|Month2|Month3|Month1,0.05,GC
+GOLD_fsb,MT.D.GC,GBP,1.0,False,Month2|Month3|Month1,0.05,GC
 HEATOIL,,,,,na,,HO
 HEATOIL_fsb,EN.D.HO,GBP,10000.0,False,Month1|Month2,0.1,HO
 HANG,,,,,na,,HS
