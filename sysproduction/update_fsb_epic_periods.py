@@ -53,7 +53,7 @@ class updateFsbEpicPeriods(object):
             ]
             instr_list = full_list[: self.MAX_COUNT_PER_RUN]
         else:
-            instr_list = instrument_list[: self.MAX_COUNT_PER_RUN]
+            instr_list = instrument_list
 
         for instr in instr_list:
 
@@ -63,7 +63,7 @@ class updateFsbEpicPeriods(object):
             epic_base = config.epic
 
             if epic_base.startswith("CF."):
-                self.data.log.msg(f"Ignoring '{instr}' - regular quarterly periods")
+                self.data.log.msg(f"Ignoring '{instr}', regular quarterly HMUZ periods")
                 cycle_types = []
             else:
                 if test_mode:
@@ -81,11 +81,12 @@ class updateFsbEpicPeriods(object):
                 except Exception as exc:
                     self.data.log.error(f"Problem with info: {exc}")
 
-            self.data.log.msg(f"Epic periods: {periods}")
-
-            record = {"epic_periods": periods, "timestamp": datetime.now()}
-
-            self.data.db_epic_periods.update_epic_periods(instr, record)
+            if epic_base.startswith("CF."):
+                self.data.log.msg(f"Not writing periods for {instr}, it's FX")
+            else:
+                self.data.log.msg(f"Epic periods: {periods}")
+                record = {"epic_periods": periods, "timestamp": datetime.now()}
+                self.data.db_epic_periods.update_epic_periods(instr, record)
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
         return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(
@@ -116,5 +117,77 @@ class updateFsbEpicPeriods(object):
 
 
 if __name__ == "__main__":
-    update_periods(test_mode=True)
-    # update_periods(["GOLD_fsb"], test_mode=True)
+    # update_periods(test_mode=True)
+    instr_list = [
+        "AEX_fsb",
+        "ASX_fsb",
+        "BOBL_fsb",
+        "BRENT_W_fsb",
+        "BTP_fsb",
+        "BUND_fsb",
+        "BUXL_fsb",
+        "CAC_fsb",
+        "COCOA_LDN_fsb",
+        "COCOA_fsb",
+        "COFFEE_fsb",
+        "COPPER_fsb",
+        "CORN_fsb",
+        "COTTON2_fsb",
+        "CRUDE_W_fsb",
+        "DAX_fsb",
+        "DOW_fsb",
+        "DX_fsb",
+        "EDOLLAR_fsb",
+        "EUA_fsb",
+        "EURIBOR_fsb",
+        "EUROSTX_fsb",
+        "FED_fsb",
+        "FTSE100_fsb",
+        "GASOIL_fsb",
+        "GASOLINE_fsb",
+        "GAS_US_fsb",
+        "GILT_fsb",
+        "GOLD_fsb",
+        "HANG_fsb",
+        "HEATOIL_fsb",
+        "IBXEX_fsb",
+        "JGB_fsb",
+        "JSE40_fsb",
+        "LEANHOG_fsb",
+        "LIVECOW_fsb",
+        "LUMBER_fsb",
+        "MSCISING_fsb",
+        "NASDAQ_fsb",
+        "NIKKEI_fsb",
+        "OATIES_fsb",
+        "OAT_fsb",
+        "OJ_fsb",
+        "OMXS30_fsb",
+        "PALLAD_fsb",
+        "PLAT_fsb",
+        "RICE_fsb",
+        "ROBUSTA_fsb",
+        "RUSSELL_fsb",
+        "SHATZ_fsb",
+        "SILVER_fsb",
+        "SMI_fsb",
+        "SONIA3_fsb",
+        "SOYBEAN_fsb",
+        "SOYMEAL_fsb",
+        "SOYOIL_fsb",
+        "SP500_fsb",
+        "SUGAR11_fsb",
+        "SUGAR_WHITE_fsb",
+        "US10_fsb",
+        "US2_fsb",
+        "US30U_fsb",
+        "US30_fsb",
+        "US5_fsb",
+        "V2X_fsb",
+        "VIX_fsb",
+        "WHEAT_ICE_fsb",
+        "WHEAT_fsb",
+    ]
+    update_periods(instr_list, test_mode=True)
+    # update_periods([], test_mode=True)
+    # update_periods(["CAD_fsb"], test_mode=True)
