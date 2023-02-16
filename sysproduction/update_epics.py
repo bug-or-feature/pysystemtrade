@@ -31,6 +31,9 @@ def update_epics(instrument_list=None):
 
 
 class UpdateEpicHistory(object):
+
+    MISSING_KEY = "UNMAPPED"
+
     def __init__(self, data, instrument_list=None):
         self.data = data
         self.data.add_class_object(ArcticFsbEpicHistoryData)
@@ -78,27 +81,29 @@ class UpdateEpicHistory(object):
                 )
                 remove_dupes = False
                 for new_col in diff:
-                    current_df[new_col] = "unmapped"
+                    current_df[new_col] = self.MISSING_KEY
 
                 self.data.db_fsb_epic_history.add_epics_history(
                     instr, current_df, ignore_duplication=True
                 )
 
-            for period in config.ig_data.periods:
+            for period in current_cols:
                 col_headers.append(period)
-                epic = f"{config.ig_data.epic}.{period}.IP"
+                if period in config.ig_data.periods:
+                    epic = f"{config.ig_data.epic}.{period}.IP"
 
-                try:
-                    expiry_key, expiry = self.data.db_market_info.get_expiry_details(
-                        epic
-                    )
-                    expiry = expiry.replace(tzinfo=None)
-                    status = self.data.db_market_info.get_status_for_epic(epic)
-                    row.append(f"{expiry_key}|{expiry}|{status}")
-                except Exception as exc:
-                    row.append(np.nan)
-                    valid = False
-
+                    try:
+                        expiry_key, expiry = self.data.db_market_info.get_expiry_details(
+                            epic
+                        )
+                        expiry = expiry.replace(tzinfo=None)
+                        status = self.data.db_market_info.get_status_for_epic(epic)
+                        row.append(f"{expiry_key}|{expiry}|{status}")
+                    except Exception as exc:
+                        row.append(np.nan)
+                        valid = False
+                else:
+                    row.append(self.MISSING_KEY)
             if valid:
                 try:
                     data[key] = row
@@ -130,5 +135,5 @@ class UpdateEpicHistory(object):
 
 
 if __name__ == "__main__":
-    update_epics()
-    # update_epics(["GOLD_fsb"])
+    #update_epics()
+    update_epics(["GOLD_fsb"])
