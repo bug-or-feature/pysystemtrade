@@ -146,8 +146,8 @@ class mongoMarketInfoData(marketInfoData):
     def get_periods_for_instrument_code(self, instr_code) -> list:
         results = []
         for doc in self.mongo_data._mongo.collection.find(
-                {"instrument_code": instr_code},
-                {"epic": 1},
+            {"instrument_code": instr_code},
+            {"epic": 1},
         ):
             match = re.search("[^.]+.[^.]+.[^.]+.([^.]+).IP", doc["epic"])
             results.append(match.group(1))
