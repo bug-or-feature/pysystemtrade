@@ -39,15 +39,14 @@ class UpdateFsbMarketInfo(object):
         if instrument_list is None:
             instr_list = [
                 instr_code
-                for instr_code in self.data.broker_futures_instrument.get_list_of_instruments()
-                if instr_code.endswith("_fsb")
+                for instr_code in self.data.db_market_info.get_list_of_instruments()
             ]
         else:
             instr_list = instrument_list
 
         for instr in sorted(instr_list):
 
-            self.data.log.msg(f"Starting processing for '{instr}'")
+            self.data.log.msg(f"Starting market info update for '{instr}'")
 
             config = self.get_instr_config(instr)
             col_headers = []
@@ -60,7 +59,11 @@ class UpdateFsbMarketInfo(object):
                 self.data.log.msg(f"Skipping {instr}, no epics defined")
                 continue
 
+            # list of what is currently in the db
+            db_list = self.data.db_market_info.get_periods_for_instrument_code(instr)
+
             for period in config.ig_data.periods:
+                db_list.remove(period)
                 col_headers.append(period)
                 epic = f"{config.ig_data.epic}.{period}.IP"
 
@@ -73,8 +76,12 @@ class UpdateFsbMarketInfo(object):
                         f"and periods {config.ig_data.periods} - check config: {exc}"
                     )
                     self.data.log.error(msg)
-                    # TODO should we delete market info for epics that are no
-                    #  longer valid?
+
+            # anything remaining in db_list needs to be deleted
+            for del_period in db_list:
+                epic_to_delete = f"{config.ig_data.epic}.{del_period}.IP"
+                self.data.log.msg(f"Removing unused epic {epic_to_delete}")
+                self.data.db_market_info.delete_for_epic(epic_to_delete)
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
         return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(
@@ -83,5 +90,5 @@ class UpdateFsbMarketInfo(object):
 
 
 if __name__ == "__main__":
-    update_fsb_market_info()
-    # update_fsb_market_info(["GOLD_fsb"])
+    #update_fsb_market_info()
+    update_fsb_market_info(["GOLD_fsb"])

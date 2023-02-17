@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 import pytz
 from functools import cached_property
@@ -65,49 +66,6 @@ class mongoMarketInfoData(marketInfoData):
         if len(self._in_hours_status) == 0:
             self._parse_market_info_for_mappings()
         return self._in_hours_status
-
-    def _parse_market_info_for_mappings(self):
-        for instr in self.get_list_of_instruments():
-            for result in self.mongo_data._mongo.collection.find(
-                {"instrument_code": instr},
-                {
-                    "_id": 0,
-                    "epic": 1,
-                    "in_hours": 1,
-                    "in_hours_status": 1,
-                    "instrument.expiry": 1,
-                    "instrument.expiryDetails.lastDealingDate": 1,
-                },
-            ):
-
-                doc = munchify(result)
-                contract_date_str = (
-                    f"{instr}/{contract_date_from_expiry_key(doc.instrument.expiry)}"
-                )
-                self._epic_mappings[contract_date_str] = doc["epic"]
-
-                date_str = doc.instrument.expiryDetails.lastDealingDate
-                last_dealing = datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
-
-                self._expiry_dates[contract_date_str] = last_dealing.strftime(
-                    ISO_DATE_FORMAT
-                )
-
-                try:
-                    self._in_hours[contract_date_str] = doc["in_hours"]
-                except KeyError:
-                    self.log.error(
-                        f"Problem getting 'in_hours' for {contract_date_str}"
-                    )
-                    self._in_hours[contract_date_str] = "n/a"
-
-                try:
-                    self._in_hours_status[contract_date_str] = doc["in_hours_status"]
-                except:
-                    self.log.error(
-                        f"Problem getting 'in_hours_status' for {contract_date_str}"
-                    )
-                    self._in_hours_status[contract_date_str] = "n/a"
 
     def add_market_info(self, instrument_code: str, epic: str, market_info: dict):
         self.log.msg(f"Adding market info for '{epic}'")
@@ -184,6 +142,63 @@ class mongoMarketInfoData(marketInfoData):
             return result["epic"]
         else:
             raise missingData(f"No epic found for {instr_code} ({expiry_key})")
+
+    def get_periods_for_instrument_code(self, instr_code) -> list:
+        results = []
+        for doc in self.mongo_data._mongo.collection.find(
+                {"instrument_code": instr_code},
+                {"epic": 1},
+        ):
+            match = re.search("[^.]+.[^.]+.[^.]+.([^.]+).IP", doc["epic"])
+            results.append(match.group(1))
+
+        return results
+
+    def delete_for_epic(self, epic):
+        return self.mongo_data._mongo.collection.delete_one({"epic": epic})
+
+    def _parse_market_info_for_mappings(self):
+        for instr in self.get_list_of_instruments():
+            for result in self.mongo_data._mongo.collection.find(
+                {"instrument_code": instr},
+                {
+                    "_id": 0,
+                    "epic": 1,
+                    "in_hours": 1,
+                    "in_hours_status": 1,
+                    "instrument.expiry": 1,
+                    "instrument.expiryDetails.lastDealingDate": 1,
+                },
+            ):
+
+                doc = munchify(result)
+                contract_date_str = (
+                    f"{instr}/{contract_date_from_expiry_key(doc.instrument.expiry)}"
+                )
+                self._epic_mappings[contract_date_str] = doc["epic"]
+
+                date_str = doc.instrument.expiryDetails.lastDealingDate
+                last_dealing = datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
+
+                self._expiry_dates[contract_date_str] = last_dealing.strftime(
+                    ISO_DATE_FORMAT
+                )
+
+                try:
+                    self._in_hours[contract_date_str] = doc["in_hours"]
+                except KeyError:
+                    self.log.error(
+                        f"Problem getting 'in_hours' for {contract_date_str}"
+                    )
+                    self._in_hours[contract_date_str] = "n/a"
+
+                try:
+                    self._in_hours_status[contract_date_str] = doc["in_hours_status"]
+                except:
+                    self.log.error(
+                        f"Problem getting 'in_hours_status' for {contract_date_str}"
+                    )
+                    self._in_hours_status[contract_date_str] = "n/a"
 
     def _save(
         self, instrument_code: str, epic: str, market_info: dict, allow_overwrite=True

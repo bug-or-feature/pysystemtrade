@@ -34,6 +34,12 @@ class marketInfoData(baseData):
     def get_status_for_epic(self, epic: str) -> str:
         raise NotImplementedError(USE_CHILD_CLASS_ERROR)
 
+    def get_periods_for_instrument_code(self, instr_code) -> list:
+        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+
+    def delete_for_epic(self, epic):
+        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+
 
 def contract_date_from_expiry_key(expiry_key):
     expiry_code_date = datetime.strptime(f"01-{expiry_key}", "%d-%b-%y")
