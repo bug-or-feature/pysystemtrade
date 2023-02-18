@@ -100,8 +100,9 @@ class ReportingApiFsb(reportingApi):
 
     def table_of_problem_fsb_rolls(self) -> table:
         df = pd.DataFrame(self.chain_data)
-        df.set_index("Instrument", inplace=True)
-        df = df.sort_values("Instrument")
+        if len(self.chain_data) > 0:
+            df.set_index("Instrument", inplace=True)
+            df = df.sort_values("Instrument")
 
         return table("Problem FSB Rolls", df)
 
