@@ -47,7 +47,7 @@ class mongoEpicPeriodsData(epicPeriodsData):
     def get_list_of_instruments(self):
         results = []
         for doc in self.mongo_data._mongo.collection.find().sort(
-            "timestamp", pymongo.DESCENDING
+            "timestamp", pymongo.ASCENDING
         ):
             results.append(doc["instrument_code"])
 
