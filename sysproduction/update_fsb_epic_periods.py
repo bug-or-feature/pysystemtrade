@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 import string
+import random
 from sysbrokers.IG.ig_instruments import (
     FsbInstrumentWithIgConfigData,
 )
@@ -28,7 +29,7 @@ def update_periods(instr_list=None, test_mode=False):
 
 class updateFsbEpicPeriods(object):
 
-    MAX_COUNT_PER_RUN = 10
+    MAX_COUNT_PER_RUN = 25
 
     def __init__(self, data):
         self._data = data
@@ -51,11 +52,12 @@ class updateFsbEpicPeriods(object):
                 instrument_code
                 for instrument_code in self.data.db_epic_periods.get_list_of_instruments()
             ]
-            instr_list = full_list[: self.MAX_COUNT_PER_RUN]
+            i_list = full_list[: self.MAX_COUNT_PER_RUN]
+            random.shuffle(i_list)
         else:
-            instr_list = instrument_list
+            i_list = instrument_list
 
-        for instr in instr_list:
+        for instr in i_list:
 
             self.data.log.msg(f"Starting IG Epic Discovery for '{instr}'")
 
