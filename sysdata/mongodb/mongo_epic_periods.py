@@ -40,9 +40,14 @@ class mongoEpicPeriodsData(epicPeriodsData):
         self._save(instr_code, epic_periods)
 
     def get_epic_periods_for_instrument_code(self, instr_code: str):
-        return self.mongo_data._mongo.collection.find_one(
-            {"instrument_code": instr_code}
+        doc = self.mongo_data._mongo.collection.find_one(
+            {"instrument_code": instr_code},
+            {
+                "_id": 0,
+                "epic_periods": 1,
+            },
         )
+        return doc["epic_periods"]
 
     def get_list_of_instruments(self):
         results = []

@@ -98,6 +98,14 @@ class ReportingApiFsb(reportingApi):
 
         return instrument_risk_sorted_table
 
+    def table_of_epic_period_mismatches(self) -> table:
+        df = pd.DataFrame(self.epic_periods)
+        if len(self.epic_periods) > 0:
+            df.set_index("Instrument", inplace=True)
+            df = df.sort_values("Instrument")
+
+        return table("Epic period mismatches", df)
+
     def table_of_problem_fsb_rolls(self) -> table:
         df = pd.DataFrame(self.chain_data)
         if len(self.chain_data) > 0:
@@ -200,6 +208,28 @@ class ReportingApiFsb(reportingApi):
         results.set_index("Contract", inplace=True)
 
         return table(table_header, results)
+
+    @cached_property
+    def epic_periods(self):
+        rows = []
+        for instr in self.data.db_epic_periods.get_list_of_instruments():
+            instr_config = self.data.broker_futures_instrument.get_futures_instrument_object_with_ig_data(
+                instr
+            )
+            configured = instr_config.ig_data.periods
+            calculated = self.data.db_epic_periods.get_epic_periods_for_instrument_code(
+                instr
+            )
+            if sorted(configured) != sorted(calculated):
+                rows.append(
+                    dict(
+                        Instrument=instr,
+                        Configured=sorted(configured),
+                        Calculated=sorted(calculated),
+                    )
+                )
+
+        return rows
 
     @cached_property
     def chain_data(self):
