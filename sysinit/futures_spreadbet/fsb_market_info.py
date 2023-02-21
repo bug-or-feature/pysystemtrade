@@ -31,25 +31,21 @@ def file_import_market_info_all():
         file_import_market_info_single(instr)
 
 
-def import_market_info_single(instr):
-    with dataBlob() as data:
-        data.add_class_object(mongoMarketInfoData)
-        broker = dataBroker(data)
-        _do_single(data, broker, instr)
-
-
-def import_market_info_all():
+def import_market_info(instrument_list=None):
 
     with dataBlob() as data:
         data.add_class_object(mongoMarketInfoData)
         broker = dataBroker(data)
 
         # instr_list = ["GOLD_fsb"]
-        instr_list = [
-            instr_code
-            for instr_code in data.broker_futures_instrument.get_list_of_instruments()
-            if instr_code.endswith("_fsb")
-        ]
+        if instrument_list is None:
+            instr_list = [
+                instr_code
+                for instr_code in data.broker_futures_instrument.get_list_of_instruments()
+                if instr_code.endswith("_fsb")
+            ]
+        else:
+            instr_list = instrument_list
 
         for instr in sorted(instr_list):
             _do_single(data, broker, instr)
@@ -141,22 +137,20 @@ if __name__ == "__main__":
 
     # file_import_market_info_single("GOLD_fsb")
 
-    # import_market_info_single("GOLD_fsb")
+    import_market_info(
+        [
+            "AUDJPY_fsb",
+            "CHFJPY_fsb",
+            "EURCAD_fsb",
+            "EURCHF_fsb",
+            "GBPCHF_fsb",
+            "GBPJPY_fsb",
+            "NOK_fsb",
+            "SEK_fsb",
+        ]
+    )
 
-    # TODO fix this to not log in/out each time
-    for instr in [
-        "AUDJPY_fsb",
-        "CHFJPY_fsb",
-        "EURCAD_fsb",
-        "EURCHF_fsb",
-        "GBPCHF_fsb",
-        "GBPJPY_fsb",
-        "NOK_fsb",
-        "SEK_fsb",
-    ]:
-        import_market_info_single(instr)
-
-    # import_market_info_all()
+    # import_market_info()
 
     # test_get_for_instr_code()
 
