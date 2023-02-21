@@ -13,6 +13,16 @@ from syscore.constants import named_object, missing_data, arg_not_supplied
 DEFAULT_DATE_FORMAT_FOR_CSV = "%Y-%m-%d %H:%M:%S"
 
 
+def rolling_pairwise_correlation(
+    x: pd.DataFrame, periods: int, min_periods: int = 3
+) -> pd.Series:
+
+    assert len(x.columns) == 2
+
+    rolling_corr_df = x.rolling(periods, min_periods=min_periods).corr()
+    return rolling_corr_df.droplevel(1)[::2].iloc[:, 1]
+
+
 def is_a_series(x: Union[pd.Series, pd.DataFrame]) -> bool:
     columns = getattr(x, "columns", None)
     return columns is None
@@ -265,7 +275,7 @@ def make_df_from_list_of_named_tuple(
     >>> t3 = T('Z', 4, 3)
     >>> make_df_from_list_of_named_tuple(T, [t1, t2, t3])
           value_a  value_b
-    name
+    ...
     X           3        1
     Y           1        2
     Z           4        3
