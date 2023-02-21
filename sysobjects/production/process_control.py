@@ -376,6 +376,7 @@ class dictOfControlProcesses(dict):
     def as_pd_df(self) -> pd.DataFrame:
         pd_df = pd.DataFrame(self.list_of_lists())
         pd_df.index = list(self.keys())
+        pd_df = pd_df.sort_values("end")
 
         return pd_df
 
