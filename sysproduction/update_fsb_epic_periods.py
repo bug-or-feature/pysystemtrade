@@ -29,7 +29,7 @@ def update_periods(instr_list=None, test_mode=False):
 
 class updateFsbEpicPeriods(object):
 
-    MAX_COUNT_PER_RUN = 25
+    MAX_COUNT_PER_RUN = 20
 
     def __init__(self, data):
         self._data = data
