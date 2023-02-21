@@ -143,9 +143,18 @@ if __name__ == "__main__":
 
     # import_market_info_single("GOLD_fsb")
 
-    for instr in ["AUDJPY_fsb", "CHFJPY_fsb", "EURCAD_fsb", "EURCHF_fsb", "GBPCHF_fsb",
-                     "GBPJPY_fsb","NOK_fsb","SEK_fsb"]:
-         import_market_info_single(instr)
+    # TODO fix this to not log in/out each time
+    for instr in [
+        "AUDJPY_fsb",
+        "CHFJPY_fsb",
+        "EURCAD_fsb",
+        "EURCHF_fsb",
+        "GBPCHF_fsb",
+        "GBPJPY_fsb",
+        "NOK_fsb",
+        "SEK_fsb",
+    ]:
+        import_market_info_single(instr)
 
     # import_market_info_all()
 
