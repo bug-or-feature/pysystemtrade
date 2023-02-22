@@ -63,7 +63,8 @@ class UpdateFsbMarketInfo(object):
             db_list = self.data.db_market_info.get_periods_for_instrument_code(instr)
 
             for period in config.ig_data.periods:
-                db_list.remove(period)
+                if period in db_list:
+                    db_list.remove(period)
                 col_headers.append(period)
                 epic = f"{config.ig_data.epic}.{period}.IP"
 
