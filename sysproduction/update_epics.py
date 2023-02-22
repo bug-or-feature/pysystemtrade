@@ -82,6 +82,7 @@ class UpdateEpicHistory(object):
                 remove_dupes = False
                 for new_col in diff:
                     current_df[new_col] = self.MISSING_KEY
+                    current_cols.append(new_col)
 
                 self.data.db_fsb_epic_history.add_epics_history(
                     instr, current_df, ignore_duplication=True
