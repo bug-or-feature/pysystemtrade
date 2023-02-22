@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 import string
 import random
+from munch import munchify
 from sysbrokers.IG.ig_instruments import (
     FsbInstrumentWithIgConfigData,
 )
@@ -9,6 +10,7 @@ from sysdata.mongodb.mongo_epic_periods import mongoEpicPeriodsData
 from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
 from syscore.constants import success
+from syscore.exceptions import missingContract
 
 # start 2023-02-15 21:16:44
 # end 2023-02-15 21:24:28  8 mins per instrument
@@ -78,10 +80,14 @@ class updateFsbEpicPeriods(object):
                 epic = f"{epic_base}.{period}.IP"
 
                 try:
-                    self.data.broker_conn.get_market_info(epic)
-                    periods.append(period)
+                    market_info = self.data.broker_conn.get_market_info(epic)
+                    if self._is_valid(market_info):
+                        periods.append(period)
+                except missingContract:
+                    # this is an invalid epic, happens a lot, we don't care
+                    pass
                 except Exception as exc:
-                    self.data.log.error(f"Problem with info: {exc}")
+                    self.data.log.error(f"Problem with epic {epic}: {exc}")
 
             if epic_base.startswith("CF."):
                 self.data.log.msg(f"Not writing periods for {instr}, it's FX")
@@ -94,6 +100,15 @@ class updateFsbEpicPeriods(object):
         return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(
             instr
         )
+
+    def _is_valid(self, market_info):
+        info = munchify(market_info)
+        if info.instrument.expiry == "DFB":
+            return False
+        if info.snapshot.marketStatus == "CLOSED":
+            return False
+        return True
+
 
     def _month_and_number_combinator(self):
         results = []
@@ -110,9 +125,19 @@ class updateFsbEpicPeriods(object):
 
         results.append("VNEAR")
         results.append("NEAR")
-        results.append("FAR")
         results.append("VFAR")
         results.append("VVFAR")
+        results.append("FAR")
+        results.append("FAR1")
+        results.append("FAR2")
+        results.append("FAR3")
+        results.append("FAR4")
+        results.append("FAR5")
+        results.append("FAR6")
+        results.append("FAR7")
+        results.append("FAR8")
+        results.append("FAR9")
+
 
         self.data.log.msg(f"Periods to try: {results}")
         return results
