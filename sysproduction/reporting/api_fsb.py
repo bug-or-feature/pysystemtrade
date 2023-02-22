@@ -187,9 +187,12 @@ class ReportingApiFsb(reportingApi):
 
         rows = []
         for key, value in epics.items():
-            if roll_data[key[:-9]]["contract_priced"] == key[-8:]:
+            instr_code = key[:-9]
+            if instr_code not in roll_data:
+                continue
+            if roll_data[instr_code]["contract_priced"] == key[-8:]:
                 pos = "priced"
-            elif roll_data[key[:-9]]["contract_fwd"] == key[-8:]:
+            elif roll_data[instr_code]["contract_fwd"] == key[-8:]:
                 pos = "fwd"
             else:
                 pos = "-"
