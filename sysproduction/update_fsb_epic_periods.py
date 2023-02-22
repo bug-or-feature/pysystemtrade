@@ -109,7 +109,6 @@ class updateFsbEpicPeriods(object):
             return False
         return True
 
-
     def _month_and_number_combinator(self):
         results = []
         numerator = []
@@ -137,7 +136,6 @@ class updateFsbEpicPeriods(object):
         results.append("FAR7")
         results.append("FAR8")
         results.append("FAR9")
-
 
         self.data.log.msg(f"Periods to try: {results}")
         return results
