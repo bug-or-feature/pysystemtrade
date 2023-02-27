@@ -21,14 +21,17 @@ def seed_price_data_from_IB(instrument_code):
     write_split_data_for_instrument(instrument_code)
 
 
-def seed_price_data_for_contract( contract: futuresContract):
+def seed_price_data_for_contract(contract: futuresContract):
     ## We do this slightly tortorous thing because there are energy contracts
     ## which don't expire in the month they are labelled with
     ## So for example, CRUDE_W 202106 actually expires on 20210528
     for frequency in [DAILY_PRICE_FREQ, HOURLY_FREQ]:
         seed_price_data_for_contract_at_frequency(contract, frequency=frequency)
 
-def seed_price_data_for_contract_at_frequency( contract: futuresContract, frequency: Frequency):
+
+def seed_price_data_for_contract_at_frequency(
+    contract: futuresContract, frequency: Frequency
+):
     ## We do this slightly tortorous thing because there are energy contracts
     ## which don't expire in the month they are labelled with
     ## So for example, CRUDE_W 202106 actually expires on 20210528
@@ -39,9 +42,10 @@ def seed_price_data_for_contract_at_frequency( contract: futuresContract, freque
     date_str = contract.contract_date.date_str[:6]
     new_contract = futuresContract(contract.instrument, date_str)
     try:
-        prices = data_broker.get_prices_at_frequency_for_potentially_expired_contract_object(
-            new_contract,
-            frequency=frequency
+        prices = (
+            data_broker.get_prices_at_frequency_for_potentially_expired_contract_object(
+                new_contract, frequency=frequency
+            )
         )
     except missingData:
         prices = []
@@ -49,9 +53,9 @@ def seed_price_data_for_contract_at_frequency( contract: futuresContract, freque
     if len(prices) == 0:
         print("No data!")
     else:
-        update_prices.overwrite_prices_at_frequency_for_contract(contract_object=contract,
-                                                                 frequency=frequency,
-                                                                 new_prices=prices)
+        update_prices.overwrite_prices_at_frequency_for_contract(
+            contract_object=contract, frequency=frequency, new_prices=prices
+        )
 
 
 if __name__ == "__main__":
