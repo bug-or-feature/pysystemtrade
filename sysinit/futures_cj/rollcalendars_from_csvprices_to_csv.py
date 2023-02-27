@@ -10,7 +10,10 @@ from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.config.production_config import get_production_config
-from sysinit.futures_cj.norgate_futures_contract_prices import NORGATE_CONFIG, BACKUP_CONFIG
+from sysinit.futures_cj.norgate_futures_contract_prices import (
+    NORGATE_CONFIG,
+    BACKUP_CONFIG,
+)
 
 
 """

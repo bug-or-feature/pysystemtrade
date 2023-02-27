@@ -12,6 +12,7 @@ from sysinit.futures.contract_prices_from_csv_to_arctic import (
 from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.config.production_config import get_production_config
 
+
 def strip_file_names(pathname):
     # These won't have .csv attached
     resolved_pathname = get_resolved_pathname(pathname)
@@ -99,9 +100,7 @@ barchart_csv_config = ConfigCsvFuturesPrices(
 )
 
 backup_csv_config = ConfigCsvFuturesPrices(
-    input_skiprows=0,
-    input_skipfooter=1,
-    apply_multiplier=100.0
+    input_skiprows=0, input_skipfooter=1, apply_multiplier=100.0
 )
 
 

@@ -48,9 +48,7 @@ BARCHART_CONFIG = ConfigCsvFuturesPrices(
 )
 
 BACKUP_CONFIG = ConfigCsvFuturesPrices(
-    input_skiprows=0,
-    input_skipfooter=1,
-    apply_multiplier=100.0
+    input_skiprows=0, input_skipfooter=1, apply_multiplier=100.0
 )
 
 
