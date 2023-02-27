@@ -10,7 +10,7 @@ from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.config.production_config import get_production_config
-from sysinit.futures_cj.norgate_futures_contract_prices import NORGATE_CONFIG
+from sysinit.futures_cj.norgate_futures_contract_prices import NORGATE_CONFIG, BACKUP_CONFIG
 
 
 """
@@ -46,7 +46,7 @@ def build_and_write_roll_calendar(
 
     csv_roll_calendars = csvRollCalendarData(output_datapath)
 
-    dict_of_all_futures_contract_prices = prices.get_all_prices_for_instrument(
+    dict_of_all_futures_contract_prices = prices.get_merged_prices_for_instrument(
         instrument_code
     )
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
@@ -125,31 +125,17 @@ if __name__ == "__main__":
 
     # input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
-    # done
-    # ["SP500"]
-    # ['BTP', 'BUND', 'BUXL', 'EDOLLAR', 'EURIBOR', 'OAT', 'SHATZ', 'US10', 'US10U', 'US2', 'US20', 'US30', 'US5']
-    # ['CAC', 'DAX', 'DOW', 'EUROSTX', 'FTSE100', 'NASDAQ', 'NIKKEI', 'RUSSELL', 'SMI', 'SP400', 'VIX']
-
-    # TODO
-    # ["STERLING3"]
-
-    # ['CANOLA', 'COCOA', 'COFFEE', 'COPPER', 'CORN', 'COTTON', 'CRUDE_W', 'FEEDCOW', 'GASOIL', 'GASOILINE', 'GAS_US',
-    # 'GOLD', 'GOLD_micro', 'HEATOIL', 'LEANHOG', 'LIVECOW', 'LUMBER', 'MILK', 'OATIES', 'OJ', 'PALLAD', 'PLAT',
-    # 'REDWHEAT', 'RICE', 'ROBUSTA', 'SILVER', 'SILVER-mini', 'SOYBEAN', 'SOYMEAL', 'SOYOIL', 'SUGAR11', 'WHEAT']
-
-    # ['AUD', 'BITCOIN', 'CAD', 'CHF', 'DX', 'EUR', 'GBP', 'JPY', 'MXP', 'NZD']
-
-    # DX, EUR, GBP, NZD
-    instrument_code = "DX"
+    # "COFFEE", "COTTON2", "OJ", "SUGAR11"
+    instrument_code = "OJ"
 
     build_and_write_roll_calendar(
         instrument_code=instrument_code,
         output_datapath="data.futures_cj.roll_calendars_csv",
         input_prices=csvFuturesContractPriceData(
             datapath=resolve_path_and_filename_for_package(
-                get_production_config().get_element_or_missing_data("norgate_path")
+                get_production_config().get_element_or_missing_data("backup_path")
             ),
-            config=NORGATE_CONFIG,
+            config=BACKUP_CONFIG,
         ),
         check_before_writing=False,
     )

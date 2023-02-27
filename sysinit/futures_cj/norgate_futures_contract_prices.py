@@ -47,6 +47,12 @@ BARCHART_CONFIG = ConfigCsvFuturesPrices(
     ),
 )
 
+BACKUP_CONFIG = ConfigCsvFuturesPrices(
+    input_skiprows=0,
+    input_skipfooter=1,
+    apply_multiplier=100.0
+)
+
 
 def rename_files(pathname, norgate_instr_code=None, dry_run=True):
 

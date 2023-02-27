@@ -9,7 +9,8 @@ from syscore.dateutils import month_from_contract_letter
 from sysinit.futures.contract_prices_from_csv_to_arctic import (
     init_arctic_with_csv_futures_contract_prices,
 )
-
+from syscore.fileutils import resolve_path_and_filename_for_package
+from sysdata.config.production_config import get_production_config
 
 def strip_file_names(pathname):
     # These won't have .csv attached
@@ -100,6 +101,7 @@ barchart_csv_config = ConfigCsvFuturesPrices(
 backup_csv_config = ConfigCsvFuturesPrices(
     input_skiprows=0,
     input_skipfooter=1,
+    apply_multiplier=100.0
 )
 
 
@@ -117,6 +119,8 @@ def transfer_backup_prices_to_arctic(datapath):
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # modify flags as required
-    datapath = "/home/caleb/pysystemtrade/data/custom_import"
+    datapath = resolve_path_and_filename_for_package(
+        get_production_config().get_element_or_missing_data("backup_path")
+    )
     # transfer_barchart_prices_to_arctic(datapath)
     transfer_backup_prices_to_arctic(datapath)
