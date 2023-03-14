@@ -70,6 +70,13 @@ class UpdateFsbMarketInfo(object):
 
                 try:
                     info = self.data.broker_conn.get_market_info(epic)
+                    hist_df = self.data.broker_conn.get_historical_fsb_data_for_epic(
+                        epic=epic,
+                        bar_freq="1s",
+                        numpoints=1,
+                    )
+                    hist_df.index = hist_df.index.strftime("%Y-%m-%m %H:%M:%S")
+                    info["historic"] = hist_df.to_dict(orient="index")
                     self.data.db_market_info.update_market_info(instr, epic, info)
                 except Exception as exc:
                     msg = (
