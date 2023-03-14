@@ -18,7 +18,7 @@ from timeit import default_timer as timer
 
 class IGConnection(object):
 
-    PRICE_RESOLUTIONS = ["D", "4H", "3H", "2H", "1H"]
+    PRICE_RESOLUTIONS = ["D", "4H", "3H", "2H", "1H", "1Min", "1s"]
 
     def __init__(
         self, log=logtoscreen("ConnectionIG", log_level="on"), auto_connect=True
@@ -142,6 +142,7 @@ class IGConnection(object):
         bar_freq: str = "D",
         start_date: datetime = None,
         end_date: datetime = None,
+        numpoints: int = None,
     ) -> pd.DataFrame:
 
         """
@@ -155,6 +156,8 @@ class IGConnection(object):
         :type start_date: datetime
         :param end_date: end date
         :type end_date: datetime
+        :param numpoints: number of data points
+        :type numpoints: int
         :return: historical price data
         :rtype: pd.DataFrame
         """
@@ -168,18 +171,29 @@ class IGConnection(object):
                     f"IG supported data frequencies: {self.PRICE_RESOLUTIONS}"
                 )
 
-            self.log.msg(
-                f"Getting historic data for {epic} ('{start_date.strftime('%Y-%m-%dT%H:%M:%S')}' "
-                f"to '{end_date.strftime('%Y-%m-%dT%H:%M:%S')}')"
-            )
             try:
-                response = self.rest_service.fetch_historical_prices_by_epic(
-                    epic=epic,
-                    resolution=bar_freq,
-                    start_date=start_date.strftime("%Y-%m-%dT%H:%M:%S"),
-                    end_date=end_date.strftime("%Y-%m-%dT%H:%M:%S"),
-                    format=self._flat_prices_bid_ask_format,
-                )
+                if start_date is None and end_date is None:
+                    self.log.msg(
+                        f"Getting historic data for {epic} (last {numpoints} datapoints)"
+                    )
+                    response = self.rest_service.fetch_historical_prices_by_epic(
+                        epic=epic,
+                        resolution=bar_freq,
+                        numpoints=numpoints,
+                        format=self._flat_prices_bid_ask_format,
+                    )
+                else:
+                    self.log.msg(
+                        f"Getting historic data for {epic} ('{start_date.strftime('%Y-%m-%dT%H:%M:%S')}' "
+                        f"to '{end_date.strftime('%Y-%m-%dT%H:%M:%S')}')"
+                    )
+                    response = self.rest_service.fetch_historical_prices_by_epic(
+                        epic=epic,
+                        resolution=bar_freq,
+                        start_date=start_date.strftime("%Y-%m-%dT%H:%M:%S"),
+                        end_date=end_date.strftime("%Y-%m-%dT%H:%M:%S"),
+                        format=self._flat_prices_bid_ask_format,
+                    )
                 df = response["prices"]
 
             except Exception as exc:
