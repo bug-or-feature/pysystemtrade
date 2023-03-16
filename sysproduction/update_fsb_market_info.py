@@ -72,7 +72,7 @@ class UpdateFsbMarketInfo(object):
                 try:
                     info = self.data.broker_conn.get_market_info(epic)
                     if not info.snapshot.marketStatus == "OFFLINE":
-                        info['historic'] = self._get_historic_data_for_epic(epic)
+                        info["historic"] = self._get_historic_data_for_epic(epic)
                     self.data.db_market_info.update_market_info(instr, epic, info)
                 except Exception as exc:
                     msg = (
@@ -99,16 +99,14 @@ class UpdateFsbMarketInfo(object):
                 if not hist_df.isnull().values.any():
                     valid = True
             except Exception as exc:
-                msg = (
-                    f"Problem getting historic data for '{epic}': {exc}"
-                )
+                msg = f"Problem getting historic data for '{epic}': {exc}"
                 self.data.log.error(msg)
 
         hist_dict = hist_df.to_dict(orient="records")
         historic = dict(
             timestamp=hist_df.index[-1],
-            bid=hist_dict[0]['Close.bid'],
-            ask=hist_dict[0]['Close.ask'],
+            bid=hist_dict[0]["Close.bid"],
+            ask=hist_dict[0]["Close.ask"],
         )
         return historic
 
@@ -124,7 +122,9 @@ class UpdateFsbMarketInfo(object):
 
         for instr in sorted(instr_list):
 
-            self.data.log.msg(f"Starting market info historic status check for '{instr}'")
+            self.data.log.msg(
+                f"Starting market info historic status check for '{instr}'"
+            )
 
             config = self.get_instr_config(instr)
 
@@ -136,14 +136,18 @@ class UpdateFsbMarketInfo(object):
                 self.data.log.msg(f"Skipping {instr}, no epics defined")
                 continue
 
-            for info_dict in self.data.db_market_info.get_market_info_for_instrument_code(instr):
+            for (
+                info_dict
+            ) in self.data.db_market_info.get_market_info_for_instrument_code(instr):
                 info = munchify(info_dict)
-                if 'historic' in info:
+                if "historic" in info:
                     bid_diff = info.snapshot.bid - info.historic.bid
                     ask_diff = info.snapshot.offer - info.historic.ask
                     date_diff = info.last_modified_utc - info.historic.timestamp
-                    self.data.log.msg(f"Historic status for {info.epic}: bid {bid_diff},"
-                                      f"ask {ask_diff}, timestamp {date_diff.seconds}s")
+                    self.data.log.msg(
+                        f"Historic status for {info.epic}: bid {bid_diff},"
+                        f"ask {ask_diff}, timestamp {date_diff.seconds}s"
+                    )
                 else:
                     self.data.log.msg(f"No historic info for {info.epic}")
 
@@ -166,9 +170,6 @@ def check_historic_status(instr_list=None):
         historic_status_check_config.do_historic_status_check(instr_list)
 
     return success
-
-
-
 
 
 if __name__ == "__main__":
