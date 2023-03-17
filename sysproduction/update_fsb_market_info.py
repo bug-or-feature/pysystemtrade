@@ -95,6 +95,7 @@ class UpdateFsbMarketInfo(object):
                     epic=epic,
                     bar_freq=res,
                     numpoints=1,
+                    warn_for_nans=True,
                 )
                 hist_dict = hist_df.to_dict(orient="records")
                 historic = dict(
