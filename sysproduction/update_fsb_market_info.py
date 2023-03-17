@@ -1,6 +1,6 @@
 import logging
 from munch import munchify
-
+from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.IG.ig_instruments import (
     FsbInstrumentWithIgConfigData,
 )
@@ -71,8 +71,9 @@ class UpdateFsbMarketInfo(object):
 
                 try:
                     info = self.data.broker_conn.get_market_info(epic)
-                    if not info.snapshot.marketStatus == "OFFLINE":
-                        info["historic"] = self._get_historic_data_for_epic(epic)
+                    historic = self._get_historic_data_for_epic(epic)
+                    if historic is not None:
+                        info["historic"] = historic
                     self.data.db_market_info.update_market_info(instr, epic, info)
                 except Exception as exc:
                     msg = (
@@ -88,27 +89,30 @@ class UpdateFsbMarketInfo(object):
                 self.data.db_market_info.delete_for_epic(epic_to_delete)
 
     def _get_historic_data_for_epic(self, epic):
-        valid = False
-        while not valid:
+        for res in IGConnection.PRICE_RESOLUTIONS:
             try:
                 hist_df = self.data.broker_conn.get_historical_fsb_data_for_epic(
                     epic=epic,
-                    bar_freq="1s",
+                    bar_freq=res,
                     numpoints=1,
                 )
-                if not hist_df.isnull().values.any():
-                    valid = True
+                hist_dict = hist_df.to_dict(orient="records")
+                historic = dict(
+                    timestamp=hist_df.index[-1],
+                    bid=hist_dict[0]["Close.bid"],
+                    ask=hist_dict[0]["Close.ask"],
+                    bar_freq=res,
+                )
+                return historic
+
             except Exception as exc:
-                msg = f"Problem getting historic data for '{epic}': {exc}"
+                msg = (
+                    f"Problem getting historic data for '{epic}' at "
+                    f"resolution '{res}': {exc}"
+                )
                 self.data.log.error(msg)
 
-        hist_dict = hist_df.to_dict(orient="records")
-        historic = dict(
-            timestamp=hist_df.index[-1],
-            bid=hist_dict[0]["Close.bid"],
-            ask=hist_dict[0]["Close.ask"],
-        )
-        return historic
+        return None
 
     def do_historic_status_check(self, instrument_list=None):
 
@@ -145,11 +149,11 @@ class UpdateFsbMarketInfo(object):
                     ask_diff = info.snapshot.offer - info.historic.ask
                     date_diff = info.last_modified_utc - info.historic.timestamp
                     self.data.log.msg(
-                        f"Historic status for {info.epic}: bid {bid_diff},"
-                        f"ask {ask_diff}, timestamp {date_diff.seconds}s"
+                        f"Historic status for {instr} ({info.epic}): "
+                        f"bid diff {bid_diff}, ask diff {ask_diff}, "
+                        f"timestamp diff {date_diff}, "
+                        f"bar_freq {info.historic.bar_freq}"
                     )
-                else:
-                    self.data.log.msg(f"No historic info for {info.epic}")
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
         return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(
@@ -174,5 +178,8 @@ def check_historic_status(instr_list=None):
 
 if __name__ == "__main__":
     update_fsb_market_info()
-    # update_fsb_market_info(["ASX_fsb"])
-    # check_historic_status(["ASX_fsb"])
+    # check_historic_status()
+    # epic = "COPPER_fsb"
+    # epic = "SOYBEAN_fsb"
+    # update_fsb_market_info([epic])
+    # check_historic_status([epic])

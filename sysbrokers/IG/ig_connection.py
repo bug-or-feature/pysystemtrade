@@ -18,7 +18,21 @@ from timeit import default_timer as timer
 
 class IGConnection(object):
 
-    PRICE_RESOLUTIONS = ["D", "4H", "3H", "2H", "1H", "1Min", "1s"]
+    PRICE_RESOLUTIONS = [
+        "1s",
+        "1Min",
+        "2Min",
+        "3Min",
+        "5Min",
+        "10Min",
+        "15Min",
+        "30Min",
+        "1H",
+        "2H",
+        "3H",
+        "4H",
+        "D",
+    ]
 
     def __init__(
         self, log=logtoscreen("ConnectionIG", log_level="on"), auto_connect=True
@@ -143,6 +157,7 @@ class IGConnection(object):
         start_date: datetime = None,
         end_date: datetime = None,
         numpoints: int = None,
+        warn_for_nans=False,
     ) -> pd.DataFrame:
 
         """
@@ -158,6 +173,8 @@ class IGConnection(object):
         :type end_date: datetime
         :param numpoints: number of data points
         :type numpoints: int
+        :param warn_for_nans: raise an exception if results contain NaNs
+        :type warn_for_nans: bool
         :return: historical price data
         :rtype: pd.DataFrame
         """
@@ -174,7 +191,8 @@ class IGConnection(object):
             try:
                 if start_date is None and end_date is None:
                     self.log.msg(
-                        f"Getting historic data for {epic} (last {numpoints} datapoints)"
+                        f"Getting historic data for {epic} at resolution '{bar_freq}' "
+                        f"(last {numpoints} datapoints)"
                     )
                     response = self.rest_service.fetch_historical_prices_by_epic(
                         epic=epic,
@@ -184,8 +202,9 @@ class IGConnection(object):
                     )
                 else:
                     self.log.msg(
-                        f"Getting historic data for {epic} ('{start_date.strftime('%Y-%m-%dT%H:%M:%S')}' "
-                        f"to '{end_date.strftime('%Y-%m-%dT%H:%M:%S')}')"
+                        f"Getting historic data for {epic} at resolution '{bar_freq}'"
+                        f" ('{start_date.strftime('%Y-%m-%dT%H:%M:%S')}' to "
+                        f"'{end_date.strftime('%Y-%m-%dT%H:%M:%S')}')"
                     )
                     response = self.rest_service.fetch_historical_prices_by_epic(
                         epic=epic,
@@ -206,6 +225,10 @@ class IGConnection(object):
 
             if len(df) == 0:
                 self.log.warn(f"Zero length IG price data found for {epic}")
+                raise missingData
+
+            if warn_for_nans and df.isnull().values.any():
+                self.log.warn(f"NaNs in data for {epic}")
                 raise missingData
 
             return df
