@@ -3,87 +3,279 @@
 # Raw data
 #
 #
+# Capital correction
+#
+percentage_vol_target: 25.0
+notional_trading_capital: 50000
+base_currency: "GBP"
+#
 # Trading rules
 #
 #
 trading_rules:
-  ewmac2_8:
-     function: systems.provided.rules.ewmac.ewmac
+  breakout10:
+     function: systems.provided.rules.breakout.breakout
      data:
          - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-     other_args: 
-         Lfast: 2
-         Lslow: 8
-     forecast_scalar: 10.6
-  ewmac4_16:
-     function: systems.provided.rules.ewmac.ewmac
+     other_args:
+       lookback: 10
+  breakout20:
+     function: systems.provided.rules.breakout.breakout
      data:
          - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-     other_args: 
-         Lfast: 4
-         Lslow: 16
-     forecast_scalar: 7.5
-  ewmac8_32:
-     function: systems.provided.rules.ewmac.ewmac
+     other_args:
+       lookback: 20
+  breakout40:
+     function: systems.provided.rules.breakout.breakout
      data:
          - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-     other_args: 
-         Lfast: 8
-         Lslow: 32
-     forecast_scalar: 5.3
-  ewmac16_64:
-     function: systems.provided.rules.ewmac.ewmac
+     other_args:
+       lookback: 40
+  breakout80:
+     function: systems.provided.rules.breakout.breakout
      data:
          - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-     other_args: 
-         Lfast: 16
-         Lslow: 64
-     forecast_scalar: 3.75
-  ewmac32_128:
-     function: systems.provided.rules.ewmac.ewmac
+     other_args:
+       lookback: 80
+  breakout160:
+     function: systems.provided.rules.breakout.breakout
      data:
          - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-     other_args: 
-         Lfast: 32
-         Lslow: 128
-     forecast_scalar: 2.65
-  ewmac64_256:
-     function: systems.provided.rules.ewmac.ewmac
+     other_args:
+       lookback: 160
+  breakout320:
+     function: systems.provided.rules.breakout.breakout
      data:
          - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-     other_args: 
-         Lfast: 64
-         Lslow: 256
-     forecast_scalar: 1.87
-  carry:
+     other_args:
+       lookback: 320
+  relmomentum10:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 10
+  relmomentum20:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 20
+  relmomentum40:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 40
+  relmomentum80:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 80
+  mrinasset160:
+     function: systems.provided.rules.cs_mr.cross_sectional_mean_reversion
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 160
+  carry10:
      function: systems.provided.rules.carry.carry
      data:
          - "rawdata.raw_carry"
      other_args:
-         smooth_days: 90
-     forecast_scalar: 30
+         smooth_days: 10
+  carry30:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 30
+  carry60:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 60
+  carry125:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 125
+  assettrend2:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+  assettrend4:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  assettrend8:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  assettrend16:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  assettrend32:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  assettrend64:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+  normmom2:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+  normmom4:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  normmom8:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  normmom16:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  normmom32:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  normmom64:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+  momentum4:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  momentum8:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  momentum16:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  momentum32:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  momentum64:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+  relcarry:
+     function: systems.provided.rules.carry.relative_carry
+     data:
+          - "rawdata.smoothed_carry"
+          - "rawdata.median_carry_for_asset_class"
+  accel16:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 16
+  accel32:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 32
+  accel64:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 64
+  mrwrings4:
+    function: systems.provided.rules.mr_wings.mr_wings
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 4
 forecast_cap: 20.0
 #
 # forecast combination
 #
-forecast_weights:
-     ewmac16_64: 0.21
-     ewmac32_128: 0.08
-     ewmac64_256: 0.21
-     carry: 0.50
-forecast_div_multiplier: 1.31
-#
-# Capital correction
-#
-percentage_vol_target: 20.0
-notional_trading_capital: 50000
-base_currency: "GBP"
+#forecast_weights:
+#     ewmac16_64: 0.21
+#     ewmac32_128: 0.08
+#     ewmac64_256: 0.21
+#     carry: 0.50
+#forecast_div_multiplier: 1.31
+
 #
 # Portfolio creation
 #
@@ -94,4 +286,4 @@ base_currency: "GBP"
 #    V2X: 0.098
 #    MXP: 0.233
 #    CORN: 0.233
-instrument_div_multiplier: 1.89
+#instrument_div_multiplier: 1.89
