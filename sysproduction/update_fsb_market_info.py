@@ -127,9 +127,9 @@ class UpdateFsbMarketInfo(object):
 
         for instr in sorted(instr_list):
 
-            self.data.log.msg(
-                f"Starting market info historic status check for '{instr}'"
-            )
+            # self.data.log.msg(
+            #     f"Starting market info historic status check for '{instr}'"
+            # )
 
             config = self.get_instr_config(instr)
 
@@ -146,14 +146,18 @@ class UpdateFsbMarketInfo(object):
             ) in self.data.db_market_info.get_market_info_for_instrument_code(instr):
                 info = munchify(info_dict)
                 if "historic" in info:
-                    bid_diff = info.snapshot.bid - info.historic.bid
-                    ask_diff = info.snapshot.offer - info.historic.ask
+                    bid_diff = round(info.snapshot.bid - info.historic.bid, 2)
+                    bid_diff_pc = round((bid_diff / info.snapshot.bid) * 100, 2)
+                    ask_diff = round(info.snapshot.offer - info.historic.ask)
+                    ask_diff_pc = round((ask_diff / info.snapshot.offer) * 100, 2)
                     date_diff = info.last_modified_utc - info.historic.timestamp
                     self.data.log.msg(
                         f"Historic status for {instr} ({info.epic}): "
-                        f"bid diff {bid_diff}, ask diff {ask_diff}, "
+                        f"bid diff {bid_diff}, ({bid_diff_pc}%), "
+                        f"ask diff {ask_diff}, ({ask_diff_pc}%), "
                         f"timestamp diff {date_diff}, "
-                        f"bar_freq {info.historic.bar_freq}"
+                        f"bar_freq {info.historic.bar_freq}, "
+                        f"status {info.in_hours_status}"
                     )
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
@@ -178,9 +182,9 @@ def check_historic_status(instr_list=None):
 
 
 if __name__ == "__main__":
-    update_fsb_market_info()
-    # check_historic_status()
-    # epic = "COPPER_fsb"
+    # update_fsb_market_info()
+    check_historic_status()
+    # epic = "GOLD_fsb"
     # epic = "SOYBEAN_fsb"
     # update_fsb_market_info([epic])
     # check_historic_status([epic])
