@@ -13,6 +13,9 @@ from sysproduction.reporting.data.fsb_correlation_data import (
     fsb_correlation_data,
     contract_key,
 )
+from sysproduction.reporting.adhoc.fsb_contract_prices import (
+    run_compare_fsb_contract_price_report,
+)
 
 """
 
@@ -168,6 +171,12 @@ def run_adhoc_correlation_report(key: str):
     fsb_correlation_data(contract_key(key), draw=True)
 
 
+def run_adhoc_fsb_price_comparison_report(first: str, second: str, third: str):
+    run_compare_fsb_contract_price_report(
+        contract_key(first), contract_key(second), contract_key(third), draw=True
+    )
+
+
 if __name__ == "__main__":
     # run_slippage_report()
     # run_costs_report()
@@ -197,4 +206,10 @@ if __name__ == "__main__":
 
     # run_adhoc_tradeable_report()
     # run_adhoc_tradeable_report(instr_code="EDOLLAR_fsb")
-    # run_adhoc_correlation_report("JSE40_fsb/20230300")
+    # run_adhoc_correlation_report("LEANHOG_fsb/20230600")
+
+    # run_adhoc_fsb_price_comparison_report(
+    #     "HANG_fsb/20230300",
+    #     "HANG_fsb/20230400",
+    #     "HANG_fsb/20230500",
+    # )
