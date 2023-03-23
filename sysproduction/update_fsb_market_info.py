@@ -151,14 +151,15 @@ class UpdateFsbMarketInfo(object):
                     ask_diff = round(info.snapshot.offer - info.historic.ask)
                     ask_diff_pc = round((ask_diff / info.snapshot.offer) * 100, 2)
                     date_diff = info.last_modified_utc - info.historic.timestamp
-                    self.data.log.msg(
-                        f"Historic status for {instr} ({info.epic}): "
-                        f"bid diff {bid_diff}, ({bid_diff_pc}%), "
-                        f"ask diff {ask_diff}, ({ask_diff_pc}%), "
-                        f"timestamp diff {date_diff}, "
-                        f"bar_freq {info.historic.bar_freq}, "
-                        f"status {info.in_hours_status}"
-                    )
+                    if bid_diff_pc > 0.1 or ask_diff_pc > 0.1 or date_diff.days > 3:
+                        self.data.log.msg(
+                            f"Historic status for {instr} ({info.epic}): "
+                            f"bid diff {bid_diff}, ({bid_diff_pc}%), "
+                            f"ask diff {ask_diff}, ({ask_diff_pc}%), "
+                            f"timestamp diff {date_diff}, "
+                            f"bar_freq {info.historic.bar_freq}, "
+                            f"status {info.in_hours_status}"
+                        )
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
         return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(

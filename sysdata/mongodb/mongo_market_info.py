@@ -204,6 +204,7 @@ class mongoMarketInfoData(marketInfoData):
         self, instrument_code: str, epic: str, market_info: dict, allow_overwrite=True
     ):
         market_info = self._adjust_for_hours(market_info)
+        market_info = self._set_sync_status(market_info)
         dict_of_keys = {
             "instrument_code": instrument_code,
             "epic": epic,
@@ -213,6 +214,23 @@ class mongoMarketInfoData(marketInfoData):
             data_dict=market_info,
             allow_overwrite=allow_overwrite,
         )
+
+    def _set_sync_status(self, data):
+        history_synced = True
+        info = munchify(data)
+        if "historic" in info:
+            bid_diff = round(info.snapshot.bid - info.historic.bid, 2)
+            bid_diff_pc = round((bid_diff / info.snapshot.bid) * 100, 2)
+            ask_diff = round(info.snapshot.offer - info.historic.ask)
+            ask_diff_pc = round((ask_diff / info.snapshot.offer) * 100, 2)
+            date_diff = info.last_modified_utc - info.historic.timestamp
+            if bid_diff_pc > 0.1 or ask_diff_pc > 0.1 or date_diff.days > 3:
+                history_synced = False
+        else:
+            history_synced = False
+
+        info["history_synced"] = history_synced
+        return info
 
     def _adjust_for_hours(self, data: dict):
         data["last_modified_utc"] = datetime.utcnow()
