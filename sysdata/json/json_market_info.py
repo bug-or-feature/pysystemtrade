@@ -114,3 +114,6 @@ class jsonMarketInfoData(marketInfoData):
 
     def get_epic_for_contract(self, contract) -> str:
         raise NotImplementedError("Consider implementing for consistent interface")
+
+    def get_history_sync_status_for_epic(self, epic: str) -> bool:
+        raise NotImplementedError("Consider implementing for consistent interface")

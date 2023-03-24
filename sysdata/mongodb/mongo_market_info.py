@@ -157,6 +157,17 @@ class mongoMarketInfoData(marketInfoData):
     def delete_for_epic(self, epic):
         return self.mongo_data._mongo.collection.delete_one({"epic": epic})
 
+    def get_history_sync_status_for_epic(self, epic: str) -> bool:
+        try:
+            market_info = munchify(self.get_market_info_for_epic(epic))
+            history_synced = bool(market_info.history_synced)
+        except AttributeError:
+            return False
+        except Exception as exc:
+            self.log.error(f"Problem getting history sync status for '{epic}': {exc}")
+            return False
+        return history_synced
+
     def _parse_market_info_for_mappings(self):
         for instr in self.get_list_of_instruments():
             for result in self.mongo_data._mongo.collection.find(

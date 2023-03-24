@@ -10,7 +10,7 @@ from sysproduction.data.broker import dataBroker
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.fsb_prices import UpdateFsbPrices
 from sysproduction.data.prices import diagPrices
-
+from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 
 def update_historical_fsb_prices():
     """
@@ -27,6 +27,7 @@ def update_historical_fsb_prices():
 
     with dataBlob(log_name="Update-Historical-FSB-Prices") as data:
         price_data = diagPrices(data)
+        data.add_class_object(mongoMarketInfoData)
         list_of_codes_all = price_data.get_list_of_instruments_in_multiple_prices()
         update_historical_fsb_prices = updateHistoricalFsbPrices(
             data, list_of_codes_all
@@ -133,36 +134,53 @@ def get_and_add_prices_for_frequency(
     broker_data_source = dataBroker(data)
     db_fsb_prices = UpdateFsbPrices(data)
 
-    broker_prices = broker_data_source.get_prices_at_frequency_for_contract_object(
-        contract_object, frequency
-    )
-
-    if broker_prices is failure:
-        print(
-            "Something went wrong with getting prices for %s to check"
-            % str(contract_object)
+    if contract_object.key not in data.db_market_info.epic_mapping:
+        data.log.warn(
+            f"No epic mapped for {str(contract_object.key)}",
+            instrument_code=contract_object.instrument_code,
+            contract_date=contract_object.contract_date.date_str,
         )
         return failure
 
-    if len(broker_prices) == 0:
-        print("No broker prices found for %s nothing to check" % str(contract_object))
+    epic = data.db_market_info.epic_mapping[contract_object.key]
+    hist_sync_status = data.db_market_info.get_history_sync_status_for_epic(epic)
+
+    if hist_sync_status:
+        broker_prices = broker_data_source.get_prices_at_frequency_for_contract_object(
+            contract_object, frequency
+        )
+
+        if broker_prices is failure:
+            print(
+                "Something went wrong with getting prices for %s to check"
+                % str(contract_object)
+            )
+            return failure
+
+        if len(broker_prices) == 0:
+            print("No broker prices found for %s nothing to check" % str(contract_object))
+            return success
+        else:
+            data.log.msg(f"broker_prices latest price {broker_prices.index[-1]}")
+
+        error_or_rows_added = db_fsb_prices.update_prices_for_contract(
+            contract_object, broker_prices, check_for_spike=False
+        )
+
+        if error_or_rows_added is SPIKE_IN_DATA:
+            report_price_spike(data, contract_object)
+            return failure
+
+        data.log.msg(
+            "Added %d rows at frequency %s for %s"
+            % (error_or_rows_added, frequency, str(contract_object))
+        )
         return success
+
     else:
-        data.log.msg(f"broker_prices latest price {broker_prices.index[-1]}")
-
-    error_or_rows_added = db_fsb_prices.update_prices_for_contract(
-        contract_object, broker_prices, check_for_spike=False
-    )
-
-    if error_or_rows_added is SPIKE_IN_DATA:
-        report_price_spike(data, contract_object)
+        data.log.msg(f"Not attempting to get prices for {str(contract_object)}, "
+                     f"IG historic prices not synced")
         return failure
-
-    data.log.msg(
-        "Added %d rows at frequency %s for %s"
-        % (error_or_rows_added, frequency, str(contract_object))
-    )
-    return success
 
 
 def report_price_spike(data: dataBlob, contract_object: futuresContract):
@@ -184,4 +202,4 @@ def report_price_spike(data: dataBlob, contract_object: futuresContract):
 
 
 if __name__ == "__main__":
-    update_historical_fsb_prices_single(["SP500_fsb"])
+    update_historical_fsb_prices_single(["BOBL_fsb"])
