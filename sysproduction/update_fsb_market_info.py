@@ -183,8 +183,8 @@ def check_historic_status(instr_list=None):
 
 
 if __name__ == "__main__":
-    # update_fsb_market_info()
-    check_historic_status()
+    update_fsb_market_info()
+    # check_historic_status()
     # epic = "GOLD_fsb"
     # epic = "SOYBEAN_fsb"
     # update_fsb_market_info([epic])

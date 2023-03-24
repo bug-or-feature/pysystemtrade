@@ -12,6 +12,7 @@ from sysproduction.data.fsb_prices import UpdateFsbPrices
 from sysproduction.data.prices import diagPrices
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 
+
 def update_historical_fsb_prices():
     """
     Do a daily update for FSB contract prices, using IG historical data
@@ -158,7 +159,9 @@ def get_and_add_prices_for_frequency(
             return failure
 
         if len(broker_prices) == 0:
-            print("No broker prices found for %s nothing to check" % str(contract_object))
+            print(
+                "No broker prices found for %s nothing to check" % str(contract_object)
+            )
             return success
         else:
             data.log.msg(f"broker_prices latest price {broker_prices.index[-1]}")
@@ -178,8 +181,10 @@ def get_and_add_prices_for_frequency(
         return success
 
     else:
-        data.log.msg(f"Not attempting to get prices for {str(contract_object)}, "
-                     f"IG historic prices not synced")
+        data.log.msg(
+            f"Not attempting to get prices for {str(contract_object)}, "
+            f"IG historic prices not synced"
+        )
         return failure
 
 
