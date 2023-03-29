@@ -11,7 +11,7 @@ SCRIPT_PATH=/home/caleb/pysystemtrade/sysproduction/linux/scripts
 ECHO_PATH=/home/caleb/echos
 PYSYS_PRIVATE_CONFIG_DIR=/home/caleb/harbor-macro/pst-prod
 
-0,15,30,45 * * * 1-7 export DISPLAY=:0 && /bin/bash /opt/ibc.old/gatewaystart.sh
+0,15,30,45 * * * 1-7 export DISPLAY=:0 && /bin/bash /opt/ibc/gatewaystart.sh
 00 03  * * 1-5     conda activate base; $SCRIPT_PATH/run_stack_handler  >> $ECHO_PATH/run_stack_handler.txt 2>&1; conda deactivate
 50 03  * * 1-5     conda activate base; $SCRIPT_PATH/run_capital_update  >> $ECHO_PATH/run_capital_update.txt 2>&1; conda deactivate
 05 20  * * 1-5     conda activate base; $SCRIPT_PATH/run_daily_price_updates >> $ECHO_PATH/run_daily_price_updates.txt 2>&1; conda deactivate
