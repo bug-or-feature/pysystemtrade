@@ -1,9 +1,9 @@
-from syscore.constants import missing_data
 from dataclasses import dataclass
 import datetime as datetime
 from copy import copy
 import pandas as pd
 
+from syscore.exceptions import missingData
 from sysinit.futures.build_multiple_prices_from_raw_data import (
     create_multiple_price_stack_from_raw_data,
 )
@@ -118,9 +118,16 @@ class futuresMultiplePrices(pd.DataFrame):
 
         return futuresMultiplePrices(new_version)
 
+    def add_offset_to_prices(self, offset: float):
+        new_version = copy(self)
+        for colname in list_of_price_column_names:
+            new_version[colname] = self[colname] + offset
+
+        return futuresMultiplePrices(new_version)
+
     def current_contract_dict(self) -> setOfNamedContracts:
         if len(self) == 0:
-            return missing_data
+            raise missingData
 
         final_row = self.iloc[-1]
         contract_dict = dict(

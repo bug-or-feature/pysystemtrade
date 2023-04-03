@@ -9,8 +9,39 @@ DEFAULT_LOG_LEVEL = "off"
 
 SECONDS_BETWEEN_IDENTICAL_LOGS = 60
 
+COMPONENT_LOG_LABEL = "component"
+TYPE_LOG_LABEL = "type"
+STAGE_LOG_LABEL = "stage"
+CLIENTID_LOG_LABEL = "clientid"
+BROKER_LOG_LABEL = "broker"
+STRATEGY_NAME_LOG_LABEL = "strategy_name"
+CURRENCY_CODE_LOG_LABEL = "currency_code"
+INSTRUMENT_CODE_LOG_LABEL = "instrument_code"
+CONTRACT_DATE_LOG_LABEL = "contract_date"
+ORDER_ID_LOG_LABEL = "order_id"
+INSTRUMENT_ORDER_ID_LABEL = "instrument_order_id"
+CONTRACT_ORDER_ID_LOG_LABEL = "contract_order_id"
+BROKER_ORDER_ID_LOG_LABEL = "broker_order_id"
 
-class logger(object):
+
+ALLOWED_LOG_ATTRIBUTES = [
+    TYPE_LOG_LABEL,
+    COMPONENT_LOG_LABEL,
+    STAGE_LOG_LABEL,
+    CURRENCY_CODE_LOG_LABEL,
+    INSTRUMENT_CODE_LOG_LABEL,
+    CONTRACT_DATE_LOG_LABEL,
+    ORDER_ID_LOG_LABEL,
+    STRATEGY_NAME_LOG_LABEL,
+    INSTRUMENT_ORDER_ID_LABEL,
+    CONTRACT_ORDER_ID_LOG_LABEL,
+    BROKER_ORDER_ID_LOG_LABEL,
+    BROKER_LOG_LABEL,
+    CLIENTID_LOG_LABEL,
+]
+
+
+class pst_logger(object):
     """
     log: used for writing messages
 
@@ -27,15 +58,15 @@ class logger(object):
         """
         Base class for logging.
 
-        >>> log=logger("base_system") ## set up a logger with type "base_system"
+        >>> log=pst_logger("base_system") ## set up a logger with type "base_system"
         >>> log
         Logger (off) attributes- type: base_system
         >>>
-        >>> log=logger("another_system", stage="test") ## optionally add other attributes
+        >>> log=pst_logger("another_system", stage="test") ## optionally add other attributes
         >>> log
         Logger (off) attributes- stage: test, type: another_system
         >>>
-        >>> log2=logger(log, log_level="on", stage="combForecast") ## creates a copy of log
+        >>> log2=pst_logger(log, log_level="on", stage="combForecast") ## creates a copy of log
         >>> log
         Logger (off) attributes- stage: test, type: another_system
         >>> log2
@@ -63,14 +94,14 @@ class logger(object):
             log_attributes = self._get_attributes_given_log(type, kwargs)
         else:
             raise Exception(
-                "Can only create a logger from another logger, or a str identifier"
+                "Can only create a pst_logger from another pst_logger, or a str identifier"
             )
 
         self._attributes = log_attributes
 
     def _get_attributes_given_string(self, type: str, kwargs: dict) -> dict:
         # been passed a label, so not inheriting anything
-        log_attributes = dict(type=type)
+        log_attributes = {TYPE_LOG_LABEL: type}
         other_attributes = kwargs
 
         log_attributes = get_update_attributes_list(log_attributes, other_attributes)
@@ -116,6 +147,12 @@ class logger(object):
             self.logging_level,
             ", ".join(attribute_desc),
         )
+
+    def setup_empty_except_keep_type(self):
+        new_log = copy(self)
+        new_log._attributes = {TYPE_LOG_LABEL: self.attributes[TYPE_LOG_LABEL]}
+
+        return new_log
 
     def setup(self, **kwargs):
         # Create a copy of me with different attributes
@@ -167,6 +204,7 @@ class logger(object):
         passed_attributes = kwargs
 
         use_attributes = get_update_attributes_list(log_attributes, passed_attributes)
+        self._check_attributes(use_attributes)
 
         same_msg_logged_recently = self._check_msg_logged_recently_or_update_hash(
             text=text, attributes=use_attributes, msglevel=msglevel
@@ -181,6 +219,11 @@ class logger(object):
         )
 
         return log_result
+
+    def _check_attributes(self, attributes: dict):
+        bad_attributes = get_list_of_disallowed_attributes(attributes)
+        if len(bad_attributes) > 0:
+            raise Exception("Attributes %s not allowed in log" % str(bad_attributes))
 
     def _check_msg_logged_recently_or_update_hash(
         self, text: str, msglevel: int, attributes: dict
@@ -248,7 +291,7 @@ class logger(object):
         self, msglevel: int, text: str, attributes: dict, log_id: int
     ):
         raise Exception(
-            "You're using a base class for logger - you need to use an inherited class like logtoscreen()"
+            "You're using a base class for pst_logger - you need to use an inherited class like logtoscreen()"
         )
 
     """
@@ -269,7 +312,17 @@ def get_update_attributes_list(parent_attributes: dict, new_attributes: dict) ->
     return {**parent_attributes, **new_attributes}
 
 
-class nullLog(logger):
+def get_list_of_disallowed_attributes(attributes: dict) -> list:
+    attr_keys = list(attributes.keys())
+    not_okay = [
+        attribute_name
+        for attribute_name in attr_keys
+        if attribute_name not in ALLOWED_LOG_ATTRIBUTES
+    ]
+    return not_okay
+
+
+class nullLog(pst_logger):
     ## When a log goes to null, does anyone in the forest hear the tree falling?
 
     ## Overriding these makes the logging faster

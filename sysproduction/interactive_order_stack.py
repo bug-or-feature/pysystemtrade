@@ -8,7 +8,7 @@ Do standard things to the instrument, order and broker stack (normally automated
 """
 from typing import Tuple
 import sysexecution.orders.named_order_objects
-from sysexecution.orders.named_order_objects import missing_order
+from sysexecution.orders.named_order_objects import missing_order, no_children
 from syscore.interactive.input import (
     get_input_from_user_and_convert_to_type,
     true_if_answer_is_yes,
@@ -21,7 +21,8 @@ from syscore.interactive.menus import (
 from syscore.interactive.display import set_pd_print_options
 
 from sysdata.data_blob import dataBlob
-from sysproduction.data.positions import diagPositions, dataOptimalPositions
+from sysproduction.data.positions import diagPositions
+from sysproduction.data.optimal_positions import dataOptimalPositions
 from sysproduction.data.broker import dataBroker
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.strategies import get_valid_strategy_name_from_user
@@ -553,7 +554,7 @@ def generate_generic_manual_fill(data):
     if len(order.trade) > 1:
         print("Can't manually fill spread orders; delete and replace with legs")
         return None
-    if not sysexecution.orders.named_order_objects.no_children():
+    if not no_children:
         print(
             "Don't manually fill order with children: can cause problems! Manually fill the child instead"
         )
@@ -898,7 +899,7 @@ def view_positions(data):
     data_optimal = dataOptimalPositions(data)
     ans0 = data_optimal.get_pd_of_position_breaks()
     ans1 = diag_positions.get_all_current_strategy_instrument_positions()
-    ans2 = data_broker.get_db_contract_positions_with_IB_expiries()
+    ans2 = diag_positions.get_all_current_contract_positions_with_db_expiries()
     ans3 = data_broker.get_all_current_contract_positions()
     print("Optimal vs actual")
     print(ans0.sort_values("breaks"))

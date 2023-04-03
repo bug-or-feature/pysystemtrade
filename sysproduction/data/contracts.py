@@ -1,12 +1,12 @@
 import datetime
 
-from syscore.constants import missing_data
+from syscore.exceptions import missingData, ContractNotFound
 
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
-from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
+from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 
 from sysdata.futures.contracts import futuresContractData
@@ -34,7 +34,7 @@ class dataContracts(productionDataLayerGeneric):
         data.add_class_list(
             [
                 arcticFuturesContractPriceData,
-                mongoRollParametersData,
+                csvRollParametersData,
                 arcticFuturesMultiplePricesData,
                 mongoFuturesContractData,
             ]
@@ -85,8 +85,6 @@ class dataContracts(productionDataLayerGeneric):
 
     def mark_contract_as_sampling(self, contract: futuresContract):
         contract_to_modify = self.get_contract_from_db(contract)
-        if contract_to_modify is missing_data:
-            raise Exception("Can't mark non existent contract as sampling")
         # Mark it as sampling
         contract_to_modify.sampling_on()
 
@@ -94,8 +92,6 @@ class dataContracts(productionDataLayerGeneric):
 
     def mark_contract_as_not_sampling(self, contract: futuresContract):
         contract_to_modify = self.get_contract_from_db(contract)
-        if contract_to_modify is missing_data:
-            raise Exception("Can't mark non existent contract as sampling")
 
         # Mark it as sampling
         contract_to_modify.sampling_off()
@@ -105,10 +101,7 @@ class dataContracts(productionDataLayerGeneric):
     def update_expiry_date(
         self, contract: futuresContract, new_expiry_date: expiryDate
     ):
-
         contract_to_modify = self.get_contract_from_db(contract)
-        if contract_to_modify is missing_data:
-            raise Exception("Can't update expiry date for non existent contract")
 
         contract_to_modify.update_single_expiry_date(new_expiry_date)
 
@@ -135,8 +128,9 @@ class dataContracts(productionDataLayerGeneric):
     def get_labelled_list_of_contracts_from_contract_date_list(
         self, instrument_code: str, list_of_dates: listOfContractDateStr
     ) -> list:
-        current_contracts = self.get_current_contract_dict(instrument_code)
-        if current_contracts is missing_data:
+        try:
+            current_contracts = self.get_current_contract_dict(instrument_code)
+        except missingData:
             return list_of_dates
 
         labelled_list = label_up_contracts_with_date_list(
@@ -174,14 +168,19 @@ class dataContracts(productionDataLayerGeneric):
         return current_contracts
 
     def update_roll_parameters(
-        self, instrument_code: str, roll_parameters: rollParameters
+        self,
+        instrument_code: str,
+        roll_parameters: rollParameters,
+        areyoureallysure: bool = False,
     ):
-
-        self.db_roll_parameters.add_roll_parameters(
-            instrument_code=instrument_code,
-            roll_parameters=roll_parameters,
-            ignore_duplication=True,
-        )
+        if areyoureallysure:
+            self.db_roll_parameters.add_roll_parameters(
+                instrument_code,
+                roll_parameters=roll_parameters,
+                ignore_duplication=True,
+            )
+        else:
+            self.log.msg("Have to be sure to modify roll parameters")
 
     def get_roll_parameters(self, instrument_code: str) -> rollParameters:
         roll_parameters = self.db_roll_parameters.get_roll_parameters(instrument_code)
