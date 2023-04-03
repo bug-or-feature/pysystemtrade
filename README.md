@@ -7,10 +7,10 @@ Rob Carver
 [https://qoppac.blogspot.com/p/pysystemtrade.html](https://qoppac.blogspot.com/p/pysystemtrade.html)
 
 
-Version 1.50
+Version 1.61
  
 
-2023-01-27
+2023-03-24
 
 
 
@@ -82,6 +82,8 @@ python3 setup.py install --user # avoids use of sudo
 ```
 
 Again, you may be okay with python rather than python3.
+
+There is a more complete installation guide [here](docs/installation.md)
 
 ### A note on support
 

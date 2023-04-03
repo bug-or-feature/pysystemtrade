@@ -1,13 +1,9 @@
+from syscore.exceptions import ContractNotFound
 from sysdata.base_data import baseData
 from sysobjects.contracts import futuresContract, listOfFuturesContracts
 from sysobjects.contract_dates_and_expiries import listOfContractDateStr
 
 USE_CHILD_CLASS_ERROR = "You need to use a child class of futuresContractData"
-
-
-class ContractNotFound(Exception):
-    pass
-
 
 from syslogdiag.log_to_screen import logtoscreen
 
@@ -104,22 +100,25 @@ class futuresContractData(baseData):
     def get_list_of_contract_dates_for_instrument_code(
         self, instrument_code: str, allow_expired: bool = False
     ) -> listOfContractDateStr:
-        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+        raise NotImplementedError
 
     def get_all_contract_objects_for_instrument_code(
         self, instrument_code: str
     ) -> listOfFuturesContracts:
-        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+        raise NotImplementedError
 
     def _get_contract_data_without_checking(
         self, instrument_code: str, contract_date: str
     ) -> futuresContract:
-        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+        raise NotImplementedError
 
     def _delete_contract_data_without_any_warning_be_careful(
         self, instrument_code: str, contract_date: str
     ):
-        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+        raise NotImplementedError
+
+    def get_list_of_all_instruments_with_contracts(self) -> list:
+        raise NotImplementedError
 
     def is_contract_in_data(self, instrument_code: str, contract_date_str: str) -> bool:
         raise NotImplementedError

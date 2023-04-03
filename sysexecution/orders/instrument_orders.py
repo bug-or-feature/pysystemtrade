@@ -12,6 +12,11 @@ from sysexecution.orders.base_orders import (
     orderType,
 )
 from sysexecution.orders.named_order_objects import no_order_id, no_children, no_parent
+from syslogdiag.pst_logger import (
+    STRATEGY_NAME_LOG_LABEL,
+    INSTRUMENT_ORDER_ID_LABEL,
+    INSTRUMENT_CODE_LOG_LABEL,
+)
 
 from sysobjects.production.tradeable_object import instrumentStrategy
 
@@ -231,7 +236,7 @@ class instrumentOrder(Order):
         """
         Returns a new log object with instrument_order attributes added
 
-        :param log: logger
+        :param log: pst_logger
         :return: log
         """
         new_log = log.setup(
@@ -240,6 +245,16 @@ class instrumentOrder(Order):
             instrument_order_id=if_object_matches_return_empty_string(
                 self.order_id, no_order_id
             ),
+        )
+
+        new_log = log.setup(
+            **{
+                STRATEGY_NAME_LOG_LABEL: self.strategy_name,
+                INSTRUMENT_CODE_LOG_LABEL: self.instrument_code,
+                INSTRUMENT_ORDER_ID_LABEL: if_object_matches_return_empty_string(
+                    self.order_id, no_order_id
+                ),
+            }
         )
 
         return new_log

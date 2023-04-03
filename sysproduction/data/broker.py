@@ -12,7 +12,7 @@ from sysbrokers.broker_fx_prices_data import brokerFxPricesData
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 from syscore.exceptions import missingContract, missingData
 
-from syscore.constants import missing_data, market_closed, arg_not_supplied
+from syscore.constants import market_closed, arg_not_supplied
 from syscore.exceptions import orderCannotBeModified
 from sysexecution.orders.named_order_objects import missing_order
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
@@ -127,12 +127,9 @@ class dataBroker(productionDataLayerGeneric):
         cleaning_config=arg_not_supplied,
     ) -> futuresContractPrices:
 
-        try:
-            broker_prices_raw = self.get_prices_at_frequency_for_contract_object(
-                contract_object=contract_object, frequency=frequency
-            )
-        except missingData:
-            return missing_data
+        broker_prices_raw = self.get_prices_at_frequency_for_contract_object(
+            contract_object=contract_object, frequency=frequency
+        )
 
         daily_data = frequency is DAILY_PRICE_FREQ
         broker_prices = apply_price_cleaning(
@@ -172,11 +169,6 @@ class dataBroker(productionDataLayerGeneric):
     ) -> expiryDate:
         return self.broker_futures_contract_data.get_actual_expiry_date_for_single_contract(
             contract_object
-        )
-
-    def get_brokers_instrument_code(self, instrument_code: str) -> str:
-        return self.broker_futures_instrument_data.get_brokers_instrument_code(
-            instrument_code
         )
 
     def get_brokers_instrument_with_metadata(
@@ -234,51 +226,10 @@ class dataBroker(productionDataLayerGeneric):
 
         return list_of_positions
 
-    def update_expiries_for_position_list_with_IB_expiries(
-        self, original_position_list: listOfContractPositions
-    ) -> listOfContractPositions:
-
-        new_position_list = listOfContractPositions()
-        for position_entry in original_position_list:
-            new_position_entry = self.update_expiry_for_single_position(position_entry)
-            new_position_list.append(new_position_entry)
-
-        return new_position_list
-
-    def update_expiry_for_single_position(
-        self, position_entry: contractPosition
-    ) -> contractPosition:
-        original_contract = position_entry.contract
-        new_contract = self.update_expiry_for_single_contract(original_contract)
-
-        position = position_entry.position
-        new_position_entry = contractPosition(position, new_contract)
-
-        return new_position_entry
-
-    def update_expiry_for_single_contract(
-        self, original_contract: futuresContract
-    ) -> futuresContract:
-        try:
-            actual_expiry = self.get_actual_expiry_date_for_single_contract(
-                original_contract
-            )
-        except missingContract:
-            log = original_contract.specific_log(self.data.log)
-            log.warn(
-                "Contract %s is missing from IB probably expired - need to manually close on DB"
-                % str(original_contract)
-            )
-            new_contract = copy(original_contract)
-        else:
-            expiry_date_as_str = actual_expiry.as_str()
-            instrument_code = original_contract.instrument_code
-            new_contract = futuresContract(instrument_code, expiry_date_as_str)
-
-        return new_contract
-
     def get_list_of_breaks_between_broker_and_db_contract_positions(self) -> list:
-        db_contract_positions = self.get_db_contract_positions_with_IB_expiries()
+        db_contract_positions = (
+            self.get_all_current_contract_positions_with_db_expiries()
+        )
         broker_contract_positions = self.get_all_current_contract_positions()
 
         break_list = db_contract_positions.return_list_of_breaks(
@@ -287,14 +238,11 @@ class dataBroker(productionDataLayerGeneric):
 
         return break_list
 
-    def get_db_contract_positions_with_IB_expiries(self) -> listOfContractPositions:
-        diag_positions = diagPositions(self.data)
-        db_contract_positions = diag_positions.get_all_current_contract_positions()
-        db_contract_positions = self.update_expiries_for_position_list_with_IB_expiries(
-            db_contract_positions
-        )
-
-        return db_contract_positions
+    def get_all_current_contract_positions_with_db_expiries(
+        self,
+    ) -> listOfContractPositions:
+        diag_positions = diagPositions()
+        return diag_positions.get_all_current_contract_positions_with_db_expiries()
 
     def get_ticker_object_for_order(self, order: contractOrder) -> tickerObject:
         ticker_object = (
@@ -335,10 +283,11 @@ class dataBroker(productionDataLayerGeneric):
     def get_current_size_for_contract_order_by_leg(
         self, contract_order: contractOrder
     ) -> (list, list):
-        market_conditions = self.get_market_conditions_for_contract_order_by_leg(
-            contract_order
-        )
-        if market_conditions is missing_data:
+        try:
+            market_conditions = self.get_market_conditions_for_contract_order_by_leg(
+                contract_order
+            )
+        except missingData:
             self.log.warn("Can't get market conditions, setting available size to zero")
             side_qty = offside_qty = len(contract_order.trade) * [0]
             return side_qty, offside_qty
@@ -358,14 +307,11 @@ class dataBroker(productionDataLayerGeneric):
         )
         for contract, qty in zip(list_of_contracts, list_of_trade_qty):
 
-            try:
-                market_conditions_this_contract = (
-                    self.check_market_conditions_for_single_legged_contract_and_qty(
-                        contract, qty
-                    )
+            market_conditions_this_contract = (
+                self.check_market_conditions_for_single_legged_contract_and_qty(
+                    contract, qty
                 )
-            except missingData:
-                return missing_data
+            )
 
             market_conditions.append(market_conditions_this_contract)
 

@@ -4,7 +4,7 @@ import datetime
 import numpy as np
 import pandas as pd
 
-from syscore.exceptions import missingContract
+from syscore.exceptions import missingContract, missingData
 from syscore.interactive.progress_bar import progressBar
 
 from sysdata.data_blob import dataBlob
@@ -22,25 +22,10 @@ from sysproduction.reporting.data.trades import (
 from sysproduction.data.risk import get_current_annualised_perc_stdev_for_instrument
 
 
-def get_current_configured_spread_cost(data):
+def get_current_configured_spread_cost(data) -> pd.Series:
     diag_instruments = diagInstruments(data)
-    list_of_instruments = diag_instruments.get_list_of_instruments()
 
-    spreads_as_list = [
-        get_configured_spread_cost_for_instrument(data, instrument_code)
-        for instrument_code in list_of_instruments
-    ]
-
-    spreads_as_df = pd.Series(spreads_as_list, index=list_of_instruments)
-
-    return spreads_as_df
-
-
-def get_configured_spread_cost_for_instrument(data, instrument_code):
-    diag_instruments = diagInstruments(data)
-    meta_data = diag_instruments.get_meta_data(instrument_code)
-
-    return meta_data.Slippage
+    return diag_instruments.get_spread_costs_as_series()
 
 
 def get_SR_cost_calculation_for_instrument(
@@ -146,7 +131,7 @@ def get_tick_value_for_instrument_code(instrument_code: str, data: dataBlob) -> 
     contract_data = dataContracts()
     try:
         contract_id = contract_data.get_priced_contract_id(instrument_code)
-    except AttributeError:
+    except missingData:
         return np.nan
 
     futures_contract = futuresContract(instrument_code, contract_id)
