@@ -5,20 +5,37 @@ from sysinit.futures.contract_prices_from_csv_to_arctic import (
     init_arctic_with_csv_futures_contract_prices_for_code,
 )
 
+NORGATE_CONFIG = ConfigCsvFuturesPrices(
+    input_date_index_name="Date",
+    input_skiprows=0,
+    input_skipfooter=0,
+    input_date_format="%Y%m%d",
+    input_column_mapping=dict(
+        OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
+    ),
+)
+
+# Time,Open,High,Low,Close,Volume
+BARCHART_CONFIG = ConfigCsvFuturesPrices(
+    input_date_index_name="Time",
+    input_skiprows=0,
+    input_skipfooter=0,
+    input_date_format="%Y-%m-%dT%H:%M:%S%z",
+    input_column_mapping=dict(
+        OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
+    ),
+)
+
+BACKUP_CONFIG = ConfigCsvFuturesPrices(
+    input_skiprows=0, input_skipfooter=1
+)
+
 
 def transfer_barchart_prices_to_arctic_single(instr, datapath):
     init_arctic_with_csv_futures_contract_prices_for_code(
         instr,
         datapath,
-        csv_config=ConfigCsvFuturesPrices(
-            input_date_index_name="Time",
-            input_skiprows=0,
-            input_skipfooter=0,
-            input_date_format="%Y-%m-%dT%H:%M:%S%z",
-            input_column_mapping=dict(
-                OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
-            ),
-        ),
+        csv_config=BACKUP_CONFIG,
     )
 
 
@@ -28,5 +45,5 @@ if __name__ == "__main__":
         get_production_config().get_element_or_missing_data("barchart_path")
     )
 
-    for instr in ["SP500"]:
+    for instr in ["LUMBER-new"]:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)

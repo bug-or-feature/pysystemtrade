@@ -4,9 +4,11 @@ from syscore.constants import arg_not_supplied
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
-from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
+from sysobjects.rolls import rollParameters
 from sysobjects.roll_calendars import rollCalendar
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
+from sysdata.csv.csv_roll_parameters import csvRollParametersData
+from sysdata.futures.rolls_parameters import rollParametersData
 from sysproduction.data.prices import get_valid_instrument_code_from_user
 
 """
@@ -17,11 +19,12 @@ Generate a 'best guess' roll calendar based on some price data for individual co
 
 def build_and_write_roll_calendar(
     instrument_code,
-    #   output_datapath=arg_not_supplied,
-    output_datapath="/home/caleb/pysystemtrade/sysinit/futures/tmp",
+    output_datapath=arg_not_supplied,
+    write=True,
     check_before_writing=True,
     input_prices=arg_not_supplied,
-    input_config=arg_not_supplied,
+    roll_parameters_data: rollParametersData = arg_not_supplied,
+    roll_parameters: rollParameters = arg_not_supplied,
 ):
 
     if output_datapath is arg_not_supplied:
@@ -36,10 +39,10 @@ def build_and_write_roll_calendar(
     else:
         prices = input_prices
 
-    if input_config is arg_not_supplied:
-        rollparameters = mongoRollParametersData()
-    else:
-        rollparameters = input_config
+    if roll_parameters is arg_not_supplied:
+        if roll_parameters_data is arg_not_supplied:
+            roll_parameters_data = csvRollParametersData()
+        roll_parameters = roll_parameters_data.get_roll_parameters(instrument_code)
 
     csv_roll_calendars = csvRollCalendarData(output_datapath)
 
@@ -48,12 +51,10 @@ def build_and_write_roll_calendar(
     )
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
 
-    roll_parameters_object = rollparameters.get_roll_parameters(instrument_code)
-
     # might take a few seconds
     print("Prepping roll calendar... might take a few seconds")
     roll_calendar = rollCalendar.create_from_prices(
-        dict_of_futures_contract_prices, roll_parameters_object
+        dict_of_futures_contract_prices, roll_parameters
     )
 
     # checks - this might fail
@@ -64,22 +65,22 @@ def build_and_write_roll_calendar(
 
     # Write to csv
     # Will not work if an existing calendar exists
+    if write:
+        if check_before_writing:
+            check_happy_to_write = true_if_answer_is_yes(
+                "Are you ok to write this csv to path %s/%s.csv? [might be worth writing and hacking manually]?"
+                % (csv_roll_calendars.datapath, instrument_code)
+            )
+        else:
+            check_happy_to_write = True
 
-    if check_before_writing:
-        check_happy_to_write = true_if_answer_is_yes(
-            "Are you ok to write this csv to path %s/%s.csv? [might be worth writing and hacking manually]?"
-            % (csv_roll_calendars.datapath, instrument_code)
-        )
-    else:
-        check_happy_to_write = True
-
-    if check_happy_to_write:
-        print("Adding roll calendar")
-        csv_roll_calendars.add_roll_calendar(
-            instrument_code, roll_calendar, ignore_duplication=True
-        )
-    else:
-        print("Not writing")
+        if check_happy_to_write:
+            print("Adding roll calendar")
+            csv_roll_calendars.add_roll_calendar(
+                instrument_code, roll_calendar, ignore_duplication=True
+            )
+        else:
+            print("Not writing - not happy")
 
     return roll_calendar
 
@@ -102,7 +103,7 @@ def check_saved_roll_calendar(
     else:
         prices = input_prices
 
-    dict_of_all_futures_contract_prices = prices.get_all_prices_for_instrument(
+    dict_of_all_futures_contract_prices = prices.get_merged_prices_for_instrument(
         instrument_code
     )
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
@@ -119,13 +120,13 @@ def check_saved_roll_calendar(
 
 
 if __name__ == "__main__":
-    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    # instrument_code = get_valid_instrument_code_from_user(source="single")
+    input("Will overwrite existing roll calendar are you sure?! CTL-C to abort")
+    instrument_code = get_valid_instrument_code_from_user(source="single")
     ## MODIFY DATAPATH IF REQUIRED
     # build_and_write_roll_calendar(instrument_code, output_datapath=arg_not_supplied)
 
     # for instr in ['DX', 'EUR', 'GBP', 'NZD']:
-    instrument_code = "VIX"
+    instrument_code = "LUMBER-new"
     build_and_write_roll_calendar(
         instrument_code,
         output_datapath="data.futures_cj.roll_calendars_csv",
