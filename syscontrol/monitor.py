@@ -7,7 +7,8 @@ from sysdata.config.production_config import get_production_config
 from syscore.fileutils import resolve_path_and_filename_for_package
 from sysproduction.data.control_process import dataControlProcess
 from sysproduction.data.control_process import diagControlProcess
-#from sysproduction.data.logs import diagLogs
+
+# from sysproduction.data.logs import diagLogs
 from syscontrol.list_running_pids import describe_trading_server_login_data
 
 
@@ -30,7 +31,7 @@ class processMonitor(dict):
     def __init__(self, data):
         super().__init__()
         self._data = data
-        #self._log_store = diagLogs(data)
+        # self._log_store = diagLogs(data)
 
         ## get initial status
         self.update_all_status_with_process_control()

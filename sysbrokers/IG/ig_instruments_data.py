@@ -72,7 +72,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
         if len(config_row) == 0:
             msg = f"Broker symbol {broker_code} not found in configuration file! "
             self.log.warn(msg)
-            #raise Exception(msg)
+            # raise Exception(msg)
             return None
 
         if len(config_row) > 1:

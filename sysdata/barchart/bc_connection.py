@@ -169,7 +169,9 @@ class bcConnection(object):
 
     @staticmethod
     def _raw_barchart_data_to_df(
-        price_data_raw: pd.DataFrame, log: pst_logger, bar_freq: Frequency = Frequency.Day
+        price_data_raw: pd.DataFrame,
+        log: pst_logger,
+        bar_freq: Frequency = Frequency.Day,
     ) -> pd.DataFrame:
 
         if price_data_raw is None:

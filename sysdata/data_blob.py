@@ -12,7 +12,6 @@ from syslogdiag.log_to_file import logToFile
 from syslogdiag.log_to_screen import logtoscreen
 
 
-
 class dataBlob(object):
     def __init__(
         self,

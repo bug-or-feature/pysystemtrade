@@ -45,7 +45,8 @@ class diagInstruments(productionDataLayerGeneric):
                 csvFuturesInstrumentData,
                 mongoSpreadCostData,
                 mongoMarketInfoData,
-            ])
+            ]
+        )
         return data
 
     def get_spread_costs_as_series(self):
@@ -147,6 +148,7 @@ class diagInstruments(productionDataLayerGeneric):
                 self.log.warn(f"Problem getting trading hours: {exc}")
 
         return self.db_market_info_data.get_trading_hours_for_epic(key)
+
 
 def get_block_size(data, instrument_code):
     diag_instruments = diagInstruments(data)
