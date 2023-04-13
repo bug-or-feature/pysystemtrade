@@ -7,9 +7,10 @@ from syscore.constants import arg_not_supplied
 from syscore.text import camel_case_split
 from sysdata.config.production_config import get_production_config, Config
 from sysdata.mongodb.mongo_connection import mongoDb
-from sysdata.mongodb.mongo_log import logToMongod
-from syslogdiag.logger import logger
+from syslogdiag.pst_logger import pst_logger, COMPONENT_LOG_LABEL
+from syslogdiag.log_to_file import logToFile
 from syslogdiag.log_to_screen import logtoscreen
+
 
 
 class dataBlob(object):
@@ -20,7 +21,7 @@ class dataBlob(object):
         csv_data_paths: dict = arg_not_supplied,
         broker_conn: IGConnection = arg_not_supplied,
         mongo_db: mongoDb = arg_not_supplied,
-        log: logger = arg_not_supplied,
+        log: pst_logger = arg_not_supplied,
         keep_original_prefix: bool = False,
         auto_connect: bool = True,
     ):
@@ -43,7 +44,7 @@ class dataBlob(object):
         This abstracts the precise data source
 
         :param arg_string: str like a named tuple in the form 'classNameOfData1 classNameOfData2' and so on
-        :param log_name: logger type to set
+        :param log_name: pst_logger type to set
         :param keep_original_prefix: bool. If True then:
 
             data = dataBlob([arcticFuturesContractPriceData, arcticFuturesContractPriceData, mongoFuturesContractData])
@@ -210,9 +211,6 @@ class dataBlob(object):
         class_name = get_class_name(class_object)
         csv_data_paths = self.csv_data_paths
         if csv_data_paths is arg_not_supplied:
-            self.log.warn(
-                "No datapaths provided for .csv, will use defaults  (may break in production, should be fine in sim)"
-            )
             return arg_not_supplied
 
         datapath = csv_data_paths.get(class_name, "")
@@ -251,7 +249,7 @@ class dataBlob(object):
 
     def _get_specific_logger(self, class_object):
         class_name = get_class_name(class_object)
-        log = self.log.setup(component=class_name)
+        log = self.log.setup(**{COMPONENT_LOG_LABEL: class_name})
 
         return log
 
@@ -286,7 +284,7 @@ class dataBlob(object):
     def _add_attr_to_list(self, new_attr: str):
         self._attr_list.append(new_attr)
 
-    def update_log(self, new_log: logger):
+    def update_log(self, new_log: pst_logger):
         self._log = new_log
 
     """
@@ -304,6 +302,7 @@ class dataBlob(object):
             self._broker_conn.logout()
 
         # No need to explicitly close Mongo connections; handled by Python garbage collection
+        self.log.close_log_file()
 
     @property
     def broker_conn(self) -> IGConnection:
@@ -354,7 +353,7 @@ class dataBlob(object):
         log = getattr(self, "_log", arg_not_supplied)
         if log is arg_not_supplied:
             if self._auto_connect:
-                log = logToMongod(self.log_name, mongo_db=self.mongo_db, data=self)
+                log = logToFile(self.log_name, data=self)
             else:
                 log = logtoscreen(self.log_name)
             log.set_logging_level("on")

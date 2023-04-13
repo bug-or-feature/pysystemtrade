@@ -1,13 +1,11 @@
 from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_capital_data import brokerCapitalData
-
-from syscore.constants import arg_not_supplied
 from sysdata.data_blob import dataBlob
-from sysdata.production.timed_storage import classStrWithListOfEntriesAsListOfDicts
+from syscore.constants import arg_not_supplied
 
 from sysobjects.spot_fx_prices import currencyValue, listOfCurrencyValues
 
-from syslogdiag.logger import logger
+from syslogdiag.pst_logger import pst_logger
 from syslogdiag.log_to_screen import logtoscreen
 
 
@@ -16,7 +14,7 @@ class IgCapitalData(brokerCapitalData):
         self,
         broker_conn: IGConnection,
         data: dataBlob,
-        log: logger = logtoscreen("IGCapitalData"),
+        log: pst_logger = logtoscreen("IGCapitalData"),
     ):
         super().__init__(log=log, data=data)
         self._broker_conn = broker_conn
@@ -40,17 +38,13 @@ class IgCapitalData(brokerCapitalData):
         list_of_values_per_currency = listOfCurrencyValues(list_of_values_per_currency)
         return list_of_values_per_currency
 
-    def _get_series_dict_with_data_class_for_args_dict(
-        self, args_dict: dict
-    ) -> classStrWithListOfEntriesAsListOfDicts:
+    def get_excess_liquidity_value_across_currency(
+        self, account_id: str = arg_not_supplied
+    ) -> listOfCurrencyValues:
+        # TODO
         pass
 
-    def _write_series_dict_for_args_dict(
-        self,
-        args_dict: dict,
-        class_str_with_series_as_list_of_dicts: classStrWithListOfEntriesAsListOfDicts,
-    ):
-        pass
-
-    def _get_list_of_args_dict(self) -> list:
-        pass
+    """
+    Can add other functions not in parent class to get IB specific stuff which could be required for
+      strategy decomposition
+    """

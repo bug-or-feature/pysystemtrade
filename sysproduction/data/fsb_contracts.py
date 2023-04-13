@@ -4,17 +4,19 @@ from sysdata.arctic.arctic_fsb_per_contract_prices import (
     ArcticFsbContractPriceData,
 )
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
-from sysdata.data_blob import dataBlob
+from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
-from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
+
 from sysobjects.contract_dates_and_expiries import (
     listOfContractDateStr,
 )
-from sysobjects.contracts import futuresContract
 from sysproduction.data.contracts import dataContracts
+from sysproduction.data.prices import get_valid_instrument_code_from_user
+from sysobjects.contracts import futuresContract
+
 from sysproduction.data.fsb_prices import DiagFsbPrices
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
-from sysproduction.data.prices import get_valid_instrument_code_from_user
+from sysdata.data_blob import dataBlob
 
 missing_expiry = datetime.datetime(1900, 1, 1)
 
@@ -24,7 +26,7 @@ class DataFsbContracts(dataContracts, productionDataLayerGeneric):
         data.add_class_list(
             [
                 ArcticFsbContractPriceData,
-                mongoRollParametersData,
+                csvRollParametersData,
                 arcticFuturesMultiplePricesData,
                 mongoFuturesContractData,
             ]

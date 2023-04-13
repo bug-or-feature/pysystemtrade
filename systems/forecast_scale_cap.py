@@ -11,7 +11,6 @@ from systems.system_cache import input, dont_cache, diagnostic, output
 
 from syscore.genutils import str2Bool
 from syscore.objects import resolve_function
-from syscore.constants import missing_data
 
 
 class ForecastScaleCap(SystemStage):
@@ -61,7 +60,6 @@ class ForecastScaleCap(SystemStage):
             "Calculating capped forecast for %s %s"
             % (instrument_code, rule_variation_name),
             instrument_code=instrument_code,
-            rule_variation_name=rule_variation_name,
         )
 
         scaled_forecast = self.get_scaled_forecast(instrument_code, rule_variation_name)
@@ -307,8 +305,7 @@ class ForecastScaleCap(SystemStage):
 
         self.log.msg(
             "Getting cross sectional forecasts for scalar calculation for %s over %s"
-            % (rule_variation_name, ", ".join(instrument_list)),
-            rule_variation_name=rule_variation_name,
+            % (rule_variation_name, ", ".join(instrument_list))
         )
 
         forecast_list = [
@@ -353,7 +350,9 @@ class ForecastScaleCap(SystemStage):
         :return: list of trading rules
         """
 
-        if getattr(self.parent, "combForecast", missing_data) is missing_data:
+        try:
+            getattr(self.parent, "combForecast")
+        except AttributeError:
             return []
         else:
             return self.comb_forecast_stage.get_trading_rule_list(instrument_code)
@@ -447,11 +446,7 @@ class ForecastScaleCap(SystemStage):
                 scalar = config.forecast_scalars[rule_variation_name]
             except:
                 # just one global default
-                scalar = config.get_element_or_missing_data("forecast_scalar")
-                if scalar is missing_data:
-                    raise Exception(
-                        "Forecast scalar needs to be config.trading_rules[rule_variation_name]['forecast_scalar'] or config.forecast_scalars[rule_variation_name] or config['forecast_scalar']"
-                    )
+                scalar = config.get_element("forecast_scalar")
 
         return scalar
 

@@ -70,9 +70,10 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
         config_row = self.config[self.config.IGEpic == code_base]
         if len(config_row) == 0:
-            msg = f"Broker symbol {broker_code} not found in configuration file!"
-            self.log.critical(msg)
-            raise Exception(msg)
+            msg = f"Broker symbol {broker_code} not found in configuration file! "
+            self.log.warn(msg)
+            #raise Exception(msg)
+            return None
 
         if len(config_row) > 1:
             msg = f"Broker symbol {broker_code} appears more than once in configuration file!"

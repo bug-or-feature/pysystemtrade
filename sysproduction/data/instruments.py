@@ -1,45 +1,55 @@
-from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
-from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
+from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
+
 from sysdata.data_blob import dataBlob
 from sysdata.futures.instruments import futuresInstrumentData
+from sysdata.futures.spread_costs import spreadCostData
+from sysdata.mongodb.mongo_spread_costs import mongoSpreadCostData
+
 from sysdata.futures_spreadbet.market_info_data import marketInfoData
-from sysproduction.data.currency_data import dataCurrency
-from sysproduction.data.generic_production_data import productionDataLayerGeneric
+from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
+
 from sysobjects.spot_fx_prices import currencyValue
 from sysobjects.instruments import instrumentCosts
 from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 from sysobjects.contracts import futuresContract
 from syscore.exceptions import missingData
 
+from sysproduction.data.currency_data import dataCurrency
+from sysproduction.data.generic_production_data import productionDataLayerGeneric
 
-class dataInstruments(productionDataLayerGeneric):
+
+class updateSpreadCosts(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
-        data.add_class_object(mongoFuturesInstrumentData)
+        data.add_class_object(mongoSpreadCostData)
         return data
 
-    def update_slippage_costs(self, instrument_code: str, new_slippage: float):
-        self.db_futures_instrument_data.update_slippage_costs(
-            instrument_code, new_slippage
+    def update_spread_costs(self, instrument_code: str, spread_cost: float):
+        original_cost = self.db_spread_cost_data.get_spread_cost(instrument_code)
+        self.log.msg(
+            "Updating spread for %s from %f to %f"
+            % (instrument_code, original_cost, spread_cost)
+        )
+        self.db_spread_cost_data.update_spread_cost(
+            instrument_code=instrument_code, spread_cost=spread_cost
         )
 
     @property
-    def db_futures_instrument_data(self) -> futuresInstrumentData:
-        return self.data.db_futures_instrument
+    def db_spread_cost_data(self) -> spreadCostData:
+        return self.data.db_spread_cost
 
 
 class diagInstruments(productionDataLayerGeneric):
-    def _add_required_classes_to_data(self, data) -> dataBlob:
+    def _add_required_classes_to_data(self, data: dataBlob) -> dataBlob:
         data.add_class_list(
             [
-                mongoFuturesInstrumentData,
+                csvFuturesInstrumentData,
+                mongoSpreadCostData,
                 mongoMarketInfoData,
-            ]
-        )
+            ])
         return data
 
-    @property
-    def db_futures_instrument_data(self) -> futuresInstrumentData:
-        return self.data.db_futures_instrument
+    def get_spread_costs_as_series(self):
+        return self.db_spread_cost_data.get_spread_costs_as_series()
 
     @property
     def db_market_info_data(self) -> marketInfoData:
@@ -47,8 +57,14 @@ class diagInstruments(productionDataLayerGeneric):
 
     def get_cost_object(self, instrument_code: str) -> instrumentCosts:
         meta_data = self.get_meta_data(instrument_code)
+        spread_cost = self.get_spread_cost(instrument_code)
 
-        return instrumentCosts.from_meta_data(meta_data)
+        return instrumentCosts.from_meta_data_and_spread_cost(
+            meta_data, spread_cost=spread_cost
+        )
+
+    def get_spread_cost(self, instrument_code: str) -> float:
+        return self.db_spread_cost_data.get_spread_cost(instrument_code)
 
     def get_point_size(self, instrument_code: str) -> float:
         return self.get_meta_data(instrument_code).Pointsize
@@ -105,6 +121,20 @@ class diagInstruments(productionDataLayerGeneric):
 
         return instrument_codes
 
+    def get_stale_instruments(self) -> list:
+        config = self.data.config
+        stale_instruments = config.get_element_or_default("stale_instruments", [])
+
+        return stale_instruments
+
+    @property
+    def db_futures_instrument_data(self) -> futuresInstrumentData:
+        return self.data.db_futures_instrument
+
+    @property
+    def db_spread_cost_data(self) -> spreadCostData:
+        return self.data.db_spread_cost
+
     def get_expiry_details(self, epic: str):
         return self.db_market_info_data.get_expiry_details(epic)
 
@@ -118,7 +148,11 @@ class diagInstruments(productionDataLayerGeneric):
 
         return self.db_market_info_data.get_trading_hours_for_epic(key)
 
-
 def get_block_size(data, instrument_code):
     diag_instruments = diagInstruments(data)
     return diag_instruments.get_point_size(instrument_code)
+
+
+def get_stale_instruments(data):
+    diag_instruments = diagInstruments(data)
+    return diag_instruments.get_stale_instruments()

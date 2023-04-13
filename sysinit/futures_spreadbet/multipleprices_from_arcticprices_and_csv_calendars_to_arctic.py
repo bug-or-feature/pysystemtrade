@@ -24,14 +24,13 @@ from sysobjects.contract_dates_and_expiries import contractDate
 
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 from sysdata.csv.csv_multiple_prices import csvFuturesMultiplePricesData
+from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
 from sysinit.futures.build_roll_calendars import adjust_to_price_series
 from sysobjects.multiple_prices import futuresMultiplePrices
-from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
-from sysproduction.data.prices import get_valid_instrument_code_from_user
 
 
 def _get_data_inputs(csv_roll_data_path, csv_multiple_data_path):
@@ -78,13 +77,18 @@ def process_multiple_prices_all_instruments(
 
 def process_multiple_prices_single_instrument(
     instrument_code,
+    target_instrument_code=arg_not_supplied,
     adjust_calendar_to_prices=True,
     csv_multiple_data_path=arg_not_supplied,
     csv_roll_data_path=arg_not_supplied,
+    roll_parameters=arg_not_supplied,
+    roll_calendar=arg_not_supplied,
     ADD_TO_ARCTIC=True,
     ADD_TO_CSV=True,
 ):
 
+    if target_instrument_code is arg_not_supplied:
+        target_instrument_code = instrument_code
     (
         csv_roll_calendars,
         arctic_individual_futures_prices,
@@ -101,11 +105,14 @@ def process_multiple_prices_single_instrument(
         dict_of_futures_contract_prices.final_prices()
     )
 
-    roll_calendar = csv_roll_calendars.get_roll_calendar(instrument_code)
+    if roll_calendar is arg_not_supplied:
+        roll_calendar = csv_roll_calendars.get_roll_calendar(instrument_code)
 
     # Add first phantom row so that the last calendar entry won't be consumed by adjust_roll_calendar()
-    m = mongoRollParametersData()
-    roll_parameters = m.get_roll_parameters(instrument_code)
+    if roll_parameters is arg_not_supplied:
+        m = csvRollParametersData()
+        roll_parameters = m.get_roll_parameters(instrument_code)
+
     roll_calendar = add_phantom_row(
         roll_calendar, dict_of_futures_contract_closing_prices, roll_parameters
     )
@@ -126,11 +133,11 @@ def process_multiple_prices_single_instrument(
 
     if ADD_TO_ARCTIC:
         arctic_multiple_prices.add_multiple_prices(
-            instrument_code, multiple_prices, ignore_duplication=True
+            target_instrument_code, multiple_prices, ignore_duplication=True
         )
     if ADD_TO_CSV:
         csv_multiple_prices.add_multiple_prices(
-            instrument_code, multiple_prices, ignore_duplication=True
+            target_instrument_code, multiple_prices, ignore_duplication=True
         )
 
     return multiple_prices

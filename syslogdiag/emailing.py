@@ -2,7 +2,7 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from enum import Enum
-import smtplib
+import smtplib, ssl
 from typing import List
 
 import pandas as pd

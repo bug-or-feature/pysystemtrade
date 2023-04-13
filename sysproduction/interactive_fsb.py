@@ -4,7 +4,7 @@ import datetime
 
 from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
-from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
+from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
 from sysexecution.strategies.classic_buffered_positions import (
@@ -30,7 +30,7 @@ def hello():
 def show_optimals():
 
     data = dataBlob()
-    data.add_class_object(mongoFuturesInstrumentData)
+    data.add_class_object(csvFuturesInstrumentData)
     data.add_class_object(mongoFuturesContractData)
     data.add_class_object(arcticFuturesAdjustedPricesData)
     broker = dataBroker(data=data)

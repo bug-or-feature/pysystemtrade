@@ -10,7 +10,7 @@ These are 'virtual' orders, because they are per instrument. We translate that t
 from collections import namedtuple
 
 from sysdata.data_blob import dataBlob
-from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
+from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 
 from sysexecution.orders.instrument_orders import instrumentOrder, best_order_type
 from sysexecution.orders.list_of_orders import listOfOrders
@@ -73,7 +73,7 @@ def trade_fsb(
     actual_positions: dict,
 ) -> instrumentOrder:
 
-    data.add_class_object(mongoFuturesInstrumentData)
+    data.add_class_object(csvFuturesInstrumentData)
     instr_data = data.db_futures_instrument.get_instrument_data(instrument_code)
 
     upper_for_instrument = optimal_positions.upper_positions[instrument_code]

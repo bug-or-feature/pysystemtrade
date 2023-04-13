@@ -1,60 +1,77 @@
 from syscore.exceptions import missingData
-from sysdata.data_blob import dataBlob
 from sysbrokers.IB.ib_futures_contract_price_data import (
-    ibFuturesContractPriceData,
     futuresContract,
 )
-from sysbrokers.IB.ib_futures_contracts_data import ibFuturesContractData
-from sysdata.arctic.arctic_futures_per_contract_prices import (
-    arcticFuturesContractPriceData,
-)
+from syscore.dateutils import DAILY_PRICE_FREQ, HOURLY_FREQ, Frequency
+from sysdata.data_blob import dataBlob
 
-from syscore.constants import missing_data, failure
-
-from sysinit.futures.create_hourly_and_daily import write_split_data_for_instrument
+from sysproduction.data.broker import dataBroker
+from sysproduction.data.prices import updatePrices
+from sysproduction.update_historical_prices import write_merged_prices_for_contract
 
 
 def seed_price_data_from_IB(instrument_code):
     data = dataBlob()
-    data.add_class_list(
-        [
-            ibFuturesContractPriceData,
-            arcticFuturesContractPriceData,
-            ibFuturesContractData,
-        ]
-    )
-    list_of_contracts = data.broker_futures_contract_price.contracts_with_merged_price_data_for_instrument_code(
+    data_broker = dataBroker(data)
+
+    list_of_contracts = data_broker.get_list_of_contract_dates_for_instrument_code(
         instrument_code, allow_expired=True
     )
 
-    for contract in list_of_contracts:
-        seed_price_data_for_contract(data, contract)
+    ## This returns yyyymmdd strings, where we have the actual expiry date
 
-    write_split_data_for_instrument(instrument_code)
+    for contract_date in list_of_contracts:
+        ## We do this slightly tortorous thing because there are energy contracts
+        ## which don't expire in the month they are labelled with
+        ## So for example, CRUDE_W 202106 actually expires on 20210528
+
+        date_str = contract_date[:6]
+        contract_object = futuresContract(instrument_code, date_str)
+
+        seed_price_data_for_contract(data=data, contract_object=contract_object)
 
 
-def seed_price_data_for_contract(data: dataBlob, contract: futuresContract):
-    ## We do this slightly tortorous thing because there are energy contracts
-    ## which don't expire in the month they are labelled with
-    ## So for example, CRUDE_W 202106 actually expires on 20210528
+def seed_price_data_for_contract(data: dataBlob, contract_object: futuresContract):
+    log = contract_object.specific_log(data.log)
 
-    date_str = contract.contract_date.date_str[:6]
-    new_contract = futuresContract(contract.instrument, date_str)
+    list_of_frequencies = [HOURLY_FREQ, DAILY_PRICE_FREQ]
+    for frequency in list_of_frequencies:
+        log.msg("Getting data at frequency %s" % str(frequency))
+        seed_price_data_for_contract_at_frequency(
+            data=data, contract_object=contract_object, frequency=frequency
+        )
+
+    log.msg("Writing merged data for %s" % str(contract_object))
+    write_merged_prices_for_contract(
+        data, contract_object=contract_object, list_of_frequencies=list_of_frequencies
+    )
+
+
+def seed_price_data_for_contract_at_frequency(
+    data: dataBlob, contract_object: futuresContract, frequency: Frequency
+):
+
+    data_broker = dataBroker(data)
+    update_prices = updatePrices(data)
+    log = contract_object.specific_log(data.log)
+
     try:
-        prices = data.broker_futures_contract_price.get_prices_at_frequency_for_potentially_expired_contract_object(
-            new_contract
+        prices = (
+            data_broker.get_prices_at_frequency_for_potentially_expired_contract_object(
+                contract_object, frequency=frequency
+            )
         )
     except missingData:
-        prices = []
+        log.warn("Error getting data for %s" % str(contract_object))
+        return None
+
+    log.msg("Got %d lines of prices for %s" % (len(prices), str(contract_object)))
 
     if len(prices) == 0:
-        print("No data!")
+        log.warn("No price data for %s" % str(contract_object))
     else:
-        ## If you want to modify this script so it updates existing prices
-        ## eg from barchart, then uncomment the following line and comment the next
-        # data.db_futures_contract_price.update_prices_for_contract(contract, prices)
-        data.db_futures_contract_price.write_merged_prices_for_contract_object(
-            new_contract, prices, ignore_duplication=True
+        update_prices.overwrite_prices_at_frequency_for_contract(
+            contract_object=contract_object, frequency=frequency, new_prices=prices
         )
 
 

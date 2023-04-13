@@ -3,7 +3,8 @@ import datetime
 import numpy as np
 import pandas as pd
 
-from syscore.constants import missing_data, arg_not_supplied
+from syscore.constants import arg_not_supplied
+from syscore.exceptions import missingData
 from sysobjects.contract_dates_and_expiries import listOfContractDateStr
 
 
@@ -19,10 +20,11 @@ class dictFuturesContractFinalPrices(dict):
         Time sorted contract ids
         :return:
         """
-        all_contract_date_str_sorted = getattr(
-            self, "_all_contract_date_str_sorted", missing_data
-        )
-        if all_contract_date_str_sorted is missing_data:
+        try:
+            all_contract_date_str_sorted = getattr(
+                self, "_all_contract_date_str_sorted"
+            )
+        except AttributeError:
             all_contract_date_str_sorted = self._get_and_set_sorted_contract_date_str()
 
         return all_contract_date_str_sorted
@@ -62,7 +64,7 @@ class dictFuturesContractFinalPrices(dict):
 
         if len(matched_data) == 0:
             # This will happen if there are no matches
-            return missing_data
+            raise missingData
 
         return matched_data
 
@@ -131,11 +133,12 @@ def get_last_matched_date_and_prices_for_contract_list(
     list_of_contract_date_str: list,
 ) -> (datetime.datetime, list):
     dict_of_final_prices = dict_of_prices.final_prices()
-    matched_final_prices = dict_of_final_prices.matched_prices(
-        contracts_to_match=contracts_to_match
-    )
 
-    if matched_final_prices is missing_data:
+    try:
+        matched_final_prices = dict_of_final_prices.matched_prices(
+            contracts_to_match=contracts_to_match
+        )
+    except missingData:
         # This will happen if there are no matching prices
         # We just return the last row
         matched_final_prices = dict_of_final_prices.joint_data()

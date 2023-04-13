@@ -7,7 +7,8 @@ import requests
 from bs4 import BeautifulSoup as Scraper
 
 from syscore.dateutils import Frequency
-from syslogdiag.log_to_screen import logger, logtoscreen
+from syslogdiag.log_to_screen import logtoscreen
+from syslogdiag.pst_logger import pst_logger
 from syscore.exceptions import missingData
 
 BARCHART_URL = "https://www.barchart.com/"
@@ -168,7 +169,7 @@ class bcConnection(object):
 
     @staticmethod
     def _raw_barchart_data_to_df(
-        price_data_raw: pd.DataFrame, log: logger, bar_freq: Frequency = Frequency.Day
+        price_data_raw: pd.DataFrame, log: pst_logger, bar_freq: Frequency = Frequency.Day
     ) -> pd.DataFrame:
 
         if price_data_raw is None:

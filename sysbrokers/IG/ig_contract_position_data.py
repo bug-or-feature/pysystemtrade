@@ -1,18 +1,20 @@
 from datetime import datetime
 
-from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.IG.ig_positions import from_ig_positions_to_dict
-from sysbrokers.broker_contract_position_data import brokerContractPositionData
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
-from syscore.constants import arg_not_supplied
-from syscore.exceptions import missingContract
-from sysdata.data_blob import dataBlob
 from sysdata.futures.contracts import futuresContractData
-from sysdata.production.timed_storage import classStrWithListOfEntriesAsListOfDicts
+
+from syscore.exceptions import missingContract
 from syslogdiag.log_to_screen import logtoscreen
 from sysobjects.contract_dates_and_expiries import contractDate
-from sysobjects.contracts import futuresContract
+from sysdata.data_blob import dataBlob
+from sysbrokers.IG.ig_connection import IGConnection
+from sysbrokers.broker_contract_position_data import brokerContractPositionData
+
+from syscore.constants import arg_not_supplied
+
 from sysobjects.production.positions import contractPosition, listOfContractPositions
+from sysobjects.contracts import futuresContract
 
 
 class IgContractPositionData(brokerContractPositionData):
@@ -57,7 +59,9 @@ class IgContractPositionData(brokerContractPositionData):
                 continue
             else:
                 current_positions.append(contract_position_object)
+
         list_of_contract_positions = listOfContractPositions(current_positions)
+
         list_of_contract_positions_no_duplicates = (
             list_of_contract_positions.sum_for_contract()
         )
@@ -74,6 +78,8 @@ class IgContractPositionData(brokerContractPositionData):
         instrument_code = (
             self.futures_instrument_data.get_instrument_code_from_broker_code(epic)
         )
+        if instrument_code is None:
+            raise missingContract
         expiry_key = position_entry["expiry"]
         contract = futuresContract(
             instrument_code,
@@ -125,15 +131,3 @@ class IgContractPositionData(brokerContractPositionData):
 
     def get_list_of_instruments_with_any_position(self):
         raise Exception("Not implemented for IG")
-
-    def _get_series_dict_with_data_class_for_args_dict(
-        self, args_dict: dict
-    ) -> classStrWithListOfEntriesAsListOfDicts:
-        pass
-
-    def _write_series_dict_for_args_dict(
-        self,
-        args_dict: dict,
-        class_str_with_series_as_list_of_dicts: classStrWithListOfEntriesAsListOfDicts,
-    ):
-        pass
