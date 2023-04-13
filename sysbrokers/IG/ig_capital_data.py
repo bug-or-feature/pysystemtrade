@@ -49,7 +49,7 @@ class IgCapitalData(brokerCapitalData):
         # )
         # list_of_values_per_currency = listOfCurrencyValues(list_of_values_per_currency)
         # return list_of_values_per_currency
-        # TODO
+        # TODO capital / margin
         pass
 
     """

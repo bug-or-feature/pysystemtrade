@@ -34,7 +34,7 @@ class totalCapitalUpdate(object):
 
     def update_total_capital(self):
         self.update_capital()
-        # TODO do we need this?
+        # TODO capital / margin
         # self.update_margin()
 
     def update_margin(self):
