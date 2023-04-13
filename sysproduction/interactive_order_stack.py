@@ -295,7 +295,7 @@ def manually_get_futures_contract_and_qty(data: dataBlob) -> Tuple[str, str, int
 
     print("Actual contract expiry is %s" % str(actual_contract_date))
 
-    # TODO AG position int -> float
+    # TODO rounding strategy?
     # fill_qty = get_input_from_user_and_convert_to_type(
     #     "Quantity ", type_expected=int, allow_default=False
     # )
@@ -327,8 +327,8 @@ def get_futures_contract_and_qty_to_close_position(
     relevant_row = contract_positions[position_index]
     instrument_code = relevant_row.instrument_code
     contract_date_yyyy_mm = relevant_row.date_str
+    # TODO rounding strategy?
     # fill_qty = int(-relevant_row.position)
-    # TODO AG position int -> float
     fill_qty = -relevant_row.position
 
     return instrument_code, contract_date_yyyy_mm, fill_qty

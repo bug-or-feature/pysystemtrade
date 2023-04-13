@@ -396,7 +396,8 @@ class updatePositions(productionDataLayerGeneric):
         """
 
         instrument_strategy = original_instrument_order.instrument_strategy
-        # TODO AG position int -> float
+        # TODO rounding strategy?
+        # TODO or just bad naming?
         current_position = (
             self.diag_positions.get_current_position_for_instrument_strategy(
                 instrument_strategy
@@ -415,6 +416,7 @@ class updatePositions(productionDataLayerGeneric):
 
         log = original_instrument_order.log_with_attributes(self.log)
         log.msg(
+            # "Updated position of %s from %d to %d because of trade %s %d fill %s"
             "Updated position of %s from %.2f to %.2f because of trade %s %d fill %s"
             % (
                 str(instrument_strategy),
@@ -451,8 +453,9 @@ class updatePositions(productionDataLayerGeneric):
                 contract=contract, trade_done=trade_done, time_date=time_date
             )
 
-            # TODO AG position int -> float
+            # TODO rounding strategy?
             log.msg(
+                # "Updated position of %s because of trade %s ID:%d with fills %d"
                 "Updated position of %s because of trade %s ID:%d with fills %.2f"
                 % (
                     str(contract),
@@ -478,6 +481,7 @@ class updatePositions(productionDataLayerGeneric):
 
         log = contract.specific_log(self.log)
         log.msg(
+            # "Updated position of %s from %d to %d; new position in db is %d"
             "Updated position of %s from %.2f to %.2f; new position in db is %.2f"
             % (
                 str(contract),

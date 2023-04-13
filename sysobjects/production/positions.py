@@ -12,7 +12,8 @@ class Position(object):
         self._position = position
 
     def __repr__(self):
-        # TODO AG position int -> float
+        # TODO rounding strategy?
+        # return "%s position %d" % (str(self._tradeable_object), self.position)
         return "%s position %.2f" % (str(self._tradeable_object), self.position)
 
     @property
@@ -127,8 +128,10 @@ class listOfPositions(list):
         :return: bool
         """
 
-        # TODO AG position int -> float
+        # TODO rounding strategy?
+        # my_position = self.position_for_object(tradeable_object)
         my_position = round(self.position_for_object(tradeable_object), 2)
+        # other_position = other_list_of_positions.position_for_object(tradeable_object)
         other_position = round(
             other_list_of_positions.position_for_object(tradeable_object), 2
         )

@@ -12,7 +12,7 @@ class tradeQuantity(list):
             pass
         elif isinstance(trade_or_fill_qty, int):
             trade_or_fill_qty = [trade_or_fill_qty]
-        # TODO AG position int -> float
+        # TODO rounding strategy?
         elif isinstance(trade_or_fill_qty, np.int64):
             trade_or_fill_qty = [round(trade_or_fill_qty, 2)]
         elif isinstance(trade_or_fill_qty, float):
