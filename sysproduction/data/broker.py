@@ -473,6 +473,7 @@ class dataBroker(productionDataLayerGeneric):
         capital_value = self.get_total_capital_value_in_base_currency()
         excess_liquidity = self.get_total_excess_liquidity_in_base_currency()
 
+        # TODO fix margin so this works
         return capital_value - excess_liquidity
 
     def get_total_capital_value_in_base_currency(self) -> float:
