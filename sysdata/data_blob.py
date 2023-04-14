@@ -318,7 +318,7 @@ class dataBlob(object):
             return broker_conn
 
         except Exception as exc:
-            logger.error(f"Problem creating new broker connection: {exc}")
+            self.log.error(f"Problem creating new broker connection: {exc}")
 
     @property
     def mongo_db(self) -> mongoDb:
