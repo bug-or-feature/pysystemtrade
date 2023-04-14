@@ -290,13 +290,6 @@ def get_relative_pathname_from_list(path_as_list: List[str]) -> str:
         directory_name_of_package = os.path.dirname(
             import_module(package_name).__file__
         )
-        # base_dir = os.getenv("PYSYS_CODE")
-        # if base_dir is not None:
-        #     directory_name_of_package = os.path.join(base_dir, package_name)
-        # else:
-        #     directory_name_of_package = os.path.dirname(
-        #         import_module(package_name).__file__
-        #     )
         return directory_name_of_package
 
     last_item_in_list = path_as_list.pop()
