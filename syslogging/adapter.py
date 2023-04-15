@@ -14,6 +14,8 @@ class DynamicAttributeLogger(logging.LoggerAdapter):
     # TODO data_blob._get_specific_logger
     # TODO self.log.close_log_file()
     # TODO log_with_attributes
+    # TODO log_level = "on"
+    # TODO system.set_logging_level(log_level)
 
     """
 
