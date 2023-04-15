@@ -134,6 +134,13 @@ class DynamicAttributeLogger(logging.LoggerAdapter):
         else:
             self.logger.setLevel(new_log_level)
 
+    def close_log_file(self):
+        warnings.warn(
+            "The 'close_log_file' function is deprecated, and does nothing anyway",
+            DeprecationWarning,
+            2,
+        )
+
     def _check_attributes(self, attributes: dict):
         if attributes is not None:
             bad_attributes = get_list_of_disallowed_attributes(attributes)
