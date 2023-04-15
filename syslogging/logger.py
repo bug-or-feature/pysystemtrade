@@ -25,6 +25,26 @@ def logtoscreen(name):
     return get_logger(name)
 
 
+def nullLog(name):
+    warnings.warn(
+        "The 'nullLog' class is deprecated, "
+        "use get_logger() from syslogging.logger instead",
+        DeprecationWarning,
+        2,
+    )
+    return get_logger(name)
+
+
+def logToFile(name, data):
+    warnings.warn(
+        "The 'logToFile' class is deprecated, "
+        "use get_logger() from syslogging.logger instead",
+        DeprecationWarning,
+        2,
+    )
+    return get_logger(name)
+
+
 def _configure_logging():
     logging_config_path = os.getenv(CONFIG_ENV_VAR, None)
     if logging_config_path:
