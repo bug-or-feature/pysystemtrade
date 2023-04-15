@@ -103,9 +103,13 @@ class TestLogging:
         ]
 
     def test_logtoscreen(self):
-        logger = logtoscreen("logtoscreen")
-        assert logger.name == "logtoscreen"
-        assert logger.getEffectiveLevel() == logging.DEBUG
+        screen = logtoscreen("logtoscreen")
+        assert screen.name == "logtoscreen"
+        assert screen.getEffectiveLevel() == logging.DEBUG
+
+        attrs = logtoscreen(**{TYPE_LOG_LABEL: "config", STAGE_LOG_LABEL: "config"})
+        assert attrs.name == "config"
+        assert attrs.getEffectiveLevel() == logging.DEBUG
 
     def test_set_logging_level(self):
         logger = get_logger("Set_Level")

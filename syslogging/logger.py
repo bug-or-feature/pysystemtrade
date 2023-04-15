@@ -12,17 +12,23 @@ CONFIG_ENV_VAR = "PYSYS_LOGGING_CONFIG"
 def get_logger(name, attributes=None):
     if not syslogging.logging_configured:
         _configure_logging()
+    if name is None or name == "":
+        if "type" in attributes:
+            name = attributes["type"]
     return DynamicAttributeLogger(logging.getLogger(name), attributes)
 
 
-def logtoscreen(name):
+def logtoscreen(name="", **kwargs):
     warnings.warn(
         "The 'logtoscreen' class is deprecated, "
         "use get_logger() from syslogging.logger instead",
         DeprecationWarning,
         2,
     )
-    return get_logger(name)
+    if name is None or name == "":
+        if "type" in kwargs:
+            name = kwargs["type"]
+    return DynamicAttributeLogger(logging.getLogger(name), kwargs)
 
 
 def nullLog(name):
