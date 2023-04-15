@@ -106,7 +106,10 @@ class DynamicAttributeLogger(logging.LoggerAdapter):
             DeprecationWarning,
             2,
         )
-        attributes = {**self.extra, **kwargs}
+        if self.extra is None or len(self.extra) == 0:
+            attributes = {**kwargs}
+        else:
+            attributes = {**self.extra, **kwargs}
         self._check_attributes(attributes)
         self.extra = attributes
 
