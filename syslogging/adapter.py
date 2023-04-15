@@ -13,8 +13,6 @@ class DynamicAttributeLogger(logging.LoggerAdapter):
     # TODO data.update_log(contract_object.specific_log(data.log))
     # TODO data_blob._get_specific_logger
     # TODO self.log.close_log_file()
-    # TODO log = logToFile
-    # TODO log: pst_logger = nullLog("")
     # TODO log_with_attributes
 
     """
