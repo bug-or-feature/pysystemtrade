@@ -34,9 +34,7 @@ class IGConnection(object):
         "D",
     ]
 
-    def __init__(
-        self, log=logtoscreen("ConnectionIG"), auto_connect=True
-    ):
+    def __init__(self, log=logtoscreen("ConnectionIG"), auto_connect=True):
         production_config = get_production_config()
         self._ig_username = production_config.get_element_or_missing_data("ig_username")
         self._ig_password = production_config.get_element_or_missing_data("ig_password")
