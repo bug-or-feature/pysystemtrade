@@ -120,7 +120,10 @@ class DynamicAttributeLogger(logging.LoggerAdapter):
             DeprecationWarning,
             2,
         )
-        attributes = {TYPE_LOG_LABEL: self.extra[TYPE_LOG_LABEL]}
+        if self.extra is not None and TYPE_LOG_LABEL in self.extra:
+            attributes = {TYPE_LOG_LABEL: self.extra[TYPE_LOG_LABEL]}
+        else:
+            attributes = {}
         return DynamicAttributeLogger(logging.getLogger(self.name), attributes)
 
     def set_logging_level(self, new_log_level):
