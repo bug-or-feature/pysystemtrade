@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+import datetime
 import pytz
 from functools import cached_property
 from munch import munchify
@@ -98,7 +98,7 @@ class mongoMarketInfoData(marketInfoData):
                 expiry_key = market_info.instrument.expiry
                 last_dealing = market_info.instrument.expiryDetails.lastDealingDate
                 expiry_date = pytz.utc.localize(
-                    datetime.strptime(last_dealing, "%Y-%m-%dT%H:%M")
+                    datetime.datetime.strptime(last_dealing, "%Y-%m-%dT%H:%M")
                 )
             except Exception as exc:
                 self.log.error(f"Problem getting expiry details for '{epic}': {exc}")
@@ -131,7 +131,7 @@ class mongoMarketInfoData(marketInfoData):
 
     def get_epic_for_contract(self, contract) -> str:
         instr_code = contract.instrument_code
-        the_date = datetime.strptime(f"{contract.date_str[0:6]}01", "%Y%m%d")
+        the_date = datetime.datetime.strptime(f"{contract.date_str[0:6]}01", "%Y%m%d")
         expiry_key = the_date.strftime("%b-%y").upper()
         result = self.mongo_data._mongo.collection.find_one(
             {"instrument_code": instr_code, "instrument.expiry": expiry_key},
@@ -189,7 +189,7 @@ class mongoMarketInfoData(marketInfoData):
                 self._epic_mappings[contract_date_str] = doc["epic"]
 
                 date_str = doc.instrument.expiryDetails.lastDealingDate
-                last_dealing = datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
+                last_dealing = datetime.datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
 
                 self._expiry_dates[contract_date_str] = last_dealing.strftime(
                     ISO_DATE_FORMAT
@@ -244,7 +244,7 @@ class mongoMarketInfoData(marketInfoData):
         return info
 
     def _adjust_for_hours(self, data: dict):
-        data["last_modified_utc"] = datetime.utcnow()
+        data["last_modified_utc"] = datetime.datetime.utcnow()
         try:
             market_info = munchify(data)
             trading_hours = parse_trading_hours(market_info.instrument.openingHours)

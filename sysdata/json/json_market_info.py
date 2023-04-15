@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+import datetime
 from functools import cached_property
 from munch import munchify
 
@@ -95,7 +95,7 @@ class jsonMarketInfoData(marketInfoData):
                 info = munchify(json.loads(file_obj.read()))
 
                 date_str = info.instrument.expiryDetails.lastDealingDate
-                last_dealing = datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
+                last_dealing = datetime.datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
 
                 self._epic_mappings[key] = info.instrument.epic
                 self._expiry_dates[key] = last_dealing.strftime(ISO_DATE_FORMAT)

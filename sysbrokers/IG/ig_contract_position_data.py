@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sysbrokers.IG.ig_positions import from_ig_positions_to_dict
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 from sysdata.futures.contracts import futuresContractData
@@ -90,7 +88,7 @@ class IgContractPositionData(brokerContractPositionData):
         return contract_position_object
 
     def get_actual_expiry(self, instr_code, expiry_key):
-        expiry_code_date = datetime.strptime(f"01-{expiry_key}", "%d-%b-%y")
+        expiry_code_date = datetime.datetime.strptime(f"01-{expiry_key}", "%d-%b-%y")
         contract = self.contract_data.get_contract_object(
             instr_code, f"{expiry_code_date.strftime('%Y%m')}00"
         )

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+import datetime
 import pandas as pd
 
 from sysdata.config.private_directory import get_full_path_for_private_config
@@ -52,10 +52,10 @@ def parse_trading_hours(
 def build_hours_for_day(dt: datetime, open: str, close: str):
 
     day = dt.strftime("%Y-%m-%d")
-    dt_open = datetime.strptime(f"{day} {open}:00", ISO_DATE_FORMAT)
-    dt_close = datetime.strptime(f"{day} {close}:00", ISO_DATE_FORMAT)
+    dt_open = datetime.datetime.strptime(f"{day} {open}:00", ISO_DATE_FORMAT)
+    dt_close = datetime.datetime.strptime(f"{day} {close}:00", ISO_DATE_FORMAT)
 
     if dt_close < dt_open:
-        return tradingHours(dt_open - timedelta(days=1), dt_close)
+        return tradingHours(dt_open - datetime.timedelta(days=1), dt_close)
     else:
         return tradingHours(dt_open, dt_close)

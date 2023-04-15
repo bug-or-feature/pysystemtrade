@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+import datetime
 
 from sysdata.csv.csv_multiple_prices import csvFuturesMultiplePricesData
 from sysdata.csv.csv_adjusted_prices import csvFuturesAdjustedPricesData
@@ -27,7 +27,7 @@ class CsvFuturesSimTestData(genericBlobUsingFuturesSimData):
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
     # latest in CSV at time of writing
-    DEFAULT_END_DATE = datetime.strptime("2021-03-08 20:00:00", DATE_FORMAT)
+    DEFAULT_END_DATE = datetime.datetime.strptime("2021-03-08 20:00:00", DATE_FORMAT)
 
     def __init__(
         self, start_date=None, end_date=None, log=logtoscreen("csvFuturesSimTestData")

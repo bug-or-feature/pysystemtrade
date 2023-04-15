@@ -1,6 +1,6 @@
 import pandas as pd
 from dataclasses import dataclass, field, InitVar
-from datetime import datetime, timedelta
+import datetime
 from syscore.dateutils import contract_month_from_number
 
 
@@ -14,7 +14,7 @@ class FsbEpicsHistory(pd.DataFrame):
         return FsbEpicsHistory(pd.DataFrame())
 
     def roll_chain(self):
-        datetime_now = datetime.now() - timedelta(100)
+        datetime_now = datetime.datetime.now() - datetime.timedelta(100)
         raw = self._extract_raw_roll_chain()
 
         return [item.pst_date_key for item in raw if item.epic_key_date >= datetime_now]
@@ -53,8 +53,8 @@ class BetExpiry:
         if str_val != "unmapped":
             split = str_val.split("|")
             self.epic_key = split[0]
-            self.expiry_date = datetime.strptime(split[1], "%Y-%m-%d %H:%M:%S")
-            self.epic_key_date = datetime.strptime(self.epic_key, "%b-%y")
+            self.expiry_date = datetime.datetime.strptime(split[1], "%Y-%m-%d %H:%M:%S")
+            self.epic_key_date = datetime.datetime.strptime(self.epic_key, "%b-%y")
             self.month_key = contract_month_from_number(self.epic_key_date.month)
             self.pst_date_key = self.epic_key_date.strftime("%Y%m00")
             self.sort_index = self.epic_key_date

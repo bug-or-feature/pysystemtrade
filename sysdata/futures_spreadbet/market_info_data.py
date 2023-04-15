@@ -1,5 +1,5 @@
 from sysdata.base_data import baseData
-from datetime import datetime
+import datetime
 from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 
 USE_CHILD_CLASS_ERROR = "You need to use a child class of marketInfoData"
@@ -45,5 +45,5 @@ class marketInfoData(baseData):
 
 
 def contract_date_from_expiry_key(expiry_key):
-    expiry_code_date = datetime.strptime(f"01-{expiry_key}", "%d-%b-%y")
+    expiry_code_date = datetime.datetime.strptime(f"01-{expiry_key}", "%d-%b-%y")
     return f"{expiry_code_date.strftime('%Y%m')}00"
