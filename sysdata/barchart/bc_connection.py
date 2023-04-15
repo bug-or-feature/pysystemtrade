@@ -26,7 +26,7 @@ class bcConnection(object):
     Handles connection and config for getting info from Barchart.com
     """
 
-    def __init__(self, log=logtoscreen("bcConnection", log_level="on")):
+    def __init__(self, log=logtoscreen("bcConnection")):
 
         log.label(broker="Barchart")
 
