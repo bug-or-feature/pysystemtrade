@@ -1,4 +1,3 @@
-from datetime import datetime
 from sysbrokers.broker_futures_contract_data import brokerFuturesContractData
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 from sysdata.futures_spreadbet.market_info_data import marketInfoData
@@ -242,7 +241,9 @@ class IgFuturesContractData(brokerFuturesContractData):
         :return: Barchart format identifier
         :rtype: str
         """
-        date_obj = datetime.strptime(futures_contract.contract_date.date_str, "%Y%m00")
+        date_obj = datetime.datetime.strptime(
+            futures_contract.contract_date.date_str, "%Y%m00"
+        )
 
         config_data = get_instrument_object_from_config(
             futures_contract.instrument_code, config=self.ig_instrument_data.config
