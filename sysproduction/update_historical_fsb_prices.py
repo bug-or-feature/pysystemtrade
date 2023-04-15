@@ -20,12 +20,6 @@ def update_historical_fsb_prices():
     :return: Nothing
     """
 
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
     with dataBlob(log_name="Update-Historical-FSB-Prices") as data:
         price_data = diagPrices(data)
         data.add_class_object(mongoMarketInfoData)
@@ -43,12 +37,6 @@ def update_historical_fsb_prices_single(instrument_list=None):
 
     :return: Nothing
     """
-
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
 
     with dataBlob(log_name="Update-Historical-FSB-Prices") as data:
         update_historical_fsb_prices = updateHistoricalFsbPrices(data, instrument_list)

@@ -44,7 +44,6 @@ class IGConnection(object):
             "ig_acc_number"
         )
         self._log = log
-        logging.basicConfig(level=logging.INFO)
         if auto_connect:
             self._rest_session = self._create_rest_session()
             self._stream_session = self._create_stream_session()

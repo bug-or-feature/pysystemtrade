@@ -16,12 +16,6 @@ from syscore.exceptions import missingContract
 # end 2023-02-15 21:24:28  8 mins per instrument
 def update_periods(instr_list=None, test_mode=False):
 
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
     with dataBlob(log_name="Update-FSB-Epic-Periods") as data:
         update_fsb_epic_periods = updateFsbEpicPeriods(data)
         update_fsb_epic_periods.do_epic_discovery(instr_list, test_mode=test_mode)

@@ -16,12 +16,6 @@ from syscore.constants import success
 
 def update_epics(instrument_list=None):
 
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
     with dataBlob(log_name="Update-Epic-Mappings") as data:
         data.add_class_object(mongoMarketInfoData)
         update_epic_history = UpdateEpicHistory(data, instrument_list)

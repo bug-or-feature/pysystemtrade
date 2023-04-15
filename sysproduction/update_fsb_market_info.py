@@ -12,12 +12,6 @@ from syscore.constants import success
 
 def update_fsb_market_info(instr_list=None):
 
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
     with dataBlob(log_name="Update-FSB-Market-Info") as data:
         update_epic_config = UpdateFsbMarketInfo(data)
         update_epic_config.do_market_info_updates(instr_list)
@@ -168,12 +162,6 @@ class UpdateFsbMarketInfo(object):
 
 
 def check_historic_status(instr_list=None):
-
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
 
     with dataBlob(log_name="Update-FSB-Market-Info") as data:
         historic_status_check_config = UpdateFsbMarketInfo(data)
