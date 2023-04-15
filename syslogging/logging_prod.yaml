@@ -31,6 +31,11 @@ handlers:
       - cfg://handlers.console
       - cfg://handlers.file_rotating
       - cfg://handlers.email
+loggers:
+  ib_insync:
+    level: WARNING
+  arctic:
+    level: WARNING
 root:
   level: DEBUG
   handlers:
