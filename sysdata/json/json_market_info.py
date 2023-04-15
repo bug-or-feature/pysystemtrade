@@ -9,7 +9,7 @@ from sysdata.futures_spreadbet.market_info_data import (
     marketInfoData,
     contract_date_from_expiry_key,
 )
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 from syscore.fileutils import (
     resolve_path_and_filename_for_package,
     files_with_extension_in_pathname,

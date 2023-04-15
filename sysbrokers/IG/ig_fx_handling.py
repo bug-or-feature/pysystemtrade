@@ -1,5 +1,5 @@
 from syscore.constants import arg_not_supplied
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 
 from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_fx_handling import brokerFxHandlingData

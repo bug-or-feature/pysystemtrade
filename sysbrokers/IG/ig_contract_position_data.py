@@ -5,7 +5,7 @@ from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 from sysdata.futures.contracts import futuresContractData
 
 from syscore.exceptions import missingContract
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 from sysobjects.contract_dates_and_expiries import contractDate
 from sysdata.data_blob import dataBlob
 from sysbrokers.IG.ig_connection import IGConnection

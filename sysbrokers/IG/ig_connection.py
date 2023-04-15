@@ -10,7 +10,7 @@ from trading_ig.stream import IGStreamService
 from trading_ig.lightstreamer import Subscription
 
 from sysdata.config.production_config import get_production_config
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 from sysobjects.fsb_contract_prices import FsbContractPrices
 from syscore.exceptions import missingContract, missingData
 from timeit import default_timer as timer

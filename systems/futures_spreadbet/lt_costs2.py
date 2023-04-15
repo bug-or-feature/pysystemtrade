@@ -12,7 +12,6 @@ from sysdata.config.configdata import Config
 from sysdata.config.production_config import get_production_config
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 
-from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysobjects.contracts import futuresContract
 from systems.accounts.account_forecast import pandl_for_instrument_forecast
 from systems.accounts.accounts_stage import Account

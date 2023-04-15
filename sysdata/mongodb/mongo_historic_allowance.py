@@ -1,6 +1,6 @@
 from syscore.constants import arg_not_supplied, missing_data
 from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 
 HA_COLLECTION = "historic_allowance"
 

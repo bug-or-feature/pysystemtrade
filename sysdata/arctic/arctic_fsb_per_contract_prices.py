@@ -9,7 +9,7 @@ from sysdata.futures.futures_per_contract_prices import (
 )
 from sysobjects.fsb_contract_prices import FsbContractPrices
 from sysobjects.contracts import futuresContract
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 from syscore.pandas.merge_data_keeping_past_data import merge_newer_data, SPIKE_IN_DATA
 from syscore.constants import missing_data
 import pandas as pd

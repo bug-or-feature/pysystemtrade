@@ -7,8 +7,7 @@ import requests
 from bs4 import BeautifulSoup as Scraper
 
 from syscore.dateutils import Frequency
-from syslogdiag.log_to_screen import logtoscreen
-from syslogdiag.pst_logger import pst_logger
+from syslogging.logger import *
 from syscore.exceptions import missingData
 
 BARCHART_URL = "https://www.barchart.com/"

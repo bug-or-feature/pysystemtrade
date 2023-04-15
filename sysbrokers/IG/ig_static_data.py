@@ -1,4 +1,4 @@
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_static_data import brokerStaticData
 from sysdata.data_blob import dataBlob

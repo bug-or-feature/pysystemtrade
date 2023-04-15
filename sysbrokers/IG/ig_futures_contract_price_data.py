@@ -21,7 +21,7 @@ from sysobjects.futures_per_contract_prices import futuresContractPrices
 from sysobjects.contracts import futuresContract
 from sysobjects.fsb_contract_prices import FsbContractPrices
 
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 
 
 class IgFuturesContractPriceData(brokerFuturesContractPriceData):

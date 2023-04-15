@@ -4,7 +4,7 @@ from syscore.constants import arg_not_supplied
 from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey
 
 from sysdata.futures_spreadbet.epic_periods_data import epicPeriodsData
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 
 
 COLLECTION_NAME = "epic_periods"

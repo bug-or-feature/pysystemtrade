@@ -5,7 +5,7 @@ from sysdata.csv.csv_futures_contract_prices import (
     csvFuturesContractPriceData,
     ConfigCsvFuturesPrices,
 )
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 from sysobjects.contracts import futuresContract
 from sysobjects.fsb_contract_prices import FsbContractPrices, PRICE_DATA_COLUMNS
 

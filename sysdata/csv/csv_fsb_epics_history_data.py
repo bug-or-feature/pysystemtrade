@@ -7,7 +7,7 @@ from syscore.fileutils import (
 from syscore.constants import arg_not_supplied, status, success
 from syscore.pandas.pdutils import pd_readcsv
 from sysdata.futures_spreadbet.fsb_epic_history_data import FsbEpicsHistoryData
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 from sysobjects.epic_history import FsbEpicsHistory
 
 

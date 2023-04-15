@@ -13,7 +13,7 @@ from syscore.constants import missing_instrument, missing_file
 
 from sysobjects.instruments import futuresInstrument
 
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 from sysdata.futures_spreadbet.fsb_epic_history_data import FsbEpicsHistoryData
 from sysdata.data_blob import dataBlob
 

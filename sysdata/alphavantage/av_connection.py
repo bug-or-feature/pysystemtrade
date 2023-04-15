@@ -5,7 +5,7 @@ import requests
 from ratelimit import limits, sleep_and_retry
 
 from syscore.exceptions import missingData
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 from sysdata.config.production_config import get_production_config
 
 

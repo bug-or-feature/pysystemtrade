@@ -12,7 +12,6 @@ from sysdata.config.production_config import get_production_config
 from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
-from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysobjects.roll_calendars import rollCalendar
 from sysinit.futures_spreadbet.fsb_contract_prices import (
     build_import_config,
@@ -46,7 +45,7 @@ def build_and_write_roll_calendar(
         prices = input_prices
 
     if input_config is arg_not_supplied:
-        rollparameters = mongoRollParametersData()
+        rollparameters = csvRollParametersData
     else:
         rollparameters = input_config
 
