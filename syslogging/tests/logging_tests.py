@@ -64,6 +64,10 @@ class TestLogging:
         assert logger.name == "my_type"
         assert logger.extra["stage"] == "left"
 
+        no_attrs = get_logger("no_attrs")
+        no_attrs = no_attrs.setup(instrument_code="XYZ")
+        assert no_attrs.extra["instrument_code"] == "XYZ"
+
     def test_setup_bad(self):
         logger = get_logger("my_type", {"stage": "bar"})
         with pytest.raises(Exception):
@@ -75,6 +79,11 @@ class TestLogging:
         assert logger.name == "my_type"
         assert logger.extra["stage"] == "left"
         assert logger.extra["instrument_code"] == "ABC"
+
+        no_attrs = get_logger("no_attrs")
+        no_attrs.label(instrument_code="XYZ")
+        assert no_attrs.extra["instrument_code"] == "XYZ"
+
 
     def test_label_bad(self):
         logger = get_logger("my_type", {"stage": "bar"})
@@ -103,9 +112,13 @@ class TestLogging:
         ]
 
     def test_logtoscreen(self):
-        logger = logtoscreen("logtoscreen")
-        assert logger.name == "logtoscreen"
-        assert logger.getEffectiveLevel() == logging.DEBUG
+        screen = logtoscreen("logtoscreen")
+        assert screen.name == "logtoscreen"
+        assert screen.getEffectiveLevel() == logging.DEBUG
+
+        attrs = logtoscreen(**{TYPE_LOG_LABEL: "config", STAGE_LOG_LABEL: "config"})
+        assert attrs.name == "config"
+        assert attrs.getEffectiveLevel() == logging.DEBUG
 
     def test_set_logging_level(self):
         logger = get_logger("Set_Level")

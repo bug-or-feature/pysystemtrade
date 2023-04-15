@@ -7,7 +7,7 @@ from syscore.dateutils import (
     date_as_short_pattern_or_question_if_missing,
 )
 from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import *
 
 PROCESS_CONTROL_COLLECTION = "process_control"
 PROCESS_CONTROL_KEY = "process_name"
