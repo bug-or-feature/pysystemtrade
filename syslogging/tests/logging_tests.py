@@ -125,3 +125,20 @@ class TestLogging:
         assert logger.getEffectiveLevel() == logging.DEBUG
         logger.set_logging_level(logging.INFO)
         assert logger.getEffectiveLevel() == 20
+
+    def test_setup_empty_with(self):
+        setup_with = get_logger("Setup_With", {"type": "foo", "stage": "one"})
+        assert setup_with.extra["type"] == "foo"
+        assert setup_with.extra["stage"] == "one"
+        setup_with = setup_with.setup_empty_except_keep_type()
+        assert setup_with.extra["type"] == "foo"
+        assert "stage" not in setup_with.extra
+
+    def test_setup_empty_without(self):
+        setup_without = get_logger("Setup_Without", {"stage": "one"})
+        setup_without = setup_without.setup_empty_except_keep_type()
+        assert "type" not in setup_without.extra
+
+        setup_without = get_logger("Setup_Without")
+        setup_without = setup_without.setup_empty_except_keep_type()
+        assert "type" not in setup_without.extra
