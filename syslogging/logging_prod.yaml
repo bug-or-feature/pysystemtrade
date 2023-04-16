@@ -36,6 +36,10 @@ loggers:
     level: WARNING
   arctic:
     level: WARNING
+  urllib3:
+    level: INFO
+  trading_ig:
+    level: INFO
 root:
   level: DEBUG
   handlers:
