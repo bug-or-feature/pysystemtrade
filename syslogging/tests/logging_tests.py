@@ -84,7 +84,6 @@ class TestLogging:
         no_attrs.label(instrument_code="XYZ")
         assert no_attrs.extra["instrument_code"] == "XYZ"
 
-
     def test_label_bad(self):
         logger = get_logger("my_type", {"stage": "bar"})
         with pytest.raises(Exception):
