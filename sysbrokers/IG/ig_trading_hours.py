@@ -33,7 +33,7 @@ def parse_trading_hours(
     if adjustment_hours != 0:
         print(f"WARNING: trading hours ({adjustment_hours}) not implemented!!")
 
-    now = datetime.now()
+    now = datetime.datetime.now()
     list_of_open_times = []
 
     date_range = pd.date_range(now, periods=5, freq="B")

@@ -257,7 +257,7 @@ class mongoMarketInfoData(marketInfoData):
                     data["in_hours_status"] = market_info.in_hours_status
                 except:
                     data["in_hours_status"] = "n/a"
-        except:
-            self.log.error(f"No existing market info found, not adjusting")
+        except Exception as exc:
+            self.log.error(f"{exc}: No existing market info found, not adjusting")
 
         return data
