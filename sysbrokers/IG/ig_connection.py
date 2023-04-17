@@ -1,5 +1,4 @@
-import logging
-from datetime import datetime
+import datetime
 from dataclasses import dataclass
 
 import pandas as pd
@@ -241,7 +240,7 @@ class IGConnection(object):
 
             self.log.msg(f"Getting snapshot price data for {epic}")
             snapshot_rows = []
-            now = datetime.now()
+            now = datetime.datetime.now()
             try:
                 info = self.rest_service.fetch_market_by_epic(epic)
                 update_time = info["snapshot"]["updateTime"]
@@ -461,7 +460,7 @@ class BidAskTick:
 
     def __init__(self, date_str: str, bid_str: str, ask_str: str, size_str: str):
 
-        self.timestamp = datetime.fromtimestamp(int(date_str) / 1000)
+        self.timestamp = datetime.datetime.fromtimestamp(int(date_str) / 1000)
         self.priceBid = float(bid_str)
         self.priceAsk = float(ask_str)
 
