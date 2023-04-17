@@ -10,6 +10,11 @@ handlers:
     level: DEBUG
     formatter: simple
     stream: ext://sys.stdout
+loggers:
+  ib_insync:
+    level: WARNING
+  arctic:
+    level: WARNING
 root:
   level: DEBUG
   handlers: [console]
