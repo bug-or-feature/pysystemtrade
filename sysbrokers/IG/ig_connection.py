@@ -221,12 +221,10 @@ class IGConnection(object):
                     self.log.error("No historic data allowance remaining, yikes!")
 
             if len(df) == 0:
-                self.log.warn(f"Zero length IG price data found for {epic}")
-                raise missingData
+                raise missingData(f"Zero length IG price data found for {epic}")
 
             if warn_for_nans and df.isnull().values.any():
-                self.log.warn(f"NaNs in data for {epic}")
-                raise missingData
+                raise missingData(f"NaNs in data for {epic}")
 
             return df
 
