@@ -13,7 +13,7 @@ def get_logger(name, attributes=None):
     if not syslogging.logging_configured:
         _configure_logging()
     if name is None or name == "":
-        if "type" in attributes:
+        if attributes is not None and "type" in attributes:
             name = attributes["type"]
     return DynamicAttributeLogger(logging.getLogger(name), attributes)
 
