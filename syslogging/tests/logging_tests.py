@@ -22,6 +22,11 @@ class TestLogging:
         with pytest.raises(Exception):
             get_logger("my_type", {"foo": "bar"})
 
+    def test_no_name_no_attributes(self, caplog):
+        logger = get_logger("")
+        logger.warn("foo")
+        assert caplog.record_tuples == [("root", logging.WARNING, "foo")]
+
     def test_attributes_clear(self, caplog):
         clear = get_logger("Clear", {"stage": "first", "type": "one"})
         clear.info("Clearing attributes", method="clear")
