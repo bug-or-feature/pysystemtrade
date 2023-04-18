@@ -87,8 +87,14 @@ class updateFsbEpicPeriods(object):
                 self.data.log.msg(f"Not writing periods for {instr}, it's FX")
             else:
                 self.data.log.msg(f"Epic periods: {periods}")
-                record = {"epic_periods": periods, "timestamp": datetime.datetime.now()}
-                self.data.db_epic_periods.update_epic_periods(instr, record)
+                if len(periods) == 0:
+                    # TODO how to inform?
+                    self.data.log.warning(
+                        f"Zero periods for {instr}, something went wrong - "
+                        f"not writing")
+                else:
+                    record = {"epic_periods": periods, "timestamp": datetime.datetime.now()}
+                    self.data.db_epic_periods.update_epic_periods(instr, record)
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
         return self.broker.broker_futures_instrument_data.get_futures_instrument_object_with_ig_data(
