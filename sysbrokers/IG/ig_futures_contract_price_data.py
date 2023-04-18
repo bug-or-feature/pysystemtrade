@@ -216,7 +216,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         existing = self.existing_prices.get_merged_prices_for_contract_object(
             contract_object
         )
-        end_date = datetime.now().astimezone(tz=pytz.utc)
+        end_date = datetime.datetime.now().astimezone(tz=pytz.utc)
         if existing.shape[0] > 0:
             last_index_date = existing.index[-1]
             # TODO switch to 4H or 3H?

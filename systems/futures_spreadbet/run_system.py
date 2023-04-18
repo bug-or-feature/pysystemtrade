@@ -1,6 +1,7 @@
 import logging
 import os
 import os.path
+import datetime
 
 from systems.provided.futures_chapter15.basesystem import futures_system
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
@@ -10,7 +11,6 @@ import pandas as pd
 from syscore.pdutils import print_full
 from matplotlib.pyplot import show
 from systems.diagoutput import systemDiag
-from datetime import datetime
 from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.config.production_config import get_production_config, Config
 import yaml
@@ -236,7 +236,7 @@ def calc_pos_for_fc(system, instrument_code, forecast, instr_weight=0.1):
 
 
 def write_estimate_file(system):
-    now = datetime.now()
+    now = datetime.datetime.now()
     sysdiag = systemDiag(system)
     output_file = resolve_path_and_filename_for_package(
         f"systems.futures_spreadbet.estimate-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
@@ -246,7 +246,7 @@ def write_estimate_file(system):
 
 
 def write_full_config_file(system):
-    now = datetime.now()
+    now = datetime.datetime.now()
     output_file = resolve_path_and_filename_for_package(
         f"systems.futures_spreadbet.full_config-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
     )
@@ -255,7 +255,7 @@ def write_full_config_file(system):
 
 
 def write_file(df, run_type, product, write=True):
-    now = datetime.now()
+    now = datetime.datetime.now()
     dir = "data/run_systems"
     full_path = f"{dir}/run_{run_type}_{product}_{now.strftime('%Y-%m-%d_%H%M%S')}.csv"
 
@@ -277,7 +277,7 @@ def config_from_file(path_string):
 
 
 def get_daily_backtest_path():
-    now = datetime.now()
+    now = datetime.datetime.now()
     dir = get_production_config().get_element_or_missing_data(
         "backtest_store_directory"
     )

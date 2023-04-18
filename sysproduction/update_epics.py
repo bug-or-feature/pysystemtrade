@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import logging
 
 import numpy as np
@@ -45,7 +45,7 @@ class UpdateEpicHistory(object):
         return self._broker
 
     def update_epic_history(self):
-        now = datetime.now()
+        now = datetime.datetime.now()
         for instr in sorted(self._instrument_list):
 
             self.data.log.msg(f"Starting processing for '{instr}'")

@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+import datetime
 from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 from sysdata.csv.csv_fsb_epics_history_data import (
     CsvFsbEpicHistoryData,
@@ -77,7 +77,7 @@ def convert_to_new_format():
         index = 0
         for row in epic_hist.to_dict(orient="records"):
             if index == (epic_hist.shape[0] - 1):
-                now = datetime.now()
+                now = datetime.datetime.now()
                 results[epic_hist.index[index]] = _build_epic_history_row(
                     instr, market_info, row
                 )
