@@ -91,9 +91,13 @@ class updateFsbEpicPeriods(object):
                     # TODO how to inform?
                     self.data.log.warning(
                         f"Zero periods for {instr}, something went wrong - "
-                        f"not writing")
+                        f"not writing"
+                    )
                 else:
-                    record = {"epic_periods": periods, "timestamp": datetime.datetime.now()}
+                    record = {
+                        "epic_periods": periods,
+                        "timestamp": datetime.datetime.now(),
+                    }
                     self.data.db_epic_periods.update_epic_periods(instr, record)
 
     def get_instr_config(self, instr) -> FsbInstrumentWithIgConfigData:
