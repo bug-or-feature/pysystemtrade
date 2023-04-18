@@ -53,6 +53,7 @@ LEANHOG_fsb,7.19
 LIVECOW_fsb,9.94
 LUMBER_fsb,400.0
 MSCISING_fsb,3.2
+MXP,5.5E-06
 NASDAQ_fsb,1.5
 NIKKEI_fsb,4.6
 NOK_fsb,42.50
@@ -84,6 +85,7 @@ US10,0.008
 US10_fsb,1.83
 US30_fsb,2.0
 US30U_fsb,2.0
+V2X,0.026
 V2X_fsb,0.1
 VIX_fsb,0.1
 WHEAT_fsb,0.5
