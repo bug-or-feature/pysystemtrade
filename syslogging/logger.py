@@ -7,6 +7,7 @@ from syslogging.pyyaml_env import parse_config
 from syscore.fileutils import resolve_path_and_filename_for_package
 
 CONFIG_ENV_VAR = "PYSYS_LOGGING_CONFIG"
+LOG_FORMAT = "%(asctime)s %(levelname)s %(name)s %(message)s"
 
 
 def get_logger(name, attributes=None):
@@ -60,12 +61,14 @@ def _configure_logging():
 
 
 def _configure_sim():
-    print(f"Attempting to configure basic logging")
+    print(f"Attempting to configure sim logging")
     handler = logging.StreamHandler(stream=sys.stdout)
     handler.setLevel(logging.DEBUG)
+    logging.getLogger("ib_insync").setLevel(logging.WARNING)
+    logging.getLogger("arctic").setLevel(logging.WARNING)
     logging.basicConfig(
         handlers=[handler],
-        format="%(asctime)s %(levelname)s %(name)s %(message)s",
+        format=LOG_FORMAT,
         datefmt="%Y-%m-%d %H:%M:%S",
         level=logging.DEBUG,
     )
@@ -77,7 +80,7 @@ def _configure_sim():
 
 
 def _configure_prod(logging_config_file):
-    print(f"Attempting to configure logging from {logging_config_file}")
+    print(f"Attempting to configure prod logging from {logging_config_file}")
     config_path = resolve_path_and_filename_for_package(logging_config_file)
     if os.path.exists(config_path):
         try:
