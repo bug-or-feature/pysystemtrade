@@ -30,6 +30,8 @@ def remove_fsb_markets_report(
         "body_text_expensive_markets",
         "body_text_too_safe_markets",
         "body_text_explain_safety",
+        "body_text_all_recommended_bad_markets",
+        "body_text_all_recommended_bad_markets_clean_slate",
     ]
 
     for func_name in list_of_func_names:
