@@ -46,7 +46,7 @@ def run_slippage_report():
 
 
 def run_costs_report():
-    pass
+    do_report(costs_report_config.new_config_with_modified_output("console"))
 
 
 def run_roll_report(instr_code=None):
