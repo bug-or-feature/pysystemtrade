@@ -81,7 +81,7 @@ class RemoveMarketData:
             clean_slate_list_of_bad_markets
         )
         return (
-            "Use the following if you want to minimise turnover of markets\n%s "
+            "Use the following if you want a clean slate without considering existing markets \n%s "
             % market_config_as_yaml_str
         )
 
@@ -92,7 +92,7 @@ class RemoveMarketData:
             recommended_list_of_bad_markets
         )
         return (
-            "Use the following if you want a clean slate without considering existing markets \n%s "
+            "Use the following if you want to minimise turnover of markets\n%s "
             % market_config_as_yaml_str
         )
 
