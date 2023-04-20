@@ -1,5 +1,4 @@
 import re
-import datetime
 import pytz
 from functools import cached_property
 from munch import munchify
@@ -35,6 +34,7 @@ class mongoMarketInfoData(marketInfoData):
         self._expiry_dates = {}
         self._in_hours = {}
         self._in_hours_status = {}
+        self._last_modified = {}
 
     def __repr__(self):
         return f"mongoMarketInfoData {str(self.mongo_data)}"
@@ -66,6 +66,12 @@ class mongoMarketInfoData(marketInfoData):
         if len(self._in_hours_status) == 0:
             self._parse_market_info_for_mappings()
         return self._in_hours_status
+
+    @cached_property
+    def last_modified(self) -> dict:
+        if len(self._last_modified) == 0:
+            self._parse_market_info_for_mappings()
+        return self._last_modified
 
     def add_market_info(self, instrument_code: str, epic: str, market_info: dict):
         self.log.msg(f"Adding market info for '{epic}'")
@@ -176,6 +182,7 @@ class mongoMarketInfoData(marketInfoData):
                     "_id": 0,
                     "epic": 1,
                     "in_hours": 1,
+                    "last_modified_utc": 1,
                     "in_hours_status": 1,
                     "instrument.expiry": 1,
                     "instrument.expiryDetails.lastDealingDate": 1,
@@ -194,6 +201,8 @@ class mongoMarketInfoData(marketInfoData):
                 self._expiry_dates[contract_date_str] = last_dealing.strftime(
                     ISO_DATE_FORMAT
                 )
+
+                self._last_modified[contract_date_str] = doc["last_modified_utc"]
 
                 try:
                     self._in_hours[contract_date_str] = doc["in_hours"]

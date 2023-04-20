@@ -7,6 +7,10 @@ from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.mongodb.mongo_epic_periods import mongoEpicPeriodsData
 
+LATE_MARKET_INFO_HEADER_TEXT = body_text(
+    "Instruments where the market info has not been recently updated"
+)
+
 PROBLEM_ROLL_HEADER_TEXT = body_text(
     "Possible unexpected IG roll schedule, or roll config\n"
 )
@@ -64,6 +68,10 @@ def do_fsb_report(
     formatted_output = []
 
     formatted_output.append(reporting_api_fsb.terse_header("FSB report"))
+
+    # delayed market info
+    formatted_output.append(LATE_MARKET_INFO_HEADER_TEXT)
+    formatted_output.append(reporting_api_fsb.table_of_delayed_market_info())
 
     # epic period mismatches
     formatted_output.append(EPIC_VARIATION_HEADER_TEXT)

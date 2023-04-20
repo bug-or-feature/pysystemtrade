@@ -1,3 +1,4 @@
+import datetime
 import pandas as pd
 from functools import cached_property
 
@@ -98,6 +99,15 @@ class ReportingApiFsb(reportingApi):
 
         return instrument_risk_sorted_table
 
+    def table_of_delayed_market_info(self, table_header="Delayed Market Info") -> table:
+        delayed = datetime.datetime.now() - datetime.timedelta(days=3)
+        df = pd.DataFrame(self.market_info_data)
+        df = df[["Contract", "LastMod"]]
+        df = df.loc[(df["LastMod"] < delayed)]
+        df.set_index("Contract", inplace=True)
+
+        return table(table_header, df)
+
     def table_of_epic_period_mismatches(self) -> table:
         df = pd.DataFrame(self.epic_periods)
         if len(self.epic_periods) > 0:
@@ -173,10 +183,8 @@ class ReportingApiFsb(reportingApi):
 
         return table("FSB Correlations", df[["Price", "Returns"]])
 
-    # FSB mappings_and_expiries
-    def fsb_mappings_and_expiries(
-        self, table_header="FSB mappings and expiries"
-    ) -> table:
+    @cached_property
+    def market_info_data(self):
 
         roll_data = self._get_roll_data_dict()
 
@@ -184,6 +192,7 @@ class ReportingApiFsb(reportingApi):
         expiries = self.data.db_market_info.expiry_dates
         in_hours = self.data.db_market_info.in_hours
         in_hours_status = self.data.db_market_info.in_hours_status
+        last_modified = self.data.db_market_info.last_modified
 
         rows = []
         for key, value in epics.items():
@@ -203,11 +212,20 @@ class ReportingApiFsb(reportingApi):
                     Expiry=expiries[key],
                     Status=in_hours_status[key],
                     In_Hours=in_hours[key],
+                    LastMod=last_modified[key],
                     Pos=pos,
                 )
             )
 
-        results = pd.DataFrame(rows)
+        return rows
+
+    # FSB mappings_and_expiries
+    def fsb_mappings_and_expiries(
+        self, table_header="FSB mappings and expiries"
+    ) -> table:
+
+        results = pd.DataFrame(self.market_info_data)
+        results = results[["Contract", "Epic", "Expiry", "Status", "In_Hours", "Pos"]]
         results.set_index("Contract", inplace=True)
 
         return table(table_header, results)
