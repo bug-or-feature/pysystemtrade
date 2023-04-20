@@ -34,15 +34,16 @@ class IGConnection(object):
     ]
 
     def __init__(self, log=logtoscreen("ConnectionIG"), auto_connect=True):
-        production_config = get_production_config()
-        self._ig_username = production_config.get_element_or_missing_data("ig_username")
-        self._ig_password = production_config.get_element_or_missing_data("ig_password")
-        self._ig_api_key = production_config.get_element_or_missing_data("ig_api_key")
-        self._ig_acc_type = production_config.get_element_or_missing_data("ig_acc_type")
-        self._ig_acc_number = production_config.get_element_or_missing_data(
-            "ig_acc_number"
-        )
         self._log = log
+        ig_config = get_production_config().get_element("ig_markets")
+        live = self._is_live_app(ig_config)
+        ig_creds = ig_config["live"] if live else ig_config["demo"]
+        self._ig_username = ig_creds["ig_username"]
+        self._ig_password = ig_creds["ig_password"]
+        self._ig_api_key = ig_creds["ig_api_key"]
+        self._ig_acc_type = ig_creds["ig_acc_type"]
+        self._ig_acc_number = ig_creds["ig_acc_number"]
+
         if auto_connect:
             self._rest_session = self._create_rest_session()
             self._stream_session = self._create_stream_session()
@@ -72,6 +73,9 @@ class IGConnection(object):
         stream_service.create_session(version="3")
         self._spread_storage = []
         return stream_service
+
+    def _is_live_app(self, config):
+        return self.log.name not in config["demo_types"]
 
     @property
     def rest_service(self):
