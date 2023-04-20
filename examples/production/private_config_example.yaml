@@ -38,15 +38,31 @@ barchart_path: '/path/to/your/barchart/price/data'
 # if you wish to get free FX price updates from Alpha Vantage, set this
 alpha_vantage_api_key: 'ABC123XYZ987000000000'
 
-# IG connection params
-
-# account type, either 'demo' or 'live'
-ig_acc_type: 'demo'
-# your IG username. will be different for live and demo
-ig_username: 'iguser'
-# your IG password. will be different for live and demo
-ig_password: 's3cr3t1234'
-# your IG API key. will be different for live and demo
-ig_api_key: 'abcdefgh1234567890'
-# your IG account number. will be different for live and demo
-ig_acc_number: 'ABC123'
+# IG connection params. It's possible to use different creds for live and demo;
+# add log strings to the 'demo_types' list
+ig_markets:
+  demo:
+    ig_acc_type: 'demo'
+    ig_username: 'demo user'
+    ig_password: 'demo pw'
+    ig_api_key: 'abc123etc'
+    ig_acc_number: 'ABC456'
+  live:
+    ig_acc_type: 'live'
+    ig_username: 'live user'
+    ig_password: 'live pw'
+    ig_api_key: 'xyz987etc'
+    ig_acc_number: 'ZX1234'
+  demo_types:
+    - Interactive-Update-Capital-Manual
+    - Update-Total-Capital
+    - Update-Strategy-Capital
+    - update_total_capital
+    - strategy_allocation
+    - check_external_position_break
+    - spawn_children_from_new_instrument_orders
+    - generate_force_roll_orders
+    - create_broker_orders_from_contract_orders
+    - process_fills_stack
+    - handle_completed_orders
+    - safe_stack_removal
