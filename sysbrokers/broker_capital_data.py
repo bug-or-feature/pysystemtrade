@@ -25,6 +25,11 @@ class brokerCapitalData(capitalData):
     ) -> listOfCurrencyValues:
         raise NotImplementedError
 
+    def get_margin_value_across_currency(
+        self, account_id: str = arg_not_supplied
+    ) -> listOfCurrencyValues:
+        raise NotImplementedError
+
     @property
     def data(self) -> dataBlob:
         return self._data

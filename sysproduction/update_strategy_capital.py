@@ -86,10 +86,8 @@ def get_total_current_margin(data: dataBlob) -> float:
     try:
         total_margin = data_margin.get_current_total_margin()
     except missingData:
-        # TODO capital / margin
-        # data.log.critical("Can't allocate strategy margin without total margin")
-        # raise
-        total_margin = 0.0
+        data.log.critical("Can't allocate strategy margin without total margin")
+        raise
 
     return total_margin
 

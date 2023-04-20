@@ -37,18 +37,21 @@ class IgCapitalData(brokerCapitalData):
         list_of_values_per_currency = listOfCurrencyValues(list_of_values_per_currency)
         return list_of_values_per_currency
 
+    def get_margin_value_across_currency(
+        self, account_id: str = arg_not_supplied
+    ) -> listOfCurrencyValues:
+        list_of_values_per_currency = list(
+            [
+                currencyValue(currency, self.broker_conn.get_margin(account_id))
+                for currency in ["GBP"]
+            ]
+        )
+        list_of_values_per_currency = listOfCurrencyValues(list_of_values_per_currency)
+        return list_of_values_per_currency
+
     def get_excess_liquidity_value_across_currency(
         self, account_id: str = arg_not_supplied
     ) -> listOfCurrencyValues:
-        # list_of_values_per_currency = list(
-        #     [
-        #         currencyValue(currency, self.broker_conn.get_available_capital(account_id))
-        #         for currency in ["GBP"]
-        #     ]
-        # )
-        # list_of_values_per_currency = listOfCurrencyValues(list_of_values_per_currency)
-        # return list_of_values_per_currency
-        # TODO capital / margin
         pass
 
     """

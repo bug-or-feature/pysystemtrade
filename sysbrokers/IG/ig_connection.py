@@ -93,12 +93,17 @@ class IGConnection(object):
     def get_capital(self, account: str):
         data = self.rest_service.fetch_accounts()
         balance = float(data[data["accountId"] == account]["balance"])
-        profit_loss = float(data[data["accountId"] == account]["profitLoss"])
-        tot_capital = balance + profit_loss
-        # leave 20% for margin
-        available_capital = tot_capital * 0.8  # TODO implement properly
+        # profit_loss = float(data[data["accountId"] == account]["profitLoss"])
+        # margin = float(data[data["accountId"] == account]["deposit"])
+        # available = float(data[data["accountId"] == account]["available"])
 
-        return available_capital
+        return balance
+
+    def get_margin(self, account: str):
+        data = self.rest_service.fetch_accounts()
+        margin = float(data[data["accountId"] == account]["deposit"])
+
+        return margin
 
     def get_positions(self):
         positions = self.rest_service.fetch_open_positions()

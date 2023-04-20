@@ -470,11 +470,14 @@ class dataBroker(productionDataLayerGeneric):
         return new_order_with_controls
 
     def get_margin_used_in_base_currency(self) -> float:
-        capital_value = self.get_total_capital_value_in_base_currency()
-        excess_liquidity = self.get_total_excess_liquidity_in_base_currency()
+        # capital_value = self.get_total_capital_value_in_base_currency()
+        # excess_liquidity = self.get_total_excess_liquidity_in_base_currency()
 
-        # TODO fix margin so this works
-        return capital_value - excess_liquidity
+        # return capital_value - excess_liquidity
+
+        margin_value = self.get_margin_in_base_currency()
+
+        return margin_value
 
     def get_total_capital_value_in_base_currency(self) -> float:
         currency_data = dataCurrency(self.data)
@@ -511,3 +514,18 @@ class dataBroker(productionDataLayerGeneric):
         )
 
         return total_account_value_in_base_currency
+
+    def get_margin_in_base_currency(self) -> float:
+        currency_data = dataCurrency(self.data)
+        account_id = self.get_broker_account()
+        values_across_accounts = (
+            self.broker_capital_data.get_margin_value_across_currency(account_id)
+        )
+
+        total_margin_in_base_currency = (
+            currency_data.total_of_list_of_currency_values_in_base(
+                values_across_accounts
+            )
+        )
+
+        return total_margin_in_base_currency
