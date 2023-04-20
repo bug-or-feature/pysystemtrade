@@ -29,7 +29,7 @@ class UpdateFsbMarketInfo(object):
     def broker(self) -> dataBroker:
         return self._broker
 
-    def do_market_info_updates(self, instrument_list=None):
+    def do_market_info_updates(self, instrument_list=None, check_historic=True):
 
         if instrument_list is None:
             instr_list = [
@@ -65,9 +65,10 @@ class UpdateFsbMarketInfo(object):
 
                 try:
                     info = self.data.broker_conn.get_market_info(epic)
-                    historic = self._get_historic_data_for_epic(epic)
-                    if historic is not None:
-                        info["historic"] = historic
+                    if check_historic:
+                        historic = self._get_historic_data_for_epic(epic)
+                        if historic is not None:
+                            info["historic"] = historic
                     self.data.db_market_info.update_market_info(instr, epic, info)
                 except Exception as exc:
                     msg = (

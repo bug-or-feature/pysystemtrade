@@ -31,7 +31,7 @@ from sysobjects.production.roll_state import (
     roll_close_state,
 )
 
-from sysproduction.reporting.report_configs import roll_report_config
+from sysproduction.reporting.report_configs_fsb import fsb_roll_report_config
 from sysproduction.reporting.reporting_functions import run_report_with_data_blob
 
 from sysproduction.data.positions import diagPositions, updatePositions
@@ -43,7 +43,7 @@ from sysproduction.reporting.data.rolls import (
     rollingAdjustedAndMultiplePrices,
     relative_volume_in_forward_contract_versus_price,
 )
-
+from sysproduction.update_fsb_market_info import UpdateFsbMarketInfo
 
 no_change_required = named_object("No roll required")
 EXIT_CODE = "EXIT"
@@ -365,6 +365,10 @@ def warn_not_rolling(instrument_code: str, auto_parameters: autoRollParameters):
 def manually_report_and_update_roll_state_for_code(
     data: dataBlob, instrument_code: str
 ):
+    # update FSB market info for instrument - tradeability may have changed since
+    # previous evening's report run
+    update_epic_config = UpdateFsbMarketInfo(data)
+    update_epic_config.do_market_info_updates([instrument_code], check_historic=False)
     run_roll_report(data, instrument_code)
     manually_update_roll_state_for_code(data, instrument_code)
 
@@ -390,7 +394,7 @@ def manually_update_roll_state_for_code(data: dataBlob, instrument_code: str):
 
 
 def run_roll_report(data: dataBlob, instrument_code: str):
-    config = roll_report_config.new_config_with_modified_output("console")
+    config = fsb_roll_report_config.new_config_with_modified_output("console")
     config.modify_kwargs(instrument_code=instrument_code)
     report_results = run_report_with_data_blob(config, data)
     if report_results is failure:
