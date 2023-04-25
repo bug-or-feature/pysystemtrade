@@ -66,6 +66,7 @@ def _configure_sim():
     handler.setLevel(logging.DEBUG)
     logging.getLogger("ib_insync").setLevel(logging.WARNING)
     logging.getLogger("arctic").setLevel(logging.WARNING)
+    logging.getLogger("matplotlib").setLevel(logging.INFO)
     logging.getLogger("urllib3").setLevel(logging.INFO)
     logging.getLogger("trading_ig").setLevel(logging.INFO)
     logging.basicConfig(
