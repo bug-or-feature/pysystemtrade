@@ -14,6 +14,7 @@ from systems.diagoutput import systemDiag
 from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.config.production_config import get_production_config, Config
 import yaml
+from syslogging.logger import get_logger
 
 FULL_ESTIMATES_ATTRS = [
     "forecast_scalars",
@@ -36,16 +37,18 @@ DEPOSIT_FACTOR_MAP = {
 
 
 def run_system():
+    log = get_logger("backtest")
 
-    do_estimate = True
-    use_csv = False
+    do_estimate = False
+    use_csv = True
     write_config = True
 
-    capital = config_from_file("systems.futures_spreadbet.config_capital.yaml")
-    rules = config_from_file("systems.futures_spreadbet.config_rules_v3.yaml")
-    ignore = config_from_file("systems.futures_spreadbet.config_ignore.yaml")
+    # capital = config_from_file("systems.futures_spreadbet.config_capital.yaml")
+    # rules = config_from_file("systems.futures_spreadbet.config_rules_v3.yaml")
+    # ignore = config_from_file("systems.futures_spreadbet.config_ignore.yaml")
 
-    config_files = [rules, capital, ignore]
+    config_files = []
+    #config_files = [rules, capital, ignore]
 
     if do_estimate:
         estimates = config_from_file("systems.futures_spreadbet.config_estimates.yaml")
@@ -56,7 +59,8 @@ def run_system():
         # config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
         # config_files.append("systems.futures_spreadbet.config_fsb_system_v3.yaml")
         # config_files.append("systems.futures_spreadbet.config_fsb_system_v2.yaml")
-        config_files.append("systems.futures_spreadbet.estimate-2022-01-27.yaml")
+        #config_files.append("systems.futures_spreadbet.estimate-2022-01-27.yaml")
+        config_files.append("systems.futures_spreadbet.config_fsb_system_v4.yaml")
     if use_csv:
         data = csvFuturesSimData(
             csv_data_paths=dict(
@@ -65,6 +69,7 @@ def run_system():
                 csvFxPricesData="data.futures.fx_prices_csv",
                 csvFuturesMultiplePricesData="data.futures_spreadbet.multiple_prices_csv",
                 csvFuturesAdjustedPricesData="data.futures_spreadbet.adjusted_prices_csv",
+                csvSpreadCostData="data.futures_spreadbet.csvconfig"
             )
         )
     else:
@@ -75,6 +80,7 @@ def run_system():
     type_label = "estimate"
 
     system = futures_system(config=config, data=data)
+    print(system)
     # curve_group = system.accounts.portfolio()
     # calc_forecasts(system)
     portfolio = system.accounts.portfolio()
@@ -95,7 +101,7 @@ def run_system():
         # config
         instr_obj = system.data.get_instrument_meta_data(instr)
         asset_class = instr_obj.meta_data.AssetClass
-        spread_in_points = instr_obj.meta_data.Slippage * 2
+        spread_in_points = system.data.db_spread_cost_data.get_spread_cost(instr)
         min_bet_per_point = instr_obj.meta_data.Pointsize
         # multi = instr_obj.meta_data.Multiplier
         deposit_factor = DEPOSIT_FACTOR_MAP[asset_class]
@@ -272,7 +278,7 @@ def write_file(df, run_type, product, write=True):
 def config_from_file(path_string):
     path = resolve_path_and_filename_for_package(path_string)
     with open(path) as file_to_parse:
-        config_dict = yaml.load(file_to_parse, Loader=yaml.CLoader)
+        config_dict = yaml.load(file_to_parse)
     return config_dict
 
 
