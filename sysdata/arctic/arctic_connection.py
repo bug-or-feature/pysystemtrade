@@ -59,6 +59,9 @@ class arcticData(object):
 
     def _setup_lib(self, store: Arctic, db_name, coll_name):
         lib_name = db_name + "." + coll_name
-        if lib_name not in store.list_libraries():
-            store.initialize_library(lib_name)
+        try:
+            if lib_name not in store.list_libraries():
+                store.initialize_library(lib_name)
+        except AttributeError as ae:
+            print(f"Problem initialising arctic library '{lib_name}': {ae}")
         return store[lib_name]
