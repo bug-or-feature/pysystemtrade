@@ -23,15 +23,14 @@ def fsb_static_system(
     data=arg_not_supplied,
     config=arg_not_supplied,
     trading_rules=arg_not_supplied,
-    log_level="on",
 ):
 
     if data is arg_not_supplied:
-        data = dbFuturesSimData()
-        # data = build_fsb_csv_sim_data()
+        # data = dbFuturesSimData()
+        data = build_fsb_csv_sim_data()
 
     if config is arg_not_supplied:
-        config = Config("systems.futures_spreadbet.fsb_config.yaml")
+        config = Config("systems.futures_spreadbet.config_fsb_system_v4.yaml")
         config.risk_overlay = arg_not_supplied
 
     rules = Rules(trading_rules)
@@ -49,7 +48,6 @@ def fsb_static_system(
         data,
         config,
     )
-    system.set_logging_level(log_level)
 
     return system
 
@@ -62,6 +60,7 @@ def build_fsb_csv_sim_data():
             csvFxPricesData="data.futures.fx_prices_csv",
             csvFuturesMultiplePricesData="data.futures_spreadbet.multiple_prices_csv",
             csvFuturesAdjustedPricesData="data.futures_spreadbet.adjusted_prices_csv",
+            csvSpreadCostData="data.futures_spreadbet.csvconfig"
         )
     )
 
