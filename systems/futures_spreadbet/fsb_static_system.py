@@ -60,7 +60,7 @@ def build_fsb_csv_sim_data():
             csvFxPricesData="data.futures.fx_prices_csv",
             csvFuturesMultiplePricesData="data.futures_spreadbet.multiple_prices_csv",
             csvFuturesAdjustedPricesData="data.futures_spreadbet.adjusted_prices_csv",
-            csvSpreadCostData="data.futures_spreadbet.csvconfig"
+            csvSpreadCostData="data.futures_spreadbet.csvconfig",
         )
     )
 

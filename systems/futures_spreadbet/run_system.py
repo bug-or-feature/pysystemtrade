@@ -48,7 +48,7 @@ def run_system():
     # ignore = config_from_file("systems.futures_spreadbet.config_ignore.yaml")
 
     config_files = []
-    #config_files = [rules, capital, ignore]
+    # config_files = [rules, capital, ignore]
 
     if do_estimate:
         estimates = config_from_file("systems.futures_spreadbet.config_estimates.yaml")
@@ -59,7 +59,7 @@ def run_system():
         # config_files.append("systems.futures_spreadbet.estimate_10_cheap_full.yaml")
         # config_files.append("systems.futures_spreadbet.config_fsb_system_v3.yaml")
         # config_files.append("systems.futures_spreadbet.config_fsb_system_v2.yaml")
-        #config_files.append("systems.futures_spreadbet.estimate-2022-01-27.yaml")
+        # config_files.append("systems.futures_spreadbet.estimate-2022-01-27.yaml")
         config_files.append("systems.futures_spreadbet.config_fsb_system_v4.yaml")
     if use_csv:
         data = csvFuturesSimData(
@@ -69,7 +69,7 @@ def run_system():
                 csvFxPricesData="data.futures.fx_prices_csv",
                 csvFuturesMultiplePricesData="data.futures_spreadbet.multiple_prices_csv",
                 csvFuturesAdjustedPricesData="data.futures_spreadbet.adjusted_prices_csv",
-                csvSpreadCostData="data.futures_spreadbet.csvconfig"
+                csvSpreadCostData="data.futures_spreadbet.csvconfig",
             )
         )
     else:
