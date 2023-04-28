@@ -613,7 +613,7 @@ EURIBOR_fsb,Three Month EURIBOR,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 EUROSTX_fsb,European equity index EUROSTOXX50,1.0,GBP,Equity,0.0,0.0,0.0,EMEA
 FED_fsb,30 Day Fed Funds,0.5,GBP,Bond,0.0,0.0,0.0,US
 FTSE100_fsb,FTSE100 Index,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
-GAS_US_fsb,Natural gas US,1.0,GBP,OilGas,0.0,0.0,0.0,US
+GAS_US_fsb,Natural gas US,0.5,GBP,OilGas,0.0,0.0,0.0,US
 GASOIL_fsb,ICE-EU Low Sulphur Gasoil,10.0,GBP,Ags,0.0,0.0,0.0,EMEA
 GASOLINE_fsb,RBOB Gasoline US,0.5,GBP,Ags,0.0,0.0,0.0,US
 GBP_fsb,GBPUSD currency,1.0,GBP,FX,0.0,0.0,0.0,EMEA
@@ -621,9 +621,9 @@ GBPCHF_fsb,GBPCHF currency,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 GBPJPY_fsb,GBPJPY currency,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 GILT_fsb,UK 10 year bonds Long Gilt,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 GOLD_fsb,Gold,1.0,GBP,Metals,0.0,0.0,0.0,US
-HANG_fsb,Hong Kong equity index Hang Seng,0.2,GBP,Equity,0.0,0.0,0.0,ASIA
+HANG_fsb,Hong Kong equity index Hang Seng,0.1,GBP,Equity,0.0,0.0,0.0,ASIA
 HEATOIL_fsb,Heating oil,0.5,GBP,Ags,0.0,0.0,0.0,US
-IBXEX_fsb,Spanish equity index IBEX,1.0,GBP,Equity,0.0,0.0,0.0,EMEA
+IBXEX_fsb,Spanish equity index IBEX,0.2,GBP,Equity,0.0,0.0,0.0,EMEA
 JGB_fsb,Japanese Government Bond,0.5,GBP,Bond,0.0,0.0,0.0,ASIA
 JPY_fsb,JPYUSD currency,1.0,GBP,FX,0.0,0.0,0.0,ASIA
 JSE40_fsb,South Africa JSE 40 equity index,0.25,GBP,Equity,0.0,0.0,0.0,EMEA
