@@ -7,6 +7,10 @@ from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.mongodb.mongo_epic_periods import mongoEpicPeriodsData
 
+MISCONFIGURED_MINIMUM_BET_HEADER_TEXT = body_text(
+    "Instruments where the minimum bet is misconfigured, or recently changed by IG"
+)
+
 LATE_MARKET_INFO_HEADER_TEXT = body_text(
     "Instruments where the market info has not been recently updated"
 )
@@ -68,6 +72,10 @@ def do_fsb_report(
     formatted_output = []
 
     formatted_output.append(reporting_api_fsb.terse_header("FSB report"))
+
+    # misconfigured minimum bets
+    formatted_output.append(MISCONFIGURED_MINIMUM_BET_HEADER_TEXT)
+    formatted_output.append(reporting_api_fsb.table_of_wrong_min_bet_size())
 
     # delayed market info
     formatted_output.append(LATE_MARKET_INFO_HEADER_TEXT)

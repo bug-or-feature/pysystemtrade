@@ -9,6 +9,7 @@ from sysdata.arctic.arctic_futures_per_contract_prices import (
 from sysdata.data_blob import dataBlob
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.prices import diagPrices
+from sysproduction.data.instruments import diagInstruments
 from sysproduction.data.fsb_prices import DiagFsbPrices
 from sysproduction.data.fsb_epics import DiagFsbEpics
 from sysproduction.reporting.api import reportingApi
@@ -98,6 +99,17 @@ class ReportingApiFsb(reportingApi):
         instrument_risk_sorted_table = table(table_header, instrument_risk_sorted)
 
         return instrument_risk_sorted_table
+
+    def table_of_wrong_min_bet_size(
+        self, table_header="Misconfigured minimum bet size"
+    ) -> table:
+
+        df = pd.DataFrame(self.market_info_data)
+        df = df[["Contract", "ExpectedMinBet", "ActualMinBet", "Status"]]
+        df = df.loc[(df["ExpectedMinBet"] != df["ActualMinBet"])]
+        df.set_index("Contract", inplace=True)
+
+        return table(table_header, df)
 
     def table_of_delayed_market_info(self, table_header="Delayed Market Info") -> table:
         delayed = datetime.datetime.now() - datetime.timedelta(days=3)
@@ -193,29 +205,39 @@ class ReportingApiFsb(reportingApi):
         in_hours = self.data.db_market_info.in_hours
         in_hours_status = self.data.db_market_info.in_hours_status
         last_modified = self.data.db_market_info.last_modified
+        min_bet = self.data.db_market_info.min_bet
 
         rows = []
-        for key, value in epics.items():
-            instr_code = key[:-9]
-            if instr_code not in roll_data:
-                continue
-            if roll_data[instr_code]["contract_priced"] == key[-8:]:
-                pos = "priced"
-            elif roll_data[instr_code]["contract_fwd"] == key[-8:]:
-                pos = "fwd"
-            else:
-                pos = "-"
-            rows.append(
-                dict(
-                    Contract=key,
-                    Epic=value,
-                    Expiry=expiries[key],
-                    Status=in_hours_status[key],
-                    In_Hours=in_hours[key],
-                    LastMod=last_modified[key],
-                    Pos=pos,
+
+        with dataBlob(log_name="FSB-Report") as data:
+
+            diag_instruments = diagInstruments(data)
+
+            for key, value in epics.items():
+                instr_code = key[:-9]
+                meta_data = diag_instruments.get_meta_data(instr_code)
+                if instr_code not in roll_data:
+                    continue
+                if roll_data[instr_code]["contract_priced"] == key[-8:]:
+                    pos = "priced"
+                elif roll_data[instr_code]["contract_fwd"] == key[-8:]:
+                    pos = "fwd"
+                else:
+                    pos = "-"
+                rows.append(
+                    dict(
+                        InstrCode=instr_code,
+                        Contract=key,
+                        Epic=value,
+                        Expiry=expiries[key],
+                        Status=in_hours_status[key],
+                        In_Hours=in_hours[key],
+                        LastMod=last_modified[key],
+                        Pos=pos,
+                        ExpectedMinBet=meta_data.Pointsize,
+                        ActualMinBet=min_bet[key],
+                    )
                 )
-            )
 
         return rows
 

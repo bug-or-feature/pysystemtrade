@@ -35,6 +35,7 @@ class mongoMarketInfoData(marketInfoData):
         self._in_hours = {}
         self._in_hours_status = {}
         self._last_modified = {}
+        self._min_bet = {}
 
     def __repr__(self):
         return f"mongoMarketInfoData {str(self.mongo_data)}"
@@ -72,6 +73,12 @@ class mongoMarketInfoData(marketInfoData):
         if len(self._last_modified) == 0:
             self._parse_market_info_for_mappings()
         return self._last_modified
+
+    @cached_property
+    def min_bet(self) -> dict:
+        if len(self._min_bet) == 0:
+            self._parse_market_info_for_mappings()
+        return self._min_bet
 
     def add_market_info(self, instrument_code: str, epic: str, market_info: dict):
         self.log.msg(f"Adding market info for '{epic}'")
@@ -186,6 +193,7 @@ class mongoMarketInfoData(marketInfoData):
                     "in_hours_status": 1,
                     "instrument.expiry": 1,
                     "instrument.expiryDetails.lastDealingDate": 1,
+                    "dealingRules.minDealSize.value": 1,
                 },
             ):
 
@@ -203,6 +211,8 @@ class mongoMarketInfoData(marketInfoData):
                 )
 
                 self._last_modified[contract_date_str] = doc["last_modified_utc"]
+
+                self._min_bet[contract_date_str] = doc.dealingRules.minDealSize.value
 
                 try:
                     self._in_hours[contract_date_str] = doc["in_hours"]
