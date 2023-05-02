@@ -30,6 +30,7 @@ from sysobjects.production.roll_state import (
     no_roll_state,
     roll_close_state,
 )
+from sysproduction.reporting.api import reportingApi
 
 from sysproduction.reporting.report_configs_fsb import fsb_roll_report_config
 from sysproduction.reporting.reporting_functions import run_report_with_data_blob
@@ -51,9 +52,16 @@ EXIT_CODE = "EXIT"
 
 def interactive_update_roll_status():
 
-    with dataBlob(log_name="Interactive_Update-Roll-Status") as data:
+    with dataBlob(
+        log_name="Interactive_Update-Roll-Status",
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+        )
+    ) as data:
+        api = reportingApi(data)
         function_to_call = get_rolling_master_function()
-        function_to_call(data)
+        function_to_call(api)
 
 
 def get_rolling_master_function():
@@ -118,49 +126,53 @@ class RollDataWithStateReporting(object):
         print("")
 
 
-def update_roll_status_manual_cycle(data: dataBlob):
+def update_roll_status_manual_cycle(api: reportingApi):
 
     do_another = True
     while do_another:
         instrument_code = get_valid_instrument_code_from_user(
-            data=data, allow_exit=True, exit_code=EXIT_CODE
+            data=api.data, allow_exit=True, exit_code=EXIT_CODE
         )
         if instrument_code is EXIT_CODE:
             # belt and braces
             do_another = False
         else:
-            manually_report_and_update_roll_state_for_code(data, instrument_code)
+            manually_report_and_update_roll_state_for_code(api, instrument_code)
 
     return success
 
 
-def update_roll_status_auto_cycle_manual_decide(data: dataBlob):
+def update_roll_status_auto_cycle_manual_decide(api: reportingApi):
     days_ahead = get_days_ahead_to_consider_when_auto_cycling()
-    instrument_list = get_list_of_instruments_to_auto_cycle(data, days_ahead=days_ahead)
+    instrument_list = get_list_of_instruments_to_auto_cycle(
+        api.data, days_ahead=days_ahead
+    )
     for instrument_code in instrument_list:
         manually_report_and_update_roll_state_for_code(
-            data=data, instrument_code=instrument_code
+            api=api, instrument_code=instrument_code
         )
 
     return success
 
 
-def update_roll_status_auto_cycle_manual_confirm(data: dataBlob):
+def update_roll_status_auto_cycle_manual_confirm(api: reportingApi):
     days_ahead = get_days_ahead_to_consider_when_auto_cycling()
     auto_parameters = get_auto_roll_parameters()
-    instrument_list = get_list_of_instruments_to_auto_cycle(data, days_ahead=days_ahead)
+    instrument_list = get_list_of_instruments_to_auto_cycle(
+        api.data, days_ahead=days_ahead
+    )
 
     for instrument_code in instrument_list:
-        roll_data = setup_roll_data_with_state_reporting(data, instrument_code)
+        roll_data = setup_roll_data_with_state_reporting(api.data, instrument_code)
         roll_state_required = auto_selected_roll_state_instrument(
-            data=data, roll_data=roll_data, auto_parameters=auto_parameters
+            api=api, roll_data=roll_data, auto_parameters=auto_parameters
         )
 
         if roll_state_required is no_change_required:
             warn_not_rolling(instrument_code, auto_parameters)
         else:
             modify_roll_state(
-                data=data,
+                data=api.data,
                 instrument_code=instrument_code,
                 original_roll_state=roll_data.original_roll_status,
                 roll_state_required=roll_state_required,
@@ -168,15 +180,17 @@ def update_roll_status_auto_cycle_manual_confirm(data: dataBlob):
             )
 
 
-def update_roll_status_full_auto(data: dataBlob):
+def update_roll_status_full_auto(api: reportingApi):
     days_ahead = get_days_ahead_to_consider_when_auto_cycling()
-    instrument_list = get_list_of_instruments_to_auto_cycle(data, days_ahead=days_ahead)
+    instrument_list = get_list_of_instruments_to_auto_cycle(
+        api.data, days_ahead=days_ahead
+    )
     auto_parameters = get_auto_roll_parameters()
 
     for instrument_code in instrument_list:
-        roll_data = setup_roll_data_with_state_reporting(data, instrument_code)
+        roll_data = setup_roll_data_with_state_reporting(api.data, instrument_code)
         roll_state_required = auto_selected_roll_state_instrument(
-            data=data, roll_data=roll_data, auto_parameters=auto_parameters
+            api=api, roll_data=roll_data, auto_parameters=auto_parameters
         )
 
         if roll_state_required is no_change_required:
@@ -184,7 +198,7 @@ def update_roll_status_full_auto(data: dataBlob):
         else:
 
             modify_roll_state(
-                data=data,
+                data=api.data,
                 instrument_code=instrument_code,
                 original_roll_state=roll_data.original_roll_status,
                 roll_state_required=roll_state_required,
@@ -303,14 +317,14 @@ def get_state_to_use_for_held_position() -> RollState:
 
 
 def auto_selected_roll_state_instrument(
-    data: dataBlob,
+    api: reportingApi,
     roll_data: RollDataWithStateReporting,
     auto_parameters: autoRollParameters,
 ) -> RollState:
 
     if roll_data.relative_volume < auto_parameters.min_volume:
 
-        run_roll_report(data, roll_data.instrument_code)
+        run_roll_report(api, roll_data.instrument_code)
         print_with_landing_strips_around(
             "For %s relative volume of %f is less than minimum of %s : NOT AUTO ROLLING"
             % (
@@ -324,7 +338,7 @@ def auto_selected_roll_state_instrument(
     no_position_held = roll_data.position_priced_contract == 0
 
     if no_position_held:
-        run_roll_report(data, roll_data.instrument_code)
+        run_roll_report(api, roll_data.instrument_code)
         print_with_landing_strips_around(
             "No position held, auto rolling adjusted price for %s"
             % roll_data.instrument_code
@@ -332,7 +346,7 @@ def auto_selected_roll_state_instrument(
         return roll_adj_state
 
     if auto_parameters.manual_prompt_for_position:
-        run_roll_report(data, roll_data.instrument_code)
+        run_roll_report(api, roll_data.instrument_code)
         roll_state_required = get_roll_state_required(roll_data)
         return roll_state_required
 
@@ -363,14 +377,14 @@ def warn_not_rolling(instrument_code: str, auto_parameters: autoRollParameters):
 
 
 def manually_report_and_update_roll_state_for_code(
-    data: dataBlob, instrument_code: str
+    api: reportingApi, instrument_code: str
 ):
     # update FSB market info for instrument - tradeability may have changed since
     # previous evening's report run
-    update_epic_config = UpdateFsbMarketInfo(data)
+    update_epic_config = UpdateFsbMarketInfo(api.data)
     update_epic_config.do_market_info_updates([instrument_code], check_historic=False)
-    run_roll_report(data, instrument_code)
-    manually_update_roll_state_for_code(data, instrument_code)
+    run_roll_report(api, instrument_code)
+    manually_update_roll_state_for_code(api.data, instrument_code)
 
 
 def manually_update_roll_state_for_code(data: dataBlob, instrument_code: str):
@@ -393,10 +407,10 @@ def manually_update_roll_state_for_code(data: dataBlob, instrument_code: str):
     return success
 
 
-def run_roll_report(data: dataBlob, instrument_code: str):
+def run_roll_report(api: reportingApi, instrument_code: str):
     config = fsb_roll_report_config.new_config_with_modified_output("console")
-    config.modify_kwargs(instrument_code=instrument_code)
-    report_results = run_report_with_data_blob(config, data)
+    config.modify_kwargs(instrument_code=instrument_code, reporting_api=api)
+    report_results = run_report_with_data_blob(config, api.data)
     if report_results is failure:
         raise Exception("Can't run roll report, so can't change status")
 

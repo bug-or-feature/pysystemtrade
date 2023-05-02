@@ -13,7 +13,7 @@ from sysproduction.reporting.api_fsb import ReportingApiFsb
 def fsb_roll_report(
     data,
     instrument_code=ALL_ROLL_INSTRUMENTS,
-    reporting_api_fsb: Optional[ReportingApiFsb] = None,
+    reporting_api: Optional[ReportingApiFsb] = None,
 ):
     """
     Get some roll info. For all markets which are:
@@ -31,13 +31,13 @@ def fsb_roll_report(
     :param: data blob
     :return: list of pd.DataFrame
     """
-    if reporting_api_fsb is None:
-        reporting_api_fsb = ReportingApiFsb(data)
+    if reporting_api is None:
+        reporting_api = ReportingApiFsb(data)
 
     formatted_output = []
 
-    formatted_output.append(reporting_api_fsb.terse_header("FSB Roll report"))
-    formatted_output.append(reporting_api_fsb.table_of_roll_data(instrument_code))
+    formatted_output.append(reporting_api.terse_header("FSB Roll report"))
+    formatted_output.append(reporting_api.table_of_roll_data(instrument_code))
     formatted_output.append(
         body_text(
             "Roll_exp is days until preferred roll set by roll parameters. Prc_exp is days until price contract expires, "
@@ -51,7 +51,7 @@ def fsb_roll_report(
         )
     )
 
-    formatted_output.append(reporting_api_fsb.footer())
+    formatted_output.append(reporting_api.footer())
 
     return formatted_output
 
