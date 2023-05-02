@@ -21,6 +21,7 @@ def data():
         csv_data_paths=dict(
             csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
             csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvSpreadCostData="data.futures_spreadbet.csvconfig",
             csvFxPricesData="data.futures.fx_prices_csv",
             csvFuturesMultiplePricesData="data.futures_spreadbet.multiple_prices_csv",
             csvFuturesAdjustedPricesData="data.futures_spreadbet.adjusted_prices_csv",
