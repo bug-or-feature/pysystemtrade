@@ -209,35 +209,33 @@ class ReportingApiFsb(reportingApi):
 
         rows = []
 
-        with dataBlob(log_name="FSB-Report") as data:
+        diag_instruments = diagInstruments(self.data)
 
-            diag_instruments = diagInstruments(data)
-
-            for key, value in epics.items():
-                instr_code = key[:-9]
-                meta_data = diag_instruments.get_meta_data(instr_code)
-                if instr_code not in roll_data:
-                    continue
-                if roll_data[instr_code]["contract_priced"] == key[-8:]:
-                    pos = "priced"
-                elif roll_data[instr_code]["contract_fwd"] == key[-8:]:
-                    pos = "fwd"
-                else:
-                    pos = "-"
-                rows.append(
-                    dict(
-                        InstrCode=instr_code,
-                        Contract=key,
-                        Epic=value,
-                        Expiry=expiries[key],
-                        Status=in_hours_status[key],
-                        In_Hours=in_hours[key],
-                        LastMod=last_modified[key],
-                        Pos=pos,
-                        ExpectedMinBet=meta_data.Pointsize,
-                        ActualMinBet=min_bet[key],
-                    )
+        for key, value in epics.items():
+            instr_code = key[:-9]
+            meta_data = diag_instruments.get_meta_data(instr_code)
+            if instr_code not in roll_data:
+                continue
+            if roll_data[instr_code]["contract_priced"] == key[-8:]:
+                pos = "priced"
+            elif roll_data[instr_code]["contract_fwd"] == key[-8:]:
+                pos = "fwd"
+            else:
+                pos = "-"
+            rows.append(
+                dict(
+                    InstrCode=instr_code,
+                    Contract=key,
+                    Epic=value,
+                    Expiry=expiries[key],
+                    Status=in_hours_status[key],
+                    In_Hours=in_hours[key],
+                    LastMod=last_modified[key],
+                    Pos=pos,
+                    ExpectedMinBet=meta_data.Pointsize,
+                    ActualMinBet=min_bet[key],
                 )
+            )
 
         return rows
 
@@ -277,35 +275,34 @@ class ReportingApiFsb(reportingApi):
     @cached_property
     def chain_data(self):
         rows = []
-        with dataBlob(log_name="FSB-Report") as data:
-            diagFsbEpics = DiagFsbEpics(data)
-            # for instr in ["CAD_fsb"]:
-            for instr in self._list_of_all_instruments():
-                epic_history = diagFsbEpics.get_epic_history(instr)
+        diagFsbEpics = DiagFsbEpics(self.data)
+        # for instr in ["CAD_fsb"]:
+        for instr in self._list_of_all_instruments():
+            epic_history = diagFsbEpics.get_epic_history(instr)
 
-                furthest_out_contract = get_furthest_out_contract_with_roll_parameters(
-                    data, instr
-                )
-                contract_date_chain = create_contract_date_chain(furthest_out_contract)
-                date_str_chain = [
-                    contract_date.date_str for contract_date in contract_date_chain
-                ]
+            furthest_out_contract = get_furthest_out_contract_with_roll_parameters(
+                self.data, instr
+            )
+            contract_date_chain = create_contract_date_chain(furthest_out_contract)
+            date_str_chain = [
+                contract_date.date_str for contract_date in contract_date_chain
+            ]
 
-                expected_chain = list(reversed(date_str_chain))
-                actual_chain = epic_history.roll_chain()
+            expected_chain = list(reversed(date_str_chain))
+            actual_chain = epic_history.roll_chain()
 
-                length = min(len(expected_chain), len(actual_chain))
+            length = min(len(expected_chain), len(actual_chain))
 
-                if expected_chain[:length] == actual_chain[:length]:
-                    continue
-                else:
-                    rows.append(
-                        dict(
-                            Instrument=instr,
-                            Expected=self.pretty_print(expected_chain[:length]),
-                            Actual=self.pretty_print(actual_chain[:length]),
-                        )
+            if expected_chain[:length] == actual_chain[:length]:
+                continue
+            else:
+                rows.append(
+                    dict(
+                        Instrument=instr,
+                        Expected=self.pretty_print(expected_chain[:length]),
+                        Actual=self.pretty_print(actual_chain[:length]),
                     )
+                )
 
         return rows
 
