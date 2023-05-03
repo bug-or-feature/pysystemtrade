@@ -9,7 +9,13 @@ from sysproduction.data.reports import dataReports
 
 def run_reports():
     process_name = "run_reports"
-    data = dataBlob(log_name=process_name)
+    data = dataBlob(
+        log_name=process_name,
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+        )
+    )
     list_of_timer_names_and_functions = get_list_of_timer_functions_for_reports(data)
     report_process = processToRun(process_name, data, list_of_timer_names_and_functions)
     report_process.run_process()
@@ -21,7 +27,10 @@ def get_list_of_timer_functions_for_reports(data):
     all_configs = data_reports.get_report_configs_to_run()
 
     for report_name, report_config in all_configs.items():
-        data_for_report = dataBlob(log_name=report_name)
+        data_for_report = dataBlob(
+            log_name=report_name,
+            csv_data_paths=data.csv_data_paths
+        )
         report_object = runReport(data_for_report, report_config, report_name)
         report_tuple = (report_name, report_object)
         list_of_timer_names_and_functions.append(report_tuple)

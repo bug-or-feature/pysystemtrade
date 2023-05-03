@@ -154,7 +154,7 @@ def get_instrument_risk_table(data, only_held_instruments=True):
     if only_held_instruments:
         instrument_list = get_instruments_with_positions_all_strategies(data)
     else:
-        instrument_list = get_list_of_instruments()
+        instrument_list = get_list_of_instruments(data)
 
     p = progressBar(len(instrument_list))
     risk_data_list = []
