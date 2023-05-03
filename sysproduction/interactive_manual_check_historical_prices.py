@@ -34,7 +34,7 @@ def interactive_manual_check_historical_prices():
         csv_data_paths=dict(
             csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
             csvRollParametersData="data.futures_spreadbet.csvconfig",
-        )
+        ),
     ) as data:
         instr_list = []
         cleaning_config = interactively_get_config_overrides_for_cleaning(data=data)
