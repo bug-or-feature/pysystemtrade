@@ -23,7 +23,13 @@ def update_sampled_contracts(instrument_list=None):
 
     :returns: None
     """
-    with dataBlob(log_name="Update-Sampled_Contracts") as data:
+    with dataBlob(
+        log_name="Update-Sampled_Contracts",
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+        )
+    ) as data:
         if instrument_list is None:
             update_contracts_object = updateSampledContracts(data)
             instrument_code = get_valid_instrument_code_from_user(

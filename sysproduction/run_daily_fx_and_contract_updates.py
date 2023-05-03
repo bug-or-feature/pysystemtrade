@@ -19,7 +19,13 @@ def run_daily_fx_and_contract_updates():
 def get_list_of_timer_functions_for_fx_and_contract_update():
     data_fx = dataBlob(log_name="update_fx_prices")
     data_epics = dataBlob(log_name="update_epics")
-    data_contracts = dataBlob(log_name="update_sampled_contracts")
+    data_contracts = dataBlob(
+        log_name="update_sampled_contracts",
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+        )
+    )
 
     fx_update_object = updateFxPrices(data_fx)
     epic_update_object = UpdateEpicHistory(data_epics)
