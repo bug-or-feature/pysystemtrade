@@ -18,7 +18,13 @@ def generate_fsb_updates():
     :return: Nothing
     """
 
-    with dataBlob(log_name="Generate-FSB-Updates") as data:
+    with dataBlob(
+        log_name="Generate-FSB-Updates",
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+        )
+    ) as data:
         fsb_updater = GenerateFsbUpdates(data)
         # fsb_updater.generate_fsb_updates()
         fsb_updater.update("NASDAQ_fsb")
