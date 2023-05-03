@@ -14,7 +14,7 @@ def run_reports():
         csv_data_paths=dict(
             csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
             csvRollParametersData="data.futures_spreadbet.csvconfig",
-        )
+        ),
     )
     list_of_timer_names_and_functions = get_list_of_timer_functions_for_reports(data)
     report_process = processToRun(process_name, data, list_of_timer_names_and_functions)
@@ -28,8 +28,7 @@ def get_list_of_timer_functions_for_reports(data):
 
     for report_name, report_config in all_configs.items():
         data_for_report = dataBlob(
-            log_name=report_name,
-            csv_data_paths=data.csv_data_paths
+            log_name=report_name, csv_data_paths=data.csv_data_paths
         )
         report_object = runReport(data_for_report, report_config, report_name)
         report_tuple = (report_name, report_object)

@@ -24,7 +24,7 @@ def get_list_of_timer_functions_for_fx_and_contract_update():
         csv_data_paths=dict(
             csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
             csvRollParametersData="data.futures_spreadbet.csvconfig",
-        )
+        ),
     )
 
     fx_update_object = updateFxPrices(data_fx)

@@ -23,7 +23,7 @@ def generate_fsb_updates():
         csv_data_paths=dict(
             csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
             csvRollParametersData="data.futures_spreadbet.csvconfig",
-        )
+        ),
     ) as data:
         fsb_updater = GenerateFsbUpdates(data)
         # fsb_updater.generate_fsb_updates()

@@ -57,7 +57,7 @@ def interactive_update_roll_status():
         csv_data_paths=dict(
             csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
             csvRollParametersData="data.futures_spreadbet.csvconfig",
-        )
+        ),
     ) as data:
         api = reportingApi(data)
         function_to_call = get_rolling_master_function()

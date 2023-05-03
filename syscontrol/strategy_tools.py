@@ -60,10 +60,7 @@ def get_strategy_class_instance(data: dataBlob, strategy_name: str, process_name
         data=data, strategy_name=strategy_name, process_name=process_name
     )
 
-    strategy_data = dataBlob(
-        log_name=process_name,
-        csv_data_paths=data.csv_data_paths
-    )
+    strategy_data = dataBlob(log_name=process_name, csv_data_paths=data.csv_data_paths)
     strategy_data.log.label(**{STRATEGY_NAME_LOG_LABEL: strategy_name})
 
     strategy_class_instance = strategy_class_object(

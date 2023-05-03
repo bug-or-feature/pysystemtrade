@@ -28,7 +28,7 @@ def update_sampled_contracts(instrument_list=None):
         csv_data_paths=dict(
             csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
             csvRollParametersData="data.futures_spreadbet.csvconfig",
-        )
+        ),
     ) as data:
         if instrument_list is None:
             update_contracts_object = updateSampledContracts(data)

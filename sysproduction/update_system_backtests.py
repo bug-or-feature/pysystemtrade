@@ -16,7 +16,7 @@ def update_system_backtests():
         csv_data_paths=dict(
             csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
             csvRollParametersData="data.futures_spreadbet.csvconfig",
-        )
+        ),
     ) as data:
         list_of_strategies = get_list_of_strategies_for_process(data, process_name)
         ALL = "ALL"
