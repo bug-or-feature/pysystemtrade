@@ -8,7 +8,6 @@ import sys
 
 from syslogging.logger import LOG_FORMAT
 from syslogging.handlers import LogRecordStreamHandler, MostRecentHandler
-from syslogdiag.log_to_file import get_logging_directory
 
 
 class LogRecordSocketReceiver(socketserver.ThreadingTCPServer):
@@ -77,7 +76,9 @@ def logging_server():
         if args.file:
             log_file = args.file
         else:
-            log_file = f"{get_logging_directory(None)}/pysystemtrade.log"
+            print("WARNING: logs will be writen to current working directory - "
+                  "are you sure?")
+            log_file = f"{os.getcwd()}/pysystemtrade.log"
 
         recent = MostRecentHandler()
         recent.setLevel(logging.DEBUG)
