@@ -13,7 +13,13 @@ from sysproduction.data.control_process import get_list_of_strategies_for_proces
 
 
 def run_systems():
-    data = dataBlob(log_name=process_name)
+    data = dataBlob(
+        log_name=process_name,
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+        ),
+    )
     list_of_timer_names_and_functions = (
         get_list_of_backtest_timer_functions_for_strategies(data)
     )

@@ -15,7 +15,13 @@ def run_daily_price_updates():
 
 def get_list_of_timer_functions_for_price_update():
     data_historical = dataBlob(log_name="update_historical_prices")
-    data_fsb = dataBlob(log_name="generate_fsb_updates")
+    data_fsb = dataBlob(
+        log_name="generate_fsb_updates",
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+        ),
+    )
     historical_update_object = updateHistoricalPrices(data_historical)
     generate_fsb_object = GenerateFsbUpdates(data_fsb)
 
