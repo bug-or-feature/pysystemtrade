@@ -1,4 +1,5 @@
 import re
+import pymongo
 import pytz
 from functools import cached_property
 from munch import munchify
@@ -16,6 +17,14 @@ from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 from sysbrokers.IG.ig_trading_hours import parse_trading_hours
 
 INSTRUMENT_COLLECTION = "market_info"
+INDEX_CONFIG = {
+    "keys": {
+        "instrument_code": pymongo.ASCENDING,
+        "epic": pymongo.ASCENDING,
+        "instrument.expiry": pymongo.ASCENDING,
+    },
+    "unique": True,
+}
 
 
 class mongoMarketInfoData(marketInfoData):
@@ -28,7 +37,9 @@ class mongoMarketInfoData(marketInfoData):
     ):
         super().__init__(log=log)
         self._mongo_data = mongoDataWithMultipleKeys(
-            INSTRUMENT_COLLECTION, mongo_db=mongo_db
+            INSTRUMENT_COLLECTION,
+            mongo_db=mongo_db,
+            index_config=INDEX_CONFIG,
         )
         self._epic_mappings = {}
         self._expiry_dates = {}
