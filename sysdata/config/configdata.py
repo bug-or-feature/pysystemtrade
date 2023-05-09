@@ -289,7 +289,7 @@ class Config(object):
 
     @classmethod
     def default_config(cls):
-        if hasattr(cls, 'evaluated'):
+        if hasattr(cls, "evaluated"):
             return cls.evaluated
 
         if os.getenv(PRIVATE_CONFIG_DIR_ENV_VAR):
