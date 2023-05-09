@@ -30,7 +30,7 @@ from sysobjects.production.roll_state import (
     no_roll_state,
     roll_close_state,
 )
-from sysproduction.reporting.api import reportingApi
+from sysproduction.reporting.api_fsb import ReportingApiFsb
 
 from sysproduction.reporting.report_configs_fsb import fsb_roll_report_config
 from sysproduction.reporting.reporting_functions import run_report_with_data_blob
@@ -59,7 +59,7 @@ def interactive_update_roll_status():
             csvRollParametersData="data.futures_spreadbet.csvconfig",
         ),
     ) as data:
-        api = reportingApi(data)
+        api = ReportingApiFsb(data)
         function_to_call = get_rolling_master_function()
         function_to_call(api)
 
@@ -126,7 +126,7 @@ class RollDataWithStateReporting(object):
         print("")
 
 
-def update_roll_status_manual_cycle(api: reportingApi):
+def update_roll_status_manual_cycle(api: ReportingApiFsb):
 
     do_another = True
     while do_another:
@@ -142,7 +142,7 @@ def update_roll_status_manual_cycle(api: reportingApi):
     return success
 
 
-def update_roll_status_auto_cycle_manual_decide(api: reportingApi):
+def update_roll_status_auto_cycle_manual_decide(api: ReportingApiFsb):
     days_ahead = get_days_ahead_to_consider_when_auto_cycling()
     instrument_list = get_list_of_instruments_to_auto_cycle(
         api.data, days_ahead=days_ahead
@@ -155,7 +155,7 @@ def update_roll_status_auto_cycle_manual_decide(api: reportingApi):
     return success
 
 
-def update_roll_status_auto_cycle_manual_confirm(api: reportingApi):
+def update_roll_status_auto_cycle_manual_confirm(api: ReportingApiFsb):
     days_ahead = get_days_ahead_to_consider_when_auto_cycling()
     auto_parameters = get_auto_roll_parameters()
     instrument_list = get_list_of_instruments_to_auto_cycle(
@@ -180,7 +180,7 @@ def update_roll_status_auto_cycle_manual_confirm(api: reportingApi):
             )
 
 
-def update_roll_status_full_auto(api: reportingApi):
+def update_roll_status_full_auto(api: ReportingApiFsb):
     days_ahead = get_days_ahead_to_consider_when_auto_cycling()
     instrument_list = get_list_of_instruments_to_auto_cycle(
         api.data, days_ahead=days_ahead
@@ -317,7 +317,7 @@ def get_state_to_use_for_held_position() -> RollState:
 
 
 def auto_selected_roll_state_instrument(
-    api: reportingApi,
+    api: ReportingApiFsb,
     roll_data: RollDataWithStateReporting,
     auto_parameters: autoRollParameters,
 ) -> RollState:
@@ -377,7 +377,7 @@ def warn_not_rolling(instrument_code: str, auto_parameters: autoRollParameters):
 
 
 def manually_report_and_update_roll_state_for_code(
-    api: reportingApi, instrument_code: str
+    api: ReportingApiFsb, instrument_code: str
 ):
     # update FSB market info for instrument - tradeability may have changed since
     # previous evening's report run
@@ -407,7 +407,7 @@ def manually_update_roll_state_for_code(data: dataBlob, instrument_code: str):
     return success
 
 
-def run_roll_report(api: reportingApi, instrument_code: str):
+def run_roll_report(api: ReportingApiFsb, instrument_code: str):
     config = fsb_roll_report_config.new_config_with_modified_output("console")
     config.modify_kwargs(instrument_code=instrument_code, reporting_api=api)
     report_results = run_report_with_data_blob(config, api.data)
