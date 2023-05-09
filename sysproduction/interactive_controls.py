@@ -76,7 +76,13 @@ class parametersForAutoPopulation:
 
 def interactive_controls():
     set_pd_print_options()
-    with dataBlob(log_name="Interactive-Controls") as data:
+    with dataBlob(
+        log_name="Interactive-Controls",
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+        )
+    ) as data:
         set_pd_print_options()
         menu = interactiveMenu(
             top_level_menu_of_options, nested_menu_of_options, dict_of_functions, data
