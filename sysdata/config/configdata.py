@@ -303,6 +303,11 @@ class Config(object):
         cls.evaluated = config
         return cls.evaluated
 
+    @classmethod
+    def reset(cls):
+        if hasattr(cls, "evaluated"):
+            delattr(cls, "evaluated")
+
 
 if __name__ == "__main__":
     import doctest
