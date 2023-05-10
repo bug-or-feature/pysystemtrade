@@ -161,19 +161,19 @@ class mongoConnection(object):
         # '__id__' is always in index if there is data
         raw_index_information.pop(MONGO_INDEX_ID)
 
-        index_name = None
+        index_count = len(raw_index_information)
+        index_names = []
         index_keys = []
 
         for k, v in raw_index_information.items():
-            if not index_name:
-                index_name = k
+            index_names.append(k)
             for key in v["key"]:
                 index_keys.append(key[0])
 
-        return index_name, index_keys
+        return index_count, index_names, index_keys
 
     def create_index(self, indexname, order=ASCENDING):
-        index_name, index_keys = self.get_indexes()
+        index_count, index_names, index_keys = self.get_indexes()
         if indexname in index_keys:
             # we don't try to create a single key index if the key field is already used
             # in another index
@@ -191,12 +191,15 @@ class mongoConnection(object):
             key_tuples.append((key, value))
         new_index_name = "_".join(name_parts)
 
-        index_name, index_keys = self.get_indexes()
-        if new_index_name == index_name or len(index_keys) > 1:
+        index_count, index_names, index_keys = self.get_indexes()
+        if index_count > 1 or len(index_keys) > 1 or new_index_name in index_names:
             # We don't try to create a compound index if:
-            # - EITHER the name of an existing index matches what we would be about to
+            # - EITHER there is more than one index defined (likely created outside
+            #     of PST)
+            # - OR there is already some other compound index (likely created outside
+            #     of PST)
+            # - OR the name of an existing index matches what we would be about to
             #     create (we probably already made it)
-            # - OR there is already some other compound index
             pass
         else:
             self.collection.create_index(
