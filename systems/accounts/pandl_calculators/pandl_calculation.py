@@ -154,6 +154,7 @@ class pandlCalculation(object):
         else:
             positions_to_use = positions
 
+        # TODO round to multiple of minimum bet
         if self.roundpositions:
             positions_to_use = positions_to_use.round()
 

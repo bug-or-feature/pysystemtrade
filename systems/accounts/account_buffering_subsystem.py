@@ -48,6 +48,7 @@ class accountBufferingSubSystemLevel(accountCosts):
 
         buffer_method = self.config.get_element_or_default("buffer_method", "none")
         if buffer_method == "none":
+            # TODO round to multiple of minimum bet
             if roundpositions:
                 return optimal_position.round()
             else:
@@ -137,6 +138,7 @@ def apply_buffer(
     top_pos = pos_buffers.top_pos
     bot_pos = pos_buffers.bot_pos
 
+    # TODO round to multiple of minimum bet
     if roundpositions:
         use_optimal_position = use_optimal_position.round()
         top_pos = top_pos.round()

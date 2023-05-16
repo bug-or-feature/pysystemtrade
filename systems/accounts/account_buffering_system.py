@@ -82,6 +82,7 @@ class accountBufferingSystemLevel(accountInputs):
         try:
             self.config.get_element("buffer_method")
         except missingData:
+            # TODO round to multiple of minimum bet
             if roundpositions:
                 return optimal_position.round()
             else:
