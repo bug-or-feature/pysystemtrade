@@ -4,6 +4,7 @@ import numpy as np
 from syscore.constants import arg_not_supplied
 from syscore.dateutils import from_config_frequency_pandas_resample
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
+from syscore.genutils import round_to_minimum
 
 
 class pandlCalculation(object):
@@ -154,6 +155,7 @@ class pandlCalculation(object):
         else:
             positions_to_use = positions
 
+        # TODO round to multiple of minimum bet
         if self.roundpositions:
             positions_to_use = positions_to_use.round()
 

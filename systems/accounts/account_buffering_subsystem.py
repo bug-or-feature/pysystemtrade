@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 from syscore.pandas.strategy_functions import turnover
+from syscore.genutils import round_to_minimum, round_series_to_minimum
 from systems.system_cache import diagnostic
 
 from systems.accounts.account_costs import accountCosts
@@ -48,8 +49,9 @@ class accountBufferingSubSystemLevel(accountCosts):
 
         buffer_method = self.config.get_element_or_default("buffer_method", "none")
         if buffer_method == "none":
+            # TODO round to multiple of minimum bet
             if roundpositions:
-                return optimal_position.round()
+                return round_to_minimum(instrument_code, optimal_position)
             else:
                 return optimal_position
 
@@ -57,6 +59,7 @@ class accountBufferingSubSystemLevel(accountCosts):
 
         buffered_position = (
             self._get_buffered_subsystem_position_given_optimal_position_and_buffers(
+                instrument_code=instrument_code,
                 optimal_position=optimal_position,
                 pos_buffers=pos_buffers,
                 roundpositions=roundpositions,
@@ -67,6 +70,7 @@ class accountBufferingSubSystemLevel(accountCosts):
 
     def _get_buffered_subsystem_position_given_optimal_position_and_buffers(
         self,
+        instrument_code: str,
         optimal_position: pd.Series,
         pos_buffers: pd.DataFrame,
         roundpositions: bool = True,
@@ -76,6 +80,7 @@ class accountBufferingSubSystemLevel(accountCosts):
         trade_to_edge = self.config.buffer_trade_to_edge
 
         buffered_position = apply_buffer(
+            instrument_code,
             optimal_position,
             pos_buffers,
             trade_to_edge=trade_to_edge,
@@ -103,6 +108,7 @@ class accountBufferingSubSystemLevel(accountCosts):
 
 
 def apply_buffer(
+    instrument_code: str,
     optimal_position: pd.Series,
     pos_buffers: pd.DataFrame,
     trade_to_edge: bool = False,
@@ -137,10 +143,14 @@ def apply_buffer(
     top_pos = pos_buffers.top_pos
     bot_pos = pos_buffers.bot_pos
 
+    # TODO round to multiple of minimum bet
     if roundpositions:
-        use_optimal_position = use_optimal_position.round()
-        top_pos = top_pos.round()
-        bot_pos = bot_pos.round()
+        # use_optimal_position = use_optimal_position.round()
+        use_optimal_position = round_series_to_minimum(instrument_code, top_pos)
+        # top_pos = top_pos.round()
+        top_pos = round_to_minimum(instrument_code, top_pos)
+        # bot_pos = bot_pos.round()
+        bot_pos = round_to_minimum(instrument_code, bot_pos)
 
     current_position = use_optimal_position.values[0]
     if np.isnan(current_position):
