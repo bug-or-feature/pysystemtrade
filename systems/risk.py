@@ -25,6 +25,7 @@ class Risk(SystemStage):
     @diagnostic()
     def get_portfolio_risk_for_original_positions_rounded_buffered(self) -> pd.Series:
         positions = self.get_original_buffered_rounded_positions_df()
+        # TODO round to multiple of minimum bet
         positions = positions.round()
         return self._get_portfolio_risk_given_positions(positions)
 
