@@ -1,7 +1,6 @@
 import pandas as pd
 
 from syscore.exceptions import missingData
-from syscore.genutils import round_to_minimum, round_series_to_minimum
 from systems.accounts.account_buffering_subsystem import apply_buffer
 from syscore.pandas.strategy_functions import turnover
 from systems.system_cache import diagnostic
@@ -85,8 +84,7 @@ class accountBufferingSystemLevel(accountInputs):
         except missingData:
             # TODO round to multiple of minimum bet
             if roundpositions:
-                # return optimal_position.round()
-                return round_to_minimum(instrument_code, optimal_position)
+                return optimal_position.round()
             else:
                 return optimal_position
 
@@ -114,12 +112,16 @@ class accountBufferingSystemLevel(accountInputs):
         self.log.msg("Calculating buffered positions")
         trade_to_edge = self.config.buffer_trade_to_edge
 
+        instr_object = self.parent.data.get_instrument_object_with_meta_data(instr_code)
+        meta_data = instr_object.meta_data
+        min_bet = meta_data.Pointsize
+
         buffered_position = apply_buffer(
-            instr_code,
             optimal_position,
             pos_buffers,
             trade_to_edge=trade_to_edge,
             roundpositions=roundpositions,
+            min_position=min_bet,
         )
 
         return buffered_position

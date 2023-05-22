@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 
 from syscore.pandas.strategy_functions import turnover
-from syscore.genutils import round_to_minimum, round_series_to_minimum
 from systems.system_cache import diagnostic
 
 from systems.accounts.account_costs import accountCosts
@@ -51,7 +50,7 @@ class accountBufferingSubSystemLevel(accountCosts):
         if buffer_method == "none":
             # TODO round to multiple of minimum bet
             if roundpositions:
-                return round_to_minimum(instrument_code, optimal_position)
+                return optimal_position.round()
             else:
                 return optimal_position
 
@@ -79,12 +78,16 @@ class accountBufferingSubSystemLevel(accountCosts):
         self.log.msg("Calculating buffered subsystem positions")
         trade_to_edge = self.config.buffer_trade_to_edge
 
+        instr_object = self.data.get_instrument_object_with_meta_data(instrument_code)
+        meta_data = instr_object.meta_data
+        min_bet = meta_data.Pointsize
+
         buffered_position = apply_buffer(
-            instrument_code,
             optimal_position,
             pos_buffers,
             trade_to_edge=trade_to_edge,
             roundpositions=roundpositions,
+            min_position=min_bet,
         )
 
         return buffered_position
@@ -108,11 +111,11 @@ class accountBufferingSubSystemLevel(accountCosts):
 
 
 def apply_buffer(
-    instrument_code: str,
     optimal_position: pd.Series,
     pos_buffers: pd.DataFrame,
     trade_to_edge: bool = False,
     roundpositions: bool = False,
+    min_position=1.0,
 ) -> pd.Series:
     """
     Apply a buffer to a position
@@ -145,12 +148,9 @@ def apply_buffer(
 
     # TODO round to multiple of minimum bet
     if roundpositions:
-        # use_optimal_position = use_optimal_position.round()
-        use_optimal_position = round_series_to_minimum(instrument_code, top_pos)
-        # top_pos = top_pos.round()
-        top_pos = round_to_minimum(instrument_code, top_pos)
-        # bot_pos = bot_pos.round()
-        bot_pos = round_to_minimum(instrument_code, bot_pos)
+        use_optimal_position = use_optimal_position.round()
+        top_pos = top_pos.round()
+        bot_pos = bot_pos.round()
 
     current_position = use_optimal_position.values[0]
     if np.isnan(current_position):
@@ -165,6 +165,7 @@ def apply_buffer(
             float(top_pos.values[idx]),
             float(bot_pos.values[idx]),
             trade_to_edge=trade_to_edge,
+            min_position=min_position,
         )
         buffered_position_list.append(current_position)
 
@@ -174,7 +175,12 @@ def apply_buffer(
 
 
 def apply_buffer_single_period(
-    last_position, optimal_position, top_pos, bot_pos, trade_to_edge
+    current_position,
+    optimal_position,
+    top_pos,
+    bot_pos,
+    trade_to_edge,
+    min_position=1.0,
 ):
     """
     Apply a buffer to a position, single period
@@ -182,8 +188,8 @@ def apply_buffer_single_period(
     If position is outside the buffer, we either trade to the edge of the
     buffer, or to the optimal
 
-    :param last_position: last position we had
-    :type last_position: float
+    :param current_position: last position we had
+    :type current_position: float
 
     :param optimal_position: ideal position
     :type optimal_position: float
@@ -201,17 +207,17 @@ def apply_buffer_single_period(
     """
 
     if np.isnan(top_pos) or np.isnan(bot_pos) or np.isnan(optimal_position):
-        return last_position
+        return current_position
 
-    if last_position > top_pos:
+    if current_position > top_pos and abs(current_position - top_pos) > min_position:
         if trade_to_edge:
             return top_pos
         else:
             return optimal_position
-    elif last_position < bot_pos:
+    elif current_position < bot_pos and abs(bot_pos - current_position) > min_position:
         if trade_to_edge:
             return bot_pos
         else:
             return optimal_position
     else:
-        return last_position
+        return current_position
