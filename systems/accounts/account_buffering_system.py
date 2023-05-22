@@ -1,7 +1,10 @@
 import pandas as pd
 
 from syscore.exceptions import missingData
-from systems.accounts.account_buffering_subsystem import apply_buffer
+from systems.accounts.account_buffering_subsystem import (
+    apply_futures_buffer,
+    apply_fsb_buffer,
+)
 from syscore.pandas.strategy_functions import turnover
 from systems.system_cache import diagnostic
 
@@ -82,7 +85,6 @@ class accountBufferingSystemLevel(accountInputs):
         try:
             self.config.get_element("buffer_method")
         except missingData:
-            # TODO round to multiple of minimum bet
             if roundpositions:
                 return optimal_position.round()
             else:
@@ -112,16 +114,25 @@ class accountBufferingSystemLevel(accountInputs):
         self.log.msg("Calculating buffered positions")
         trade_to_edge = self.config.buffer_trade_to_edge
 
-        instr_object = self.parent.data.get_instrument_object_with_meta_data(instr_code)
-        meta_data = instr_object.meta_data
-        min_bet = meta_data.Pointsize
-
-        buffered_position = apply_buffer(
-            optimal_position,
-            pos_buffers,
-            trade_to_edge=trade_to_edge,
-            roundpositions=roundpositions,
-            min_position=min_bet,
-        )
+        if instr_code.endswith("_fsb"):
+            instr_object = self.parent.data.get_instrument_object_with_meta_data(
+                instr_code
+            )
+            meta_data = instr_object.meta_data
+            min_bet = meta_data.Pointsize
+            buffered_position = apply_fsb_buffer(
+                optimal_position,
+                pos_buffers,
+                trade_to_edge=trade_to_edge,
+                roundpositions=roundpositions,
+                min_position=min_bet,
+            )
+        else:
+            buffered_position = apply_futures_buffer(
+                optimal_position,
+                pos_buffers,
+                trade_to_edge=trade_to_edge,
+                roundpositions=roundpositions,
+            )
 
         return buffered_position
