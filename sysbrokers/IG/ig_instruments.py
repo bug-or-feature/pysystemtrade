@@ -60,3 +60,7 @@ class FsbInstrumentWithIgConfigData(object):
     # FIXME make it look like a standard instrument, but we don't officially inherit... not sure why?
     def meta_data(self):
         return self.ig_data
+
+    @property
+    def margin(self):
+        return self.ig_data.margin

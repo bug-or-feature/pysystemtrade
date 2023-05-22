@@ -128,6 +128,7 @@ def get_instrument_object_from_config(
         inverse = config_row.IGInverse.values[0]
         bc_code = config_row.BarchartCode.values[0]
         period_str = config_row.IGPeriods.values[0]
+        margin = config_row.IGMargin.values[0]
 
         instrument = futuresInstrument(instrument_code)
         ig_data = IgInstrumentConfigData(
@@ -137,6 +138,7 @@ def get_instrument_object_from_config(
             inverse=inverse,
             bc_code=bc_code,
             period_str=period_str,
+            margin=margin,
         )
 
         futures_instrument_with_ig_data = FsbInstrumentWithIgConfigData(
