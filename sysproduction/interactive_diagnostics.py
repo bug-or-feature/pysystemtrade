@@ -84,7 +84,13 @@ from sysproduction.reporting.report_configs_fsb import (
 def interactive_diagnostics():
     print("\n\n INTERACTIVE DIAGNOSTICS\n\n")
     set_pd_print_options()
-    with dataBlob(log_name="Interactive-Diagnostics") as data:
+    with dataBlob(
+        log_name="Interactive-Diagnostics",
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+        )
+    ) as data:
         set_pd_print_options()
         menu = interactiveMenu(
             top_level_menu_of_options, nested_menu_of_options, dict_of_functions, data
