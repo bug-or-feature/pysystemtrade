@@ -381,7 +381,7 @@ def round_to_minimum(instr_code, optimal_position):
     return optimal_position.round()
 
 
-def round_series_to_minimum(instr_code: str, positions: np.Series):
+def round_series_to_minimum(instr_code: str, positions):
     rounded = positions.apply(lambda x: round_to_minimum(instr_code, x))
     return rounded
 
