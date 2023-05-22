@@ -24,11 +24,11 @@ def instrument_list_report():
     )
 
     with dataBlob(
-            log_name="Interactive-Controls",
-            csv_data_paths=dict(
-                csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-                csvRollParametersData="data.futures_spreadbet.csvconfig",
-            ),
+        log_name="Interactive-Controls",
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+        ),
     ) as data:
 
         diag_instruments = diagInstruments(data)
@@ -45,7 +45,7 @@ def instrument_list_report():
                 meta_data,
                 instrument_code=instrument_code,
                 data_broker=data_broker,
-                diag_prices=diag_prices
+                diag_prices=diag_prices,
             )
             list_of_results.append(row_for_instrument)
             p.iterate()
@@ -59,7 +59,9 @@ def instrument_list_report():
 
         pandas_display_for_reports()
 
-        parsed_report_results = parse_report_results(data, report_results=report_results)
+        parsed_report_results = parse_report_results(
+            data, report_results=report_results
+        )
 
         output_file_report(
             parsed_report=parsed_report_results, data=data, report_config=report_config
@@ -80,7 +82,7 @@ def instrument_results_as_pd_df_row(
     prices = diag_prices.get_adjusted_prices(instrument_code)
     if len(prices) > 0:
         raw = prices.index[0]
-        first_date = raw.strftime('%Y-%m-%d')
+        first_date = raw.strftime("%Y-%m-%d")
     else:
         first_date = "n/a"
 
@@ -93,10 +95,10 @@ def instrument_results_as_pd_df_row(
     merged_data = {**meta_data_as_dict, **relabelled_broker_data_as_dict}
     merged_data["from"] = first_date
     merged_data_as_pd = pd.DataFrame(merged_data, index=[instrument_code])
-    del merged_data_as_pd['PerBlock']
-    del merged_data_as_pd['PerTrade']
-    del merged_data_as_pd['Percentage']
-    del merged_data_as_pd['currency']
+    del merged_data_as_pd["PerBlock"]
+    del merged_data_as_pd["PerTrade"]
+    del merged_data_as_pd["Percentage"]
+    del merged_data_as_pd["currency"]
 
     return merged_data_as_pd
 

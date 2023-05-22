@@ -89,7 +89,7 @@ def interactive_diagnostics():
         csv_data_paths=dict(
             csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
             csvRollParametersData="data.futures_spreadbet.csvconfig",
-        )
+        ),
     ) as data:
         set_pd_print_options()
         menu = interactiveMenu(
