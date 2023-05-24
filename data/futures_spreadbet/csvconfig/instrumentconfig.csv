@@ -1,6 +1,6 @@
 Instrument,Description,Pointsize,Currency,AssetClass,PerBlock,Percentage,PerTrade,Region
 AEX_fsb,Netherlands equity index AEX,5.0,GBP,Equity,0.0,0.0,0.0,EMEA
-ASX_fsb,Australian equity index ASX200,2.0,GBP,Equity,0.0,0.0,0.0,ASIA
+ASX_fsb,Australian equity index ASX200,1.0,GBP,Equity,0.0,0.0,0.0,ASIA
 AUD_fsb,AUDUSD currency,1.0,GBP,FX,0.0,0.0,0.0,ASIA
 AUDJPY_fsb,AUDJPY currency,1.0,GBP,FX,0.0,0.0,0.0,ASIA
 BOBL_fsb,German 5 year bond Bobl,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
