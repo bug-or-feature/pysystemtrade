@@ -37,7 +37,13 @@ from sysproduction.reporting.adhoc.fsb_contract_prices import (
 
 def do_report(config: reportConfig):
     pandas_display_for_reports()
-    with dataBlob(log_name=f"Test {config.title}") as data:
+    with dataBlob(
+        log_name=f"Test {config.title}",
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
+            csvRollParametersData="data.futures_spreadbet.csvconfig",
+        ),
+    ) as data:
         run_report_with_data_blob(config, data)
 
 
