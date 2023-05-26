@@ -466,6 +466,7 @@ def setup_roll_data_with_state_reporting(
     # position_priced_contract = int(diag_positions.get_position_for_contract(contract))
     position_priced_contract = diag_positions.get_position_for_contract(contract)
 
+    # TODO remove Roll_adjusted from allowable states if forward contract is not TRADEABLE
     allowable_roll_states = allowable_roll_state_from_current_and_position(
         original_roll_status, position_priced_contract
     )
