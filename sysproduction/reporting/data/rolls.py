@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from syscore.constants import success, failure
+from syscore.exceptions import missingData
 from sysdata.data_blob import dataBlob
 from sysobjects.adjusted_prices import futuresAdjustedPrices
 from sysobjects.contracts import futuresContract
@@ -297,6 +298,11 @@ def update_multiple_prices_on_roll(
         instrument_object, new_carry_contract_date.contract_date
     )
 
+    # FSB custom check for existence of epics for each proposed new contract
+    check_contract_for_epic(data, new_price_contract_object)
+    check_contract_for_epic(data, new_forward_contract_object)
+    check_contract_for_epic(data, new_carry_contract_object)
+
     new_price_price = old_forward_contract_last_price
     new_forward_price = get_final_matched_price_from_contract_object(
         data, new_forward_contract_object, new_multiple_prices
@@ -528,3 +534,17 @@ def rollback_adjustment(
         return failure
 
     return success
+
+
+def check_contract_for_epic(data, contract_object):
+    try:
+        data.db_market_info.get_epic_for_contract(contract_object)
+        print(f"Epic found OK for {contract_object}")
+    except missingData as mde:
+        print(mde)
+        print(f"There is no epic defined for {contract_object}")
+        print(f"It is possible that IG are skipping a contract - this happens "
+              f"sometimes when there is low volume. "
+              f"Set up a temporary override to the roll config. "
+              f"DO NOT attempt forward filling")
+        raise
