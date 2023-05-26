@@ -350,10 +350,7 @@ class dataBlob(object):
     def log(self):
         log = getattr(self, "_log", arg_not_supplied)
         if log is arg_not_supplied:
-            if self._auto_connect:
-                log = logToFile(self.log_name, data=self)
-            else:
-                log = logtoscreen(self.log_name)
+            log = logToFile(self.log_name, data=self)
             log.set_logging_level("on")
             self._log = log
 
