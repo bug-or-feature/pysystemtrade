@@ -318,6 +318,7 @@ class contractDateWithRollParameters(object):
         return contract._iterate_contract(backwards, "priced_rollcycle")
 
     def next_held_contract(self):
+        # TODO allow configurable skip
         contract = self._closest_previous_valid_held_contract()
         return contract._iterate_contract(forward, "hold_rollcycle")
 
