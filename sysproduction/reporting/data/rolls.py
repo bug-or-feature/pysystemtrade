@@ -543,8 +543,10 @@ def check_contract_for_epic(data, contract_object):
     except missingData as mde:
         print(mde)
         print(f"There is no epic defined for {contract_object}")
-        print(f"It is possible that IG are skipping a contract - this happens "
-              f"sometimes when there is low volume. "
-              f"Set up a temporary override to the roll config. "
-              f"DO NOT attempt forward filling")
+        print(
+            f"It is possible that IG are skipping a contract - this happens "
+            f"sometimes when there is low volume. "
+            f"Set up a temporary override to the roll config. "
+            f"DO NOT attempt forward filling"
+        )
         raise

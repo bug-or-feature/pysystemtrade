@@ -27,11 +27,8 @@ def transfer_ig_prices_to_arctic_single(instr, datapath):
         #     input_skipfooter=0,
         #     input_date_format="%Y-%m-%d %H:%M:%S",
         # )
-
         # regex to fix above: ([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:00:00),
         # $1T$2+0000,
-
-
     )
 
 

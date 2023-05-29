@@ -145,8 +145,8 @@ if __name__ == "__main__":
 
     import_market_info(
         [
-
-            "BTP_fsb", "BTP3_fsb",
+            "BTP_fsb",
+            "BTP3_fsb",
             # "AUDJPY_fsb",
             # "CHFJPY_fsb",
             # "EURCAD_fsb",
