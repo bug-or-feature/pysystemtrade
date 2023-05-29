@@ -121,14 +121,15 @@ def _build_epic_history_row(instr, market_info, row, calc_status=False):
 if __name__ == "__main__":
     # view_epics_history_single("SOYOIL_fsb")
     for epic in [
-        "AUDJPY_fsb",
-        "CHFJPY_fsb",
-        "EURCAD_fsb",
-        "EURCHF_fsb",
-        "GBPCHF_fsb",
-        "GBPJPY_fsb",
-        "NOK_fsb",
-        "SEK_fsb",
+        "BTP_fsb", "BTP3_fsb",
+        # "AUDJPY_fsb",
+        # "CHFJPY_fsb",
+        # "EURCAD_fsb",
+        # "EURCHF_fsb",
+        # "GBPCHF_fsb",
+        # "GBPJPY_fsb",
+        # "NOK_fsb",
+        # "SEK_fsb",
     ]:
         import_epics_history_single(epic)
     # import_epics_history_all()

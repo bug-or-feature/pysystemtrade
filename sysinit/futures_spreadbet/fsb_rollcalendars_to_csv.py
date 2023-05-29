@@ -158,7 +158,7 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # XXX_fsb
-    instr_code = "CRUDE_W_fsb"
+    instr_code = "BTP3_fsb"
 
     # run with database prices
     # prices = arcticFuturesContractPriceData()

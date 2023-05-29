@@ -27,6 +27,11 @@ def transfer_ig_prices_to_arctic_single(instr, datapath):
         #     input_skipfooter=0,
         #     input_date_format="%Y-%m-%d %H:%M:%S",
         # )
+
+        # regex to fix above: ([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:00:00),
+        # $1T$2+0000,
+
+
     )
 
 
@@ -44,12 +49,11 @@ def transfer_ig_prices_to_arctic(datapath):
 
 if __name__ == "__main__":
     # input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    datapath = resolve_path_and_filename_for_package(
-        get_production_config().get_element_or_missing_data("ig_path")
-    )
+    ig_config = get_production_config().get_element_or_missing_data("ig_markets")
+    datapath = resolve_path_and_filename_for_package(ig_config["path"])
 
     # ['EURGBP_fsb', 'JSE40_fsb', 'OMXS30_fsb']
-    for instr in ["EURGBP_fsb", "JSE40_fsb", "OMXS30_fsb"]:
+    for instr in ["BTP_fsb", "BTP3_fsb"]:
         transfer_ig_prices_to_arctic_single(instr, datapath=datapath)
 
     # all instruments
