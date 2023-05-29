@@ -12,7 +12,9 @@ BOBL_fsb,IR.D.FGBM,GBP,100.0,False,Month1|Month2,0.2,HR
 BRENT_W,,,,,na,,CB
 BRENT_W_fsb,EN.D.LCO,GBP,100.0,False,Month2|Month3|Month4|Month5|Month6,0.1,CB
 BTP,,,,,na,,II
-BTP_fsb,IR.D.FBTS,GBP,100.0,False,Month1|Month2,0.2,II
+BTP_fsb,IR.D.FBTP,GBP,100.0,False,Month1|Month2,0.2,II
+BTP3,,,,,na,,IA
+BTP3_fsb,IR.D.FBTS,GBP,100.0,False,Month1|Month2,0.2,IA
 BUND,,,,,na,,GG
 BUND_fsb,IR.D.FGBL,GBP,100.0,False,Month1|Month2,0.2,GG
 BUXL,,,,,na,,GX
