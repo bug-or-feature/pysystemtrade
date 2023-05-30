@@ -190,7 +190,8 @@ class mongoDataWithMultipleKeys(object):
             except Exception as exc:
                 self._log.error(
                     "Failed to create compound index for collection '%s', "
-                    "check config: %s" % (collection_name, exc),
+                    "with config %s, "
+                    "exception raised: %s" % (collection_name, index_config, exc),
                 )
 
     def __repr__(self):
