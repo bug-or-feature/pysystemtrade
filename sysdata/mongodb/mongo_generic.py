@@ -184,7 +184,7 @@ class mongoDataWithMultipleKeys(object):
     ):
         self._mongo = mongoConnection(collection_name, mongo_db=mongo_db)
 
-        if index_config:
+        if index_config and "keys" in index_config:
             try:
                 self._mongo.create_compound_index(index_config)
             except Exception as exc:
