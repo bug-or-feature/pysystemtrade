@@ -58,12 +58,19 @@ def get_roll_data_for_fsb_instrument(instrument_code, data: dataBlob):
     except KeyError:
         fwd_status = "n/a"
 
+    try:
+        priced_expiry = data.db_market_info.expiry_dates[
+            f"{instrument_code}/{contract_priced}"
+        ]
+    except KeyError:
+        priced_expiry = "n/a"
+
     results_dict_code = dict(
         status=roll_status,
         roll_expiry=when_to_roll_days,
         price_expiry=price_expiry_days,
         carry_expiry=carry_expiry_days,
-        contract_priced=contract_priced,
+        contract_priced=f"{contract_priced} ({priced_expiry})",
         contract_fwd=contract_fwd,
         position_priced=position_priced,
         relative_volume_fwd=relative_volume_fwd,
