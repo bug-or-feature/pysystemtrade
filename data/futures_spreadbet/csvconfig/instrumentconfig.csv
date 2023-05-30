@@ -6,7 +6,7 @@ AUDJPY_fsb,AUDJPY currency,1.0,GBP,FX,0.0,0.0,0.0,ASIA
 BOBL_fsb,German 5 year bond Bobl,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 BRENT_W_fsb,Brent crude summer,1.0,GBP,Ags,0.0,0.0,0.0,EMEA
 BTP_fsb,Italian 10 year bond BTP,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
-BTP3,Short-Term Euro-BTP Italian Government Bond,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
+BTP3_fsb,Short-Term Euro-BTP Italian Government Bond,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 BUND_fsb,German 10 year bond Bund,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 BUXL_fsb,German Buxl 15 to 30 year bond,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 CAC_fsb,French equity index CAC40,1.0,GBP,Equity,0.0,0.0,0.0,EMEA
