@@ -42,6 +42,7 @@ class ReportingApiFsb(reportingApi):
         return min_capital_table
 
     def _get_roll_data_dict(self):
+        # list_of_instruments = ["PALLAD_fsb"]
         list_of_instruments = self._list_of_all_instruments()
         data = self.data
 
