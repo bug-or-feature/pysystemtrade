@@ -252,16 +252,20 @@ class dataContracts(productionDataLayerGeneric):
         self, instrument_code: str, contract_date_str: str
     ) -> contractDateWithRollParameters:
 
-        custom_rolls = get_production_config().get_element("custom_rolls")
+        custom_rolls = get_production_config().get_element_or_default(
+            "custom_rolls", None
+        )
         roll_parameters = self.get_roll_parameters(instrument_code)
         if custom_rolls and instrument_code in custom_rolls:
-            print(f"\n ******* "
-                  f"Custom held roll cycle found for {instrument_code}, "
-                  f"original '{roll_parameters.hold_rollcycle.cyclestring}', "
-                  f"custom '{custom_rolls[instrument_code]}'. If this is unexpected, "
-                  f"exit the roll tool and remove the custom setting from config"
-                  f" *******"
-                  f"\n")
+            print(
+                f"\n ******* "
+                f"Custom held roll cycle found for {instrument_code}, "
+                f"original '{roll_parameters.hold_rollcycle.cyclestring}', "
+                f"custom '{custom_rolls[instrument_code]}'. If this is unexpected, "
+                f"exit the roll tool and remove the custom setting from config"
+                f" *******"
+                f"\n"
+            )
             roll_parameters = rollParameters.create_from_dict(
                 dict(
                     hold_rollcycle=custom_rolls[instrument_code],
