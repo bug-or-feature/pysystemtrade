@@ -44,6 +44,7 @@ def do_report(config: reportConfig):
             csvRollParametersData="data.futures_spreadbet.csvconfig",
         ),
     ) as data:
+        data.add_class_object(mongoMarketInfoData)
         run_report_with_data_blob(config, data)
 
 
@@ -203,11 +204,11 @@ if __name__ == "__main__":
     # run_account_curve_report()
     # run_slippage_report()
 
-    run_fsb_report()
+    #run_fsb_report()
     # run_min_capital_fsb_report()
     # run_instrument_risk_fsb_report()
     # run_fsb_remove_markets_report()
-    # run_fsb_roll_report()
+    run_fsb_roll_report()
     # run_fsb_roll_report(instr_code="LEANHOG_fsb")
 
     # run_adhoc_tradeable_report()
