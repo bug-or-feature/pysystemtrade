@@ -113,6 +113,7 @@ class updateFsbEpicPeriods(object):
             return False
         return True
 
+    # TODO check iterators for efficiency
     def _month_and_number_combinator(self):
         results = []
         numerator = []
