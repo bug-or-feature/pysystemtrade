@@ -40,7 +40,7 @@ def fsb_correlation_data(
 
     bc_datapath = (
         resolve_path_and_filename_for_package(
-            get_production_config().get_element_or_missing_data("barchart_path")
+            get_production_config().get_element_or_default("barchart_path", None)
             # get_production_config().get_element_or_missing_data("norgate_path")
         ),
     )

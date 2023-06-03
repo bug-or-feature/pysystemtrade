@@ -132,7 +132,9 @@ def generate_html(process_observatory: processMonitor):
 
 
 def get_html_file_path():
-    path = get_production_config().get_element_or_missing_data("monitor_output_path")
+    path = get_production_config().get_element_or_default(
+        "monitor_output_path", "private.index.html"
+    )
     resolved_path = resolve_path_and_filename_for_package(path)
     return resolved_path
 
