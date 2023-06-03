@@ -28,8 +28,8 @@ class avConnection(object):
         self._session = requests.Session()
         self._session.headers.update({"User-Agent": "Mozilla/5.0"})
         production_config = get_production_config()
-        self._api_key = production_config.get_element_or_missing_data(
-            "alpha_vantage_api_key"
+        self._api_key = production_config.get_element_or_default(
+            "alpha_vantage_api_key", ""
         )
 
     def __repr__(self):
