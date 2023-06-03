@@ -158,20 +158,20 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # XXX_fsb
-    instr_code = "BTP3_fsb"
+    instr_code = "SOYBEAN_fsb"
 
     # run with database prices
-    # prices = arcticFuturesContractPriceData()
+    prices = arcticFuturesContractPriceData()
 
     # run with csv prices
-    prices = csvFuturesContractPriceData(
-        datapath=resolve_path_and_filename_for_package(
-            get_production_config().get_element_or_missing_data("barchart_path")
-            # get_production_config().get_element_or_missing_data("norgate_path")
-        ),
-        config=build_import_config(instr_code)
-        # config=build_norgate_import_config(instr_code)
-    )
+    # prices = csvFuturesContractPriceData(
+    #     datapath=resolve_path_and_filename_for_package(
+    #         get_production_config().get_element_or_missing_data("barchart_path")
+    #         # get_production_config().get_element_or_missing_data("norgate_path")
+    #     ),
+    #     config=build_import_config(instr_code)
+    #     # config=build_norgate_import_config(instr_code)
+    # )
 
     if method == "build":
         build_and_write_roll_calendar(
