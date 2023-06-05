@@ -86,7 +86,7 @@ class updateFsbEpicPeriods(object):
             if epic_base.startswith("CF."):
                 self.data.log.msg(f"Not writing periods for {instr}, it's FX")
             else:
-                self.data.log.msg(f"Epic periods: {periods}")
+                self.data.log.msg(f"Epic periods for {instr}: {periods}")
                 if len(periods) == 0:
                     # TODO how to inform?
                     self.data.log.warning(
@@ -218,6 +218,6 @@ if __name__ == "__main__":
         "WHEAT_ICE_fsb",
         "WHEAT_fsb",
     ]
-    update_periods(instr_list, test_mode=True)
+    # update_periods(instr_list, test_mode=True)
     # update_periods([], test_mode=True)
-    # update_periods(["CAD_fsb"], test_mode=True)
+    update_periods(["EURIBOR-ICE_fsb"], test_mode=True)
