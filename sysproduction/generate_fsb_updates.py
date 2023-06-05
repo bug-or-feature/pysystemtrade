@@ -27,7 +27,7 @@ def generate_fsb_updates():
     ) as data:
         fsb_updater = GenerateFsbUpdates(data)
         # fsb_updater.generate_fsb_updates()
-        fsb_updater.update("NASDAQ_fsb")
+        fsb_updater.update("EURIBOR-ICE_fsb")
         # fsb_updater.update_list(["BUXL_fsb", "GOLD_fsb", "NASDAQ_fsb", "NZD_fsb", "US10_fsb"])
     return success
 
