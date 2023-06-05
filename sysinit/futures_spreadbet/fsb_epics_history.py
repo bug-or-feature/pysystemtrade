@@ -12,7 +12,7 @@ from sysobjects.epic_history import FsbEpicsHistory, BetExpiry
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 
 prod_backup = resolve_path_and_filename_for_package(
-    get_production_config().get_element_or_missing_data("prod_backup")
+    get_production_config().get_element("prod_backup")
 )
 datapath = EPIC_HISTORY_DIRECTORY
 # datapath = f"{prod_backup}/epic_history"
@@ -121,8 +121,7 @@ def _build_epic_history_row(instr, market_info, row, calc_status=False):
 if __name__ == "__main__":
     # view_epics_history_single("SOYOIL_fsb")
     for epic in [
-        "BTP_fsb",
-        "BTP3_fsb",
+        "EURIBOR-ICE_fsb",
         # "AUDJPY_fsb",
         # "CHFJPY_fsb",
         # "EURCAD_fsb",
