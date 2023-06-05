@@ -59,6 +59,8 @@ EURCHF,,,,,na,,RF
 EURCHF_fsb,CF.D.EURCHF,GBP,10000.0,False,MAR|JUN|SEP|DEC,0.033,RF
 EURIBOR,,,,,na,,IM
 EURIBOR_fsb,IR.D.FEI,GBP,100.0,False,Month2|Month3|Month4|Month7|MONTH5|MONTH6|Month8|Month11|Month14|Month15|Month16|Month1|Month9|Mnth10|Mnth12|Mnth13,0.2,IM
+EURIBOR-ICE,,,,,na,,IM
+EURIBOR-ICE_fsb,IR.D.FEI,GBP,100.0,False,Month1|Month2|Month3|Month4|MONTH5|MONTH6|Month7|Month8|Month9|Mnth10|Month11|Mnth12|Mnth13|Month14|Month15|Month16,0.2,IM
 EURGBP,,,,,na,,RP
 EURGBP_fsb,CF.D.EURGBP,GBP,10000.0,False,MAR|JUN|SEP|DEC,0.033,RP
 EUROSTX,,,,,na,,FX

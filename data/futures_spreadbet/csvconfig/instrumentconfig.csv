@@ -30,6 +30,7 @@ EURCAD_fsb,EURCAD currency,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURCHF_fsb,EURCHF currency,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURGBP_fsb,EURGBP currency,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURIBOR_fsb,Three Month EURIBOR,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
+EURIBOR-ICE_fsb,Three Month EURIBOR,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 EUROSTX_fsb,European equity index EUROSTOXX50,1.0,GBP,Equity,0.0,0.0,0.0,EMEA
 FED_fsb,30 Day Fed Funds,0.5,GBP,Bond,0.0,0.0,0.0,US
 FTSE100_fsb,FTSE100 Index,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
