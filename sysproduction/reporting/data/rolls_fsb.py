@@ -65,6 +65,13 @@ def get_roll_data_for_fsb_instrument(instrument_code, data: dataBlob):
     except KeyError:
         priced_expiry = "n/a"
 
+    try:
+        period_count = len(
+            data.db_market_info.get_periods_for_instrument_code(instrument_code)
+        )
+    except KeyError:
+        period_count = "n/a"
+
     results_dict_code = dict(
         status=roll_status,
         roll_expiry=when_to_roll_days,
@@ -78,6 +85,7 @@ def get_roll_data_for_fsb_instrument(instrument_code, data: dataBlob):
         contract_volume_fwd=contract_volume_fwd,
         priced_status=priced_status,
         fwd_status=fwd_status,
+        period_count=period_count,
     )
 
     return results_dict_code
