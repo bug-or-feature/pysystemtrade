@@ -629,7 +629,7 @@ Linux script:
 . $SCRIPT_PATH/backup_arctic_to_csv
 ```
 
-
+[//]: # (# TODO logging docs)
 ## Echos, Logging, diagnostics and reporting
 
 We need to know what our system is doing, especially if it is fully automated. Here are the methods by which this should be done:
