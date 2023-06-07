@@ -11,7 +11,7 @@ from sysobjects.fsb_contract_prices import FsbContractPrices
 from sysobjects.contracts import futuresContract
 from syslogging.logger import *
 from syscore.pandas.merge_data_keeping_past_data import merge_newer_data, SPIKE_IN_DATA
-from syscore.constants import missing_data
+from syscore.exceptions import missingData
 import pandas as pd
 
 CONTRACT_COLLECTION = "fsb_contract_prices"
@@ -228,7 +228,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
             if return_empty:
                 return FsbContractPrices.create_empty()
             else:
-                return missing_data
+                raise missingData
 
         return prices
 
