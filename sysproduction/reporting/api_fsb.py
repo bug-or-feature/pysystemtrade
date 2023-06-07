@@ -19,6 +19,7 @@ from sysproduction.reporting.reporting_functions import table
 from sysproduction.reporting.data.rolls_fsb import (
     get_roll_data_for_fsb_instrument,
 )
+from sysobjects.production.roll_state import ALL_ROLL_INSTRUMENTS
 from sysproduction.update_sampled_contracts import (
     get_furthest_out_contract_with_roll_parameters,
     create_contract_date_chain,
@@ -41,9 +42,12 @@ class ReportingApiFsb(reportingApi):
 
         return min_capital_table
 
-    def _get_roll_data_dict(self):
+    def _get_roll_data_dict(self, instrument_code: str = ALL_ROLL_INSTRUMENTS):
         # list_of_instruments = ["PALLAD_fsb"]
-        list_of_instruments = self._list_of_all_instruments()
+        if instrument_code is ALL_ROLL_INSTRUMENTS:
+            list_of_instruments = self._list_of_all_instruments()
+        else:
+            list_of_instruments = [instrument_code]
         data = self.data
 
         roll_data_dict = {}
