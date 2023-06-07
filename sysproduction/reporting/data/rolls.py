@@ -537,16 +537,27 @@ def rollback_adjustment(
 
 
 def check_contract_for_epic(data, contract_object):
+    instr_code = contract_object.instrument_code
     try:
         data.db_market_info.get_epic_for_contract(contract_object)
         print(f"Epic found OK for {contract_object}")
     except missingData as mde:
+        period_count = len(
+            data.db_market_info.get_periods_for_instrument_code(instr_code)
+        )
         print(mde)
         print(f"There is no epic defined for {contract_object}")
-        print(
-            f"It is possible that IG are skipping a contract - this happens "
-            f"sometimes when there is low volume. "
-            f"Set up a temporary override to the roll config. "
-            f"DO NOT attempt forward filling"
-        )
-        raise
+        if period_count > 2:
+            print(
+                f"It is possible that IG are skipping a contract - this happens "
+                f"sometimes when there is low volume. "
+                f"Set up a temporary override to the roll config. "
+                f"DO NOT attempt forward filling"
+            )
+            raise
+        else:
+            print(
+                f"This is probably because there are only two epics for {instr_code}."
+                f"This should be resolved when the current priced contract expires, "
+                f"and the current forward contract becomes the priced one."
+            )
