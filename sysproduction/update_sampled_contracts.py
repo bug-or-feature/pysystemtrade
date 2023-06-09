@@ -187,7 +187,7 @@ def create_contract_object_chain(
 
 
 def create_contract_date_chain(
-    furthest_out_contract: contractDateWithRollParameters,
+    furthest_out_contract: contractDateWithRollParameters, use_priced=True
 ) -> list:
     # To give us wiggle room, and ensure we start collecting the new forward a
     # little in advance
@@ -195,7 +195,7 @@ def create_contract_date_chain(
 
     ## this will pick up contracts from 6 months ago, to deal with any gaps
     ## however if these have expired they are marked as close sampling later
-    contract_date_chain = final_contract.get_contracts_from_recently_to_contract_date()
+    contract_date_chain = final_contract.get_contracts_from_recently_to_contract_date(use_priced=use_priced)
 
     return contract_date_chain
 

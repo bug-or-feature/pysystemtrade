@@ -185,6 +185,28 @@ class dataContracts(productionDataLayerGeneric):
 
     def get_roll_parameters(self, instrument_code: str) -> rollParameters:
         roll_parameters = self.db_roll_parameters.get_roll_parameters(instrument_code)
+        custom_rolls = get_production_config().get_element_or_default(
+            "custom_rolls", None
+        )
+        if custom_rolls and instrument_code in custom_rolls:
+            print(
+                f"******* "
+                f"Custom held roll cycle found for {instrument_code}, "
+                f"original '{roll_parameters.hold_rollcycle.cyclestring}', "
+                f"custom '{custom_rolls[instrument_code]}'. If this is unexpected, "
+                f"remove the custom setting from config"
+                f" *******"
+            )
+            roll_parameters = rollParameters.create_from_dict(
+                dict(
+                    hold_rollcycle=custom_rolls[instrument_code],
+                    priced_rollcycle=roll_parameters.priced_rollcycle.cyclestring,
+                    roll_offset_day=roll_parameters.roll_offset_day,
+                    carry_offset=roll_parameters.carry_offset,
+                    approx_expiry_offset=roll_parameters.approx_expiry_offset,
+                )
+            )
+
         return roll_parameters
 
     def get_contract_from_db(self, contract: futuresContract) -> futuresContract:
@@ -252,29 +274,7 @@ class dataContracts(productionDataLayerGeneric):
         self, instrument_code: str, contract_date_str: str
     ) -> contractDateWithRollParameters:
 
-        custom_rolls = get_production_config().get_element_or_default(
-            "custom_rolls", None
-        )
         roll_parameters = self.get_roll_parameters(instrument_code)
-        if custom_rolls and instrument_code in custom_rolls:
-            print(
-                f"\n ******* "
-                f"Custom held roll cycle found for {instrument_code}, "
-                f"original '{roll_parameters.hold_rollcycle.cyclestring}', "
-                f"custom '{custom_rolls[instrument_code]}'. If this is unexpected, "
-                f"exit the roll tool and remove the custom setting from config"
-                f" *******"
-                f"\n"
-            )
-            roll_parameters = rollParameters.create_from_dict(
-                dict(
-                    hold_rollcycle=custom_rolls[instrument_code],
-                    priced_rollcycle=roll_parameters.priced_rollcycle.cyclestring,
-                    roll_offset_day=roll_parameters.roll_offset_day,
-                    carry_offset=roll_parameters.carry_offset,
-                    approx_expiry_offset=roll_parameters.approx_expiry_offset,
-                )
-            )
         contract_date = self._get_contract_date_object(
             instrument_code, contract_date_str
         )

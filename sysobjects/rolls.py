@@ -425,7 +425,7 @@ class contractDateWithRollParameters(object):
             days=np_convert(self.roll_parameters.roll_offset_day)
         )
 
-    def get_contracts_from_recently_to_contract_date(self):
+    def get_contracts_from_recently_to_contract_date(self, use_priced=True):
         """
         Returns all the unexpired contracts between now and the contract date
 
@@ -446,8 +446,13 @@ class contractDateWithRollParameters(object):
                 current_contract_date_with_roll_parameters.contract_date
             )
             contract_dates.append(current_contract_date)
-            current_contract_date_with_roll_parameters = (
-                current_contract_date_with_roll_parameters.previous_priced_contract()
-            )
+            if use_priced:
+                current_contract_date_with_roll_parameters = (
+                    current_contract_date_with_roll_parameters.previous_priced_contract()
+                )
+            else:
+                current_contract_date_with_roll_parameters = (
+                    current_contract_date_with_roll_parameters.previous_held_contract()
+                )
 
         return contract_dates

@@ -288,7 +288,9 @@ class ReportingApiFsb(reportingApi):
             furthest_out_contract = get_furthest_out_contract_with_roll_parameters(
                 self.data, instr
             )
-            contract_date_chain = create_contract_date_chain(furthest_out_contract)
+            contract_date_chain = create_contract_date_chain(
+                furthest_out_contract, use_priced=False
+            )
             date_str_chain = [
                 contract_date.date_str for contract_date in contract_date_chain
             ]
