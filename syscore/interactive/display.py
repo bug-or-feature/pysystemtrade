@@ -102,5 +102,5 @@ def set_pd_print_options(extra_wide=False):
     pd.set_option("display.width", 1000)
     if extra_wide:
         pd.set_option("display.width", 3000)
-        pd.set_option('display.max_columns', None)
-        pd.set_option('display.max_colwidth', None)
+        pd.set_option("display.max_columns", None)
+        pd.set_option("display.max_colwidth", None)
