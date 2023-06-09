@@ -415,7 +415,7 @@ class updatePositions(productionDataLayerGeneric):
         )
 
         log = original_instrument_order.log_with_attributes(self.log)
-        log.msg(
+        log.debug(
             # "Updated position of %s from %d to %d because of trade %s %d fill %s"
             "Updated position of %s from %.2f to %.2f because of trade %s %d fill %s"
             % (
@@ -454,7 +454,7 @@ class updatePositions(productionDataLayerGeneric):
             )
 
             # TODO rounding strategy?
-            log.msg(
+            log.debug(
                 # "Updated position of %s because of trade %s ID:%d with fills %d"
                 "Updated position of %s because of trade %s ID:%d with fills %.2f"
                 % (
@@ -480,7 +480,7 @@ class updatePositions(productionDataLayerGeneric):
         new_position_db = self.diag_positions.get_position_for_contract(contract)
 
         log = contract.specific_log(self.log)
-        log.msg(
+        log.debug(
             # "Updated position of %s from %d to %d; new position in db is %d"
             "Updated position of %s from %.2f to %.2f; new position in db is %.2f"
             % (
