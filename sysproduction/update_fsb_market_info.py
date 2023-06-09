@@ -41,17 +41,17 @@ class UpdateFsbMarketInfo(object):
 
         for instr in sorted(instr_list):
 
-            self.data.log.msg(f"Starting market info update for '{instr}'")
+            self.data.log.debug(f"Starting market info update for '{instr}'")
 
             config = self.get_instr_config(instr)
             col_headers = []
 
             if not hasattr(config, "ig_data"):
-                self.data.log.msg(f"Skipping {instr}, no IG config")
+                self.data.log.debug(f"Skipping {instr}, no IG config")
                 continue
 
             if len(config.ig_data.periods) == 0:
-                self.data.log.msg(f"Skipping {instr}, no epics defined")
+                self.data.log.debug(f"Skipping {instr}, no epics defined")
                 continue
 
             # list of what is currently in the db
@@ -80,7 +80,7 @@ class UpdateFsbMarketInfo(object):
             # anything remaining in db_list needs to be deleted
             for del_period in db_list:
                 epic_to_delete = f"{config.ig_data.epic}.{del_period}.IP"
-                self.data.log.msg(f"Removing unused epic {epic_to_delete}")
+                self.data.log.debug(f"Removing unused epic {epic_to_delete}")
                 self.data.db_market_info.delete_for_epic(epic_to_delete)
 
     def _get_historic_data_for_epic(self, epic):
@@ -122,18 +122,18 @@ class UpdateFsbMarketInfo(object):
 
         for instr in sorted(instr_list):
 
-            # self.data.log.msg(
+            # self.data.log.debug(
             #     f"Starting market info historic status check for '{instr}'"
             # )
 
             config = self.get_instr_config(instr)
 
             if not hasattr(config, "ig_data"):
-                self.data.log.msg(f"Skipping {instr}, no IG config")
+                self.data.log.debug(f"Skipping {instr}, no IG config")
                 continue
 
             if len(config.ig_data.periods) == 0:
-                self.data.log.msg(f"Skipping {instr}, no epics defined")
+                self.data.log.debug(f"Skipping {instr}, no epics defined")
                 continue
 
             for (
@@ -147,7 +147,7 @@ class UpdateFsbMarketInfo(object):
                     ask_diff_pc = round((ask_diff / info.snapshot.offer) * 100, 2)
                     date_diff = info.last_modified_utc - info.historic.timestamp
                     if bid_diff_pc > 0.1 or ask_diff_pc > 0.1 or date_diff.days > 3:
-                        self.data.log.msg(
+                        self.data.log.debug(
                             f"Historic status for {instr} ({info.epic}): "
                             f"bid diff {bid_diff}, ({bid_diff_pc}%), "
                             f"ask diff {ask_diff}, ({ask_diff_pc}%), "

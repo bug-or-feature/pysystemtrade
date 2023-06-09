@@ -32,11 +32,11 @@ class mongoEpicPeriodsData(epicPeriodsData):
         return self._mongo_data
 
     def update_epic_periods(self, instr_code: str, epic_periods: dict):
-        self.log.msg(f"Updating epic periods for '{instr_code}'")
+        self.log.debug(f"Updating epic periods for '{instr_code}'")
         self._save(instr_code, epic_periods, allow_overwrite=True)
 
     def add_epic_periods(self, instr_code: str, epic_periods: dict):
-        self.log.msg(f"Adding market info for '{instr_code}'")
+        self.log.debug(f"Adding market info for '{instr_code}'")
         self._save(instr_code, epic_periods)
 
     def get_epic_periods_for_instrument_code(self, instr_code: str):

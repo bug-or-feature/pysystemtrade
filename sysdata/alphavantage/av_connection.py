@@ -60,7 +60,7 @@ class avConnection(object):
 
             fx_url = self.ALPHA_VANTAGE_URL + "query"
             fx_resp = self._session.get(fx_url, params=payload)
-            self._log.msg(
+            self._log.debug(
                 "GET %s %s/%s, %s" % (fx_url, ccy1, ccy2, fx_resp.status_code)
             )
 

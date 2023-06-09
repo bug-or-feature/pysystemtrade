@@ -60,7 +60,7 @@ def update_historical_prices_with_data(data: dataBlob, instrument_list=None):
     else:
         list_of_codes_all = instrument_list
     for instrument_code in list_of_codes_all:
-        data.log.msg(f"Starting processing for instrument {instrument_code}")
+        data.log.debug(f"Starting processing for instrument {instrument_code}")
         data.log.label(instrument_code=instrument_code)
         update_historical_fsb_prices_for_instrument(instrument_code, data)
 
@@ -85,7 +85,7 @@ def update_historical_fsb_prices_for_instrument(instrument_code: str, data: data
 
     for contract_object in contract_list:
         data.log.label(contract_date=contract_object.date_str)
-        data.log.msg(f"Starting processing for contract {contract_object.key}")
+        data.log.debug(f"Starting processing for contract {contract_object.key}")
         # update contract_object params so that we know to get data from IG, not Barchart
         contract_object.params.data_source = "IG"
         update_historical_prices_for_instrument_and_contract(contract_object, data)
@@ -152,7 +152,7 @@ def get_and_add_prices_for_frequency(
             )
             return success
         else:
-            data.log.msg(f"broker_prices latest price {broker_prices.index[-1]}")
+            data.log.debug(f"broker_prices latest price {broker_prices.index[-1]}")
 
         error_or_rows_added = db_fsb_prices.update_prices_for_contract(
             contract_object, broker_prices, check_for_spike=False
@@ -162,14 +162,14 @@ def get_and_add_prices_for_frequency(
             report_price_spike(data, contract_object)
             return failure
 
-        data.log.msg(
+        data.log.debug(
             "Added %d rows at frequency %s for %s"
             % (error_or_rows_added, frequency, str(contract_object))
         )
         return success
 
     else:
-        data.log.msg(
+        data.log.debug(
             f"Not attempting to get prices for {str(contract_object)}, "
             f"IG historic prices not synced"
         )

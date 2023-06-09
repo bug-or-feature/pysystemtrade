@@ -133,7 +133,9 @@ class algoOriginalBest(Algo):
             )
         else:
             # do a market order
-            log.debug("Conditions are wrong so doing market trade instead of limit trade")
+            log.debug(
+                "Conditions are wrong so doing market trade instead of limit trade"
+            )
             broker_order_with_controls = (
                 self.get_and_submit_broker_order_for_contract_order(
                     cut_down_contract_order, order_type=market_order_type

@@ -222,7 +222,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             # TODO switch to 4H or 3H?
             freq = "3H"
             start_date = last_index_date + timedelta(minutes=1)
-            self.log.msg(
+            self.log.debug(
                 f"Appending IG data: last row of existing {last_index_date}, freq {freq}, "
                 f"start {start_date.strftime('%Y-%m-%d %H:%M:%S')}, "
                 f"end {end_date.strftime('%Y-%m-%d %H:%M:%S')}",
@@ -234,7 +234,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             start_date = end_date - timedelta(
                 days=30
             )  # TODO review. depends on instrument?
-            self.log.msg(
+            self.log.debug(
                 f"New IG data: freq {freq}, "
                 f"start {start_date.strftime('%Y-%m-%d %H:%M:%S')}, "
                 f"end {end_date.strftime('%Y-%m-%d %H:%M:%S')}",
@@ -261,7 +261,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         last_df_date = last_df_date.replace(tzinfo=pytz.UTC)
         hist_diff = abs((last_df_date - end_date).days)
         if hist_diff <= 3:
-            self.log.msg(
+            self.log.debug(
                 f"Found {prices_df.shape[0]} rows of data",
                 instrument_code=contract_object.instrument_code,
                 contract_date=contract_object.contract_date.date_str,
@@ -271,7 +271,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             # TODO update allowance data
 
         else:
-            self.log.msg("Ignoring - IG epic/history config awaiting update")
+            self.log.debug("Ignoring - IG epic/history config awaiting update")
             return FsbContractPrices.create_empty()
 
         # It's important that the data is in local time zone so that this works

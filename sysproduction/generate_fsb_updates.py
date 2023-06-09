@@ -65,16 +65,16 @@ class GenerateFsbUpdates(object):
         self.data.log.label(instrument_code=instr_code)
 
         futures_code = remove_suffix(instr_code, "_fsb")
-        self.data.log.msg(
+        self.data.log.debug(
             f"Starting generation of FSB price updates from {futures_code}"
         )
 
         fsb_chain = get_contract_chain(self.data, instr_code)
-        self.data.log.msg(f"FSB contract chain: {fsb_chain}")
+        self.data.log.debug(f"FSB contract chain: {fsb_chain}")
 
         for fsb_contract in fsb_chain:
 
-            self.data.log.msg(f"Generating FSB price updates for {fsb_contract}")
+            self.data.log.debug(f"Generating FSB price updates for {fsb_contract}")
 
             fut_contract = futuresContract.from_two_strings(
                 futures_code, fsb_contract.date_str
@@ -84,7 +84,7 @@ class GenerateFsbUpdates(object):
                 fut_contract
             )
             if fut_prices.shape[0] == 0:
-                self.data.log.msg(f"No futures data for {fut_contract}, ignoring")
+                self.data.log.debug(f"No futures data for {fut_contract}, ignoring")
                 continue
 
             else:
@@ -103,13 +103,13 @@ class GenerateFsbUpdates(object):
 
             if fsb_prices.shape[0] > 0:
                 existing_size = fsb_prices.shape[0]
-                self.data.log.msg(
+                self.data.log.debug(
                     f"Existing FSB prices found ({existing_size} rows) for {fsb_contract}"
                 )
 
                 # get last index date of FSB
                 last_date = fsb_prices.index[-1]
-                self.data.log.msg(
+                self.data.log.debug(
                     f"Latest FSB price timestamp for {fsb_contract}: {last_date}"
                 )
                 last_date = last_date + timedelta(hours=1)
@@ -117,10 +117,10 @@ class GenerateFsbUpdates(object):
                 # add to end of existing prices
                 updated = fsb_prices.append(fut_prices_massaged[last_date:])
                 new_count = updated.shape[0] - existing_size
-                self.data.log.msg(f"Update: adding {new_count} new rows")
+                self.data.log.debug(f"Update: adding {new_count} new rows")
 
             else:
-                self.data.log.msg(f"Creating new FSB prices for {fsb_contract}")
+                self.data.log.debug(f"Creating new FSB prices for {fsb_contract}")
                 updated = fut_prices_massaged
 
             # create/update contract price object in db
@@ -139,7 +139,7 @@ class GenerateFsbUpdates(object):
         multiplier: float = 1.0,
         inverse: bool = False,
     ):
-        self.data.log.msg(
+        self.data.log.debug(
             f"Massaging prices for IG: multiplier {multiplier}, inverse {inverse}",
             instrument_code=contract_object.instrument_code,
             contract_date=contract_object.contract_date.date_str,

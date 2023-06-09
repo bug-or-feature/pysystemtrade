@@ -48,12 +48,12 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
             merged_data = merged_data[~(merged_data.shift() == merged_data).all(axis=1)]
         count = merged_data.shape[0] - existing.shape[0]
         if count > 0:
-            log.msg(f"Adding {count} row(s) of epic history for {instrument_code}")
+            log.debug(f"Adding {count} row(s) of epic history for {instrument_code}")
             self.add_epics_history(
                 instrument_code, FsbEpicsHistory(merged_data), ignore_duplication=True
             )
         else:
-            log.msg(f"No change to epic history for {instrument_code}")
+            log.debug(f"No change to epic history for {instrument_code}")
 
     def add_epics_history(
         self,
@@ -73,7 +73,7 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
         epics_history_data = pd.DataFrame(epics_history)
 
         self.arctic.write(instrument_code, epics_history_data)
-        self.log.msg(
+        self.log.debug(
             f"Wrote {len(epics_history_data)} lines of history for {instrument_code}",
             instrument_code=instrument_code,
         )
@@ -82,4 +82,4 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
 
     def delete_epics_history(self, instrument_code: str):
         self._arctic.delete(instrument_code)
-        self.log.msg(f"Deleted epic history for {instrument_code} from {self}")
+        self.log.debug(f"Deleted epic history for {instrument_code} from {self}")

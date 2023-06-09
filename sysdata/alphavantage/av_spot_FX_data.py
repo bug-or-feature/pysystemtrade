@@ -72,7 +72,7 @@ class AvFxPricesData(brokerFxPricesData):
         # turn into a fxPrices
         fx_prices = fxPrices(raw_fx_prices)
 
-        self.log.msg(
+        self.log.debug(
             "Downloaded %d prices" % len(fx_prices), currency_code=currency_code
         )
 

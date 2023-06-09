@@ -86,9 +86,9 @@ class IGConnection(object):
         return self._stream_session
 
     def logout(self):
-        self.log.msg("Logging out of IG REST service")
+        self.log.debug("Logging out of IG REST service")
         self.rest_service.logout()
-        self.log.msg("Logging out of IG Stream service")
+        self.log.debug("Logging out of IG Stream service")
         self.stream_service.disconnect()
 
     def get_account_number(self):
@@ -195,7 +195,7 @@ class IGConnection(object):
 
             try:
                 if start_date is None and end_date is None:
-                    self.log.msg(
+                    self.log.debug(
                         f"Getting historic data for {epic} at resolution '{bar_freq}' "
                         f"(last {numpoints} datapoints)"
                     )
@@ -206,7 +206,7 @@ class IGConnection(object):
                         format=self._flat_prices_bid_ask_format,
                     )
                 else:
-                    self.log.msg(
+                    self.log.debug(
                         f"Getting historic data for {epic} at resolution '{bar_freq}'"
                         f" ('{start_date.strftime('%Y-%m-%dT%H:%M:%S')}' to "
                         f"'{end_date.strftime('%Y-%m-%dT%H:%M:%S')}')"
@@ -247,7 +247,7 @@ class IGConnection(object):
 
         if epic is not None:
 
-            self.log.msg(f"Getting snapshot price data for {epic}")
+            self.log.debug(f"Getting snapshot price data for {epic}")
             snapshot_rows = []
             now = datetime.datetime.now()
             try:
@@ -320,7 +320,7 @@ class IGConnection(object):
 
             subscription.addlistener(self.on_stream_update)
             sub_key = self.stream_service.ls_client.subscribe(subscription)
-            self.log.msg(f"sub key: {sub_key}")
+            self.log.debug(f"sub key: {sub_key}")
 
             max_data_points = 10
             duration = 0
@@ -331,7 +331,7 @@ class IGConnection(object):
             self._spread_storage.clear()
             self.stream_service.ls_client.unsubscribe(sub_key)
             duration = timer() - start
-            self.log.msg(
+            self.log.debug(
                 f"Collection of spread data for {instr_code} ({epic}) took {duration} seconds"
             )
 
@@ -442,7 +442,7 @@ class IGConnection(object):
         return df
 
     def on_stream_update(self, item_update):
-        self.log.msg(f"item_update: {item_update}")
+        self.log.debug(f"item_update: {item_update}")
         update_values = item_update["values"]
 
         try:
@@ -456,7 +456,9 @@ class IGConnection(object):
         except TypeError as err:
             # we don't care too much about these, in DISTINCT mode, we get updates for everything, and lots of them
             # are Volume changes
-            self.log.msg(f"Problem trying to create tick data '{update_values}': {err}")
+            self.log.debug(
+                f"Problem trying to create tick data '{update_values}': {err}"
+            )
 
 
 @dataclass

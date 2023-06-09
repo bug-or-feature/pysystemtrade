@@ -388,7 +388,7 @@ def get_and_add_prices_for_frequency(
         print("No broker prices found for %s nothing to check" % str(contract_object))
         return success
     else:
-        data.log.msg(f"broker_prices latest price {broker_prices.index[-1]}")
+        data.log.debug(f"broker_prices latest price {broker_prices.index[-1]}")
 
     if interactive_mode:
         print("\n\n Manually checking prices for %s \n\n" % str(contract_object))

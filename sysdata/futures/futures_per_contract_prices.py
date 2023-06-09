@@ -390,7 +390,9 @@ class futuresContractPriceData(baseData):
                 new_log.debug("No existing or additional data")
                 return 0
             else:
-                new_log.debug("No additional data since %s " % str(old_prices.index[-1]))
+                new_log.debug(
+                    "No additional data since %s " % str(old_prices.index[-1])
+                )
             return 0
 
         # We have guaranteed no duplication

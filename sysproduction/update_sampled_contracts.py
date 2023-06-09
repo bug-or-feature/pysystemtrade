@@ -195,7 +195,9 @@ def create_contract_date_chain(
 
     ## this will pick up contracts from 6 months ago, to deal with any gaps
     ## however if these have expired they are marked as close sampling later
-    contract_date_chain = final_contract.get_contracts_from_recently_to_contract_date(use_priced=use_priced)
+    contract_date_chain = final_contract.get_contracts_from_recently_to_contract_date(
+        use_priced=use_priced
+    )
 
     return contract_date_chain
 
@@ -377,7 +379,7 @@ def update_expiry_and_sampling_status_for_contract(
         else:
             existing_expiry_source = contract_object.params.expiry_source
             if existing_expiry_source == "B" and broker_expiry_date.source == "E":
-                log.msg(
+                log.debug(
                     f"Not updating expiry for {contract_object.key}, new date is estimated"
                 )
             else:

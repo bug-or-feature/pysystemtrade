@@ -71,7 +71,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
 
         self.arctic_connection.write(ident, futures_price_data_as_pd)
 
-        log.msg(
+        log.debug(
             "Wrote %s lines of prices for %s to %s"
             % (len(futures_price_data), str(futures_contract_object.key), str(self))
         )
@@ -127,7 +127,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
 
         ident = from_contract_to_key(futures_contract_object)
         self.arctic_connection.delete(ident)
-        log.msg(
+        log.debug(
             "Deleted all prices for %s from %s"
             % (futures_contract_object.key, str(self))
         )
@@ -147,7 +147,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
         new_log = contract_object.log(self.log)
 
         if len(new_futures_per_contract_prices) == 0:
-            new_log.msg("No new data")
+            new_log.debug("No new data")
             return 0
 
         old_prices = self.get_merged_prices_for_contract_object(contract_object)
@@ -156,7 +156,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
         )
 
         if merged_prices is SPIKE_IN_DATA:
-            new_log.msg(
+            new_log.debug(
                 "Price has moved too much - will need to manually check - no price update done"
             )
             return SPIKE_IN_DATA
@@ -169,10 +169,12 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
 
         elif rows_added == 0:
             if len(old_prices) == 0:
-                new_log.msg("No existing or additional data")
+                new_log.debug("No existing or additional data")
                 return 0
             else:
-                new_log.msg("No additional data since %s " % str(old_prices.index[-1]))
+                new_log.debug(
+                    "No additional data since %s " % str(old_prices.index[-1])
+                )
             return 0
 
         # We have guaranteed no duplication
@@ -180,7 +182,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
             contract_object, merged_prices, ignore_duplication=True
         )
 
-        new_log.msg("Added %d additional rows of data" % rows_added)
+        new_log.debug("Added %d additional rows of data" % rows_added)
 
         return rows_added
 

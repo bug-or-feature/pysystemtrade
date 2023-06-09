@@ -55,13 +55,15 @@ class updateFsbEpicPeriods(object):
 
         for instr in i_list:
 
-            self.data.log.msg(f"Starting IG Epic Discovery for '{instr}'")
+            self.data.log.debug(f"Starting IG Epic Discovery for '{instr}'")
 
             config = self.get_instr_config(instr)
             epic_base = config.epic
 
             if epic_base.startswith("CF."):
-                self.data.log.msg(f"Ignoring '{instr}', regular quarterly HMUZ periods")
+                self.data.log.debug(
+                    f"Ignoring '{instr}', regular quarterly HMUZ periods"
+                )
                 cycle_types = []
             else:
                 if test_mode:
@@ -84,9 +86,9 @@ class updateFsbEpicPeriods(object):
                     self.data.log.error(f"Problem with epic {epic}: {exc}")
 
             if epic_base.startswith("CF."):
-                self.data.log.msg(f"Not writing periods for {instr}, it's FX")
+                self.data.log.debug(f"Not writing periods for {instr}, it's FX")
             else:
-                self.data.log.msg(f"Epic periods for {instr}: {periods}")
+                self.data.log.debug(f"Epic periods for {instr}: {periods}")
                 if len(periods) == 0:
                     # TODO how to inform?
                     self.data.log.warning(
@@ -142,7 +144,7 @@ class updateFsbEpicPeriods(object):
         results.append("FAR8")
         results.append("FAR9")
 
-        self.data.log.msg(f"Periods to try: {results}")
+        self.data.log.debug(f"Periods to try: {results}")
         return results
 
 

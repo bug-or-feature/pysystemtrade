@@ -106,7 +106,9 @@ class accountSubsystem(accountBufferingSubSystemLevel):
     ) -> accountCurve:
 
         positions = self.get_buffered_subsystem_position(instrument_code)
-        price = self.get_instrument_prices_for_position_or_forecast(instrument_code, position_or_forecast=positions)
+        price = self.get_instrument_prices_for_position_or_forecast(
+            instrument_code, position_or_forecast=positions
+        )
 
         fx = self.get_fx_rate(instrument_code)
 
@@ -147,8 +149,9 @@ class accountSubsystem(accountBufferingSubSystemLevel):
 
         raw_costs = self.get_raw_cost_data(instrument_code)
         positions = self.get_buffered_subsystem_position(instrument_code)
-        price = self.get_instrument_prices_for_position_or_forecast(instrument_code,
-                                                                    position_or_forecast=positions) ### here!
+        price = self.get_instrument_prices_for_position_or_forecast(
+            instrument_code, position_or_forecast=positions
+        )  ### here!
 
         fx = self.get_fx_rate(instrument_code)
 

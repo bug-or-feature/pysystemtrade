@@ -92,11 +92,11 @@ class mongoMarketInfoData(marketInfoData):
         return self._min_bet
 
     def add_market_info(self, instrument_code: str, epic: str, market_info: dict):
-        self.log.msg(f"Adding market info for '{epic}'")
+        self.log.debug(f"Adding market info for '{epic}'")
         self._save(instrument_code, epic, market_info)
 
     def update_market_info(self, instrument_code: str, epic: str, market_info: dict):
-        self.log.msg(f"Updating market info for '{epic}'")
+        self.log.debug(f"Updating market info for '{epic}'")
         self._save(instrument_code, epic, market_info, allow_overwrite=True)
 
     def get_market_info_for_epic(self, epic: str):

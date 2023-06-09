@@ -65,16 +65,16 @@ def _get_instr_config(broker, instr) -> FsbInstrumentWithIgConfigData:
 
 def _do_single(data, broker, instr):
 
-    data.log.msg(f"Importing market info for {instr}")
+    data.log.debug(f"Importing market info for {instr}")
 
     config = _get_instr_config(broker, instr)
 
     if not hasattr(config, "ig_data"):
-        data.log.msg(f"Skipping {instr}, no IG config")
+        data.log.debug(f"Skipping {instr}, no IG config")
         return None
 
     if len(config.ig_data.periods) == 0:
-        data.log.msg(f"Skipping {instr}, no epics defined")
+        data.log.debug(f"Skipping {instr}, no epics defined")
         return None
 
     for period in config.ig_data.periods:

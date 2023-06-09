@@ -21,7 +21,9 @@ class cleanTruncateEchoFiles:
     def clean_echo_files(self):
         pathname = get_echo_file_directory()
         echo_extension = get_echo_extension()
-        self.data.log.debug(f"Archiving echo files (*.{echo_extension}) from {pathname}")
+        self.data.log.debug(
+            f"Archiving echo files (*.{echo_extension}) from {pathname}"
+        )
         rename_files_with_extension_in_pathname_as_archive_files(
             pathname, extension=echo_extension, archive_extension=".arch"
         )

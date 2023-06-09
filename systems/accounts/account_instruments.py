@@ -121,7 +121,9 @@ class accountInstruments(accountCosts, accountBufferingSystemLevel):
         roundpositions: bool = True,
     ) -> accountCurve:
 
-        price = self.get_instrument_prices_for_position_or_forecast(instrument_code, position_or_forecast=positions)
+        price = self.get_instrument_prices_for_position_or_forecast(
+            instrument_code, position_or_forecast=positions
+        )
         fx = self.get_fx_rate(instrument_code)
         value_of_price_point = self.get_value_of_block_price_move(instrument_code)
         daily_returns_volatility = self.get_daily_returns_volatility(instrument_code)
@@ -188,7 +190,9 @@ class accountInstruments(accountCosts, accountBufferingSystemLevel):
 
         raw_costs = self.get_raw_cost_data(instrument_code)
 
-        price = self.get_instrument_prices_for_position_or_forecast(instrument_code, position_or_forecast=positions)
+        price = self.get_instrument_prices_for_position_or_forecast(
+            instrument_code, position_or_forecast=positions
+        )
         fx = self.get_fx_rate(instrument_code)
         value_of_price_point = self.get_value_of_block_price_move(instrument_code)
 

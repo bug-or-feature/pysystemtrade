@@ -140,7 +140,7 @@ class bcConnection(object):
             ratelimit = prices_resp.headers["x-ratelimit-remaining"]
             if int(ratelimit) <= 15:
                 time.sleep(20)
-            self.log.msg(
+            self.log.debug(
                 f"GET {data_url} {instr_symbol}, {prices_resp.status_code}, ratelimit {ratelimit}"
             )
 
@@ -158,7 +158,7 @@ class bcConnection(object):
                     f"Zero length Barchart price data found for {instr_symbol}"
                 )
 
-            self.log.msg(f"Latest price {price_data_as_df.index[-1]} with {bar_freq}")
+            self.log.debug(f"Latest price {price_data_as_df.index[-1]} with {bar_freq}")
 
             return price_data_as_df
 
@@ -207,7 +207,7 @@ class bcConnection(object):
         """
         url = BARCHART_URL + "futures/quotes/%s/overview" % contract_id
         resp = self._session.get(url)
-        self.log.msg(f"GET {url}, response {resp.status_code}")
+        self.log.debug(f"GET {url}, response {resp.status_code}")
         return resp
 
     @staticmethod

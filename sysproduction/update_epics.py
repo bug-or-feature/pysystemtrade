@@ -48,7 +48,7 @@ class UpdateEpicHistory(object):
         now = datetime.datetime.now()
         for instr in sorted(self._instrument_list):
 
-            self.data.log.msg(f"Starting processing for '{instr}'")
+            self.data.log.debug(f"Starting processing for '{instr}'")
 
             config = self.get_instr_config(instr)
             data = {}
@@ -59,11 +59,11 @@ class UpdateEpicHistory(object):
             remove_dupes = True
 
             if not hasattr(config, "ig_data"):
-                self.data.log.msg(f"Skipping {instr}, no IG config")
+                self.data.log.debug(f"Skipping {instr}, no IG config")
                 continue
 
             if len(config.ig_data.periods) == 0:
-                self.data.log.msg(f"Skipping {instr}, no epics defined")
+                self.data.log.debug(f"Skipping {instr}, no epics defined")
                 continue
 
             current_df = self.data.db_fsb_epic_history.get_epic_history(instr)

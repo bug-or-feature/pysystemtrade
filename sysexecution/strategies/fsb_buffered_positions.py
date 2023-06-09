@@ -121,7 +121,7 @@ def trade_fsb(
     )
 
     log = order_required.log_with_attributes(data.log)
-    log.msg(
+    log.debug(
         "Upper %.2f, Lower %.2f, Min %.2f, Curr %.2f, Req pos %.2f, Req trade %.2f, Ref price %f, contract %s"
         % (
             upper_for_instrument,

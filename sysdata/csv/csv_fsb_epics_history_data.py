@@ -55,7 +55,7 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
             epic_history = epic_history.drop_duplicates()
         epic_history.to_csv(filename, index_label="Date")
 
-        self.log.msg(
+        self.log.debug(
             f"Written epic history for {instrument_code} to {filename}",
             instrument_code=instrument_code,
         )
@@ -80,7 +80,7 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
         filename = self._filename_given_instrument_code(instrument_code)
         epics_history.to_csv(filename, index_label=DATE_INDEX_NAME)
 
-        self.log.msg(
+        self.log.debug(
             "Written epic history prices for %s to %s" % (instrument_code, filename),
             instrument_code=instrument_code,
         )

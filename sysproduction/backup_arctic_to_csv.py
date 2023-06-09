@@ -243,7 +243,9 @@ def backup_futures_contract_prices_for_contract_to_csv(
                 arctic_data,
                 ignore_duplication=True,
             )
-            data.log.debug("Written backup .csv of prices for %s" % str(futures_contract))
+            data.log.debug(
+                "Written backup .csv of prices for %s" % str(futures_contract)
+            )
         except BaseException:
             data.log.warn(
                 "Problem writing .csv of prices for %s" % str(futures_contract)
@@ -289,7 +291,9 @@ def backup_multiple_to_csv_for_instrument(data, instrument_code: str):
             data.csv_futures_multiple_prices.add_multiple_prices(
                 instrument_code, arctic_data, ignore_duplication=True
             )
-            data.log.debug("Written .csv backup multiple prices for %s" % instrument_code)
+            data.log.debug(
+                "Written .csv backup multiple prices for %s" % instrument_code
+            )
         except BaseException:
             data.log.warn(
                 "Problem writing .csv backup multiple prices for %s" % instrument_code
@@ -316,7 +320,9 @@ def backup_adj_to_csv_for_instrument(data: dataBlob, instrument_code: str):
             data.csv_futures_adjusted_prices.add_adjusted_prices(
                 instrument_code, arctic_data, ignore_duplication=True
             )
-            data.log.debug("Written .csv backup for adjusted prices %s" % instrument_code)
+            data.log.debug(
+                "Written .csv backup for adjusted prices %s" % instrument_code
+            )
         except BaseException:
             data.log.warn(
                 "Problem writing .csv backup for adjusted prices %s" % instrument_code
@@ -524,12 +530,12 @@ def backup_epic_history_to_csv_for_instrument(data, instrument_code: str):
     csv_data = data.csv_fsb_epic_history.get_epic_history(instrument_code)
 
     if check_df_equals(arctic_data, csv_data):
-        data.log.msg("No epic history backup needed for %s" % instrument_code)
+        data.log.debug("No epic history backup needed for %s" % instrument_code)
         pass
     else:
         try:
             data.csv_fsb_epic_history.add_epics_history(instrument_code, arctic_data)
-            data.log.msg("Written .csv backup epic history for %s" % instrument_code)
+            data.log.debug("Written .csv backup epic history for %s" % instrument_code)
         except BaseException as exc:
             data.log.warn(
                 f"Problem writing .csv backup epic history for {instrument_code}: {exc}"
@@ -561,7 +567,7 @@ def backup_fsb_contract_prices_for_contract_to_csv(
 ):
     if futures_contract.days_since_expiry() > CALENDAR_DAYS_IN_YEAR:
         # Almost certainly expired, skip
-        data.log.msg("Skipping expired contract %s" % str(futures_contract))
+        data.log.debug("Skipping expired contract %s" % str(futures_contract))
 
         return None
 
@@ -575,7 +581,7 @@ def backup_fsb_contract_prices_for_contract_to_csv(
 
     if check_df_equals(arctic_data, csv_data):
         # No update needed, move on
-        data.log.msg("No FSB prices backup needed for %s" % str(futures_contract))
+        data.log.debug("No FSB prices backup needed for %s" % str(futures_contract))
     else:
         # Write backup
         try:
@@ -584,7 +590,7 @@ def backup_fsb_contract_prices_for_contract_to_csv(
                 arctic_data,
                 ignore_duplication=True,
             )
-            data.log.msg(
+            data.log.debug(
                 "Written backup .csv of FSB prices for %s" % str(futures_contract)
             )
         except BaseException as be:
