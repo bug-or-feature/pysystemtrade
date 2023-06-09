@@ -258,7 +258,9 @@ class ReportingApiFsb(reportingApi):
     @cached_property
     def epic_periods(self):
         rows = []
-        for instr in self.data.db_epic_periods.get_list_of_instruments():
+        instr_list = self.data.db_epic_periods.get_list_of_instruments()
+        # instr_list = ["EURIBOR-ICE_fsb"]
+        for instr in instr_list:
             instr_config = self.data.broker_futures_instrument.get_futures_instrument_object_with_ig_data(
                 instr
             )

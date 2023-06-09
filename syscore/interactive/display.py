@@ -95,8 +95,12 @@ def calculate_multiplication_factor_for_nice_repr_of_value(some_value: float) ->
     return mult_factor
 
 
-def set_pd_print_options():
+def set_pd_print_options(extra_wide=False):
     ## avoid annoying truncation in reports
     pd.set_option("display.max_rows", 500)
     pd.set_option("display.max_columns", 100)
     pd.set_option("display.width", 1000)
+    if extra_wide:
+        pd.set_option("display.width", 3000)
+        pd.set_option('display.max_columns', None)
+        pd.set_option('display.max_colwidth', None)
