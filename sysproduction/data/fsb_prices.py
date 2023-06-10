@@ -1,5 +1,6 @@
 import pandas as pd
 from syscore.constants import arg_not_supplied
+from syscore.dateutils import Frequency
 from sysdata.arctic.arctic_adjusted_prices import (
     arcticFuturesAdjustedPricesData,
 )
@@ -121,10 +122,19 @@ class UpdateFsbPrices(productionDataLayerGeneric):
         )
         return error_or_rows_added
 
-    # def add_spread_entry(self, instrument_code: str, spread: float):
-    #     self.db_spreads_for_instrument_data.add_spread_entry(
-    #         instrument_code, spread=spread
-    #     )
+    def delete_merged_contract_prices_for_instrument_code(
+        self, instrument_code: str, are_you_sure: bool = False
+    ):
+        self.db_fsb_contract_price_data.delete_merged_prices_for_instrument_code(
+            instrument_code, areyousure=are_you_sure
+        )
+
+    def delete_contract_prices_at_frequency_for_instrument_code(
+        self, instrument_code: str, frequency: Frequency, are_you_sure: bool = False
+    ):
+        self.db_fsb_contract_price_data.delete_prices_at_frequency_for_instrument_code(
+            instrument_code, frequency=frequency, areyousure=are_you_sure
+        )
 
     @property
     def db_futures_contract_price_data(self) -> futuresContractPriceData:

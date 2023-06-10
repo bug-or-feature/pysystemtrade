@@ -46,6 +46,14 @@ from sysproduction.data.prices import (
     diagPrices,
     updatePrices,
 )
+from sysproduction.data.fsb_prices import (
+    UpdateFsbPrices,
+)
+from sysproduction.data.fsb_epics import (
+    UpdateFsbEpics,
+    UpdateEpicPeriods,
+    UpdateMarketInfo,
+)
 from sysproduction.data.strategies import get_valid_strategy_name_from_user
 from sysproduction.data.instruments import updateSpreadCosts
 from sysproduction.reporting.data.risk import get_risk_data_for_instrument
@@ -1030,15 +1038,20 @@ def check_price_multipliers_consistent_for_instrument(
 
 def delete_instrument_from_prices(data: dataBlob):
     exit_code = ""
-    instrument_code = get_valid_instrument_code_from_user(
+    print("Enter futures code, not FSB")
+    futures_code = get_valid_instrument_code_from_user(
         allow_all=False, source="single", allow_exit=True, exit_code=exit_code
     )
 
-    if instrument_code == exit_code:
+    if futures_code == exit_code:
         return False
 
+    fsb_code = f"{futures_code}_fsb"
+
     sure = true_if_answer_is_yes(
-        "Note that this will only delete price data and contract data. Won't delete configuration, position, or order data related to an instrument. Are you REALLY sure about this???"
+        "Note that this will only delete price and contract data and FSB stuff. "
+        "Won't delete config, position, or order data related to an instrument. "
+        "Are you REALLY sure about this?"
     )
     if not sure:
         return False
@@ -1048,24 +1061,60 @@ def delete_instrument_from_prices(data: dataBlob):
     daily_frequency = DAILY_PRICE_FREQ
 
     update_prices = updatePrices(data)
+    # hourly
     update_prices.delete_contract_prices_at_frequency_for_instrument_code(
-        instrument_code, frequency=intraday_frequency, are_you_sure=True
+        futures_code, frequency=intraday_frequency, are_you_sure=True
     )
     update_prices.delete_contract_prices_at_frequency_for_instrument_code(
-        instrument_code, frequency=daily_frequency, are_you_sure=True
+        fsb_code, frequency=intraday_frequency, are_you_sure=True
+    )
+
+    # daily
+    update_prices.delete_contract_prices_at_frequency_for_instrument_code(
+        futures_code, frequency=daily_frequency, are_you_sure=True
+    )
+    update_prices.delete_contract_prices_at_frequency_for_instrument_code(
+        fsb_code, frequency=daily_frequency, are_you_sure=True
+    )
+    # merged
+    update_prices.delete_merged_contract_prices_for_instrument_code(
+        futures_code, are_you_sure=True
     )
     update_prices.delete_merged_contract_prices_for_instrument_code(
-        instrument_code, are_you_sure=True
+        fsb_code, are_you_sure=True
     )
-    update_prices.delete_multiple_prices(instrument_code, are_you_sure=True)
-    update_prices.delete_adjusted_prices(instrument_code, are_you_sure=True)
 
-    update_prices.delete_spreads(instrument_code, are_you_sure=True)
+    # multiple
+    update_prices.delete_multiple_prices(fsb_code, are_you_sure=True)
 
+    # adjusted
+    update_prices.delete_adjusted_prices(fsb_code, are_you_sure=True)
+
+    # spreads
+    update_prices.delete_spreads(fsb_code, are_you_sure=True)
+
+    # contracts
     data_contracts = dataContracts(data)
-    data_contracts.delete_all_contracts_for_instrument(
-        instrument_code, are_you_sure=True
+    data_contracts.delete_all_contracts_for_instrument(futures_code, are_you_sure=True)
+    data_contracts.delete_all_contracts_for_instrument(fsb_code, are_you_sure=True)
+
+    # fsb_prices
+    update_fsb_prices = UpdateFsbPrices(data)
+    update_fsb_prices.delete_merged_contract_prices_for_instrument_code(
+        fsb_code, are_you_sure=True
     )
+
+    # epic_history
+    update_epic_history = UpdateFsbEpics(data)
+    update_epic_history.delete_epic_history(fsb_code)
+
+    # epic_periods
+    update_epic_periods = UpdateEpicPeriods(data)
+    update_epic_periods.delete_epic_periods(fsb_code)
+
+    # market_info
+    update_market_info = UpdateMarketInfo(data)
+    update_market_info.delete_for_instrument_code(fsb_code)
 
 
 def not_defined(data):

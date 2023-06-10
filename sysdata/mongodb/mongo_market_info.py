@@ -192,6 +192,9 @@ class mongoMarketInfoData(marketInfoData):
             return False
         return history_synced
 
+    def delete_for_instrument_code(self, instr_code):
+        self.mongo_data._mongo.collection.delete_many({"instrument_code": instr_code})
+
     def _parse_market_info_for_mappings(self):
         for instr in self.get_list_of_instruments():
             for result in self.mongo_data._mongo.collection.find(

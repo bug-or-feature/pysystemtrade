@@ -58,6 +58,9 @@ class mongoEpicPeriodsData(epicPeriodsData):
 
         return results
 
+    def delete_epic_periods_for_instrument_code(self, instr_code: str):
+        self.mongo_data._mongo.collection.delete_one({"instrument_code": instr_code})
+
     def _save(self, instrument_code: str, epic_periods: dict, allow_overwrite=True):
         self.mongo_data.add_data(
             instrument_code, epic_periods, allow_overwrite=allow_overwrite

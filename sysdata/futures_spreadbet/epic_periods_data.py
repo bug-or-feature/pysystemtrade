@@ -15,3 +15,6 @@ class epicPeriodsData(baseData):
 
     def get_epic_periods_for_instrument_code(self, instr_code: str):
         raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+
+    def delete_epic_periods_for_instrument_code(self, instr_code: str):
+        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
