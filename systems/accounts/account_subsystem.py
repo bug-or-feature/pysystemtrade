@@ -116,7 +116,7 @@ class accountSubsystem(accountBufferingSubSystemLevel):
         daily_returns_volatility = self.get_daily_returns_volatility(instrument_code)
 
         ## following doesn't include IDM or instrument weight
-        average_position = self.get_volatility_scalar(instrument_code)
+        average_position = self.get_average_position_at_subsystem_level(instrument_code)
 
         subsystem_turnover = self.subsystem_turnover(instrument_code)
         annualised_SR_cost = self.get_SR_cost_given_turnover(

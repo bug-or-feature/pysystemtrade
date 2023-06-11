@@ -382,5 +382,5 @@ class accountCosts(accountInputs):
         return average_vol
 
     @property
-    def use_SR_costs(self) -> float:
+    def use_SR_costs(self) -> bool:
         return str2Bool(self.config.use_SR_costs)

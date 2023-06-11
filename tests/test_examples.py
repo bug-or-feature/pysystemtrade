@@ -50,7 +50,7 @@ def my_config(ewmac_8, ewmac_32):
     my_config = Config()
     my_config.trading_rules = dict(ewmac8=ewmac_8, ewmac32=ewmac_32)
     my_config.instruments = ["US10", "EDOLLAR", "CORN", "SP500"]
-    my_config.notional_trading_capital = 1000000
+    my_config.notional_trading_capital = 1000000 # TODO fix local pytest run
     my_config.risk_overlay = arg_not_supplied
     my_config.notional_trading_capital = 1000000
     my_config.exclude_instrument_lists = dict(
@@ -223,7 +223,11 @@ class TestExamples:
         print(my_system.positionSize.get_block_value("EDOLLAR").tail(5))
         print(my_system.positionSize.get_underlying_price("EDOLLAR"))
         print(my_system.positionSize.get_instrument_value_vol("EDOLLAR").tail(5))
-        print(my_system.positionSize.get_volatility_scalar("EDOLLAR").tail(5))
+        print(
+            my_system.positionSize.get_average_position_at_subsystem_level(
+                "EDOLLAR"
+            ).tail(5)
+        )
         print(my_system.positionSize.get_vol_target_dict())
         print(my_system.positionSize.get_subsystem_position("EDOLLAR").tail(5))
 
