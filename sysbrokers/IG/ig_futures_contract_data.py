@@ -110,7 +110,9 @@ class IgFuturesContractData(brokerFuturesContractData):
         barchart_id = self.get_barchart_id(contract_object_with_config_data)
         future_expiry = self.barchart.get_expiry_date_for_symbol(barchart_id)
         if future_expiry is None:
-            self.log.warning("Unable to get expiry from broker, calculating approx date")
+            self.log.warning(
+                "Unable to get expiry from broker, calculating approx date"
+            )
             exp_date = self.calc_approx_expiry(contract_object)
         else:
             exp_date = expiryDate.from_str(future_expiry, format="%m/%d/%y")

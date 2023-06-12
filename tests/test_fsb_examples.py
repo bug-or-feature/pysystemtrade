@@ -228,7 +228,11 @@ class TestFsbExamples:
         print(my_system.positionSize.get_block_value("BUXL_fsb").tail(5))
         print(my_system.positionSize.get_underlying_price("BUXL_fsb"))
         print(my_system.positionSize.get_instrument_value_vol("BUXL_fsb").tail(5))
-        print(my_system.positionSize.get_volatility_scalar("BUXL_fsb").tail(5))
+        print(
+            my_system.positionSize.get_average_position_at_subsystem_level(
+                "BUXL_fsb"
+            ).tail(5)
+        )
         print(my_system.positionSize.get_vol_target_dict())
         print(my_system.positionSize.get_subsystem_position("BUXL_fsb").tail(5))
 
