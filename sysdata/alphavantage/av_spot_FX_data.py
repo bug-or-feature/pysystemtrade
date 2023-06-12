@@ -29,7 +29,7 @@ class AvFxPricesData(brokerFxPricesData):
     def get_list_of_fxcodes(self) -> list:
         config_data = self._get_fx_config()
         if config_data is missing_file:
-            self.log.warn(
+            self.log.warning(
                 "Can't get list of FX codes for Alpha Vantage as config file missing"
             )
             return []
@@ -41,7 +41,7 @@ class AvFxPricesData(brokerFxPricesData):
     def _get_fx_prices_without_checking(self, currency_code: str) -> fxPrices:
         config_for_code = self._get_config_info_for_code(currency_code)
         if config_for_code is missing_instrument:
-            self.log.warn(
+            self.log.warning(
                 "Can't get prices as missing config for %s" % currency_code,
                 currency_code=currency_code,
             )
@@ -57,7 +57,7 @@ class AvFxPricesData(brokerFxPricesData):
         raw_fx_prices_as_series = self._get_raw_fx_prices(config_for_code)
 
         if len(raw_fx_prices_as_series) == 0:
-            self.log.warn(
+            self.log.warning(
                 "No available AlphaVantage prices for %s %s"
                 % (currency_code, str(config_for_code)),
                 currency_code=currency_code,
@@ -94,7 +94,7 @@ class AvFxPricesData(brokerFxPricesData):
 
         config_data = self._get_fx_config()
         if config_data is missing_file:
-            new_log.warn(
+            new_log.warning(
                 "Can't get AV FX config for %s as config file missing" % currency_code,
                 currency_code=currency_code,
             )

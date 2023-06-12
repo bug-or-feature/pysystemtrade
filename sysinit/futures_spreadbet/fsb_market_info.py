@@ -88,7 +88,7 @@ def _do_single(data, broker, instr):
                 f"Cannot overwrite market info for instrument '{instr}' "
                 f"and epic '{epic}': {mde}"
             )
-            data.log.warn(msg)
+            data.log.warning(msg)
         except Exception as exc:
             msg = (
                 f"Problem updating market info for instrument '{instr}' "

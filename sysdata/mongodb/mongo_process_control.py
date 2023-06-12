@@ -80,4 +80,4 @@ class mongoControlProcessData(controlProcessData):
                     datetime.datetime.now(), date_format=ISO_DATE_FORMAT
                 ),
             )
-            self.log.terse(msg, sysmon="status_change")
+            self.log.info(msg, sysmon="status_change")

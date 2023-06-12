@@ -145,7 +145,7 @@ class diagInstruments(productionDataLayerGeneric):
                 epic = self.db_market_info_data.get_epic_for_contract(key)
                 return self.db_market_info_data.get_trading_hours_for_epic(epic)
             except missingData as exc:
-                self.log.warn(f"Problem getting trading hours: {exc}")
+                self.log.warning(f"Problem getting trading hours: {exc}")
 
         return self.db_market_info_data.get_trading_hours_for_epic(key)
 

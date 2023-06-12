@@ -178,7 +178,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
                 )
             )
         except missingContract:
-            new_log.warn("Can't get recent price data for %s" % str(contract_object))
+            new_log.warning("Can't get recent price data for %s" % str(contract_object))
             return dataFrameOfRecentTicks.create_empty()
 
         epic = self.market_info_data.get_epic_for_contract(contract_object)

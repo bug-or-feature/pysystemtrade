@@ -69,7 +69,7 @@ class CsvFsbContractPriceData(csvFuturesContractPriceData):
             )
         except OSError:
             log = futures_contract_object.log(self.log)
-            log.warn("Can't find FSB price file %s" % filename)
+            log.warning("Can't find FSB price file %s" % filename)
             return FsbContractPrices.create_empty()
 
         instrpricedata = instrpricedata.groupby(level=0).last()

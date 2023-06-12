@@ -70,7 +70,7 @@ class UpdateEpicHistory(object):
             current_cols = list(current_df.columns)
             diff = list(set(config.ig_data.periods) - set(current_cols))
             if len(diff) > 0:
-                self.data.log.warn(
+                self.data.log.warning(
                     f"Column mismatch between current and config for {instr}, adjusting"
                 )
                 remove_dupes = False

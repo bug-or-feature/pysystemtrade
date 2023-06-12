@@ -215,7 +215,7 @@ class algoOriginalBest(Algo):
                 broker_order_with_controls_and_order_id
             )
             if order_cancelled:
-                log.warn("Order has been cancelled: not by algo")
+                log.warning("Order has been cancelled: not by algo")
                 break
 
         return broker_order_with_controls_and_order_id
@@ -337,7 +337,7 @@ def is_market_about_to_close(
     )
 
     if short_of_time is market_closed:
-        log.warn("Market has closed for active limit order %s!" % str(order))
+        log.warning("Market has closed for active limit order %s!" % str(order))
         return True
 
     return short_of_time

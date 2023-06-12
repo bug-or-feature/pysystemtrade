@@ -301,7 +301,7 @@ class futuresContractPriceData(baseData):
         if not_ignoring_duplication:
             if self.has_merged_price_data_for_contract(futures_contract_object):
                 log = futures_contract_object.log(self.log)
-                log.warn(
+                log.warning(
                     "There is already existing data for %s"
                     % futures_contract_object.key
                 )
@@ -332,7 +332,7 @@ class futuresContractPriceData(baseData):
                 contract_object=futures_contract_object, frequency=frequency
             ):
                 log = futures_contract_object.log(self.log)
-                log.warn(
+                log.warning(
                     "There is already existing data for %s"
                     % futures_contract_object.key
                 )
@@ -430,7 +430,7 @@ class futuresContractPriceData(baseData):
             )
         else:
             log = futures_contract_object.log(self.log)
-            log.warn("Tried to delete non existent contract")
+            log.warning("Tried to delete non existent contract")
 
     def delete_prices_at_frequency_for_contract_object(
         self,
@@ -455,7 +455,7 @@ class futuresContractPriceData(baseData):
             )
         else:
             log = futures_contract_object.log(self.log)
-            log.warn(
+            log.warning(
                 "Tried to delete non existent contract at frequency %s" % frequency
             )
 

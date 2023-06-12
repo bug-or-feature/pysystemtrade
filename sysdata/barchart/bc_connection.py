@@ -66,7 +66,7 @@ class bcConnection(object):
                 expiry_date_clean = match.group()
                 return expiry_date_clean
             if resp.status_code == 404:
-                self.log.warn(
+                self.log.warning(
                     f"Missing Barchart page for {bc_symbol}, unable to get expiry"
                 )
 

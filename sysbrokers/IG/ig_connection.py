@@ -338,7 +338,7 @@ class IGConnection(object):
             return result
 
         else:
-            self.log.warn(
+            self.log.warning(
                 f"Unable to sample spreads for {instr_code} ({epic}), market is not tradeable"
             )
             return []

@@ -247,7 +247,7 @@ def backup_futures_contract_prices_for_contract_to_csv(
                 "Written backup .csv of prices for %s" % str(futures_contract)
             )
         except BaseException:
-            data.log.warn(
+            data.log.warning(
                 "Problem writing .csv of prices for %s" % str(futures_contract)
             )
 
@@ -268,7 +268,7 @@ def backup_fx_to_csv(data):
                 )
                 data.log.debug("Written .csv backup for %s" % fx_code)
             except BaseException:
-                data.log.warn("Problem writing .csv backup for %s" % fx_code)
+                data.log.warning("Problem writing .csv backup for %s" % fx_code)
 
 
 def backup_multiple_to_csv(data):
@@ -295,7 +295,7 @@ def backup_multiple_to_csv_for_instrument(data, instrument_code: str):
                 "Written .csv backup multiple prices for %s" % instrument_code
             )
         except BaseException:
-            data.log.warn(
+            data.log.warning(
                 "Problem writing .csv backup multiple prices for %s" % instrument_code
             )
 
@@ -324,7 +324,7 @@ def backup_adj_to_csv_for_instrument(data: dataBlob, instrument_code: str):
                 "Written .csv backup for adjusted prices %s" % instrument_code
             )
         except BaseException:
-            data.log.warn(
+            data.log.warning(
                 "Problem writing .csv backup for adjusted prices %s" % instrument_code
             )
 
@@ -349,7 +349,7 @@ def backup_spreads_to_csv_for_instrument(data: dataBlob, instrument_code: str):
             )
             data.log.debug("Written .csv backup for spreads %s" % instrument_code)
         except BaseException:
-            data.log.warn(
+            data.log.warning(
                 "Problem writing .csv backup for spreads %s" % instrument_code
             )
 
@@ -537,7 +537,7 @@ def backup_epic_history_to_csv_for_instrument(data, instrument_code: str):
             data.csv_fsb_epic_history.add_epics_history(instrument_code, arctic_data)
             data.log.debug("Written .csv backup epic history for %s" % instrument_code)
         except BaseException as exc:
-            data.log.warn(
+            data.log.warning(
                 f"Problem writing .csv backup epic history for {instrument_code}: {exc}"
             )
 
@@ -594,7 +594,7 @@ def backup_fsb_contract_prices_for_contract_to_csv(
                 "Written backup .csv of FSB prices for %s" % str(futures_contract)
             )
         except BaseException as be:
-            data.log.warn(
+            data.log.warning(
                 f"Problem writing .csv of FSB prices for {str(futures_contract)}: {be}"
             )
 

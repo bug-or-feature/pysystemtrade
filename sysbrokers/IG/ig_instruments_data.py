@@ -51,7 +51,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
             config_data = IGConfig(df)
 
         except BaseException:
-            self.log.warn("Can't read file %s" % IG_INSTRUMENT_CONFIG_FILE)
+            self.log.warning("Can't read file %s" % IG_INSTRUMENT_CONFIG_FILE)
             config_data = missing_file
 
         return config_data
@@ -71,7 +71,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
         config_row = self.config[self.config.IGEpic == code_base]
         if len(config_row) == 0:
             msg = f"Broker symbol {broker_code} not found in configuration file! "
-            self.log.warn(msg)
+            self.log.warning(msg)
             # raise Exception(msg)
             return None
 
@@ -94,7 +94,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
         try:
             assert instrument_code in self.get_list_of_instruments()
         except Exception:
-            new_log.warn(f"Instrument {instrument_code} is not in IG config")
+            new_log.warning(f"Instrument {instrument_code} is not in IG config")
             return missing_instrument
 
         instrument_object = get_instrument_object_from_config(

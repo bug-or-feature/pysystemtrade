@@ -58,7 +58,7 @@ class IgFuturesContractData(brokerFuturesContractData):
 
         log = futures_contract.specific_log(self.log)
         if futures_contract.is_spread_contract():
-            log.warn("Can't find expiry for multiple leg contract here")
+            log.warning("Can't find expiry for multiple leg contract here")
             raise missingContract
 
         if self._is_fsb(futures_contract):
@@ -110,7 +110,7 @@ class IgFuturesContractData(brokerFuturesContractData):
         barchart_id = self.get_barchart_id(contract_object_with_config_data)
         future_expiry = self.barchart.get_expiry_date_for_symbol(barchart_id)
         if future_expiry is None:
-            self.log.warn("Unable to get expiry from broker, calculating approx date")
+            self.log.warning("Unable to get expiry from broker, calculating approx date")
             exp_date = self.calc_approx_expiry(contract_object)
         else:
             exp_date = expiryDate.from_str(future_expiry, format="%m/%d/%y")
@@ -144,7 +144,7 @@ class IgFuturesContractData(brokerFuturesContractData):
     ) -> expiryDate:
 
         if futures_contract_plus.is_spread_contract():
-            self.log.warn("Can't find expiry for multiple leg contract here")
+            self.log.warning("Can't find expiry for multiple leg contract here")
             raise missingContract
 
         if self._is_fsb(futures_contract_plus):
@@ -155,7 +155,7 @@ class IgFuturesContractData(brokerFuturesContractData):
             date_format_str = "%m/%d/%y"
 
         if expiry_date is None:
-            self.log.warn(
+            self.log.warning(
                 f"Failed to get expiry for contract {futures_contract_plus}, returning approx date"
             )
             return self.calc_approx_expiry(futures_contract_plus)

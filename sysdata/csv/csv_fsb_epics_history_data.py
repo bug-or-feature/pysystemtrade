@@ -66,7 +66,7 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
         try:
             instr_all_price_data = pd_readcsv(filename, date_index_name=DATE_INDEX_NAME)
         except OSError:
-            self.log.warn(
+            self.log.warning(
                 f"Can't find epic history file {filename} or error reading",
                 instrument_code=instrument_code,
             )
