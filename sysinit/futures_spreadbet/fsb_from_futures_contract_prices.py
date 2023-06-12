@@ -8,7 +8,7 @@ from sysdata.arctic.arctic_futures_per_contract_prices import (
 )
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
-from syscore.constants import missing_instrument
+from syscore.exceptions import missingInstrument
 
 
 def convert_futures_prices_to_fsb_single(instr):
@@ -18,8 +18,9 @@ def convert_futures_prices_to_fsb_single(instr):
     instr_prices = arctic_prices.get_merged_prices_for_instrument(instr)
     fsb_code = f"{instr}_fsb"
 
-    config = get_instrument_object_from_config(fsb_code, config=instr_data.config)
-    if config is missing_instrument:
+    try:
+        config = get_instrument_object_from_config(fsb_code, config=instr_data.config)
+    except missingInstrument:
         print(f"FSB instrument {fsb_code} not configured, exiting")
         return
     print(

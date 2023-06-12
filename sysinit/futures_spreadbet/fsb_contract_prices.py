@@ -1,7 +1,7 @@
 from sysdata.config.production_config import get_production_config
 from sysdata.data_blob import dataBlob
 from syscore.fileutils import resolve_path_and_filename_for_package
-from syscore.constants import missing_instrument
+from syscore.exceptions import missingInstrument
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 
 from sysinit.futures_spreadbet.contract_prices_from_csv_to_arctic import (
@@ -28,10 +28,8 @@ def transfer_barchart_prices_to_arctic_single_contract(instr, contract, datapath
 
 def build_import_config(instr):
     instr_data = IgFuturesInstrumentData(None, data=dataBlob())
-    config_data = get_instrument_object_from_config(instr, config=instr_data.config)
-    if config_data is missing_instrument:
-        print(f"No config for {instr}")
-    else:
+    try:
+        config_data = get_instrument_object_from_config(instr, config=instr_data.config)
         return ConfigCsvFuturesPrices(
             input_date_index_name="Time",
             input_skiprows=0,
@@ -43,14 +41,14 @@ def build_import_config(instr):
             apply_multiplier=config_data.multiplier,
             apply_inverse=config_data.inverse,
         )
+    except missingInstrument:
+        print(f"No config for {instr}")
 
 
 def build_norgate_import_config(instr):
     instr_data = IgFuturesInstrumentData(None, data=dataBlob())
-    config_data = get_instrument_object_from_config(instr, config=instr_data.config)
-    if config_data is missing_instrument:
-        print(f"No config for {instr}")
-    else:
+    try:
+        config_data = get_instrument_object_from_config(instr, config=instr_data.config)
         return ConfigCsvFuturesPrices(
             input_date_index_name="Date",
             input_skiprows=0,
@@ -62,6 +60,8 @@ def build_norgate_import_config(instr):
             apply_multiplier=config_data.multiplier,
             apply_inverse=config_data.inverse,
         )
+    except missingInstrument:
+        print(f"No config for {instr}")
 
 
 if __name__ == "__main__":

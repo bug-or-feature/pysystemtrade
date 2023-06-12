@@ -7,8 +7,7 @@ from sysobjects.contracts import futuresContract
 from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 from syslogging.logger import *
 from sysbrokers.IG.ig_connection import IGConnection
-from syscore.constants import missing_instrument
-from syscore.exceptions import missingContract
+from syscore.exceptions import missingContract, missingInstrument
 from syscore.dateutils import contract_month_from_number
 from sysbrokers.IG.ig_instruments_data import (
     get_instrument_object_from_config,
@@ -124,14 +123,14 @@ class IgFuturesContractData(brokerFuturesContractData):
         self, contract_object: futuresContract
     ) -> futuresContract:
 
-        futures_contract_plus = (
-            self.ig_instrument_data.get_futures_instrument_object_with_ig_data(
-                contract_object.instrument_code
+        try:
+            futures_contract_plus = (
+                self.ig_instrument_data.get_futures_instrument_object_with_ig_data(
+                    contract_object.instrument_code
+                )
             )
-        )
-
-        if futures_contract_plus is missing_instrument:
-            raise missingContract
+        except missingInstrument as e:
+            raise missingContract from e
 
         futures_contract_plus = (
             contract_object.new_contract_with_replaced_instrument_object(

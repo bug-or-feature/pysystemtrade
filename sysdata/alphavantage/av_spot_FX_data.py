@@ -8,8 +8,8 @@ from sysbrokers.broker_fx_prices_data import brokerFxPricesData
 from sysobjects.spot_fx_prices import fxPrices
 from syslogging.logger import *
 from syscore.fileutils import resolve_path_and_filename_for_package
-from syscore.constants import missing_instrument, missing_file
-from syscore.exceptions import missingData
+from syscore.constants import missing_file
+from syscore.exceptions import missingData, missingInstrument
 
 fxConfig = namedtuple("avFXConfig", ["ccy1", "ccy2", "invert"])
 
@@ -39,8 +39,9 @@ class AvFxPricesData(brokerFxPricesData):
         return list_of_codes
 
     def _get_fx_prices_without_checking(self, currency_code: str) -> fxPrices:
-        config_for_code = self._get_config_info_for_code(currency_code)
-        if config_for_code is missing_instrument:
+        try:
+            config_for_code = self._get_config_info_for_code(currency_code)
+        except missingInstrument:
             self.log.warning(
                 "Can't get prices as missing config for %s" % currency_code,
                 currency_code=currency_code,
@@ -99,7 +100,7 @@ class AvFxPricesData(brokerFxPricesData):
                 currency_code=currency_code,
             )
 
-            return missing_instrument
+            raise missingInstrument
 
         ccy1 = config_data[config_data.CODE == currency_code].CCY1.values[0]
         ccy2 = config_data[config_data.CODE == currency_code].CCY2.values[0]

@@ -9,7 +9,8 @@ from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 
 from syscore.fileutils import resolve_path_and_filename_for_package
-from syscore.constants import missing_instrument, missing_file
+from syscore.constants import missing_file
+from syscore.exceptions import missingInstrument
 
 from sysobjects.instruments import futuresInstrument
 
@@ -95,7 +96,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
             assert instrument_code in self.get_list_of_instruments()
         except Exception:
             new_log.warning(f"Instrument {instrument_code} is not in IG config")
-            return missing_instrument
+            raise missingInstrument
 
         instrument_object = get_instrument_object_from_config(
             instrument_code, config=self.config
@@ -148,4 +149,4 @@ def get_instrument_object_from_config(
         return futures_instrument_with_ig_data
 
     else:
-        return missing_instrument
+        raise missingInstrument
