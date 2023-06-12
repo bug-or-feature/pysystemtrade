@@ -6,6 +6,7 @@ AUD_fsb,5.4
 BOBL_fsb,3.2
 BRENT_W_fsb,3.2
 BTP_fsb,2.58
+BTP3_fsb,10.0
 BUND_fsb,1.5
 BUXL_fsb,2.15
 CAC_fsb,2.0
@@ -27,7 +28,7 @@ EUA_fsb,4.8
 EURCAD_fsb,9.25
 EURCHF_fsb,5.5
 EURGBP_fsb,4.25
-EURIBOR_fsb,2.4
+EURIBOR-ICE_fsb,2.4
 EUROSTX_fsb,1.0
 EUR_fsb,5.44
 FED_fsb,3.7
