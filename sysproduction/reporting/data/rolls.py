@@ -299,9 +299,9 @@ def update_multiple_prices_on_roll(
     )
 
     # FSB custom check for existence of epics for each proposed new contract
-    check_contract_for_epic(data, new_price_contract_object)
-    check_contract_for_epic(data, new_forward_contract_object)
-    check_contract_for_epic(data, new_carry_contract_object)
+    check_contract_for_epic(data, "priced", new_price_contract_object)
+    check_contract_for_epic(data, "forward", new_forward_contract_object)
+    check_contract_for_epic(data, "carry", new_carry_contract_object)
 
     new_price_price = old_forward_contract_last_price
     new_forward_price = get_final_matched_price_from_contract_object(
@@ -536,7 +536,7 @@ def rollback_adjustment(
     return success
 
 
-def check_contract_for_epic(data, contract_object):
+def check_contract_for_epic(data, desc, contract_object):
     instr_code = contract_object.instrument_code
     try:
         data.db_market_info.get_epic_for_contract(contract_object)
@@ -546,8 +546,17 @@ def check_contract_for_epic(data, contract_object):
             data.db_market_info.get_periods_for_instrument_code(instr_code)
         )
         print(mde)
-        print(f"There is no epic defined for {contract_object}")
-        if period_count > 2:
+        print(
+            f"WARNING: There is no epic for the new {desc} contract: {contract_object}"
+        )
+        if period_count == 2:
+            print(
+                f"There are only two epics for {instr_code}. We cannot know whether IG "
+                f"are skipping a contract until after the current contract expires. "
+                f"DO NOT roll"
+            )
+            raise
+        else:
             print(
                 f"It is possible that IG are skipping a contract - this happens "
                 f"sometimes when there is low volume. "
@@ -555,9 +564,3 @@ def check_contract_for_epic(data, contract_object):
                 f"DO NOT attempt forward filling"
             )
             raise
-        else:
-            print(
-                f"This is probably because there are only two epics for {instr_code}."
-                f"This should be resolved when the current priced contract expires, "
-                f"and the current forward contract becomes the priced one."
-            )
