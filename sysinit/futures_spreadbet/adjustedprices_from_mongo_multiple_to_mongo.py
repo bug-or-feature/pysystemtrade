@@ -70,8 +70,8 @@ def process_adjusted_prices_single_instrument(
 
 if __name__ == "__main__":
 
-    # COTTON2_fsb, SOYBEAN_fsb
-    for instrument_code in ["COTTON2_fsb", "SOYBEAN_fsb"]:
+    # AEX_fsb, BRENT_W_fsb
+    for instrument_code in ["AEX_fsb", "BRENT_W_fsb"]:
         print(f"Creating adjusted prices for {instrument_code}")
         process_adjusted_prices_single_instrument(
             instrument_code,
