@@ -301,7 +301,7 @@ def update_multiple_prices_on_roll(
     # FSB custom check for existence of epics for each proposed new contract
     check_contract_for_epic(data, "priced", new_price_contract_object)
     check_contract_for_epic(data, "forward", new_forward_contract_object)
-    check_contract_for_epic(data, "carry", new_carry_contract_object)
+    # check_contract_for_epic(data, "carry", new_carry_contract_object)
 
     new_price_price = old_forward_contract_last_price
     new_forward_price = get_final_matched_price_from_contract_object(
