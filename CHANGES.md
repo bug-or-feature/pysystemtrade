@@ -8,6 +8,13 @@ This document describes changes to this fork. For upstream master, see [CHANGELO
 ## TODO
 - See [Issues](https://github.com/bug-or-feature/pysystemtrade-fsb/issues)
 
+## June 2023
+- checks for valid epics on roll
+- temporary roll cycle overrides
+- FSB roll report improvements
+- rebuild of EURIBOR-ICE price data
+- FSB version of `clone_data_for_instrument()`
+- FSB version of `delete_instrument_from_prices()` in Interactive Controls
 
 ## May 2023
 - implementing upstream CSV instrument and roll config
