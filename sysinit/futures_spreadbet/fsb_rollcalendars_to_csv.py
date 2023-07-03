@@ -179,9 +179,7 @@ if __name__ == "__main__":
             output_datapath="fsb.roll_calendars_csv",
             input_prices=prices,
             check_before_writing=False,
-            input_config=csvRollParametersData(
-                datapath="fsb.csvconfig"
-            ),
+            input_config=csvRollParametersData(datapath="fsb.csvconfig"),
         )
     else:
         show_expected_rolls_for_config(
