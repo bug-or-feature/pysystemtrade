@@ -87,8 +87,8 @@ def interactive_controls():
     with dataBlob(
         log_name="Interactive-Controls",
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
         set_pd_print_options()

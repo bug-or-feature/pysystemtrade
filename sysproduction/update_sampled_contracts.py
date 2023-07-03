@@ -26,8 +26,8 @@ def update_sampled_contracts(instrument_list=None):
     with dataBlob(
         log_name="Update-Sampled_Contracts",
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
         if instrument_list is None:

@@ -197,10 +197,10 @@ def add_phantom_row(
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # change if you want to write elsewhere
-    csv_multiple_data_path = "data.futures_spreadbet.multiple_prices_csv"
+    csv_multiple_data_path = "fsb.multiple_prices_csv"
 
     # only change if you have written the files elsewhere
-    csv_roll_data_path = "data.futures_spreadbet.roll_calendars_csv"
+    csv_roll_data_path = "fsb.roll_calendars_csv"
 
     # modify flags as required
     # process_multiple_prices_all_instruments(csv_multiple_data_path=csv_multiple_data_path,

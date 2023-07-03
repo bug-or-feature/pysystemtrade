@@ -176,17 +176,17 @@ if __name__ == "__main__":
     if method == "build":
         build_and_write_roll_calendar(
             instrument_code=instr_code,
-            output_datapath="data.futures_spreadbet.roll_calendars_csv",
+            output_datapath="fsb.roll_calendars_csv",
             input_prices=prices,
             check_before_writing=False,
             input_config=csvRollParametersData(
-                datapath="data.futures_spreadbet.csvconfig"
+                datapath="fsb.csvconfig"
             ),
         )
     else:
         show_expected_rolls_for_config(
             instrument_code=instr_code,
-            path="data.futures_spreadbet.csvconfig",
+            path="fsb.csvconfig",
             input_prices=prices,
         )
 

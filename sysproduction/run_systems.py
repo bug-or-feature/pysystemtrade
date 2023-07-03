@@ -16,8 +16,8 @@ def run_systems():
     data = dataBlob(
         log_name=process_name,
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     )
     list_of_timer_names_and_functions = (

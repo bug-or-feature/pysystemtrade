@@ -21,8 +21,8 @@ def generate_fsb_updates():
     with dataBlob(
         log_name="Generate-FSB-Updates",
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
         fsb_updater = GenerateFsbUpdates(data)

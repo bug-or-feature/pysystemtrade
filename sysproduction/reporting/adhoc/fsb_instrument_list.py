@@ -26,8 +26,8 @@ def instrument_list_report():
     with dataBlob(
         log_name="Interactive-Controls",
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
 

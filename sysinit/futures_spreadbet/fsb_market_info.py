@@ -36,8 +36,8 @@ def import_market_info(instrument_list=None):
     with dataBlob(
         log_name="Import-Market-Info",
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
         data.add_class_object(mongoMarketInfoData)

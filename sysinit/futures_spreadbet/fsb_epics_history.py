@@ -66,7 +66,7 @@ def convert_to_new_format():
 
     market_info = mongoMarketInfoData()
     new_output_data = CsvFsbEpicHistoryData(
-        datapath="data.futures_spreadbet.epic_history_new"
+        datapath="fsb.epic_history_new"
     )
     instr_list = input_data.get_list_of_instruments()
     # instr_list = ["GOLD_fsb"]

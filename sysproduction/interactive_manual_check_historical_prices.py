@@ -32,8 +32,8 @@ def interactive_manual_check_historical_prices():
     with dataBlob(
         log_name="Update-Historical-prices-manually",
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
         instr_list = []

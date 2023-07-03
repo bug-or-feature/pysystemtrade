@@ -14,8 +14,8 @@ def update_system_backtests():
     with dataBlob(
         log_name="Update-System_Backtest",
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
         list_of_strategies = get_list_of_strategies_for_process(data, process_name)

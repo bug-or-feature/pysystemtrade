@@ -14,7 +14,7 @@ class TestIg:
         data = dataBlob(
             auto_connect=False,
             csv_data_paths=dict(
-                csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
+                csvFuturesInstrumentData="fsbs.epic_history_csv"
             ),
         )
         data.add_class_object(IgFuturesInstrumentData)
@@ -50,7 +50,7 @@ class TestIg:
         data = dataBlob(
             auto_connect=False,
             csv_data_paths=dict(
-                csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
+                csvFuturesInstrumentData="fsbs.epic_history_csv"
             ),
         )
         data.add_class_list([IgFuturesContractData, IgFuturesInstrumentData])
@@ -111,7 +111,7 @@ class TestIg:
         data = dataBlob(
             auto_connect=False,
             csv_data_paths=dict(
-                csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
+                csvFuturesInstrumentData="fsbs.epic_history_csv"
             ),
         )
         data.add_class_list([IgFuturesContractData, IgFuturesInstrumentData])

@@ -55,8 +55,8 @@ def interactive_update_roll_status():
     with dataBlob(
         log_name="Interactive_Update-Roll-Status",
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
         api = ReportingApiFsb(data)
