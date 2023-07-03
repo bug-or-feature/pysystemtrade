@@ -1,0 +1,243 @@
+# YAML
+# start_date: 2000-01-19
+use_forecast_weight_estimates: False
+use_instrument_weight_estimates: False
+use_forecast_scale_estimates: False
+
+use_forecast_div_mult_estimates: True
+use_instrument_div_mult_estimates: True
+#
+#
+#
+#
+# Raw data
+#
+#
+# Trading rules
+#
+volatility_calculation:
+  func: "sysquant.estimators.vol.mixed_vol_calc"
+  days: 35
+  min_periods: 10
+  vol_abs_min: 0.0000000001
+  slow_vol_years: 20
+  proportion_of_slow_vol: 0.35
+  backfill: True
+#
+trading_rules:
+  carry10:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 10
+  carry30:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 30
+  carry60:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 60
+  carry125:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 125
+  momentum4:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  momentum8:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  momentum16:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  momentum32:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  momentum64:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+
+#
+forecast_cap: 20.0
+#
+forecast_scalars:
+  momentum4: 8.539940954709955
+  momentum8: 5.949404365193165
+  momentum16: 4.104172020369661
+  momentum32: 2.786994330124792
+  momentum64: 1.9093945630747895
+  carry10: 27.815707053556984
+  carry30: 28.384062881349813
+  carry60: 28.40072429176199
+  carry125: 29.366474500729886
+
+#
+# forecast combination
+#
+# Capital correction
+#
+percentage_vol_target: 25.0
+notional_trading_capital: 25000
+base_currency: "GBP"
+
+#
+# Portfolio creation
+#
+
+forecast_weights:
+  auto_weight_from_grouping:
+    parameters:
+      use_approx_DM: False
+      apply_forecast_post_ceiling_cost_SR_before_weighting: True
+    groups:
+      convergent:
+        weight: 0.4
+        carry:
+          weight: 1.0
+          carry10: 0.25
+          carry125: 0.25
+          carry30: 0.25
+          carry60: 0.25
+      divergent:
+        weight: 0.6
+        trend:
+          weight: 1.0
+          momentum4: 0.2
+          momentum8: 0.2
+          momentum16: 0.2
+          momentum32: 0.2
+          momentum64: 0.2
+
+#
+instrument_weights:
+  auto_weight_from_grouping:
+    parameters:
+      use_approx_DM: True
+    groups:
+      ags:
+        weight: 0.2
+        COFFEE_fsb: 1.0
+        #SOYMEAL_fsb: 0.5
+      rates:
+        weight: 0.2
+        BUND_fsb: 1.0
+      #energies:
+        #weight: 0.143
+        #HEATOIL_fsb : 1.0
+      equity:
+        weight: 0.2
+        #ASX_fsb: 0.333
+        #IBXEX_fsb: 0.5
+        NASDAQ_fsb: 1.0
+      fx:
+        weight: 0.2
+        NZD_fsb: 1.0
+      metals:
+        weight: 0.2
+        COPPER_fsb: 1.0
+      #vol:
+        #weight: 0.143
+        #VIX_fsb: 1.0
+
+forecast_div_multiplier:
+  BUND_fsb: 1.558250317097942
+  COFFEE_fsb: 1.558250317097942
+  COPPER_fsb: 1.558250317097942
+  NASDAQ_fsb: 1.558250317097942
+  NZD_fsb: 1.558250317097942
+
+instrument_div_multiplier: 1.91
+#
+# duplicated/excluded instruments are ignored in backtests
+# we still collect price data for them in production, do rolls etc
+# this is to avoid double counting of basically the same instrument
+# anything in the 'exclude' list is ignored in backtests
+# we use the 'include section to match up for reporting when deciding which to trade
+# Be careful when swapping between instruments, a bit dangerous if a position is held...
+# You can override this by modifying the backtest config .yaml file used in either sim or production
+duplicate_instruments:
+  include:
+    kospi: 'KOSPI'
+  exclude:
+    kospi: 'KOSPI_mini'
+exclude_instrument_lists:
+  # ignore_instruments are ignored in backtests
+  # we still collect price data for them in production, do rolls etc
+  # You can override this by modifying the backtest config .yaml file used in either sim or production
+  # If you want to ignore because a duplicate market, use duplicate_instruments
+  # If you want to include in sim data, but not actually trade, use trading_restrictions
+  #
+  # BEST FOR INSTRUMENTS THAT LOOK EXPENSIVE, BUT WHERE WE HAVEN'T GOT ACCURATE DATA YET
+  #
+  # REVIEW REGULARLY AND CHECK THESE INSTRUMENTS AREN'T BETTER ELSEWHERE...
+  ignore_instruments:
+    - 'KOSPI' # not supported on IG
+  #
+  # Here we put stuff we can't trade, but for which we still want to bring in prices in sim
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # NOTE: This will be regionally biased, you will probably want to override this in private_config.yaml
+  #
+  trading_restrictions:
+    - BITCOIN_fsb
+  # These are markets that are too expensive or illiquid to actually trade
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # Run interactive controls to get a list of suggested markets here
+  # To override this list, change in sim .yaml config (sim) and private_config.yaml (production)
+  bad_markets:
+    - AUD_fsb
+    - CHF_fsb
+    - COCOA_LDN_fsb
+    - COCOA_fsb
+    - CORN_fsb
+    - EURGBP_fsb
+    - EUR_fsb
+    - FED_fsb
+    - JGB_fsb
+    - LIVECOW_fsb
+    - MSCISING_fsb
+    - OATIES_fsb
+    - PALLAD_fsb
+    - PLAT_fsb
+    - RICE_fsb
+    - SHATZ_fsb
+    - SONIA3_fsb
+    - SUGAR_WHITE_fsb
+    - US2_fsb
+    - V2X_fsb
