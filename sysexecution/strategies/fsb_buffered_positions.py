@@ -37,14 +37,14 @@ class FsbOrderGenerator(orderGeneratorForBufferedPositions):
         optimal_positions = self.get_optimal_positions()
         actual_positions = self.get_actual_positions_for_strategy()
 
-        list_of_trades = get_fsb_trades_list(
+        list_of_trades = list_of_fsb_trades_given_optimal_and_actual_positions(
             self.data, strategy_name, optimal_positions, actual_positions
         )
 
         return list_of_trades
 
 
-def get_fsb_trades_list(
+def list_of_fsb_trades_given_optimal_and_actual_positions(
     data: dataBlob,
     strategy_name: str,
     optimal_positions: optimalPositions,
@@ -54,7 +54,7 @@ def get_fsb_trades_list(
     upper_positions = optimal_positions.upper_positions
     list_of_instruments = upper_positions.keys()
     trade_list = [
-        trade_fsb(
+        fsb_trade_given_optimal_and_actual_positions(
             data, strategy_name, instrument_code, optimal_positions, actual_positions
         )
         for instrument_code in list_of_instruments
@@ -65,7 +65,7 @@ def get_fsb_trades_list(
     return trade_list
 
 
-def trade_fsb(
+def fsb_trade_given_optimal_and_actual_positions(
     data: dataBlob,
     strategy_name: str,
     instrument_code: str,
