@@ -17,17 +17,7 @@ from sysexecution.orders.list_of_orders import listOfOrders
 from sysexecution.strategies.classic_buffered_positions import (
     orderGeneratorForBufferedPositions,
 )
-
-optimalPositions = namedtuple(
-    "optimalPositions",
-    [
-        "upper_positions",
-        "lower_positions",
-        "reference_prices",
-        "reference_contracts",
-        "ref_dates",
-    ],
-)
+from sysexecution.strategies.classic_buffered_positions import optimalPositions
 
 
 class FsbOrderGenerator(orderGeneratorForBufferedPositions):
@@ -76,30 +66,24 @@ def fsb_trade_given_optimal_and_actual_positions(
     data.add_class_object(csvFuturesInstrumentData)
     instr_data = data.db_futures_instrument.get_instrument_data(instrument_code)
 
-    upper_for_instrument = optimal_positions.upper_positions[instrument_code]
-    lower_for_instrument = optimal_positions.lower_positions[instrument_code]
-    mid_for_instrument = (upper_for_instrument + lower_for_instrument) / 2
+    upper = optimal_positions.upper_positions[instrument_code]
+    lower = optimal_positions.lower_positions[instrument_code]
     min_bet = instr_data.as_dict()["Pointsize"]
 
-    actual_for_instrument = actual_positions.get(instrument_code, 0.0)
+    current = actual_positions.get(instrument_code, 0.0)
 
-    if actual_for_instrument < lower_for_instrument:
-        if actual_for_instrument == 0.0:
-            required_position = mid_for_instrument
-        else:
-            required_position = lower_for_instrument
-    elif actual_for_instrument > upper_for_instrument:
-        if actual_for_instrument == 0.0:
-            required_position = mid_for_instrument
-        else:
-            required_position = upper_for_instrument
+    # TODO get buffer strategy from config?
+    if current < lower:
+        required_position = lower
+    elif current > upper:
+        required_position = upper
     else:
-        required_position = actual_for_instrument
+        required_position = current
 
     # Might seem weird to have a zero order, but since orders can be updated
     # it makes sense
 
-    trade_required = required_position - actual_for_instrument
+    trade_required = required_position - current
     # if required_trade is less than minimum bet, make it zero
     if abs(trade_required) < min_bet:
         trade_required = 0.0
@@ -124,10 +108,10 @@ def fsb_trade_given_optimal_and_actual_positions(
     log.debug(
         "Upper %.2f, Lower %.2f, Min %.2f, Curr %.2f, Req pos %.2f, Req trade %.2f, Ref price %f, contract %s"
         % (
-            upper_for_instrument,
-            lower_for_instrument,
+            upper,
+            lower,
             min_bet,
-            actual_for_instrument,
+            current,
             required_position,
             trade_required,
             reference_price,
