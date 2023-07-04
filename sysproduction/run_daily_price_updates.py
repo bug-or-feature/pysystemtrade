@@ -18,8 +18,8 @@ def get_list_of_timer_functions_for_price_update():
     data_fsb = dataBlob(
         log_name="generate_fsb_updates",
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     )
     historical_update_object = updateHistoricalPrices(data_historical)

@@ -13,9 +13,7 @@ class TestIg:
     def test_ig_instrument_data(self):
         data = dataBlob(
             auto_connect=False,
-            csv_data_paths=dict(
-                csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
-            ),
+            csv_data_paths=dict(csvFuturesInstrumentData="fsbs.epic_history_csv"),
         )
         data.add_class_object(IgFuturesInstrumentData)
         instr_list = data.broker_futures_instrument.get_list_of_instruments()
@@ -49,9 +47,7 @@ class TestIg:
     def test_fsb_contract_ids(self):
         data = dataBlob(
             auto_connect=False,
-            csv_data_paths=dict(
-                csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
-            ),
+            csv_data_paths=dict(csvFuturesInstrumentData="fsbs.epic_history_csv"),
         )
         data.add_class_list([IgFuturesContractData, IgFuturesInstrumentData])
 
@@ -110,9 +106,7 @@ class TestIg:
     def test_futures_contract_ids(self):
         data = dataBlob(
             auto_connect=False,
-            csv_data_paths=dict(
-                csvFuturesInstrumentData="data.futures_spreadbets.epic_history_csv"
-            ),
+            csv_data_paths=dict(csvFuturesInstrumentData="fsbs.epic_history_csv"),
         )
         data.add_class_list([IgFuturesContractData, IgFuturesInstrumentData])
 

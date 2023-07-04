@@ -12,7 +12,13 @@ process_name = "run_strategy_order_generator"
 
 def update_strategy_orders():
     ## function if called from script
-    with dataBlob(log_name="Update-Strategy-Orders") as data:
+    with dataBlob(
+        log_name="Update-Strategy-Orders",
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
+        ),
+    ) as data:
 
         list_of_strategies = get_list_of_strategies_for_process(data, process_name)
         ALL = "ALL"
@@ -29,3 +35,7 @@ def update_strategy_orders():
                 data, strategy_name, process_name, name_of_main_generator_method
             )
             strategy_order_generator.run_strategy_method()
+
+
+if __name__ == "__main__":
+    update_strategy_orders()

@@ -22,8 +22,8 @@ def get_list_of_timer_functions_for_fx_and_contract_update():
     data_contracts = dataBlob(
         log_name="update_sampled_contracts",
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     )
 

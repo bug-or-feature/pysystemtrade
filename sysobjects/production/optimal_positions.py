@@ -82,15 +82,15 @@ class bufferedOptimalPositions(baseOptimalPosition):
                 % (upper_position, lower_position)
             )
 
-    def check_position_break(self, position: int):
+    def check_position_break(self, position):
         self._argument_checks()
         # ignore warnings set dynamically
-        return position < round(self.lower_position) or position > round(
-            self.upper_position
+        return position < round(self.lower_position, 2) or position > round(
+            self.upper_position, 2
         )
 
     def __repr__(self):
-        return "%.3f/%.3f" % (self.lower_position, self.upper_position)
+        return f"{round(self.lower_position, 2)} / {round(self.upper_position, 2)}"
 
 
 # DO NOT INHERIT FROM ME, ONLY FROM baseOptimalPosition

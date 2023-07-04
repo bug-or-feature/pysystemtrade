@@ -11,7 +11,7 @@ from syslogging.logger import *
 from sysobjects.epic_history import FsbEpicsHistory
 
 
-EPIC_HISTORY_DIRECTORY = "data.futures_spreadbet.epic_history_csv"
+EPIC_HISTORY_DIRECTORY = "fsb.epic_history_csv"
 DATE_INDEX_NAME = "Date"
 
 

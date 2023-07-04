@@ -12,7 +12,7 @@ from sysdata.data_blob import dataBlob
 
 def copy_spread_costs_from_csv_to_mongo(data: dataBlob):
     data_out = mongoSpreadCostData(data.mongo_db)
-    data_in = csvSpreadCostData(datapath="data.futures_spreadbet.csvconfig")
+    data_in = csvSpreadCostData(datapath="fsb.csvconfig")
 
     print("Transferring from %s to %s" % (str(data_in), str(data_out)))
 

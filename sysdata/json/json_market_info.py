@@ -17,7 +17,7 @@ from syscore.fileutils import (
 )
 from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 
-MARKET_INFO_DIRECTORY = "data.futures_spreadbet.market_info_json"
+MARKET_INFO_DIRECTORY = "fsb.market_info_json"
 
 
 class jsonMarketInfoData(marketInfoData):

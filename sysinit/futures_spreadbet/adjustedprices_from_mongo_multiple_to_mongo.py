@@ -77,5 +77,5 @@ if __name__ == "__main__":
             instrument_code,
             ADD_TO_ARCTIC=True,
             ADD_TO_CSV=True,
-            csv_adj_data_path="data.futures_spreadbet.adjusted_prices_csv",
+            csv_adj_data_path="fsb.adjusted_prices_csv",
         )

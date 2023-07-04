@@ -40,8 +40,8 @@ def do_report(config: reportConfig):
     with dataBlob(
         log_name=f"Test {config.title}",
         csv_data_paths=dict(
-            csvFuturesInstrumentData="data.futures_spreadbet.csvconfig",
-            csvRollParametersData="data.futures_spreadbet.csvconfig",
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
         data.add_class_object(mongoMarketInfoData)

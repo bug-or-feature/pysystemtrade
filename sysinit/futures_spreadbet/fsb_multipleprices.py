@@ -102,7 +102,7 @@ def process_multiple_prices_single_instrument(
 
     # Add first phantom row so that the last calendar entry won't be consumed by adjust_roll_calendar()
     # m = mongoRollParametersData()
-    roll_config = csvRollParametersData(datapath="data.futures_spreadbet.csvconfig")
+    roll_config = csvRollParametersData(datapath="fsb.csvconfig")
     roll_parameters = roll_config.get_roll_parameters(instrument_code)
     print(f"{instrument_code}: {roll_parameters}")
     roll_calendar = add_phantom_row(
@@ -191,10 +191,10 @@ if __name__ == "__main__":
     # input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # change if you want to write elsewhere
-    csv_multiple_data_path = "data.futures_spreadbet.multiple_prices_csv"
+    csv_multiple_data_path = "fsb.multiple_prices_csv"
 
     # only change if you have written the files elsewhere
-    csv_roll_data_path = "data.futures_spreadbet.roll_calendars_csv"
+    csv_roll_data_path = "fsb.roll_calendars_csv"
 
     # AEX_fsb, BRENT_W_fsb
     for instrument_code in ["AEX_fsb", "BRENT_W_fsb"]:

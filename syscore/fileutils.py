@@ -187,6 +187,7 @@ def get_resolved_pathname(pathname: str) -> str:
 RESERVED_CHARACTERS = "&!*"
 
 
+# TODO filesystem replace
 def transform_path_into_list(pathname: str) -> List[str]:
     """
     >>> path_as_list("/home/rob/test.csv")
@@ -229,6 +230,7 @@ def add_reserved_characters_to_pathname(pathname: str) -> str:
     return pathname_replace
 
 
+# TODO filesystem replace
 def extract_filename_from_combined_path_and_filename_list(
     path_and_filename_as_list: list,
 ) -> Tuple[list, str]:
@@ -277,6 +279,7 @@ def is_windoze_path_list(path_as_list: List[str]) -> bool:
     return path_as_list[0].endswith(":")
 
 
+# TODO filesystem replace
 def get_relative_pathname_from_list(path_as_list: List[str]) -> str:
     """
 
