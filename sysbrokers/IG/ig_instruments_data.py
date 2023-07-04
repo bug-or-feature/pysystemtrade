@@ -9,8 +9,7 @@ from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 
 from syscore.fileutils import resolve_path_and_filename_for_package
-from syscore.constants import missing_file
-from syscore.exceptions import missingInstrument
+from syscore.exceptions import missingInstrument, missingFile
 
 from sysobjects.instruments import futuresInstrument
 
@@ -51,9 +50,9 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
             df = pd.read_csv(IG_INSTRUMENT_CONFIG_FILE)
             config_data = IGConfig(df)
 
-        except BaseException:
+        except Exception as e:
             self.log.warning("Can't read file %s" % IG_INSTRUMENT_CONFIG_FILE)
-            config_data = missing_file
+            raise missingFile from e
 
         return config_data
 

@@ -8,8 +8,7 @@ from sysbrokers.broker_fx_prices_data import brokerFxPricesData
 from sysobjects.spot_fx_prices import fxPrices
 from syslogging.logger import *
 from syscore.fileutils import resolve_path_and_filename_for_package
-from syscore.constants import missing_file
-from syscore.exceptions import missingData, missingInstrument
+from syscore.exceptions import missingData, missingInstrument, missingFile
 
 fxConfig = namedtuple("avFXConfig", ["ccy1", "ccy2", "invert"])
 
@@ -27,8 +26,9 @@ class AvFxPricesData(brokerFxPricesData):
         return self._avConnection
 
     def get_list_of_fxcodes(self) -> list:
-        config_data = self._get_fx_config()
-        if config_data is missing_file:
+        try:
+            config_data = self._get_fx_config()
+        except missingFile:
             self.log.warning(
                 "Can't get list of FX codes for Alpha Vantage as config file missing"
             )
@@ -93,8 +93,9 @@ class AvFxPricesData(brokerFxPricesData):
     def _get_config_info_for_code(self, currency_code: str) -> fxConfig:
         new_log = self.log.setup(currency_code=currency_code)
 
-        config_data = self._get_fx_config()
-        if config_data is missing_file:
+        try:
+            config_data = self._get_fx_config()
+        except missingFile:
             new_log.warning(
                 "Can't get AV FX config for %s as config file missing" % currency_code,
                 currency_code=currency_code,
@@ -124,9 +125,9 @@ class AvFxPricesData(brokerFxPricesData):
 
         try:
             config_data = pd.read_csv(self._get_fx_config_filename())
-        except BaseException:
+        except Exception as e:
             self.log.warn("Can't read file %s" % self._get_fx_config_filename())
-            config_data = missing_file
+            raise missingFile from e
 
         self._config = config_data
 
