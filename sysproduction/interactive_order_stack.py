@@ -250,7 +250,7 @@ def get_broker_order_details_for_balance_trade(data: dataBlob) -> brokerOrder:
         "Commission", type_expected=float, allow_default=True, default_value=0.0
     )
 
-    strategy_name = get_valid_strategy_name_from_user(data=data, source="positions")
+    strategy_name = get_valid_strategy_name_from_user(data=data, source="config")
 
     data_broker = dataBroker(data)
     default_account = data_broker.get_broker_account()
@@ -451,10 +451,12 @@ def create_manual_trade(data):
 
 
 def enter_manual_instrument_order(data):
-    strategy_name = get_valid_strategy_name_from_user(data=data, source="positions")
+    strategy_name = get_valid_strategy_name_from_user(data=data, source="config")
     instrument_code = get_valid_instrument_code_from_user(data)
     qty = get_input_from_user_and_convert_to_type(
-        "Quantity (-ve for sell, +ve for buy?)", type_expected=int, allow_default=False
+        "Quantity (-ve for sell, +ve for buy?)",
+        type_expected=float,
+        allow_default=False,
     )
     possible_order_types = market_order_type.allowed_types()
     order_type = input("Order type (one of %s)?" % str(possible_order_types))
@@ -913,19 +915,20 @@ def view_positions(data):
     ans1 = diag_positions.get_all_current_strategy_instrument_positions()
     ans2 = diag_positions.get_all_current_contract_positions_with_db_expiries()
     ans3 = data_broker.get_all_current_contract_positions()
-    print("Optimal vs actual")
+    print("\nOptimal vs actual")
     print(ans0.sort_values("breaks"))
-    print("Strategy positions")
+    print("\nStrategy positions")
     print(ans1.as_pd_df().sort_values("instrument_code"))
-    print("\n Contract level positions")
+    print("\nContract level positions")
     print(ans2.as_pd_df().sort_values(["instrument_code", "contract_date"]))
     breaks = diag_positions.get_list_of_breaks_between_contract_and_strategy_positions()
     if len(breaks) > 0:
         print("\nBREAKS between strategy and contract positions: %s\n" % str(breaks))
     else:
         print("(No breaks positions consistent)")
-    print("\n Broker positions")
+    print("\nBroker positions")
     print(ans3.as_pd_df().sort_values(["instrument_code", "contract_date"]))
+    print("\n")
     breaks = data_broker.get_list_of_breaks_between_broker_and_db_contract_positions()
     if len(breaks) > 0:
         print(
@@ -934,6 +937,7 @@ def view_positions(data):
         )
     else:
         print("(No breaks positions consistent)")
+    print("\n")
     return None
 
 
