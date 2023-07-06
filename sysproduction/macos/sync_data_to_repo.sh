@@ -3,7 +3,7 @@
 source ~/.profile
 
 SOURCE="$PYSYS_CODE/data/backups_csv";
-DEST="$PYSYS_CODE/data/futures_spreadbet";
+DEST="$PYSYS_CODE/fsb";
 
 echo "`date "+%Y-%m-%d %H:%M:%S"` Syncing data files to repo, source: '$SOURCE', dest: '$DEST'"
 
