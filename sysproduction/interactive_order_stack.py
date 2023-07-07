@@ -153,16 +153,16 @@ def view_generic_stack(stack):
 
 def view_broker_order_list(data):
     data_broker = dataBroker(data)
-    # broker_orders = data_broker.get_list_of_orders()
-    # print("\n\nOrders received from broker API\n")
-    # for order in broker_orders:
-    #     print(order)
-    # print("\n\nStored (orders made in this session):\n")
-    print("\n\nRecent activity:\n")
-    transaction_list = data_broker.get_list_of_recent_transactions()
-    for trans in transaction_list:
-        print(trans)
-    print("\n\n")
+    broker_orders = data_broker.get_list_of_orders()
+    print("\n\nOrders received from broker API\n")
+    for order in broker_orders:
+        print(order)
+    print("\n\nStored (orders made in this session):\n")
+    # print("\n\nRecent activity:\n")
+    # transaction_list = data_broker.get_list_of_recent_transactions()
+    # for trans in transaction_list:
+    #     print(trans)
+    # print("\n\n")
 
 
 def spawn_contracts_from_instrument_orders(data):
