@@ -68,7 +68,7 @@ def run_daily_pandl_report():
 
 
 def run_reconcile_report():
-    pass
+    do_report(reconcile_report_config.new_config_with_modified_output("console"))
 
 
 def run_trade_report():
