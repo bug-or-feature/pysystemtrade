@@ -29,7 +29,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         self,
         broker_conn: IGConnection,
         data: dataBlob,
-        log=logtoscreen("IgFuturesContractPriceData"),
+        log=get_logger("IgFuturesContractPriceData"),
     ):
         super().__init__(log=log, data=data)
         self._broker_conn = broker_conn

@@ -14,7 +14,7 @@ class MongoHistoricAllowanceData:
     def __init__(
         self,
         mongo_db=arg_not_supplied,
-        log=logtoscreen("mongoHistoricAllowanceData"),
+        log=get_logger("mongoHistoricAllowanceData"),
     ):
 
         self._mongo_data = mongoDataWithSingleKey(

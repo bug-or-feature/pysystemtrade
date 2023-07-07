@@ -97,13 +97,6 @@ keep_type.info("type first, stage one")
 keep_type = keep_type.setup_empty_except_keep_type()
 keep_type.info("type first, no stage")
 
-# alias logtoscreen
-screen_name = logtoscreen("logtoscreen")
-screen_name.info("logtoscreen() is a temporary alias for get_logger()")
-
-screen_attrs = logtoscreen(**{TYPE_LOG_LABEL: "config", STAGE_LOG_LABEL: "config"})
-screen_attrs.info("logtoscreen() with attributes is a temporary alias for get_logger()")
-
 ib_insync = get_logger("ib_insync.client")
 ib_insync.debug("debug")
 ib_insync.info("info")

@@ -13,7 +13,7 @@ class IgCapitalData(brokerCapitalData):
         self,
         broker_conn: IGConnection,
         data: dataBlob,
-        log: pst_logger = logtoscreen("IGCapitalData"),
+        log: pst_logger = get_logger("IGCapitalData"),
     ):
         super().__init__(log=log, data=data)
         self._broker_conn = broker_conn

@@ -18,7 +18,7 @@ class CsvFsbContractPriceData(csvFuturesContractPriceData):
     def __init__(
         self,
         datapath=arg_not_supplied,
-        log=logtoscreen("CsvFsbContractPriceData"),
+        log=get_logger("CsvFsbContractPriceData"),
         config: ConfigCsvFuturesPrices = arg_not_supplied,
     ):
         super().__init__(log=log, datapath=datapath, config=config)

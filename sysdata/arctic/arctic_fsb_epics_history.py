@@ -13,7 +13,7 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
     Class to read / write IG epics history data to and from arctic
     """
 
-    def __init__(self, mongo_db=None, log=logtoscreen("arcticFsbEpicsHistory")):
+    def __init__(self, mongo_db=None, log=get_logger("arcticFsbEpicsHistory")):
         super().__init__(log=log)
         self._arctic = arcticData(EPICS_HISTORY_COLLECTION, mongo_db=mongo_db)
 

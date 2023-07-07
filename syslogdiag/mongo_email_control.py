@@ -4,7 +4,7 @@ from syscore.dateutils import datetime_to_long, long_to_datetime
 from syslogdiag.email_control import emailControlData
 from sysdata.mongodb.mongo_generic import mongoDataWithMultipleKeys
 
-from syslogdiag.log_to_screen import logtoscreen
+from syslogging.logger import get_logger
 
 EMAIL_CONTROL_COLLECTION = "EMAIL_CONTROL"
 LAST_EMAIL_SENT = "last_email_sent"
@@ -25,7 +25,7 @@ INDEX_CONFIG = {
 
 
 class mongoEmailControlData(emailControlData):
-    def __init__(self, mongo_db=None, log=logtoscreen("mongoEmailControlData")):
+    def __init__(self, mongo_db=None, log=get_logger("mongoEmailControlData")):
 
         super().__init__(log=log)
         self._mongo_data = mongoDataWithMultipleKeys(
@@ -80,30 +80,3 @@ class mongoEmailControlData(emailControlData):
         self.mongo_data.add_data(
             dict_of_keys=dict_of_keys, data_dict=data_dict, allow_overwrite=True
         )
-
-    def store_message(self, body, subject):
-        datetime_now = datetime_to_long(datetime.datetime.now())
-        data_dict = {BODY_KEY: body}
-        dict_of_keys = {
-            SUBJECT_KEY: subject,
-            TYPE_KEY: STORED_MSG,
-            DATE_KEY: datetime_now,
-        }
-
-        self.mongo_data.add_data(dict_of_keys=dict_of_keys, data_dict=data_dict)
-
-    def get_stored_messages(self):
-        dict_of_keys = {TYPE_KEY: STORED_MSG}
-        list_of_msg_dicts = self.mongo_data.get_list_of_result_dicts_for_dict_keys(
-            dict_of_keys
-        )
-        stored_msgs = [
-            (long_to_datetime(dict[DATE_KEY]), dict[SUBJECT_KEY], dict[BODY_KEY])
-            for dict in list_of_msg_dicts
-        ]
-
-        return stored_msgs
-
-    def delete_stored_messages(self):
-        # everything
-        self.mongo_data.delete_data_without_any_warning({TYPE_KEY: STORED_MSG})

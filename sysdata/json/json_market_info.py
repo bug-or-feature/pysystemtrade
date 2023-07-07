@@ -21,9 +21,7 @@ MARKET_INFO_DIRECTORY = "fsb.market_info_json"
 
 
 class jsonMarketInfoData(marketInfoData):
-    def __init__(
-        self, datapath=arg_not_supplied, log=logtoscreen("jsonMarketInfoData")
-    ):
+    def __init__(self, datapath=arg_not_supplied, log=get_logger("jsonMarketInfoData")):
         super().__init__(log=log)
         if datapath is arg_not_supplied:
             datapath = MARKET_INFO_DIRECTORY

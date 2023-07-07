@@ -33,7 +33,7 @@ class IGConnection(object):
         "D",
     ]
 
-    def __init__(self, log=logtoscreen("ConnectionIG"), auto_connect=True):
+    def __init__(self, log=get_logger("ConnectionIG"), auto_connect=True):
         self._log = log
         ig_config = get_production_config().get_element("ig_markets")
         live = self._is_live_app(ig_config)

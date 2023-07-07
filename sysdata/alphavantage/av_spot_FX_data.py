@@ -14,7 +14,7 @@ fxConfig = namedtuple("avFXConfig", ["ccy1", "ccy2", "invert"])
 
 
 class AvFxPricesData(brokerFxPricesData):
-    def __init__(self, data: dataBlob, log=logtoscreen("avFxPricesData")):
+    def __init__(self, data: dataBlob, log=get_logger("avFxPricesData")):
         super().__init__(log=log, data=data)
         self._avConnection = avConnection()
 

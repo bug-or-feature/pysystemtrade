@@ -16,7 +16,7 @@ class mongoEpicPeriodsData(epicPeriodsData):
     """
 
     def __init__(
-        self, mongo_db=arg_not_supplied, log=logtoscreen("mongoEpicPeriodsData")
+        self, mongo_db=arg_not_supplied, log=get_logger("mongoEpicPeriodsData")
     ):
         super().__init__(log=log)
         mongo_data = mongoDataWithSingleKey(

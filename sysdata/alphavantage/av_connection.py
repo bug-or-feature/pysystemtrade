@@ -23,7 +23,7 @@ class avConnection(object):
 
     ALPHA_VANTAGE_URL = "https://www.alphavantage.co/"
 
-    def __init__(self, log=logtoscreen("Alpha Vantage")):
+    def __init__(self, log=get_logger("Alpha Vantage")):
         self._log = log
         self._session = requests.Session()
         self._session.headers.update({"User-Agent": "Mozilla/5.0"})

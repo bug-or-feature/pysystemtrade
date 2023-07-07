@@ -33,7 +33,7 @@ class mongoMarketInfoData(marketInfoData):
     """
 
     def __init__(
-        self, mongo_db=arg_not_supplied, log=logtoscreen("mongoMarketInfoData")
+        self, mongo_db=arg_not_supplied, log=get_logger("mongoMarketInfoData")
     ):
         super().__init__(log=log)
         self._mongo_data = mongoDataWithMultipleKeys(

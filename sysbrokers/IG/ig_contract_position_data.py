@@ -20,7 +20,7 @@ class IgContractPositionData(brokerContractPositionData):
         self,
         broker_conn: IGConnection,
         data: dataBlob,
-        log=logtoscreen("IgContractPositionData"),
+        log=get_logger("IgContractPositionData"),
     ):
         super().__init__(log=log, data=data)
         self._broker_conn = broker_conn

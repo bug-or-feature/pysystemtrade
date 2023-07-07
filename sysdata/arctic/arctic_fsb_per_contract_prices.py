@@ -23,7 +23,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
     Read and write FSB price data to and from Arctic / MongoDB
     """
 
-    def __init__(self, mongo_db=None, log=logtoscreen("ArcticFsbContractPriceData")):
+    def __init__(self, mongo_db=None, log=get_logger("ArcticFsbContractPriceData")):
         super().__init__(log=log)
         self._arctic_connection = arcticData(CONTRACT_COLLECTION, mongo_db=mongo_db)
 

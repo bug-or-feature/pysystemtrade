@@ -11,7 +11,7 @@ class IgFxHandlingData(brokerFxHandlingData):
         self,
         broker_conn: IGConnection,
         data: dataBlob,
-        log=logtoscreen("IgFxHandlingData"),
+        log=get_logger("IgFxHandlingData"),
     ):
         super().__init__(log=log, data=data)
         self._broker_conn = broker_conn

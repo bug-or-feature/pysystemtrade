@@ -35,7 +35,7 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
         self,
         broker_conn: IGConnection,
         data: dataBlob,
-        log=logtoscreen("IgFsbInstrumentData"),
+        log=get_logger("IgFsbInstrumentData"),
     ):
         super().__init__(log=log, data=data)
         self._broker_conn = broker_conn

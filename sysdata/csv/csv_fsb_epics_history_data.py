@@ -19,7 +19,7 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
     def __init__(
         self,
         datapath=arg_not_supplied,
-        log=logtoscreen("CsvFsbEpicHistoryData"),
+        log=get_logger("CsvFsbEpicHistoryData"),
     ):
 
         super().__init__(log=log)

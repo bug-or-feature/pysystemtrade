@@ -37,7 +37,7 @@ class IgExecutionStackData(brokerExecutionStackData):
         self,
         broker_conn: IGConnection,
         data: dataBlob,
-        log=logtoscreen("IgExecutionStackData"),
+        log=get_logger("IgExecutionStackData"),
     ):
         super().__init__(log=log, data=data)
         self._broker_conn = broker_conn

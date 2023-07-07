@@ -265,6 +265,7 @@ class ibPriceClient(ibContractsClient):
         last_call = self.last_historic_price_calltime
         _avoid_pacing_violation(last_call, log=log)
 
+        ## If live data is available a request for delayed data would be ignored by TWS.
         self.ib.reqMarketDataType(3)
         bars = self.ib.reqHistoricalData(
             ibcontract,
@@ -324,7 +325,7 @@ def _get_barsize_and_duration_from_frequency(bar_freq: Frequency) -> (str, str):
 
 
 def _avoid_pacing_violation(
-    last_call_datetime: datetime.datetime, log: pst_logger = logtoscreen("")
+    last_call_datetime: datetime.datetime, log: pst_logger = get_logger("")
 ):
     printed_warning_already = False
     while _pause_for_pacing(last_call_datetime):
