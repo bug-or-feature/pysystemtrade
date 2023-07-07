@@ -21,7 +21,13 @@ from sysproduction.data.control_process import get_list_of_strategies_for_proces
 
 
 def run_strategy_order_generator():
-    data = dataBlob(log_name=process_name)
+    data = dataBlob(
+        log_name=process_name,
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
+        ),
+    )
     list_of_timer_names_and_functions = (
         get_list_of_strategy_order_timer_functions_for_strategies(data)
     )
