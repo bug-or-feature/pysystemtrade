@@ -20,6 +20,17 @@ from sysexecution.strategies.classic_buffered_positions import (
 from sysexecution.strategies.classic_buffered_positions import optimalPositions
 
 
+MIN_BET_DEMO_OVERRIDES = {
+    "CAD_fsb": 0.5,
+    "CARBON_fsb": 0.5,
+    "COPPER_fsb": 0.5,
+    "CRUDE_W_fsb": 0.5,
+    "EUROSTX_fsb": 0.5,
+    "GOLD_fsb": 0.5,
+    "HANG_fsb": 0.5,
+}
+
+
 class FsbOrderGenerator(orderGeneratorForBufferedPositions):
     def get_required_orders(self) -> listOfOrders:
         strategy_name = self.strategy_name
@@ -69,6 +80,8 @@ def fsb_trade_given_optimal_and_actual_positions(
     upper = optimal_positions.upper_positions[instrument_code]
     lower = optimal_positions.lower_positions[instrument_code]
     min_bet = instr_data.as_dict()["Pointsize"]
+    if instrument_code in MIN_BET_DEMO_OVERRIDES:
+        min_bet = MIN_BET_DEMO_OVERRIDES[instrument_code]
 
     current = actual_positions.get(instrument_code, 0.0)
 
