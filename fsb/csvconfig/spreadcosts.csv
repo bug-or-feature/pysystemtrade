@@ -6,12 +6,12 @@ AUD_fsb,5.4
 BOBL_fsb,2.9
 BRENT_W_fsb,3.0
 BTP_fsb,2.58
-BTP3_fsb,10.0
+BTP3_fsb,2.5
 BUND_fsb,1.5
 BUXL_fsb,2.3
 CAC_fsb,2.0
 CAD_fsb,3.96
-CHFJPY_fsb,6.0
+CHFJPY_fsb,5.5
 CHF_fsb,4.96
 COCOA_LDN_fsb,3.5
 COCOA_fsb,4.0
@@ -27,10 +27,11 @@ DX_fsb,3.96
 EDOLLAR,0.0025
 EDOLLAR_fsb,0.8
 EUA_fsb,4.3
-EURCAD_fsb,9.25
-EURCHF_fsb,5.5
+EURCAD_fsb,8.25
+EURCHF_fsb,5.0
 EURGBP_fsb,4.0
 EURIBOR_fsb,2.4
+EURIBOR-ICE_fsb,2.4
 EUROSTX,0.48
 EUROSTX_fsb,1.0
 EUR_fsb,5.44
@@ -39,8 +40,10 @@ FTSE100_fsb,2.1
 GASOIL_fsb,0.52
 GASOLINE_fsb,15.0
 GAS_US_fsb,5.1
-GBPCHF_fsb,10.0
-GBPJPY_fsb,10.0
+GAS_NL_fsb,50.0
+GAS_UK_fsb,4.0
+GBPCHF_fsb,9.5
+GBPJPY_fsb,9.6
 GBP_fsb,5.25
 GILT_fsb,1.8
 GOLD_fsb,0.3
@@ -53,6 +56,7 @@ JSE40_fsb,30.0
 LEANHOG_fsb,7.19
 LIVECOW_fsb,9.94
 LUMBER_fsb,400.0
+LUMBER-new_fsb,250.00
 MSCISING_fsb,3.5
 NASDAQ_fsb,1.5
 NIKKEI_fsb,6.4
@@ -71,6 +75,7 @@ SEK_fsb,42.5
 SHATZ_fsb,0.66
 SILVER_fsb,1.5
 SMI_fsb,3.0
+SOFR_fsb,0.5
 SONIA3_fsb,0.94
 SOYBEAN_fsb,1.0
 SOYMEAL_fsb,40.0
