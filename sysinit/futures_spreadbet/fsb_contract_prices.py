@@ -71,7 +71,8 @@ if __name__ == "__main__":
     )
 
     # XXX
-    for instr in ["BTP3"]:
+    # "AUDJPY","BTP3"
+    for instr in ["AUDJPY", "BTP3"]:
         transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
 
     # transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)

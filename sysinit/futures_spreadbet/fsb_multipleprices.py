@@ -1,7 +1,7 @@
 import datetime
 
 import pandas as pd
-
+from syscore.pdutils import print_full
 from syscore.constants import arg_not_supplied
 from syscore.text import remove_suffix
 from sysdata.arctic.arctic_futures_per_contract_prices import (
@@ -123,7 +123,8 @@ def process_multiple_prices_single_instrument(
         roll_calendar, dict_of_futures_contract_closing_prices
     )
 
-    print(multiple_prices)
+    print_full(multiple_prices.head(100))
+    print_full(multiple_prices.tail(50))
 
     if ADD_TO_ARCTIC:
         arctic_multiple_prices.add_multiple_prices(
@@ -196,8 +197,8 @@ if __name__ == "__main__":
     # only change if you have written the files elsewhere
     csv_roll_data_path = "fsb.roll_calendars_csv"
 
-    # AEX_fsb, BRENT_W_fsb
-    for instrument_code in ["AEX_fsb", "BRENT_W_fsb"]:
+    # "AUDJPY_fsb", "BTP3_fsb"
+    for instrument_code in ["AUDJPY_fsb", "BTP3_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=False,

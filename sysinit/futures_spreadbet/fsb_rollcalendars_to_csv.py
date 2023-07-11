@@ -5,6 +5,7 @@ from syscore.fileutils import resolve_path_and_filename_for_package
 from syscore.constants import arg_not_supplied
 from syscore.pdutils import print_full
 from syscore.text import remove_suffix
+from syscore.dateutils import Frequency
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
@@ -17,6 +18,7 @@ from sysinit.futures_spreadbet.fsb_contract_prices import (
     build_import_config,
     build_norgate_import_config,
 )
+from sysobjects.contracts import futuresContract as fc
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
@@ -158,19 +160,40 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # XXX_fsb
-    instr_code = "AEX_fsb"
+    # "AUDJPY_fsb"
+    # "BTP3_fsb"
+    # "CHFJPY_fsb"
+    # "EURCAD_fsb"
+    # "EURCHF_fsb"
+    # "GAS_NL_fsb"
+    # "GAS_UK_fsb"
+    # "GBPCHF_fsb"
+    # "GBPJPY_fsb"
+    # "LUMBER-new_fsb"
+    # "NOK_fsb"
+    # "SEK_fsb"
+    # "SOFR_fsb"
+
+    instr_code = "CHFJPY_fsb"
 
     # run with database prices
-    prices = arcticFuturesContractPriceData()
+    # prices = arcticFuturesContractPriceData()
 
     # run with csv prices
-    # prices = csvFuturesContractPriceData(
-    #     datapath=resolve_path_and_filename_for_package(
-    #         get_production_config().get_element_or_missing_data("barchart_path")
-    #         # get_production_config().get_element_or_missing_data("norgate_path")
-    #     ),
-    #     config=build_import_config(instr_code)
-    #     # config=build_norgate_import_config(instr_code)
+    prices = csvFuturesContractPriceData(
+        datapath=resolve_path_and_filename_for_package(
+            get_production_config().get_element_or_default("barchart_path", "")
+            # get_production_config().get_element_or_missing_data("norgate_path")
+        ),
+        config=build_import_config(instr_code)
+        # config=build_norgate_import_config(instr_code)
+    )
+
+    # prices.get_prices_at_frequency_for_instrument("CHFJPY", Frequency.Day)
+
+    # blah = prices.get_prices_at_frequency_for_contract_object(
+    #     fc.from_two_strings("CHFJPY", "20210900"),
+    #     Frequency.Day,
     # )
 
     if method == "build":
