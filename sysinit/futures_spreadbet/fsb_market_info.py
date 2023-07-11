@@ -141,20 +141,23 @@ def test_write_json():
 
 if __name__ == "__main__":
 
-    # file_import_market_info_single("GOLD_fsb")
+    # file_import_market_info_single("GAS_NL_fsb")
 
     import_market_info(
         [
-            "BTP_fsb",
+            "AUDJPY_fsb",
             "BTP3_fsb",
-            # "AUDJPY_fsb",
-            # "CHFJPY_fsb",
-            # "EURCAD_fsb",
-            # "EURCHF_fsb",
-            # "GBPCHF_fsb",
-            # "GBPJPY_fsb",
-            # "NOK_fsb",
-            # "SEK_fsb",
+            "CHFJPY_fsb",
+            "EURCAD_fsb",
+            "EURCHF_fsb",
+            "GAS_NL_fsb",
+            "GAS_UK_fsb",
+            "GBPCHF_fsb",
+            "GBPJPY_fsb",
+            "LUMBER-new_fsb",
+            "NOK_fsb",
+            "SEK_fsb",
+            "SOFR_fsb",
         ]
     )
 
