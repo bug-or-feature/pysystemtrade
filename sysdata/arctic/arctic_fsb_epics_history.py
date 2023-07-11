@@ -70,11 +70,13 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
                 log.error(f"Data exists for {instrument_code}, delete it first")
                 return failure
 
-        epics_history_data = pd.DataFrame(epics_history)
+        data = pd.DataFrame(epics_history)
+        # remove duplicate rows
+        data = data[~(data.shift() == data).all(axis=1)]
 
-        self.arctic.write(instrument_code, epics_history_data)
+        self.arctic.write(instrument_code, data)
         self.log.debug(
-            f"Wrote {len(epics_history_data)} lines of history for {instrument_code}",
+            f"Wrote {len(data)} lines of history for {instrument_code}",
             instrument_code=instrument_code,
         )
 
