@@ -226,7 +226,7 @@ class csvFuturesContractPriceData(futuresContractPriceData):
         if frequency is MIXED_FREQ:
             frequency_str = ""
         else:
-            frequency_str = frequency.name + "/"
+            frequency_str = frequency.name + "_"
 
         instrument_str = str(futures_contract_object.instrument)
         date_str = str(futures_contract_object.date_str)
