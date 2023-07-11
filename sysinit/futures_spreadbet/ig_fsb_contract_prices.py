@@ -46,11 +46,11 @@ def transfer_ig_prices_to_arctic(datapath):
 
 if __name__ == "__main__":
     # input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    ig_config = get_production_config().get_element_or_missing_data("ig_markets")
+    ig_config = get_production_config().get_element_or_default("ig_markets", "")
     datapath = resolve_path_and_filename_for_package(ig_config["path"])
 
-    # ['EURGBP_fsb', 'JSE40_fsb', 'OMXS30_fsb']
-    for instr in ["BTP_fsb", "BTP3_fsb"]:
+    # ["AUDJPY_fsb"]
+    for instr in ["AUDJPY_fsb"]:
         transfer_ig_prices_to_arctic_single(instr, datapath=datapath)
 
     # all instruments
