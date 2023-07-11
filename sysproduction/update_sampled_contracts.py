@@ -121,8 +121,7 @@ def update_active_contracts_for_instrument(fsb_code: str, data: dataBlob):
         fsb_code, data, contract_chain=required_fsb_contract_chain
     )
 
-    # TODO do we need to do this with FSB chain too?
-    check_key_contracts_have_not_expired(instrument_code=fut_code, data=data)
+    check_key_contracts_have_not_expired(instrument_code=fsb_code, data=data)
 
 
 def get_contract_chain(data: dataBlob, instrument_code: str) -> listOfFuturesContracts:
