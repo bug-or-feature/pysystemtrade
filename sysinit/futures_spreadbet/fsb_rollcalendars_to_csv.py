@@ -159,9 +159,10 @@ if __name__ == "__main__":
     if args is not None:
         method = sys.argv[1]
 
-    # XXX_fsb
+    # done
     # "AUDJPY_fsb"
     # "BTP3_fsb"
+
     # "CHFJPY_fsb"
     # "EURCAD_fsb"
     # "EURCHF_fsb"
@@ -174,6 +175,7 @@ if __name__ == "__main__":
     # "SEK_fsb"
     # "SOFR_fsb"
 
+    # XXX_fsb
     instr_code = "CHFJPY_fsb"
 
     # run with database prices
