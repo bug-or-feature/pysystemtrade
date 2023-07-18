@@ -9,6 +9,7 @@ from sysexecution.stack_handler.create_broker_orders_from_contract_orders import
 from sysexecution.stack_handler.additional_sampling import (
     stackHandlerAdditionalSampling,
 )
+from sysexecution.stack_handler.fills import stackHandlerForFills
 
 
 def do_check_external_position_break():
@@ -46,7 +47,16 @@ def do_refresh_additional_sampling_all_instruments():
     stack_handler.data.close()
 
 
+def do_process_fills_stack():
+    stack_handler = stackHandlerForFills()
+    stack_handler.log.label(type="stackHandlerForFills")
+    stack_handler.process_fills_stack()
+    stack_handler.data.close()
+
+
 if __name__ == "__main__":
     # to run for just one instrument, edit
     # sysexecution/stack_handler/additional_sampling.py, line ~41
-    do_refresh_additional_sampling_all_instruments()
+    # do_refresh_additional_sampling_all_instruments()
+    # do_process_fills_stack()
+    do_create_broker_orders_from_contract_orders()
