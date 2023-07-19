@@ -1,27 +1,59 @@
 from datetime import datetime, timedelta
 import pytz
-
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from syscore.exceptions import missingContract, missingData
 
 from sysbrokers.broker_futures_contract_data import brokerFuturesContractData
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
-from sysbrokers.IG.ig_connection import IGConnection
+from sysbrokers.IG.ig_connection import IGConnection, tickerWithQtyDir
+
 from sysbrokers.broker_futures_contract_price_data import brokerFuturesContractPriceData
 from sysdata.data_blob import dataBlob
 from sysdata.barchart.bc_connection import bcConnection
 from sysdata.futures_spreadbet.market_info_data import marketInfoData
-
 from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
-from sysexecution.tick_data import dataFrameOfRecentTicks, tickerObject
+from sysexecution.tick_data import (
+    dataFrameOfRecentTicks,
+    tickerObject,
+)
 from sysexecution.orders.contract_orders import contractOrder
 from sysexecution.orders.broker_orders import brokerOrder
+from sysexecution.trade_qty import tradeQuantity
 
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 from sysobjects.contracts import futuresContract
 from sysobjects.fsb_contract_prices import FsbContractPrices
 
 from syslogging.logger import *
+
+
+class igTickerObject(tickerObject):
+    def __init__(
+        self,
+        ticker_info: tickerWithQtyDir,
+    ):
+        super().__init__(ticker_info.ticker, qty=ticker_info.qty)
+        direction = ticker_info.direction
+        self._log = get_logger("igTickerObject")
+
+        # qty can just be +1 or -1 size of trade doesn't matter to ticker
+        # qty = sign_from_BS(BorS)
+
+    def refresh(self):
+        # No need for this, IG pushes updates
+        pass
+
+    def bid(self):
+        return self.ticker.bid
+
+    def ask(self):
+        return self.ticker.ask
+
+    def bid_size(self):
+        return self.ticker.bidSize
+
+    def ask_size(self):
+        return self.ticker.askSize
 
 
 class IgFuturesContractPriceData(brokerFuturesContractPriceData):
@@ -160,7 +192,43 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             return self._get_ig_prices(contract_object_plus)
 
     def get_ticker_object_for_order(self, order: contractOrder) -> tickerObject:
-        raise NotImplementedError("Not implemented")
+        futures_contract = order.futures_contract
+        trade_list_for_multiple_legs = order.trade
+
+        ticker = self.get_ticker_object_for_contract_and_trade_qty(
+            futures_contract=futures_contract,
+            trade_list_for_multiple_legs=trade_list_for_multiple_legs,
+        )
+
+        return ticker
+
+    def get_ticker_object_for_contract_and_trade_qty(
+        self,
+        futures_contract: futuresContract,
+        trade_list_for_multiple_legs: tradeQuantity = None,
+    ) -> tickerObject:
+        new_log = futures_contract.specific_log(self.log)
+
+        try:
+            contract_object_with_ib_data = (
+                self.fsb_contract_data.get_contract_object_with_config_data(
+                    futures_contract
+                )
+            )
+        except missingContract:
+            new_log.warning("Can't get data for %s" % str(futures_contract))
+            return futuresContractPrices.create_empty()
+
+        epic = self.market_info_data.get_epic_for_contract(futures_contract)
+        ticker_with_bs = self.broker_conn.get_ticker_object(
+            epic,
+            contract_object_with_ib_data,
+            trade_list_for_multiple_legs=trade_list_for_multiple_legs,
+        )
+
+        ticker_object = igTickerObject(ticker_with_bs)
+
+        return ticker_object
 
     def cancel_market_data_for_order(self, order: brokerOrder):
         raise NotImplementedError("Not implemented")
@@ -186,11 +254,11 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             contract_object.instrument_code, epic
         )
 
-        if len(tick_list) < 3:
-            new_log.warn(
-                f"Not enough recent price tick data for {contract_object} to record spreads"
-            )
-            raise missingData
+        # if len(tick_list) < 3:
+        #     new_log.warn(
+        #         f"Not enough recent price tick data for {contract_object} to record spreads"
+        #     )
+        #     raise missingData
 
         tick_data_as_df = from_bid_ask_tick_data_to_dataframe(tick_list)
 

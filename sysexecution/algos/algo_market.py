@@ -14,7 +14,7 @@ from sysexecution.algos.common_functions import (
 from sysexecution.order_stacks.broker_order_stack import orderWithControls
 from sysexecution.orders.broker_orders import market_order_type, brokerOrderType
 
-SIZE_LIMIT = 1
+SIZE_LIMIT = 999.0
 ORDER_TIME_OUT = 600
 
 
@@ -57,7 +57,7 @@ class algoMarket(Algo):
 
         if cut_down_contract_order.trade != contract_order.trade:
             log.debug(
-                "Cut down order to size %s from %s because of algo size limit"
+                "Cut down order to size %s from %s because of algo (market) size limit"
                 % (str(contract_order.trade), str(cut_down_contract_order.trade))
             )
 

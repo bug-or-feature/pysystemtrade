@@ -3,16 +3,42 @@ from dataclasses import dataclass
 
 import pandas as pd
 from pandas import json_normalize
+from timeit import default_timer as timer
 from tenacity import Retrying, wait_exponential, retry_if_exception_type
 from trading_ig.rest import IGService, ApiExceededException
 from trading_ig.stream import IGStreamService
 from trading_ig.lightstreamer import Subscription
 
-from sysdata.config.production_config import get_production_config
-from syslogging.logger import *
-from sysobjects.fsb_contract_prices import FsbContractPrices
+from syscore.constants import arg_not_supplied
+from sysbrokers.IG.ig_positions import resolveBS_for_list
+from sysbrokers.IG.ig_ticker import IgTicker
 from syscore.exceptions import missingContract, missingData
-from timeit import default_timer as timer
+from sysdata.config.production_config import get_production_config
+from sysexecution.orders.named_order_objects import missing_order
+from sysexecution.trade_qty import tradeQuantity
+from syslogging.logger import *
+from sysobjects.contracts import futuresContract
+from sysobjects.fsb_contract_prices import FsbContractPrices
+
+from sysbrokers.IG.ig_translate_broker_order_objects import (
+    tradeWithContract,
+    # listOfTradesWithContracts,
+)
+from sysexecution.orders.broker_orders import (
+    brokerOrderType,
+    market_order_type,
+    limit_order_type,
+    snap_mkt_type,
+    snap_mid_type,
+    snap_prim_type,
+)
+
+
+class tickerWithQtyDir(object):
+    def __init__(self, ticker, direction: str, quantity: float):
+        self.ticker = ticker
+        self.direction = direction
+        self.qty = quantity
 
 
 class IGConnection(object):
@@ -75,7 +101,7 @@ class IGConnection(object):
         return stream_service
 
     def _is_live_app(self, config):
-        return self.log.name not in config["demo_types"]
+        return self.log.name in config["live_types"]
 
     @property
     def rest_service(self):
@@ -304,6 +330,26 @@ class IGConnection(object):
         else:
             raise missingContract
 
+    def get_ticker_object(
+        self,
+        epic: str,
+        contract_object_with_ib_data: futuresContract,
+        trade_list_for_multiple_legs: tradeQuantity = None,
+    ) -> tickerWithQtyDir:
+
+        # specific_log = contract_object_with_ib_data.specific_log(self.log)
+
+        # self.ib.reqMktData(ibcontract, "", False, False)
+        # ticker = self.ib.ticker(ibcontract)
+
+        ticker = IgTicker.get_instance(self, epic)
+
+        dir, qty = resolveBS_for_list(trade_list_for_multiple_legs)
+
+        ticker_with_bs = tickerWithQtyDir(ticker, dir, qty)
+
+        return ticker_with_bs
+
     def get_recent_bid_ask_price_data(self, instr_code, epic):
 
         self.log.label(instrument_code=instr_code)
@@ -342,6 +388,91 @@ class IGConnection(object):
                 f"Unable to sample spreads for {instr_code} ({epic}), market is not tradeable"
             )
             return []
+
+    def broker_submit_order(
+        self,
+        futures_contract_with_ib_data: futuresContract,
+        trade_list: tradeQuantity,
+        account_id: str = arg_not_supplied,
+        order_type: brokerOrderType = market_order_type,
+        limit_price: float = None,
+    ) -> tradeWithContract:
+
+        """
+        :param ibcontract: contract_object_with_ib_data: contract where instrument has ib metadata
+        :param trade: int
+        :param account: str
+        :param order_type: str, market or limit
+        :param limit_price: None or float
+        :return: brokers trade object
+        """
+
+        try:
+            ibcontract_with_legs = self.ib_futures_contract_with_legs(
+                futures_contract_with_ib_data=futures_contract_with_ib_data,
+                trade_list_for_multiple_legs=trade_list,
+            )
+        except missingContract:
+            return missing_order
+
+        ibcontract = ibcontract_with_legs.ibcontract
+
+        ib_order = self._build_ib_order(
+            trade_list=trade_list,
+            account_id=account_id,
+            order_type=order_type,
+            limit_price=limit_price,
+        )
+
+        order_object = self.ib.placeOrder(ibcontract, ib_order)
+
+        trade_with_contract = tradeWithContract(ibcontract_with_legs, order_object)
+
+        return trade_with_contract
+
+    def ib_futures_contract_with_legs(
+        self,
+        futures_contract_with_ib_data: futuresContract,
+        allow_expired: bool = False,
+        always_return_single_leg: bool = False,
+        trade_list_for_multiple_legs: tradeQuantity = None,
+    ) -> ibcontractWithLegs:
+        """
+        Return a complete and unique IB contract that matches contract_object_with_ib_data
+        Doesn't actually get the data from IB, tries to get from cache
+
+        :param futures_contract_with_ib_data: contract, containing instrument metadata suitable for IB
+        :return: a single ib contract object
+        """
+        contract_object_to_use = copy(futures_contract_with_ib_data)
+        if always_return_single_leg and contract_object_to_use.is_spread_contract():
+            contract_object_to_use = (
+                contract_object_to_use.new_contract_with_first_contract_date()
+            )
+
+        ibcontract_with_legs = self._get_stored_or_live_contract(
+            contract_object_to_use=contract_object_to_use,
+            trade_list_for_multiple_legs=trade_list_for_multiple_legs,
+            allow_expired=allow_expired,
+        )
+
+        return ibcontract_with_legs
+
+    def _get_stored_or_live_contract(
+        self,
+        contract_object_to_use: futuresContract,
+        trade_list_for_multiple_legs: tradeQuantity = None,
+        allow_expired: bool = False,
+    ):
+
+        ibcontract_with_legs = self.cache.get(
+            self._get_ib_futures_contract_from_broker,
+            contract_object_to_use,
+            trade_list_for_multiple_legs=trade_list_for_multiple_legs,
+            allow_expired=allow_expired,
+        )
+
+        return ibcontract_with_legs
 
     def _is_tradeable(self, epic):
         market_info = self.rest_service.fetch_market_by_epic(epic)

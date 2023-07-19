@@ -39,8 +39,10 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
         """
         list_of_contract_order_ids = self.contract_stack.get_list_of_order_ids()
         for contract_order_id in list_of_contract_order_ids:
-
+            # for contract_order_id in [23, 24, 25]:
+            # for contract_order_id in [29]:
             self.create_broker_order_for_contract_order(contract_order_id)
+        # self.create_broker_order_for_contract_order(29)
 
     def create_broker_order_for_contract_order(self, contract_order_id: int):
 
@@ -54,6 +56,9 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
 
         if contract_order_to_trade is missing_order:
             # Empty order not submitting to algo
+            self.log.debug(
+                f"Contract order {contract_order_id}: Empty order not submitting to algo"
+            )
             return None
 
         algo_instance_and_placed_broker_order_with_controls = self.send_to_algo(
@@ -93,14 +98,15 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
             return missing_order
 
         if original_contract_order.fill_equals_desired_trade():
+            self.log.debug("fill_equals_desired_trade")
             return missing_order
 
-        if original_contract_order.is_order_controlled_by_algo():
-            # already being traded by an active algo
-            return missing_order
+        # if original_contract_order.is_order_controlled_by_algo():
+        #     self.log.debug("order is already controlled by algo")
+        #     return missing_order
 
         if original_contract_order.panic_order:
-            ## Do no further checks or resizing whatsoever!
+            self.log.debug("panic order!")
             return original_contract_order
 
         data_broker = self.data_broker
@@ -117,8 +123,7 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
             )
         )
         if instrument_locked or market_closed:
-            # we don't log to avoid spamming
-            # print("market is closed for order %s" % str(original_contract_order))
+            self.log.debug(f"market is closed for order {str(original_contract_order)}")
             return missing_order
 
         # RESIZE
@@ -136,7 +141,7 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
         )
 
         if original_contract_order.order_type == limit_order_type:
-            ## NO SIZE LIMITS APPLY TO LIMIT ORDERS
+            self.log.debug(f"No size limits apply to limit orders")
             return remaining_contract_order
 
         # Check the order doesn't breach trade limits
@@ -144,18 +149,18 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
             remaining_contract_order
         )
 
-        contract_order_to_trade = self.liquidity_size_contract_order(
-            contract_order_after_trade_limits
-        )
+        # contract_order_to_trade = self.liquidity_size_contract_order(
+        #     contract_order_after_trade_limits
+        # )
 
-        if contract_order_to_trade is missing_order:
+        # if contract_order_to_trade is missing_order:
+        #     return missing_order
+
+        if contract_order_after_trade_limits.fill_equals_desired_trade():
+            self.log.debug(f"Nothing left to trade")
             return missing_order
 
-        if contract_order_to_trade.fill_equals_desired_trade():
-            # Nothing left to trade
-            return missing_order
-
-        return contract_order_to_trade
+        return contract_order_after_trade_limits
 
     def apply_trade_limits_to_contract_order(
         self, proposed_order: contractOrder
@@ -346,6 +351,8 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
         self.log.debug(
             "Released contract order %s from algo control" % contract_order_id
         )
+
+        # TODO unsubscribe data subscriptions
 
     def add_trade_to_trade_limits(self, executed_order: brokerOrder):
 
