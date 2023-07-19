@@ -507,10 +507,12 @@ def enter_manual_contract_order(data, instrument_order):
 
     trade_qty_list = []
     for trade_idx in range(leg_count):
+        # TODO rounding strategy?
         trade_qty = get_input_from_user_and_convert_to_type(
             "Enter quantity for leg %d" % trade_idx,
-            type_expected=int,
-            allow_default=False,
+            type_expected=float,
+            allow_default=True,
+            default_value=qty[0],
         )
         trade_qty_list.append(trade_qty)
 
