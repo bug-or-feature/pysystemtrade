@@ -12,6 +12,7 @@ from sysexecution.orders.named_order_objects import missing_order, no_children
 from syscore.interactive.input import (
     get_input_from_user_and_convert_to_type,
     true_if_answer_is_yes,
+    _get_input_and_check_type,
 )
 from syscore.interactive.date_input import get_datetime_input
 from syscore.interactive.menus import (
@@ -413,8 +414,8 @@ def create_manual_trade(data):
     print(instrument_order)
     print(contract_order)
 
-    ans = input("Are you sure? (Y/other)")
-    if ans != "Y":
+    ans = input("Are you sure? (y/other)")
+    if ans != "y":
         return None
 
     stack_handler = stackHandler(data)
@@ -459,7 +460,16 @@ def enter_manual_instrument_order(data):
         allow_default=False,
     )
     possible_order_types = market_order_type.allowed_types()
-    order_type = input("Order type (one of %s)?" % str(possible_order_types))
+    # order_type = input("Order type (one of %s)?" % str(possible_order_types))
+
+    order_type = _get_input_and_check_type(
+        input_str=f"Order type (one of {possible_order_types})? "
+        f"<RETURN for default 'market'> ",
+        type_expected=str,
+        allow_default=True,
+        default_value="market",
+        check_type=False,
+    )
     limit_price = get_input_from_user_and_convert_to_type(
         "Limit price? (if you put None you can still add one to the contract order)",
         type_expected=float,
