@@ -94,25 +94,25 @@ class algoOriginalBest(Algo):
             )
             return missing_order
 
-        # We don't cut down FSB orders
+        cut_down_contract_order = (
+            contract_order.reduce_trade_size_proportionally_so_smallest_leg_is_max_size(
+                SIZE_LIMIT
+            )
+        )
+        if cut_down_contract_order.trade != contract_order.trade:
+            log.debug(
+                "Cut down order to size %s from %s because of algo size limit"
+                % (str(contract_order.trade), str(cut_down_contract_order.trade))
+            )
 
-        # cut_down_contract_order = (
-        #     contract_order.reduce_trade_size_proportionally_so_smallest_leg_is_max_size(
-        #         SIZE_LIMIT
-        #     )
-        # )
-        # if cut_down_contract_order.trade != contract_order.trade:
-        #     log.debug(
-        #         "Cut down order to size %s from %s because of algo (best) size limit"
-        #         % (str(contract_order.trade), str(cut_down_contract_order.trade))
-        #     )
-
-        ticker_object = self.data_broker.get_ticker_object_for_order(contract_order)
+        ticker_object = self.data_broker.get_ticker_object_for_order(
+            cut_down_contract_order
+        )
         try:
             okay_to_do_limit_trade = limit_trade_viable(
                 ticker_object=ticker_object,
                 data=data,
-                order=contract_order,
+                order=cut_down_contract_order,
                 log=log,
             )
         except missingData:
@@ -124,7 +124,7 @@ class algoOriginalBest(Algo):
             # create and issue limit order
             broker_order_with_controls = (
                 self.get_and_submit_broker_order_for_contract_order(
-                    contract_order,
+                    cut_down_contract_order,
                     order_type=limit_order_type,
                     limit_price_from=limit_price_from_offside_price,
                     ticker_object=ticker_object,
@@ -137,7 +137,7 @@ class algoOriginalBest(Algo):
             )
             broker_order_with_controls = (
                 self.get_and_submit_broker_order_for_contract_order(
-                    contract_order, order_type=market_order_type
+                    cut_down_contract_order, order_type=market_order_type
                 )
             )
 
@@ -226,23 +226,23 @@ def limit_trade_viable(
 
     # no point doing limit order if we've got imbalanced size issues, as we'd
     # switch to aggressive immediately
-    # raise_adverse_size_issue = adverse_size_issue(
-    #     ticker_object, wait_for_valid_tick=False, log=log
-    # )
-    #
-    # if raise_adverse_size_issue:
-    #     log.debug("Limit trade not viable")
-    #     return False
+    raise_adverse_size_issue = adverse_size_issue(
+        ticker_object, wait_for_valid_tick=True, log=log
+    )
+
+    if raise_adverse_size_issue:
+        log.debug("Limit trade not viable")
+        return False
 
     # or if not enough time left
-    # if is_market_about_to_close(data, order=order, log=log):
-    #
-    #     log.debug(
-    #         "Market about to close or stack handler nearly close - doing market order"
-    #     )
-    #     return False
+    if is_market_about_to_close(data, order=order, log=log):
 
-    return False
+        log.debug(
+            "Market about to close or stack handler nearly close - doing market order"
+        )
+        return False
+
+    return True
 
 
 no_need_to_switch = "_NO_NEED_TO_SWITCH"
