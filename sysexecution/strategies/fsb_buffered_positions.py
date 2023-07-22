@@ -12,7 +12,7 @@ from collections import namedtuple
 from sysdata.data_blob import dataBlob
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 
-from sysexecution.orders.instrument_orders import instrumentOrder, best_order_type
+from sysexecution.orders.instrument_orders import instrumentOrder, market_order_type
 from sysexecution.orders.list_of_orders import listOfOrders
 from sysexecution.strategies.classic_buffered_positions import (
     orderGeneratorForBufferedPositions,
@@ -22,7 +22,7 @@ from sysexecution.strategies.classic_buffered_positions import optimalPositions
 
 MIN_BET_DEMO_OVERRIDES = {
     "CAD_fsb": 0.5,
-    "CARBON_fsb": 0.5,
+    "EUA_fsb": 0.5,
     "COPPER_fsb": 0.5,
     "CRUDE_W_fsb": 0.5,
     "EUROSTX_fsb": 0.5,
@@ -106,12 +106,12 @@ def fsb_trade_given_optimal_and_actual_positions(
 
     ref_date = optimal_positions.ref_dates[instrument_code]
 
-    # No limit orders, just best execution
+    # simple market orders for now
     order_required = instrumentOrder(
         strategy_name,
         instrument_code,
         trade_required,
-        order_type=best_order_type,
+        order_type=market_order_type,
         reference_price=reference_price,
         reference_contract=reference_contract,
         reference_datetime=ref_date,
