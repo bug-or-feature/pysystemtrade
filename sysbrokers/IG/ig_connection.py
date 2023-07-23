@@ -12,6 +12,7 @@ from trading_ig.lightstreamer import Subscription
 from syscore.constants import arg_not_supplied
 from sysbrokers.IG.ig_positions import resolveBS_for_list
 from sysbrokers.IG.ig_ticker import IgTicker
+from sysbrokers.IG.ig_translate_broker_order_objects import IgTradeWithContract
 from syscore.exceptions import missingContract, missingData
 from sysdata.config.production_config import get_production_config
 from sysexecution.orders.named_order_objects import missing_order
@@ -20,17 +21,9 @@ from syslogging.logger import *
 from sysobjects.contracts import futuresContract
 from sysobjects.fsb_contract_prices import FsbContractPrices
 
-from sysbrokers.IG.ig_translate_broker_order_objects import (
-    tradeWithContract,
-    # listOfTradesWithContracts,
-)
 from sysexecution.orders.broker_orders import (
     brokerOrderType,
     market_order_type,
-    limit_order_type,
-    snap_mkt_type,
-    snap_mid_type,
-    snap_prim_type,
 )
 
 
@@ -391,12 +384,14 @@ class IGConnection(object):
 
     def broker_submit_order(
         self,
-        futures_contract_with_ib_data: futuresContract,
+        futures_contract_with_broker_data: futuresContract,
         trade_list: tradeQuantity,
+        epic: str,
+        expiry_key: str,
         account_id: str = arg_not_supplied,
         order_type: brokerOrderType = market_order_type,
         limit_price: float = None,
-    ) -> tradeWithContract:
+    ) -> IgTradeWithContract:
 
         """
         :param ibcontract: contract_object_with_ib_data: contract where instrument has ib metadata
@@ -407,72 +402,38 @@ class IGConnection(object):
         :return: brokers trade object
         """
 
-        try:
-            ibcontract_with_legs = self.ib_futures_contract_with_legs(
-                futures_contract_with_ib_data=futures_contract_with_ib_data,
-                trade_list_for_multiple_legs=trade_list,
-            )
-        except missingContract:
-            return missing_order
+        # TODO validate
+        size = trade_list[0]
+        direction = "BUY" if size > 0.0 else "SELL"
 
-        ibcontract = ibcontract_with_legs.ibcontract
-
-        ib_order = self._build_ib_order(
-            trade_list=trade_list,
-            account_id=account_id,
-            order_type=order_type,
-            limit_price=limit_price,
+        result = self.rest_service.create_open_position(
+            epic=epic,
+            direction=direction,
+            currency_code="GBP",
+            # order_type=brokerOrderType("market"),
+            order_type="MARKET",
+            expiry=expiry_key,
+            force_open="false",
+            guaranteed_stop="false",
+            size=abs(size),
+            level=None,
+            limit_level=None,
+            limit_distance=None,
+            quote_id=None,
+            stop_distance=None,
+            stop_level=None,
+            trailing_stop=None,
+            trailing_stop_increment=None,
         )
 
-        order_object = self.ib.placeOrder(ibcontract, ib_order)
+        trade_result = IgTradeWithContract(result)
+        self.log.debug(f"result of broker_submit_order(): {trade_result}")
 
-        trade_with_contract = tradeWithContract(ibcontract_with_legs, order_object)
+        return trade_result
 
-        return trade_with_contract
-
-    def ib_futures_contract_with_legs(
-        self,
-        futures_contract_with_ib_data: futuresContract,
-        allow_expired: bool = False,
-        always_return_single_leg: bool = False,
-        trade_list_for_multiple_legs: tradeQuantity = None,
-    ) -> ibcontractWithLegs:
-        """
-        Return a complete and unique IB contract that matches contract_object_with_ib_data
-        Doesn't actually get the data from IB, tries to get from cache
-
-        :param futures_contract_with_ib_data: contract, containing instrument metadata suitable for IB
-        :return: a single ib contract object
-        """
-        contract_object_to_use = copy(futures_contract_with_ib_data)
-        if always_return_single_leg and contract_object_to_use.is_spread_contract():
-            contract_object_to_use = (
-                contract_object_to_use.new_contract_with_first_contract_date()
-            )
-
-        ibcontract_with_legs = self._get_stored_or_live_contract(
-            contract_object_to_use=contract_object_to_use,
-            trade_list_for_multiple_legs=trade_list_for_multiple_legs,
-            allow_expired=allow_expired,
-        )
-
-        return ibcontract_with_legs
-
-    def _get_stored_or_live_contract(
-        self,
-        contract_object_to_use: futuresContract,
-        trade_list_for_multiple_legs: tradeQuantity = None,
-        allow_expired: bool = False,
-    ):
-
-        ibcontract_with_legs = self.cache.get(
-            self._get_ib_futures_contract_from_broker,
-            contract_object_to_use,
-            trade_list_for_multiple_legs=trade_list_for_multiple_legs,
-            allow_expired=allow_expired,
-        )
-
-        return ibcontract_with_legs
+    def broker_get_orders(self, account_id: str):
+        self.log.debug(f"fetching working orders for account {account_id}")
+        return self.rest_service.fetch_working_orders()
 
     def _is_tradeable(self, epic):
         market_info = self.rest_service.fetch_market_by_epic(epic)

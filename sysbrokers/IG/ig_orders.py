@@ -1,28 +1,24 @@
-from sysbrokers.IB.ib_translate_broker_order_objects import (
-    create_broker_order_from_trade_with_contract,
-    ibBrokerOrder,
-    tradeWithContract,
-    ibOrderCouldntCreateException,
-)
-from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.broker_execution_stack import brokerExecutionStackData
+from sysbrokers.IG.ig_translate_broker_order_objects import IgTradeWithContract
+from sysbrokers.IG.ig_connection import IGConnection
 from syscore.constants import arg_not_supplied
 from sysdata.data_blob import dataBlob
 from sysdata.futures.contracts import futuresContractData
 from sysdata.futures.instruments import futuresInstrumentData
+from sysdata.futures_spreadbet.market_info_data import marketInfoData
 from sysexecution.order_stacks.broker_order_stack import orderWithControls
-from sysexecution.orders.base_orders import Order
 from sysexecution.orders.broker_orders import brokerOrder
 from sysexecution.orders.list_of_orders import listOfOrders
 from sysexecution.orders.named_order_objects import missing_order
 from sysexecution.tick_data import tickerObject
+from sysexecution.trade_qty import tradeQuantity
 from syslogging.logger import *
 
 
 class IgOrderWithControls(orderWithControls):
     def __init__(
         self,
-        trade_with_contract_from_ib: tradeWithContract,
+        trade_result: IgTradeWithContract,
         broker_conn: IGConnection,
         broker_order: brokerOrder = None,
         instrument_code: str = None,
@@ -31,12 +27,14 @@ class IgOrderWithControls(orderWithControls):
         if broker_order is None:
             # This might happen if for example we are getting the orders from
             #   IB
-            broker_order = create_broker_order_from_trade_with_contract(
-                trade_with_contract_from_ib, instrument_code
-            )
+            # broker_order = create_broker_order_from_trade_with_contract(
+            #     trade_result, instrument_code
+            # )
+
+            print("Hopefully this scenario not needed yet for FSBs")
 
         super().__init__(
-            control_object=trade_with_contract_from_ib,
+            control_object=trade_result,
             broker_order=broker_order,
             ticker_object=ticker_object,
         )
@@ -56,27 +54,29 @@ class IgOrderWithControls(orderWithControls):
         # Can be used when first submitted, or when polling objects
         # Basically copies across the details from the control object that are
         # likely to be updated
+
         # self.ibclient.refresh()
-        ib_broker_order = create_broker_order_from_trade_with_contract(
-            self.trade_with_contract_from_IB, self.order.instrument_code
-        )
+        # ib_broker_order = create_broker_order_from_trade_with_contract(
+        #     self.trade_with_contract_from_IB, self.order.instrument_code
+        # )
         updated_broker_order = add_trade_info_to_broker_order(
-            self.order, ib_broker_order
+            self.order, self.control_object
         )
 
         self._order = updated_broker_order
 
     def broker_limit_price(self):
+        raise NotImplementedError("Not implemented! build it now")
         # self.ibclient.refresh()
-        ib_broker_order = create_broker_order_from_trade_with_contract(
-            self.trade_with_contract_from_IB, self.order.instrument_code
-        )
-        if ib_broker_order.limit_price == 0.0:
-            broker_limit_price = None
-        else:
-            broker_limit_price = ib_broker_order.limit_price
-
-        return broker_limit_price
+        # ib_broker_order = create_broker_order_from_trade_with_contract(
+        #     self.trade_with_contract_from_IB, self.order.instrument_code
+        # )
+        # if ib_broker_order.limit_price == 0.0:
+        #     broker_limit_price = None
+        # else:
+        #     broker_limit_price = ib_broker_order.limit_price
+        #
+        # return broker_limit_price
 
 
 class IgExecutionStackData(brokerExecutionStackData):
@@ -118,10 +118,25 @@ class IgExecutionStackData(brokerExecutionStackData):
     def futures_instrument_data(self) -> futuresInstrumentData:
         return self.data.broker_futures_instrument
 
+    @property
+    def market_info_data(self) -> marketInfoData:
+        return self.data.db_market_info
+
     def get_list_of_broker_orders_with_account_id(
         self, account_id: str = arg_not_supplied
     ) -> listOfOrders:
-        raise NotImplementedError("Not implemented! build it now")
+        # raise NotImplementedError("Not implemented! build it now")
+
+        list_of_control_objects = self._get_list_of_broker_control_orders(
+            account_id=account_id
+        )
+        order_list = [
+            order_with_control.order for order_with_control in list_of_control_objects
+        ]
+
+        order_list = listOfOrders(order_list)
+
+        return order_list
 
     def _get_dict_of_broker_control_orders(
         self, account_id: str = arg_not_supplied
@@ -131,10 +146,32 @@ class IgExecutionStackData(brokerExecutionStackData):
     def _get_list_of_broker_control_orders(
         self, account_id: str = arg_not_supplied
     ) -> list:
-        raise NotImplementedError("Not implemented! build it now")
+        """
+        Get list of broker orders from IG, and return as list of orders with controls
+
+        :return: list of brokerOrder objects
+        """
+
+        list_of_raw_orders_as_trade_objects = self.broker_conn.broker_get_orders(
+            account_id=account_id
+        )
+
+        # TODO adapt this for IG dataframe response
+        broker_order_with_controls_list = [
+            self._create_broker_control_order_object(broker_trade_object_results)
+            for broker_trade_object_results in list_of_raw_orders_as_trade_objects
+        ]
+
+        broker_order_with_controls_list = [
+            broker_order_with_controls
+            for broker_order_with_controls in broker_order_with_controls_list
+            if broker_order_with_controls is not missing_order
+        ]
+
+        return broker_order_with_controls_list
 
     def _create_broker_control_order_object(
-        self, trade_with_contract_from_ib: tradeWithContract
+        self, trade_with_contract_from_broker: IgTradeWithContract
     ):
         raise NotImplementedError("Not implemented! build it now")
 
@@ -155,14 +192,23 @@ class IgExecutionStackData(brokerExecutionStackData):
         :param broker_order: key properties are instrument_code, contract_id, quantity
         :return: ibOrderWithControls or missing_order
         """
-        trade_with_contract_from_ib = self._send_broker_order_to_IB(broker_order)
+
+        epic = self.market_info_data.get_epic_for_contract(
+            broker_order.futures_contract
+        )
+        expiry_info = self.market_info_data.get_expiry_details(epic)
+
+        broker_order.order_info["epic"] = epic
+        broker_order.order_info["expiry_key"] = expiry_info[0]
+
+        order_result = self._send_broker_order_to_ig(broker_order)
         order_time = datetime.datetime.now()
 
-        if trade_with_contract_from_ib is missing_order:
+        if order_result is missing_order:
             return missing_order
 
         placed_broker_order_with_controls = IgOrderWithControls(
-            trade_with_contract_from_ib,
+            order_result,
             broker_conn=self.broker_conn,
             broker_order=broker_order,
         )
@@ -177,7 +223,9 @@ class IgExecutionStackData(brokerExecutionStackData):
 
         return placed_broker_order_with_controls
 
-    def _send_broker_order_to_IB(self, broker_order: brokerOrder) -> tradeWithContract:
+    def _send_broker_order_to_ig(
+        self, broker_order: brokerOrder
+    ) -> IgTradeWithContract:
         """
         :param broker_order: key properties are instrument_code, contract_id, quantity
         :return: tradeWithContract object or missing_order
@@ -190,26 +238,35 @@ class IgExecutionStackData(brokerExecutionStackData):
         order_type = broker_order.order_type
         limit_price = broker_order.limit_price
         account_id = broker_order.broker_account
+        epic = broker_order.order_info["epic"]
+        expiry_key = broker_order.order_info["expiry_key"]
 
         contract_object = broker_order.futures_contract
-        contract_object_with_ib_data = (
+        get_contract_object_with_config_data = (
             self.futures_contract_data.get_contract_object_with_config_data(
                 contract_object
             )
         )
 
-        placed_broker_trade_object = self.broker_conn.broker_submit_order(
-            contract_object_with_ib_data,
-            trade_list=trade_list,
-            account_id=account_id,
-            order_type=order_type,
-            limit_price=limit_price,
-        )
+        try:
+            placed_broker_trade_object = self.broker_conn.broker_submit_order(
+                get_contract_object_with_config_data,
+                trade_list=trade_list,
+                account_id=account_id,
+                order_type=order_type,
+                limit_price=limit_price,
+                epic=epic,
+                expiry_key=expiry_key,
+            )
+        except Exception as exc:
+            log.warning(f"Problem submitting broker order: {exc}")
+            placed_broker_trade_object = missing_order
+
         if placed_broker_trade_object is missing_order:
             log.warning("Couldn't submit order")
             return missing_order
 
-        log.debug("Order submitted to IB")
+        log.debug("Order submitted to IG")
 
         return placed_broker_trade_object
 
@@ -237,12 +294,13 @@ class IgExecutionStackData(brokerExecutionStackData):
     def check_order_is_cancelled_given_control_object(
         self, broker_order_with_controls: IgOrderWithControls
     ) -> bool:
-        raise NotImplementedError("Not implemented! build it now")
+        status = self.get_status_for_control_object(broker_order_with_controls)
+        cancellation_status = status == "Cancelled"
 
-    def _get_status_for_trade_object(
-        self, original_trade_object
-    ) -> str:  # was : ibTrade
-        raise NotImplementedError("Not implemented! build it now")
+        return cancellation_status
+
+    def _get_status_for_trade_object(self, original_trade_object) -> str:
+        return original_trade_object.orderStatus.status
 
     def modify_limit_price_given_control_object(
         self, broker_order_with_controls: IgOrderWithControls, new_limit_price: float
@@ -257,33 +315,52 @@ class IgExecutionStackData(brokerExecutionStackData):
     def get_status_for_control_object(
         self, broker_order_with_controls: IgOrderWithControls
     ) -> str:
-        raise NotImplementedError("Not implemented! build it now")
+        control_object = broker_order_with_controls.control_object
+        status = control_object.get_attr("dealStatus")
+
+        return status
 
 
 def add_trade_info_to_broker_order(
-    broker_order: brokerOrder, broker_order_from_trade_object: ibBrokerOrder
+    broker_order: brokerOrder, broker_order_result
 ) -> brokerOrder:
 
     new_broker_order = copy(broker_order)
-    keys_to_replace = [
-        "broker_permid",
-        "commission",
-        "algo_comment",
-        "broker_tempid",
-        "leg_filled_price",
-    ]
 
-    for key in keys_to_replace:
-        new_broker_order._order_info[key] = broker_order_from_trade_object._order_info[
-            key
-        ]
+    # {
+    #   'date': '2023-07-21T07:57:09.021', 'status': 'OPEN', 'reason': 'SUCCESS',
+    #   'dealStatus': 'ACCEPTED', 'epic': 'IR.D.FGBL.Month1.IP', 'expiry': 'SEP-23',
+    #   'dealReference': 'PUSMEZ6C32STYQ3', 'dealId': 'DIAAAAMWCJP4CA6',
+    #   'affectedDeals': [
+    #       {'dealId': 'DIAAAAMWCJP4CA6', 'status': 'OPENED'}
+    #   ],
+    #   'level': 13301.0, 'size': 2.38, 'direction': 'BUY', 'stopLevel': None,
+    #   'limitLevel': None, 'stopDistance': None, 'limitDistance': None,
+    #   'guaranteedStop': False, 'trailingStop': False, 'profit': None,
+    #   'profitCurrency': None
+    # }
+    trade_result = broker_order_result._attrs
 
-    broker_order_is_filled = not broker_order_from_trade_object.fill.equals_zero()
-    if broker_order_is_filled:
+    # TODO which one of these?
+    success = True if trade_result["reason"] == "SUCCESS" else False
+    # success = True if trade_result["status"] == "OPEN" else False
+    new_broker_order.broker_permid = trade_result["dealId"]
+    # TODO which one of these?
+    new_broker_order.broker_tempid = trade_result["dealReference"]
+    new_broker_order.order_info["dealReference"] = trade_result["dealReference"]
+    new_broker_order.order_info["affectedDeals"] = trade_result["affectedDeals"]
+    size = float(trade_result["size"])
+    if trade_result["direction"] == "SELL":
+        size = -size
+
+    if success:
         new_broker_order.fill_order(
-            broker_order_from_trade_object.fill,
-            broker_order_from_trade_object.filled_price,
-            broker_order_from_trade_object.fill_datetime,
+            tradeQuantity(size),
+            float(trade_result["level"]),
+            datetime.datetime.strptime(trade_result["date"], "%Y-%m-%dT%H:%M:%S.%f"),
         )
+    else:
+        # TODO test some failure scenarios
+        pass
 
     return new_broker_order
