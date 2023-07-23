@@ -300,7 +300,6 @@ class dataBlob(object):
             self._broker_conn.logout()
 
         # No need to explicitly close Mongo connections; handled by Python garbage collection
-        self.log.close_log_file()
 
     @property
     def broker_conn(self) -> IGConnection:
@@ -351,7 +350,6 @@ class dataBlob(object):
         log = getattr(self, "_log", arg_not_supplied)
         if log is arg_not_supplied:
             log = get_logger(self.log_name)
-            log.set_logging_level("on")
             self._log = log
 
         return log
