@@ -20,7 +20,7 @@ from sysproduction.data.broker import dataBroker
 
 
 class stackHandlerCreateBrokerOrders(stackHandlerForFills):
-    def create_broker_orders_from_contract_orders(self):
+    def create_broker_orders_from_contract_orders(self, test_mode: bool = False):
         """
         Create broker orders from contract orders. These become child orders of the contract parent.
 
@@ -39,21 +39,27 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
         """
         list_of_contract_order_ids = self.contract_stack.get_list_of_order_ids()
         for contract_order_id in list_of_contract_order_ids:
+            self.create_broker_order_for_contract_order(
+                contract_order_id, test_mode=test_mode
+            )
 
-            self.create_broker_order_for_contract_order(contract_order_id)
-
-    def create_broker_order_for_contract_order(self, contract_order_id: int):
+    def create_broker_order_for_contract_order(
+        self, contract_order_id: int, test_mode: bool = False
+    ):
 
         original_contract_order = self.contract_stack.get_order_with_id_from_stack(
             contract_order_id
         )
 
         contract_order_to_trade = self.preprocess_contract_order(
-            original_contract_order
+            original_contract_order, test_mode=test_mode
         )
 
         if contract_order_to_trade is missing_order:
             # Empty order not submitting to algo
+            self.log.debug(
+                f"Contract order {contract_order_id}: Empty order not submitting to algo"
+            )
             return None
 
         algo_instance_and_placed_broker_order_with_controls = self.send_to_algo(
@@ -81,11 +87,11 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
 
             self.post_trade_processing(completed_broker_order_with_controls)
         else:
-            ### Hopefully order will come through...
+            # Hopefully order will come through...
             pass
 
     def preprocess_contract_order(
-        self, original_contract_order: contractOrder
+        self, original_contract_order: contractOrder, test_mode: bool = False
     ) -> contractOrder:
 
         if original_contract_order is missing_order:
@@ -93,14 +99,16 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
             return missing_order
 
         if original_contract_order.fill_equals_desired_trade():
+            self.log.debug("fill_equals_desired_trade")
             return missing_order
 
-        if original_contract_order.is_order_controlled_by_algo():
-            # already being traded by an active algo
-            return missing_order
+        if not test_mode:
+            if original_contract_order.is_order_controlled_by_algo():
+                self.log.debug("order is already controlled by algo")
+                return missing_order
 
         if original_contract_order.panic_order:
-            ## Do no further checks or resizing whatsoever!
+            self.log.debug("panic order!")
             return original_contract_order
 
         data_broker = self.data_broker
@@ -111,20 +119,22 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
             original_contract_order.instrument_code
         )
 
-        market_closed = not (
-            data_broker.is_contract_okay_to_trade(
-                original_contract_order.futures_contract
+        if not test_mode:
+            market_closed = not (
+                data_broker.is_contract_okay_to_trade(
+                    original_contract_order.futures_contract
+                )
             )
-        )
-        if instrument_locked or market_closed:
-            # we don't log to avoid spamming
-            # print("market is closed for order %s" % str(original_contract_order))
-            return missing_order
+            if instrument_locked or market_closed:
+                self.log.debug(
+                    f"market is closed for order {str(original_contract_order)}"
+                )
+                return missing_order
 
         # RESIZE
-        contract_order_to_trade = self.size_contract_order(original_contract_order)
+        # contract_order_to_trade = self.size_contract_order(original_contract_order)
 
-        return contract_order_to_trade
+        return original_contract_order
 
     def size_contract_order(
         self, original_contract_order: contractOrder
@@ -136,7 +146,7 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
         )
 
         if original_contract_order.order_type == limit_order_type:
-            ## NO SIZE LIMITS APPLY TO LIMIT ORDERS
+            self.log.debug(f"No size limits apply to limit orders")
             return remaining_contract_order
 
         # Check the order doesn't breach trade limits
@@ -151,11 +161,11 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
         if contract_order_to_trade is missing_order:
             return missing_order
 
-        if contract_order_to_trade.fill_equals_desired_trade():
-            # Nothing left to trade
+        if contract_order_after_trade_limits.fill_equals_desired_trade():
+            self.log.debug(f"Nothing left to trade")
             return missing_order
 
-        return contract_order_to_trade
+        return contract_order_after_trade_limits
 
     def apply_trade_limits_to_contract_order(
         self, proposed_order: contractOrder

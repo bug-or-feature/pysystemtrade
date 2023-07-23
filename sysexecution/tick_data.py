@@ -3,6 +3,7 @@ from copy import copy
 import numpy as np
 import pandas as pd
 from collections import namedtuple
+from typing import Union
 
 from syscore.genutils import quickTimer
 from syscore.exceptions import missingData
@@ -38,7 +39,7 @@ class dataFrameOfRecentTicks(pd.DataFrame):
 
 def analyse_tick_data_frame(
     tick_data: dataFrameOfRecentTicks,
-    qty: int,
+    qty: Union[int, float],
     forward_fill: bool = False,
     replace_qty_nans=False,
 ):
@@ -116,7 +117,9 @@ def average_bid_offer_spread(
 VERY_LARGE_IMBALANCE = 9999
 
 
-def analyse_tick(tick: oneTick, qty: int, replace_qty_nans=False) -> analysisTick:
+def analyse_tick(
+    tick: oneTick, qty: Union[int, float], replace_qty_nans=False
+) -> analysisTick:
     mid_price = np.mean([tick.ask_price, tick.bid_price])
     spread = tick.ask_price - tick.bid_price
 
@@ -176,7 +179,7 @@ class tickerObject(object):
     We wrap it in this so have standard methods
     """
 
-    def __init__(self, ticker, qty: int = arg_not_supplied):
+    def __init__(self, ticker, qty: Union[int, float] = arg_not_supplied):
         # 'ticker' will depend on the implementation
         self._ticker = ticker
         self._qty = qty
@@ -187,7 +190,7 @@ class tickerObject(object):
         return self._ticker
 
     @property
-    def qty(self) -> int:
+    def qty(self) -> Union[int, float]:
         qty = self._qty
         return qty
 
@@ -241,9 +244,10 @@ class tickerObject(object):
     def analyse_for_tick(
         self,
         tick: oneTick = arg_not_supplied,
-        qty: int = arg_not_supplied,
+        qty: Union[int, float] = arg_not_supplied,
         replace_qty_nans=False,
     ):
+
         if qty is arg_not_supplied:
             qty = self.qty
 
@@ -258,7 +262,7 @@ class tickerObject(object):
         return results
 
     def wait_for_valid_bid_and_ask_and_analyse_current_tick(
-        self, qty: int = arg_not_supplied, wait_time_seconds: int = 10
+        self, qty: Union[int, float] = arg_not_supplied, wait_time_seconds: int = 10
     ) -> oneTick:
 
         current_tick = self.wait_for_valid_bid_and_ask_and_return_current_tick(
@@ -354,7 +358,9 @@ class tickerObject(object):
         raise NotImplementedError
 
 
-def adverse_price_movement(qty: int, price_old: float, price_new: float) -> bool:
+def adverse_price_movement(
+    qty: Union[int, float], price_old: float, price_new: float
+) -> bool:
     if qty > 0:
         if price_new > price_old:
             return True

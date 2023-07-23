@@ -90,5 +90,5 @@ def resolveBS_for_calendar_spread(trade_list: tradeQuantity):
 
 def resolveBS(trade: int):
     if trade < 0:
-        return "SELL", int(abs(trade))
-    return "BUY", int(abs(trade))
+        return "SELL", abs(trade)
+    return "BUY", abs(trade)

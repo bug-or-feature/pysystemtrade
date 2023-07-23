@@ -36,7 +36,7 @@ def do_force_roll_orders():
 def do_create_broker_orders_from_contract_orders():
     stack_handler = stackHandlerCreateBrokerOrders()
     stack_handler.log.label(type="stackHandlerCreateBrokerOrders")
-    stack_handler.create_broker_orders_from_contract_orders()
+    stack_handler.create_broker_orders_from_contract_orders(test_mode=True)
     stack_handler.data.close()
 
 
