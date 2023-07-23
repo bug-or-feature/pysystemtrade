@@ -25,7 +25,6 @@ def optimise():
     capital = config_from_file("systems.futures_spreadbet.capital.yaml")
     config = Config([rules, capital, ignore])
     system = futures_system(config=config)
-    system.set_logging_level("on")
 
     find_best_ordered_set_of_instruments(system, 50000)
     # do_simple_iter(system, capital=50000)
