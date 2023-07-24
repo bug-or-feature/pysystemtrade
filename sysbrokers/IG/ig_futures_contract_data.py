@@ -195,17 +195,14 @@ class IgFuturesContractData(brokerFuturesContractData):
         trading_hours = self.market_info_data.get_trading_hours_for_epic(epic)
         return trading_hours.okay_to_trade_now()
 
-    def is_contract_conservatively_okay_to_trade(
-        self, futures_contract: futuresContract
-    ) -> bool:
-        raise NotImplementedError("Not implemented! build it now")
-
     def get_trading_hours_for_contract(
         self, futures_contract: futuresContract
     ) -> listOfTradingHours:
         return self.market_info_data.get_trading_hours_for_epic(futures_contract)
 
-    def get_list_of_contract_dates_for_instrument_code(self, instrument_code: str):
+    def get_list_of_contract_dates_for_instrument_code(
+        self, instrument_code: str, allow_expired: bool = False
+    ):
         raise NotImplementedError("Consider implementing for consistent interface")
 
     def get_all_contract_objects_for_instrument_code(self, *args, **kwargs):

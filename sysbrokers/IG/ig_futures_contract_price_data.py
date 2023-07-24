@@ -248,11 +248,11 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         return ticker_object
 
     def cancel_market_data_for_order(self, order: brokerOrder):
-        epic = order.order_info["ticker"]
+        epic = order.order_info["epic"]
         ig_ticker = IgTicker.get_instance(self.broker_conn, epic)
         if ig_ticker:
             self.log.info(f"About to unsubscribe stream data for {epic}")
-            ig_ticker._unsubscribe()
+            ig_ticker.unsubscribe()
 
     def get_recent_bid_ask_tick_data_for_contract_object(
         self, contract_object: futuresContract

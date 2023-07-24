@@ -18,7 +18,7 @@ class IgTicker:
             ticker._ask_size = 0
             ticker._key = None
             ticker._epic = epic
-            ticker._subscribe()
+            ticker.subscribe()
             ticker._log.info(f"Creating new ticker for {epic}")
             cls._instances[epic] = ticker
 
@@ -50,7 +50,7 @@ class IgTicker:
     def askSize(self):
         return self._bid_size
 
-    def _subscribe(self):
+    def subscribe(self):
         subscription = Subscription(
             mode="DISTINCT",
             items=[f"CHART:{self._epic}:TICK"],
@@ -60,7 +60,7 @@ class IgTicker:
         self._key = self._connection.stream_service.ls_client.subscribe(subscription)
         self._log.debug(f"subscription key: {self._key}")
 
-    def _unsubscribe(self):
+    def unsubscribe(self):
         self._log.debug(f"unsubscribing from market data for key: {self._key}")
         self._connection.stream_service.ls_client.unsubscribe(self._key)
 
