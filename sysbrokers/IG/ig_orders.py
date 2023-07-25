@@ -375,10 +375,11 @@ def add_trade_info_to_broker_order(
         )
     else:
 
-        print(f"Broker order failed: {trade_result['reason']}")
         new_broker_order.order_info["reason"] = trade_result["reason"]
         new_broker_order.submit_datetime = datetime.datetime.strptime(
             trade_result["date"], "%Y-%m-%dT%H:%M:%S.%f"
         )
+        # TODO cancel order?
+        raise Exception(f"Broker order failed: {trade_result['reason']}")
 
     return new_broker_order
