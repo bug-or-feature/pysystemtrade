@@ -327,6 +327,7 @@ def add_trade_info_to_broker_order(
 
     new_broker_order = copy(broker_order)
 
+    # SUCCESS
     # {
     #   'date': '2023-07-21T07:57:09.021', 'status': 'OPEN', 'reason': 'SUCCESS',
     #   'dealStatus': 'ACCEPTED', 'epic': 'IR.D.FGBL.Month1.IP', 'expiry': 'SEP-23',
@@ -339,28 +340,45 @@ def add_trade_info_to_broker_order(
     #   'guaranteedStop': False, 'trailingStop': False, 'profit': None,
     #   'profitCurrency': None
     # }
+
+    # FAILURE
+    # {
+    #     'date': '2023-07-25T00:15:04.265', 'status': None, 'reason': 'MARKET_CLOSED_WITH_EDITS',
+    #     'dealStatus': 'REJECTED', 'epic': 'CO.D.KC.Month1.IP', 'expiry': None,
+    #     'dealReference': 'N42RA9MXX3STYQ3', 'dealId': 'DIAAAAMWV8MMEA2',
+    #     'affectedDeals': [], 'level': None, 'size': None, 'direction': 'BUY',
+    #     'stopLevel': None, 'limitLevel': None, 'stopDistance': None, 'limitDistance': None,
+    #     'guaranteedStop': False, 'trailingStop': False, 'profit': None, 'profitCurrency': None
+    # }
+
     trade_result = broker_order_result._attrs
 
-    # TODO which one of these?
-    success = True if trade_result["reason"] == "SUCCESS" else False
-    # success = True if trade_result["status"] == "OPEN" else False
-    new_broker_order.broker_permid = trade_result["dealId"]
+    success = True if trade_result["dealStatus"] == "ACCEPTED" else False
+
     # TODO which one of these?
     new_broker_order.broker_tempid = trade_result["dealReference"]
+    new_broker_order.broker_permid = trade_result["dealId"]
     new_broker_order.order_info["dealReference"] = trade_result["dealReference"]
-    new_broker_order.order_info["affectedDeals"] = trade_result["affectedDeals"]
-    size = float(trade_result["size"])
-    if trade_result["direction"] == "SELL":
-        size = -size
+    new_broker_order.order_info["dealStatus"] = trade_result["dealStatus"]
 
     if success:
+
+        new_broker_order.order_info["affectedDeals"] = trade_result["affectedDeals"]
+        size = float(trade_result["size"])
+        if trade_result["direction"] == "SELL":
+            size = -size
+
         new_broker_order.fill_order(
             tradeQuantity(size),
             float(trade_result["level"]),
             datetime.datetime.strptime(trade_result["date"], "%Y-%m-%dT%H:%M:%S.%f"),
         )
     else:
-        # TODO test some failure scenarios
-        pass
+
+        print(f"Broker order failed: {trade_result['reason']}")
+        new_broker_order.order_info["reason"] = trade_result["reason"]
+        new_broker_order.submit_datetime = datetime.datetime.strptime(
+            trade_result["date"], "%Y-%m-%dT%H:%M:%S.%f"
+        )
 
     return new_broker_order
