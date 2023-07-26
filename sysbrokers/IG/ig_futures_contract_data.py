@@ -13,6 +13,7 @@ from sysbrokers.IG.ig_instruments_data import (
     get_instrument_object_from_config,
 )
 from sysdata.barchart.bc_connection import bcConnection
+from sysproduction.update_fsb_market_info import UpdateFsbMarketInfo
 
 
 class IgFuturesContractData(brokerFuturesContractData):
@@ -191,9 +192,26 @@ class IgFuturesContractData(brokerFuturesContractData):
         return 0.01
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
+
+        update_epic_config = UpdateFsbMarketInfo(self.data)
+        update_epic_config.do_market_info_updates(
+            [futures_contract.instrument_code], check_historic=False
+        )
+
         epic = self.market_info_data.get_epic_for_contract(futures_contract)
         trading_hours = self.market_info_data.get_trading_hours_for_epic(epic)
-        return trading_hours.okay_to_trade_now()
+
+        mkt_status = self.market_info_data.get_status_for_epic(epic)
+        tradeable = mkt_status == "TRADEABLE"
+
+        ok_to_trade = tradeable and trading_hours.okay_to_trade_now()
+        self.log.info(
+            f"Epic '{epic}' status '{mkt_status}', "
+            f"in hours '{trading_hours.okay_to_trade_now()}', "
+            f"ok to trade now: {ok_to_trade}"
+        )
+
+        return ok_to_trade
 
     def get_trading_hours_for_contract(
         self, futures_contract: futuresContract
