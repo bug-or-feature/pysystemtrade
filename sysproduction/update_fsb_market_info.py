@@ -56,32 +56,38 @@ class UpdateFsbMarketInfo(object):
 
             # list of what is currently in the db
             db_list = self.data.db_market_info.get_periods_for_instrument_code(instr)
+            periods = config.ig_data.periods
 
-            for period in config.ig_data.periods:
+            for period in periods:
                 if period in db_list:
                     db_list.remove(period)
                 col_headers.append(period)
                 epic = f"{config.ig_data.epic}.{period}.IP"
 
-                try:
-                    info = self.data.broker_conn.get_market_info(epic)
-                    if check_historic:
-                        historic = self._get_historic_data_for_epic(epic)
-                        if historic is not None:
-                            info["historic"] = historic
-                    self.data.db_market_info.update_market_info(instr, epic, info)
-                except Exception as exc:
-                    msg = (
-                        f"Problem updating market info for instrument '{instr}' "
-                        f"and periods {config.ig_data.periods} - check config: {exc}"
-                    )
-                    self.data.log.error(msg)
+                self.update_market_info_for_epic(
+                    epic, instr, check_historic=check_historic
+                )
 
             # anything remaining in db_list needs to be deleted
             for del_period in db_list:
                 epic_to_delete = f"{config.ig_data.epic}.{del_period}.IP"
                 self.data.log.debug(f"Removing unused epic {epic_to_delete}")
                 self.data.db_market_info.delete_for_epic(epic_to_delete)
+
+    def update_market_info_for_epic(self, instr, epic, check_historic=False):
+        try:
+            info = self.data.broker_conn.get_market_info(epic)
+            if check_historic:
+                historic = self._get_historic_data_for_epic(epic)
+                if historic is not None:
+                    info["historic"] = historic
+            self.data.db_market_info.update_market_info(instr, epic, info)
+        except Exception as exc:
+            msg = (
+                f"Problem updating market info for epic '{epic}' ({instr}) "
+                f"- check config: {exc}"
+            )
+            self.data.log.error(msg)
 
     def _get_historic_data_for_epic(self, epic):
         for res in IGConnection.PRICE_RESOLUTIONS:
@@ -172,9 +178,12 @@ def check_historic_status(instr_list=None):
 
 
 if __name__ == "__main__":
-    update_fsb_market_info()
+    # update_fsb_market_info()
     # check_historic_status()
     # epic = "GOLD_fsb"
     # epic = "SOYBEAN_fsb"
     # update_fsb_market_info([epic])
     # check_historic_status([epic])
+
+    update_epic_config = UpdateFsbMarketInfo(dataBlob())
+    update_epic_config.update_market_info_for_epic("GOLD_fsb", "MT.D.GC.Month3.IP")
