@@ -95,11 +95,12 @@ class stackHandlerForCompletions(stackHandlerCore):
                 contract_order_id
             )
 
-            broker_order_children = contract_order.children
-            if broker_order_children is not no_children:
-                list_of_broker_order_id = (
-                    list_of_broker_order_id + broker_order_children
-                )
+            if contract_order is not missing_order:
+                broker_order_children = contract_order.children
+                if broker_order_children is not no_children:
+                    list_of_broker_order_id = (
+                        list_of_broker_order_id + broker_order_children
+                    )
 
         list_of_broker_order_id = list(set(list_of_broker_order_id))
 
