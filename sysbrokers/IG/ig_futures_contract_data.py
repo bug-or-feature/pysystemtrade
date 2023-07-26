@@ -193,12 +193,12 @@ class IgFuturesContractData(brokerFuturesContractData):
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
 
+        epic = self.market_info_data.get_epic_for_contract(futures_contract)
         update_epic_config = UpdateFsbMarketInfo(self.data)
-        update_epic_config.do_market_info_updates(
-            [futures_contract.instrument_code], check_historic=False
+        update_epic_config.update_market_info_for_epic(
+            futures_contract.instrument_code, epic
         )
 
-        epic = self.market_info_data.get_epic_for_contract(futures_contract)
         trading_hours = self.market_info_data.get_trading_hours_for_epic(epic)
 
         mkt_status = self.market_info_data.get_status_for_epic(epic)
