@@ -65,7 +65,7 @@ class UpdateFsbMarketInfo(object):
                 epic = f"{config.ig_data.epic}.{period}.IP"
 
                 self.update_market_info_for_epic(
-                    epic, instr, check_historic=check_historic
+                    instr, epic, check_historic=check_historic
                 )
 
             # anything remaining in db_list needs to be deleted
