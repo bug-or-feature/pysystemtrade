@@ -1,3 +1,4 @@
+from typing import List, Union
 import datetime
 from dataclasses import dataclass
 from sysexecution.orders.named_order_objects import missing_order
@@ -25,12 +26,12 @@ from sysexecution.stack_handler.stackHandlerCore import (
     rollback_parents_and_children_and_handle_exceptions,
     log_successful_adding,
 )
-from sysexecution.orders.contract_orders import contractOrder, best_order_type
+from sysexecution.orders.contract_orders import contractOrder, market_order_type
 from sysexecution.orders.instrument_orders import zero_roll_order_type
 
 from sysexecution.orders.list_of_orders import listOfOrders
 
-CONTRACT_ORDER_TYPE_FOR_ROLL_ORDERS = best_order_type
+CONTRACT_ORDER_TYPE_FOR_ROLL_ORDERS = market_order_type
 
 ROLL_PSEUDO_STRATEGY = "_ROLL_PSEUDO_STRATEGY"
 
@@ -41,6 +42,7 @@ class stackHandlerForRolls(stackHandlerCore):
         list_of_instruments = (
             diag_positions.get_list_of_instruments_with_current_positions()
         )
+        # for instrument_code in ["GOLD_fsb"]:
         for instrument_code in list_of_instruments:
             self.generate_force_roll_orders_for_instrument(instrument_code)
 
@@ -322,7 +324,7 @@ class rollSpreadInformation:
     instrument_code: str
     priced_contract_id: str
     forward_contract_id: str
-    position_in_priced: int
+    position_in_priced: Union[int, float]
     reference_price_priced_contract: float
     reference_price_forward_contract: float
     reference_date: datetime.datetime
@@ -363,7 +365,7 @@ def get_roll_spread_information(
         forward_contract_id=forward_contract_id,
         reference_price_forward_contract=reference_price_forward_contract,
         reference_price_priced_contract=reference_price_priced_contract,
-        position_in_priced=int(position_in_priced),
+        position_in_priced=position_in_priced,
         reference_date=reference_date,
         instrument_code=instrument_code,
     )
@@ -424,7 +426,7 @@ def create_instrument_roll_order_closing_priced_contract(
         instrument_code,
         trade,
         roll_order=True,
-        order_type=best_order_type,
+        order_type=market_order_type,
         reference_price=roll_spread_info.reference_price_spread,
         reference_contract=ROLL_PSEUDO_STRATEGY,
         reference_datetime=roll_spread_info.reference_date,
@@ -592,7 +594,7 @@ def is_order_reducing_order(data: dataBlob, order: instrumentOrder) -> bool:
     return is_trade_reducing_position(trade=trade, position=position_in_priced_contract)
 
 
-def is_trade_reducing_position(trade: int, position: float) -> bool:
+def is_trade_reducing_position(trade: Union[int, float], position: float) -> bool:
     if same_sign(trade, position):
         return False
     ## Note it could be the case that abs(trade)>abs(position), but we still return True here
