@@ -32,6 +32,7 @@ best_order_type = contractOrderType("best")
 balance_order_type = contractOrderType("balance_trade")
 panic_order_type = contractOrderType("panic")
 limit_order_type = contractOrderType("limit")
+market_order_type = contractOrderType("market")
 
 NO_CONTROLLING_ALGO = None
 
@@ -48,7 +49,7 @@ class contractOrder(Order):
         parent: int = no_parent,
         children: list = no_children,
         active: bool = True,
-        order_type: contractOrderType = contractOrderType("best"),
+        order_type: contractOrderType = market_order_type,
         limit_price: float = None,
         reference_price: float = None,
         generated_datetime: datetime.datetime = None,
