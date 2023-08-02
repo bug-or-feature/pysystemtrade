@@ -51,10 +51,13 @@ class stackHandlerAdditionalSampling(stackHandlerCore):
         self.refresh_sampling_without_checks(contract)
 
     def is_contract_currently_okay_to_sample(self, contract: futuresContract) -> bool:
-        data_broker = self.data_broker
-        okay_to_sample = data_broker.is_contract_okay_to_trade(contract)
-
-        return okay_to_sample
+        try:
+            epic = self.data.db_market_info.get_epic_for_contract(contract)
+            status = self.data.db_market_info.get_status_for_epic(epic)
+            okay_to_sample = status == "TRADEABLE"
+            return okay_to_sample
+        except:
+            return False
 
     def refresh_sampling_without_checks(self, contract: futuresContract):
         try:
@@ -85,3 +88,10 @@ class stackHandlerAdditionalSampling(stackHandlerCore):
         update_prices = self.update_prices
 
         update_prices.add_spread_entry(instrument_code, spread=average_spread)
+
+    def debug_get_all_priced_epics(self):
+        all_contracts = self.get_all_instruments_priced_contracts()
+        # all_contracts = [futuresContract.from_two_strings("AUD_fsb", "20230900")]
+        for contract in all_contracts:
+            epic = self.data.db_market_info.get_epic_for_contract(contract)
+            print(f"'{epic}', ")
