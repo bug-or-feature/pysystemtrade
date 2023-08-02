@@ -34,6 +34,8 @@ class stackHandlerForFills(stackHandlerForCompletions):
         self.pass_fills_from_broker_up_to_contract()
         self.pass_fills_from_contract_up_to_instrument()
 
+        # self.pass_auto_roll_fills_from_broker_up_to_contract()
+
     def pass_fills_from_broker_to_broker_stack(self):
         list_of_broker_order_ids = self.broker_stack.get_list_of_order_ids()
         for broker_order_id in list_of_broker_order_ids:
@@ -102,6 +104,11 @@ class stackHandlerForFills(stackHandlerForCompletions):
             # this function is in 'core' since it's used elsewhere
             self.apply_broker_fills_to_contract_order(contract_order_id)
 
+    # def pass_auto_roll_fills_from_broker_up_to_contract(self):
+    #     list_of_contract_order_ids = self.contract_stack.get_list_of_order_ids()
+    #     for contract_order_id in list_of_contract_order_ids:
+    #         self.apply_auto_roll_broker_fills_to_contract_order(contract_order_id)
+
     def apply_broker_fills_to_contract_order(self, contract_order_id: int):
         contract_order_before_fill = self.contract_stack.get_order_with_id_from_stack(
             contract_order_id
@@ -132,6 +139,40 @@ class stackHandlerForFills(stackHandlerForCompletions):
             filled_qty=total_filled_qty,
             fill_datetime=final_fill_datetime,
         )
+
+    # With IG, FSB bets can optionally be auto-rolled. So for this scenario, there will
+    # be instrument and contract orders, but no broker order. This function manages
+    # matching fills detected at IG, with our contract orders
+    # def apply_auto_roll_broker_fills_to_contract_order(self, contract_order_id: int):
+    #     contract_order_before_fill = self.contract_stack.get_order_with_id_from_stack(
+    #         contract_order_id
+    #     )
+    #
+    #     children = contract_order_before_fill.children
+    #     if children is no_children:
+    #         # no children created yet, definitely no fills
+    #         return None
+    #
+    #     broker_order_list = self.broker_stack.get_list_of_orders_from_order_id_list(
+    #         children
+    #     )
+    #
+    #     # We apply: total quantity, average price, highest datetime
+    #
+    #     if broker_order_list.all_zero_fills():
+    #         # nothing to do here
+    #         return None
+    #
+    #     final_fill_datetime = broker_order_list.final_fill_datetime()
+    #     total_filled_qty = broker_order_list.total_filled_qty()
+    #     average_fill_price = broker_order_list.average_fill_price()
+    #
+    #     self.apply_fills_to_contract_order(
+    #         contract_order_before_fill=contract_order_before_fill,
+    #         filled_price=average_fill_price,
+    #         filled_qty=total_filled_qty,
+    #         fill_datetime=final_fill_datetime,
+    #     )
 
     def apply_contract_order_fill_to_database(self, contract_order: contractOrder):
         contract_order_before_fill = self.contract_stack.get_order_with_id_from_stack(
