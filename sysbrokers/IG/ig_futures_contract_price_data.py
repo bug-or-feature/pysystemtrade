@@ -5,17 +5,13 @@ from syscore.exceptions import missingContract, missingData
 
 from sysbrokers.broker_futures_contract_data import brokerFuturesContractData
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
-from sysbrokers.IG.ig_connection import IGConnection, tickerWithQtyDir
-from sysbrokers.IG.ig_ticker import IgTicker
+from sysbrokers.IG.ig_connection import IGConnection, tickerConfig
 from sysbrokers.broker_futures_contract_price_data import brokerFuturesContractPriceData
 from sysdata.data_blob import dataBlob
 from sysdata.barchart.bc_connection import bcConnection
 from sysdata.futures_spreadbet.market_info_data import marketInfoData
 from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
-from sysexecution.tick_data import (
-    dataFrameOfRecentTicks,
-    tickerObject,
-)
+from sysexecution.tick_data import dataFrameOfRecentTicks, tickerObject
 from sysexecution.orders.contract_orders import contractOrder
 from sysexecution.orders.broker_orders import brokerOrder
 from sysexecution.trade_qty import tradeQuantity
@@ -30,7 +26,7 @@ from syslogging.logger import *
 class igTickerObject(tickerObject):
     def __init__(
         self,
-        ticker_info: tickerWithQtyDir,
+        ticker_info: tickerConfig,
         epic: str,
         expiry_key: str,
     ):
@@ -39,6 +35,7 @@ class igTickerObject(tickerObject):
         self._direction = ticker_info.direction
         self._epic = epic
         self._expiry_key = expiry_key
+        self._sub_key = ticker_info.sub_key
 
         # qty can just be +1 or -1 size of trade doesn't matter to ticker
         # qty = sign_from_BS(BorS)
@@ -51,13 +48,13 @@ class igTickerObject(tickerObject):
         return self.ticker.bid
 
     def ask(self):
-        return self.ticker.ask
+        return self.ticker.offer
 
     def bid_size(self):
-        return self.ticker.bidSize
+        return self.ticker.last_traded_volume
 
     def ask_size(self):
-        return self.ticker.askSize
+        return self.ticker.last_traded_volume
 
     @property
     def epic(self):
@@ -70,6 +67,10 @@ class igTickerObject(tickerObject):
     @property
     def direction(self):
         return self._direction
+
+    @property
+    def sub_key(self):
+        return self._sub_key
 
 
 class IgFuturesContractPriceData(brokerFuturesContractPriceData):
@@ -91,7 +92,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         return self._broker_conn
 
     @property
-    def fsb_contract_data(self) -> brokerFuturesContractData:
+    def futures_contract_data(self) -> brokerFuturesContractData:
         return self.data.broker_futures_contract
 
     @property
@@ -114,7 +115,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         self, futures_contract: futuresContract
     ) -> bool:
         try:
-            self.fsb_contract_data.get_contract_object_with_config_data(
+            self.futures_contract_data.get_contract_object_with_config_data(
                 futures_contract
             )
         except missingContract:
@@ -127,9 +128,30 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         list_of_instruments = self.futures_instrument_data.get_list_of_instruments()
         return list_of_instruments
 
+    def contracts_with_merged_price_data_for_instrument_code(
+        self, instrument_code: str, allow_expired=True
+    ):  # -> listOfFuturesContracts:
+        pass
+        # futures_instrument_with_ib_data = (
+        #     self.futures_instrument_data.get_futures_instrument_object_with_IB_data(
+        #         instrument_code
+        #     )
+        # )
+        # list_of_date_str = self.ib_client.broker_get_futures_contract_list(
+        #     futures_instrument_with_ib_data, allow_expired=allow_expired
+        # )
+        #
+        # list_of_contracts = [
+        #     futuresContract(instrument_code, date_str) for date_str in list_of_date_str
+        # ]
+        #
+        # list_of_contracts = listOfFuturesContracts(list_of_contracts)
+        #
+        # return list_of_contracts
+
     def get_contracts_with_merged_price_data(self):
         raise NotImplementedError(
-            "Do not use get_contracts_with_merged_price_data with IB"
+            "Do not use get_contracts_with_merged_price_data with IG"
         )
 
     def get_prices_at_frequency_for_potentially_expired_contract_object(
@@ -197,7 +219,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         """
 
         contract_object_plus = (
-            self.fsb_contract_data.get_contract_object_with_config_data(
+            self.futures_contract_data.get_contract_object_with_config_data(
                 futures_contract_object, requery_expiries=False
             )
         )
@@ -209,81 +231,45 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
 
     def get_ticker_object_for_order(self, order: contractOrder) -> tickerObject:
         futures_contract = order.futures_contract
-        trade_list_for_multiple_legs = order.trade
+        trade_list = order.trade
 
         ticker = self.get_ticker_object_for_contract_and_trade_qty(
             futures_contract=futures_contract,
-            trade_list_for_multiple_legs=trade_list_for_multiple_legs,
+            trade_qty=trade_list,
         )
 
         return ticker
 
+    def get_ticker_object_for_contract(
+        self, futures_contract: futuresContract
+    ) -> tickerObject:
+        return self.get_ticker_object_for_contract_and_trade_qty(
+            futures_contract=futures_contract
+        )
+
     def get_ticker_object_for_contract_and_trade_qty(
         self,
         futures_contract: futuresContract,
-        trade_list_for_multiple_legs: tradeQuantity = None,
+        trade_qty: tradeQuantity = None,
     ) -> tickerObject:
-        new_log = futures_contract.specific_log(self.log)
-
-        try:
-            contract_object_with_config_data = (
-                self.fsb_contract_data.get_contract_object_with_config_data(
-                    futures_contract
-                )
-            )
-        except missingContract:
-            new_log.warning("Can't get data for %s" % str(futures_contract))
-            return futuresContractPrices.create_empty()
 
         epic = self.market_info_data.get_epic_for_contract(futures_contract)
         expiry_info = self.market_info_data.get_expiry_details(epic)
         ticker_with_bs = self.broker_conn.get_ticker_object(
             epic,
-            contract_object_with_config_data,
-            trade_list_for_multiple_legs=trade_list_for_multiple_legs,
+            trade_list_for_multiple_legs=trade_qty,
         )
 
         ticker_object = igTickerObject(ticker_with_bs, epic, expiry_info[0])
-
         return ticker_object
+
+    def cancel_market_data_for_contract(self, contract: futuresContract):
+        epic = self.market_info_data.get_epic_for_contract(contract)
+        self.broker_conn.streamer.stop_tick_subscription(epic)
 
     def cancel_market_data_for_order(self, order: brokerOrder):
         epic = order.order_info["epic"]
-        ig_ticker = IgTicker.get_instance(self.broker_conn, epic)
-        if ig_ticker:
-            self.log.info(f"About to unsubscribe stream data for {epic}")
-            ig_ticker.unsubscribe()
-
-    def get_recent_bid_ask_tick_data_for_contract_object(
-        self, contract_object: futuresContract
-    ) -> dataFrameOfRecentTicks:
-
-        new_log = contract_object.log(self.log)
-
-        try:
-            contract_object_with_config_data = (
-                self.fsb_contract_data.get_contract_object_with_config_data(
-                    contract_object
-                )
-            )
-        except missingContract:
-            new_log.warning("Can't get recent price data for %s" % str(contract_object))
-            return dataFrameOfRecentTicks.create_empty()
-
-        epic = self.market_info_data.get_epic_for_contract(contract_object)
-        tick_list = self.broker_conn.get_recent_bid_ask_price_data(
-            contract_object.instrument_code, epic
-        )
-
-        # if len(tick_list) < 3:
-        #     new_log.warn(
-        #         f"Not enough recent price tick data for {contract_object} to record spreads"
-        #     )
-        #     raise missingData
-
-        tick_data_as_df = from_bid_ask_tick_data_to_dataframe(tick_list)
-
-        return dataFrameOfRecentTicks(tick_data_as_df)
+        self.broker_conn.streamer.stop_tick_subscription(epic)
 
     def _get_ig_prices(self, contract_object: futuresContract) -> futuresContractPrices:
         """
@@ -387,7 +373,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         :return: data
         """
 
-        barchart_id = self.fsb_contract_data.get_barchart_id(contract_object)
+        barchart_id = self.futures_contract_data.get_barchart_id(contract_object)
         try:
             price_data = self._barchart.get_historical_futures_data_for_contract(
                 barchart_id, bar_freq=freq

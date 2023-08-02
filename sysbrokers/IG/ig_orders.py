@@ -237,26 +237,16 @@ class IgExecutionStackData(brokerExecutionStackData):
         trade_list = broker_order.trade
         order_type = broker_order.order_type
         limit_price = broker_order.limit_price
-        account_id = broker_order.broker_account
         epic = broker_order.order_info["epic"]
         expiry_key = broker_order.order_info["expiry_key"]
 
-        contract_object = broker_order.futures_contract
-        get_contract_object_with_config_data = (
-            self.futures_contract_data.get_contract_object_with_config_data(
-                contract_object
-            )
-        )
-
         try:
             placed_broker_trade_object = self.broker_conn.broker_submit_order(
-                get_contract_object_with_config_data,
                 trade_list=trade_list,
-                account_id=account_id,
-                order_type=order_type,
-                limit_price=limit_price,
                 epic=epic,
                 expiry_key=expiry_key,
+                order_type=order_type,
+                limit_price=limit_price,
             )
         except Exception as exc:
             log.warning(f"Problem submitting broker order: {exc}")

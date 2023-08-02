@@ -1,21 +1,16 @@
 import datetime
-from dataclasses import dataclass
-
 import pandas as pd
 from pandas import json_normalize
-from timeit import default_timer as timer
 from tenacity import Retrying, wait_exponential, retry_if_exception_type
 from trading_ig.rest import IGService, ApiExceededException
 from trading_ig.stream import IGStreamService
-from trading_ig.lightstreamer import Subscription
+from trading_ig.streamer.manager import StreamingManager
 
 from syscore.constants import arg_not_supplied
 from sysbrokers.IG.ig_positions import resolveBS_for_list
-from sysbrokers.IG.ig_ticker import IgTicker
 from sysbrokers.IG.ig_translate_broker_order_objects import IgTradeWithContract
 from syscore.exceptions import missingContract, missingData
 from sysdata.config.production_config import get_production_config
-from sysexecution.orders.named_order_objects import missing_order
 from sysexecution.trade_qty import tradeQuantity
 from syslogging.logger import *
 from sysobjects.contracts import futuresContract
@@ -27,11 +22,12 @@ from sysexecution.orders.broker_orders import (
 )
 
 
-class tickerWithQtyDir(object):
-    def __init__(self, ticker, direction: str, quantity: float):
+class tickerConfig(object):
+    def __init__(self, ticker, direction: str, quantity: float, sub_key: int):
         self.ticker = ticker
         self.direction = direction
         self.qty = quantity
+        self.sub_key = sub_key
 
 
 class IGConnection(object):
@@ -66,6 +62,7 @@ class IGConnection(object):
         if auto_connect:
             self._rest_session = self._create_rest_session()
             self._stream_session = self._create_stream_session()
+            self._streamer = StreamingManager(self._stream_session)
 
     @property
     def log(self):
@@ -90,25 +87,28 @@ class IGConnection(object):
     def _create_stream_session(self):
         stream_service = IGStreamService(self.rest_service)
         stream_service.create_session(version="3")
-        self._spread_storage = []
         return stream_service
 
     def _is_live_app(self, config):
-        return self.log.name in config["live_types"]
+        is_live = self.log.name in config["live_types"]
+        self.log.info(
+            f"Logger name '{self.log.name}' configured as {'LIVE' if is_live else 'DEMO'}"
+        )
+        return is_live
 
     @property
     def rest_service(self):
         return self._rest_session
 
     @property
-    def stream_service(self):
-        return self._stream_session
+    def streamer(self):
+        return self._streamer
 
     def logout(self):
         self.log.debug("Logging out of IG REST service")
         self.rest_service.logout()
         self.log.debug("Logging out of IG Stream service")
-        self.stream_service.disconnect()
+        self.streamer.stop_subscriptions()
 
     def get_account_number(self):
         return self._ig_acc_number
@@ -319,88 +319,41 @@ class IGConnection(object):
                 return info
             except Exception as exc:
                 self.log.error(f"Problem getting market info for '{epic}': {exc}")
-                raise missingContract
+                raise missingContract(f"Cannot find epic '{epic}'")
         else:
             raise missingContract
 
     def get_ticker_object(
         self,
         epic: str,
-        contract_object_with_ib_data: futuresContract,
-        trade_list_for_multiple_legs: tradeQuantity = None,
-    ) -> tickerWithQtyDir:
+        trade_qty: tradeQuantity = None,
+    ) -> tickerConfig:
 
-        # specific_log = contract_object_with_ib_data.specific_log(self.log)
+        subkey = self.streamer.start_tick_subscription(epic)
+        try:
+            ticker = self.streamer.ticker(epic)
+            if trade_qty is None:
+                dir = None
+                qty = None
+            else:
+                dir, qty = resolveBS_for_list(trade_qty)
 
-        # self.ib.reqMktData(ibcontract, "", False, False)
-        # ticker = self.ib.ticker(ibcontract)
+            ticker_with_bs = tickerConfig(ticker, dir, qty, subkey)
+            return ticker_with_bs
 
-        ticker = IgTicker.get_instance(self, epic)
-
-        dir, qty = resolveBS_for_list(trade_list_for_multiple_legs)
-
-        ticker_with_bs = tickerWithQtyDir(ticker, dir, qty)
-
-        return ticker_with_bs
-
-    def get_recent_bid_ask_price_data(self, instr_code, epic):
-
-        self.log.label(instrument_code=instr_code)
-        if self._is_tradeable(epic):
-            start = timer()
-
-            # override for testing at weekends, evenings
-            # epic = "CS.D.BITCOIN.TODAY.IP"  # sample weekend crypto spreadbet epics
-            subscription = Subscription(
-                mode="DISTINCT",
-                items=[f"CHART:{epic}:TICK"],
-                fields=["UTM", "BID", "OFR", "LTV"],
-            )
-
-            subscription.addlistener(self.on_stream_update)
-            sub_key = self.stream_service.ls_client.subscribe(subscription)
-            self.log.debug(f"sub key: {sub_key}")
-
-            max_data_points = 10
-            duration = 0
-            while (len(self._spread_storage) < max_data_points) and (duration < 10.0):
-                duration = timer() - start
-
-            result = self._spread_storage.copy()
-            self._spread_storage.clear()
-            self.stream_service.ls_client.unsubscribe(sub_key)
-            duration = timer() - start
-            self.log.debug(
-                f"Collection of spread data for {instr_code} ({epic}) took {duration} seconds"
-            )
-
-            return result
-
-        else:
-            self.log.warning(
-                f"Unable to sample spreads for {instr_code} ({epic}), market is not tradeable"
-            )
-            return []
+        except Exception as exc:
+            self.log.error(f"Problem getting ticker object: {exc}")
+            self.streamer.stop_tick_subscription(epic)
+            raise missingData(exc)
 
     def broker_submit_order(
         self,
-        futures_contract_with_broker_data: futuresContract,
         trade_list: tradeQuantity,
         epic: str,
         expiry_key: str,
-        account_id: str = arg_not_supplied,
         order_type: brokerOrderType = market_order_type,
         limit_price: float = None,
     ) -> IgTradeWithContract:
-
-        """
-        :param ibcontract: contract_object_with_ib_data: contract where instrument has ib metadata
-        :param trade: int
-        :param account: str
-        :param order_type: str, market or limit
-        :param limit_price: None or float
-        :return: brokers trade object
-        """
 
         # TODO validate
         size = trade_list[0]
@@ -410,7 +363,6 @@ class IGConnection(object):
             epic=epic,
             direction=direction,
             currency_code="GBP",
-            # order_type=brokerOrderType("market"),
             order_type="MARKET",
             expiry=expiry_key,
             force_open="false",
@@ -532,44 +484,3 @@ class IGConnection(object):
         ]
 
         return df
-
-    def on_stream_update(self, item_update):
-        self.log.debug(f"item_update: {item_update}")
-        update_values = item_update["values"]
-
-        try:
-            tick = BidAskTick(
-                update_values["UTM"],
-                update_values["BID"],
-                update_values["OFR"],
-                update_values["LTV"],
-            )
-            self._spread_storage.append(tick)
-        except TypeError as err:
-            # we don't care too much about these, in DISTINCT mode, we get updates for everything, and lots of them
-            # are Volume changes
-            self.log.debug(
-                f"Problem trying to create tick data '{update_values}': {err}"
-            )
-
-
-@dataclass
-class BidAskTick:
-    timestamp: datetime
-    priceBid: float
-    priceAsk: float
-    sizeBid: int
-    sizeAsk: int
-
-    def __init__(self, date_str: str, bid_str: str, ask_str: str, size_str: str):
-
-        self.timestamp = datetime.datetime.fromtimestamp(int(date_str) / 1000)
-        self.priceBid = float(bid_str)
-        self.priceAsk = float(ask_str)
-
-        try:
-            self.sizeBid = int(size_str)
-            self.sizeAsk = int(size_str)
-        except TypeError:
-            self.sizeBid = 0
-            self.sizeAsk = 0
