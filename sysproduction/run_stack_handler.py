@@ -15,14 +15,14 @@ def get_list_of_timer_functions_for_stack_handler():
     stack_handler_data = dataBlob(log_name="stack_handler")
     stack_handler = stackHandler(stack_handler_data)
     list_of_timer_names_and_functions = [
-        ("check_external_position_break", stack_handler),
-        ("spawn_children_from_new_instrument_orders", stack_handler),
-        ("generate_force_roll_orders", stack_handler),
-        ("create_broker_orders_from_contract_orders", stack_handler),
-        ("process_fills_stack", stack_handler),
-        ("handle_completed_orders", stack_handler),
-        ("safe_stack_removal", stack_handler),
-        ("refresh_additional_sampling_all_instruments", stack_handler),
+        ("check_external_position_break", stack_handler),  # demo
+        ("spawn_children_from_new_instrument_orders", stack_handler),  # demo
+        ("generate_force_roll_orders", stack_handler),  # demo
+        ("create_broker_orders_from_contract_orders", stack_handler),  # demo
+        ("process_fills_stack", stack_handler),  # demo
+        ("handle_completed_orders", stack_handler),  # demo
+        ("safe_stack_removal", stack_handler),  # demo
+        ("refresh_additional_sampling_all_instruments", stack_handler),  # live
     ]
 
     return list_of_timer_names_and_functions
