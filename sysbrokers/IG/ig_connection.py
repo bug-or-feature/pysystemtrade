@@ -4,16 +4,18 @@ from pandas import json_normalize
 from tenacity import Retrying, wait_exponential, retry_if_exception_type
 from trading_ig.rest import IGService, ApiExceededException
 from trading_ig.stream import IGStreamService
-from trading_ig.streamer.manager import StreamingManager
 
-from syscore.constants import arg_not_supplied
+try:
+    from trading_ig.streamer.manager import StreamingManager
+except:
+    pass
+
 from sysbrokers.IG.ig_positions import resolveBS_for_list
 from sysbrokers.IG.ig_translate_broker_order_objects import IgTradeWithContract
 from syscore.exceptions import missingContract, missingData
 from sysdata.config.production_config import get_production_config
 from sysexecution.trade_qty import tradeQuantity
 from syslogging.logger import *
-from sysobjects.contracts import futuresContract
 from sysobjects.fsb_contract_prices import FsbContractPrices
 
 from sysexecution.orders.broker_orders import (
