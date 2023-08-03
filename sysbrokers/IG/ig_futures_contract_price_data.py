@@ -257,7 +257,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         expiry_info = self.market_info_data.get_expiry_details(epic)
         ticker_with_bs = self.broker_conn.get_ticker_object(
             epic,
-            trade_list_for_multiple_legs=trade_qty,
+            trade_qty=trade_qty,
         )
 
         ticker_object = igTickerObject(ticker_with_bs, epic, expiry_info[0])
