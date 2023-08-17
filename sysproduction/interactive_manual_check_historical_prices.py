@@ -43,7 +43,11 @@ def interactive_manual_check_historical_prices():
         while do_another:
             EXIT_STR = "Finished: Exit"
             instrument_code = get_valid_instrument_code_from_user(
-                data, source="single", allow_exit=True, exit_code=EXIT_STR
+                data,
+                source="single",
+                allow_exit=True,
+                exit_code=EXIT_STR,
+                prompt="Instrument code (DON'T use *_fsb)? ",
             )
             if instrument_code is EXIT_STR:
                 do_another = False
