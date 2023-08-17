@@ -32,6 +32,7 @@ def build_and_write_roll_calendar(
     check_before_writing=True,
     input_prices=arg_not_supplied,
     input_config=arg_not_supplied,
+    write=True,
 ):
 
     if output_datapath is arg_not_supplied:
@@ -39,7 +40,8 @@ def build_and_write_roll_calendar(
             "*** WARNING *** This will overwrite the provided roll calendar. Might be better to use a temporary directory!"
         )
     else:
-        print(f"{instrument_code}: writing to {output_datapath}")
+        if write:
+            print(f"{instrument_code}: writing to {output_datapath}")
 
     if input_prices is arg_not_supplied:
         prices = arcticFuturesContractPriceData()
@@ -83,7 +85,7 @@ def build_and_write_roll_calendar(
     else:
         check_happy_to_write = True
 
-    if check_happy_to_write:
+    if check_happy_to_write and write:
         print("Adding roll calendar")
         csv_roll_calendars.add_roll_calendar(
             instrument_code, roll_calendar, ignore_duplication=True
