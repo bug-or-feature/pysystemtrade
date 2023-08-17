@@ -10,56 +10,56 @@ from sysproduction.interactive_update_capital_manual import (
     interactive_update_capital_manual,
 )
 from sysproduction.interactive_order_stack import interactive_order_stack
-from sysproduction.interactive_fsb import show_optimals
+from sysproduction.interactive_fsb import adjust_forward
 
 
 @click.group()
 def pst():
     click.clear()
-    # click.echo("outer")
 
 
-@pst.command(name="c")
-def con():
+@click.command(name="c")
+def controls():
     """Interactive controls"""
     interactive_controls()
 
 
-@pst.command(name="d")
-def diag():
+@click.command(name="d")
+def diagnostics():
     """Interactive diagnostics"""
     interactive_diagnostics()
 
 
-@pst.command(name="r")
+@click.command(name="r")
 def roll():
     """Interactive update roll status"""
     interactive_update_roll_status()
 
 
-@pst.command(name="h")
-def hist():
+@click.command(name="h")
+def historic():
     """Interactive update historical prices"""
     interactive_manual_check_historical_prices()
 
 
-@pst.command(name="p")
-def cap():
+@click.command(name="p")
+def capital():
     """Interactive update capital"""
     interactive_update_capital_manual()
 
 
-@pst.command(name="s")
-def ord():
+@click.command(name="s")
+def orders():
     """Interactive order stack"""
     interactive_order_stack()
 
 
-@pst.command(name="f")
-def fsb():
-    """Interactive FSB commands"""
-    show_optimals()
-
-
 if __name__ == "__main__":
+    pst.add_command(controls)
+    pst.add_command(diagnostics)
+    pst.add_command(roll)
+    pst.add_command(historic)
+    pst.add_command(capital)
+    pst.add_command(orders)
+    pst.add_command(adjust_forward)
     pst()
