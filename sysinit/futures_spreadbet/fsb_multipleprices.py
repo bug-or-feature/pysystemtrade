@@ -81,6 +81,7 @@ def process_multiple_prices_single_instrument(
     csv_roll_data_path=arg_not_supplied,
     ADD_TO_ARCTIC=True,
     ADD_TO_CSV=True,
+    roll_calendar=arg_not_supplied,
 ):
 
     (
@@ -98,26 +99,28 @@ def process_multiple_prices_single_instrument(
         dict_of_futures_contract_prices.final_prices()
     )
 
-    roll_calendar = roll_calendars.get_roll_calendar(instrument_code)
+    if roll_calendar is arg_not_supplied:
+        roll_calendar = roll_calendars.get_roll_calendar(instrument_code)
 
-    # Add first phantom row so that the last calendar entry won't be consumed by adjust_roll_calendar()
-    # m = mongoRollParametersData()
-    roll_config = csvRollParametersData(datapath="fsb.csvconfig")
-    roll_parameters = roll_config.get_roll_parameters(instrument_code)
-    print(f"{instrument_code}: {roll_parameters}")
-    roll_calendar = add_phantom_row(
-        roll_calendar, dict_of_futures_contract_closing_prices, roll_parameters
-    )
+        # Add first phantom row so that the last calendar entry won't be consumed by adjust_roll_calendar()
+        # m = mongoRollParametersData()
+        roll_config = csvRollParametersData(datapath="fsb.csvconfig")
+        roll_parameters = roll_config.get_roll_parameters(instrument_code)
+        print(f"{instrument_code}: {roll_parameters}")
+        roll_calendar = add_phantom_row(
+            roll_calendar, dict_of_futures_contract_closing_prices, roll_parameters
+        )
 
     if adjust_calendar_to_prices:
         roll_calendar = adjust_roll_calendar(
             instrument_code, roll_calendar, contract_prices
         )
 
-    # Second phantom row is needed in order to process the whole set of closing prices (and not stop after the last roll-over)
-    roll_calendar = add_phantom_row(
-        roll_calendar, dict_of_futures_contract_closing_prices, roll_parameters
-    )
+    if roll_calendar is arg_not_supplied:
+        # Second phantom row is needed in order to process the whole set of closing prices (and not stop after the last roll-over)
+        roll_calendar = add_phantom_row(
+            roll_calendar, dict_of_futures_contract_closing_prices, roll_parameters
+        )
 
     multiple_prices = futuresMultiplePrices.create_from_raw_data(
         roll_calendar, dict_of_futures_contract_closing_prices
