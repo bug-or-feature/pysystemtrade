@@ -389,12 +389,16 @@ def get_valid_instrument_code_from_user(
     all_code="ALL",
     exit_code="",
     source="multiple",
+    prompt=arg_not_supplied,
 ) -> str:
     if data is arg_not_supplied:
         data = dataBlob()
     instrument_code_list = get_list_of_instruments(data, source=source)
     invalid_input = True
-    input_prompt = "Instrument code?"
+    if prompt is arg_not_supplied:
+        input_prompt = "Instrument code?"
+    else:
+        input_prompt = prompt
     if allow_all:
         input_prompt = input_prompt + "(Return for ALL)"
     elif allow_exit:

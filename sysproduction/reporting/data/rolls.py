@@ -299,7 +299,7 @@ def update_multiple_prices_on_roll(
     )
 
     # FSB custom check for existence of epics for each proposed new contract
-    check_contract_for_epic(data, "priced", new_price_contract_object)
+    # check_contract_for_epic(data, "priced", new_price_contract_object)
     check_contract_for_epic(data, "forward", new_forward_contract_object)
     # check_contract_for_epic(data, "carry", new_carry_contract_object)
 
@@ -553,14 +553,13 @@ def check_contract_for_epic(data, desc, contract_object):
             print(
                 f"There are only two epics for {instr_code}. We cannot know whether IG "
                 f"are skipping a contract until after the current contract expires. "
-                f"DO NOT roll"
+                f"Roll with care - you may have to adjust multiple prices later"
             )
-            raise
+            # raise
         else:
             print(
                 f"It is possible that IG are skipping a contract - this happens "
                 f"sometimes when there is low volume. "
-                f"Set up a temporary override to the roll config. "
-                f"DO NOT attempt forward filling"
+                f"Roll with care - you may have to adjust multiple prices later"
             )
-            raise
+            # raise
