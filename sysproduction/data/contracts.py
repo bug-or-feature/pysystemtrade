@@ -366,12 +366,18 @@ def get_valid_instrument_code_and_contractid_from_user(
 
 
 def get_dates_to_choose_from(
-    data: dataBlob, instrument_code: str, only_priced_contracts: bool = False
+    data: dataBlob,
+    instrument_code: str,
+    only_priced_contracts: bool = False,
+    only_sampled_contracts: bool = False,
 ) -> listOfContractDateStr:
 
     diag_contracts = dataContracts(data)
     diag_prices = diagPrices(data)
-    if only_priced_contracts:
+    if only_sampled_contracts:
+        contract_list = diag_contracts.get_all_sampled_contracts(instrument_code)
+        dates_to_choose_from = contract_list.list_of_dates()
+    elif only_priced_contracts:
         dates_to_choose_from = (
             diag_prices.contract_dates_with_price_data_for_instrument_code(
                 instrument_code
