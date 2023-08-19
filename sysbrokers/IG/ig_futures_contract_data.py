@@ -7,7 +7,7 @@ from sysobjects.contracts import futuresContract
 from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 from syslogging.logger import *
 from sysbrokers.IG.ig_connection import IGConnection
-from syscore.exceptions import missingContract, missingInstrument
+from syscore.exceptions import missingContract, missingInstrument, missingData
 from syscore.dateutils import contract_month_from_number
 from sysbrokers.IG.ig_instruments_data import (
     get_instrument_object_from_config,
@@ -193,7 +193,15 @@ class IgFuturesContractData(brokerFuturesContractData):
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
 
-        epic = self.market_info_data.get_epic_for_contract(futures_contract)
+        try:
+            epic = self.market_info_data.get_epic_for_contract(futures_contract)
+            self.log.warning(
+                f"No epic found for '{futures_contract}' - perhaps it expired? "
+                f"OK to trade now: False"
+            )
+        except missingData:
+            return False
+
         update_epic_config = UpdateFsbMarketInfo(self.data)
         update_epic_config.update_market_info_for_epic(
             futures_contract.instrument_code, epic
