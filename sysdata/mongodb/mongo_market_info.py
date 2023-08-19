@@ -25,6 +25,22 @@ INDEX_CONFIG = {
     },
     "unique": True,
 }
+# INDEX_CONFIG = [
+#     {
+#         "keys": {
+#             "epic": pymongo.ASCENDING,
+#         },
+#         "unique": True,
+#     },
+#     {
+#         "keys": {
+#             "instrument_code": pymongo.ASCENDING,
+#             "expiry": pymongo.DESCENDING,
+#             "last_modified_utc": pymongo.DESCENDING,
+#             "instrument.expiry": pymongo.ASCENDING,
+#         },
+#     },
+# ]
 
 
 class mongoMarketInfoData(marketInfoData):
@@ -47,6 +63,7 @@ class mongoMarketInfoData(marketInfoData):
         self._in_hours_status = {}
         self._last_modified = {}
         self._min_bet = {}
+        self._instr_code = {}
 
     def __repr__(self):
         return f"mongoMarketInfoData {str(self.mongo_data)}"
@@ -90,6 +107,12 @@ class mongoMarketInfoData(marketInfoData):
         if len(self._min_bet) == 0:
             self._parse_market_info_for_mappings()
         return self._min_bet
+
+    @cached_property
+    def instr_code(self) -> dict:
+        if len(self._instr_code) == 0:
+            self._parse_market_info_for_mappings()
+        return self._instr_code
 
     def add_market_info(self, instrument_code: str, epic: str, market_info: dict):
         self.log.debug(f"Adding market info for '{epic}'")
@@ -195,6 +218,60 @@ class mongoMarketInfoData(marketInfoData):
     def delete_for_instrument_code(self, instr_code):
         self.mongo_data._mongo.collection.delete_many({"instrument_code": instr_code})
 
+    def find_epics_close_to_expiry(self, delta=None, limit=5):
+
+        """
+        Find any epics where the expiry dates is less than datetime delta from now
+        :return:
+        :rtype:
+        """
+
+        now = datetime.datetime.utcnow()
+        if delta is None:
+            my_delta = datetime.timedelta(minutes=15)
+        else:
+            my_delta = delta
+        check_timestamp = now + my_delta
+
+        results = []
+        for doc in (
+            self.mongo_data._mongo.collection.find(
+                {
+                    "expiry": {
+                        "$lt": check_timestamp,
+                    },
+                },
+                {
+                    "_id": 0,
+                    "epic": 1,
+                    "last_modified_utc": 1,
+                },
+            )
+            .sort("last_modified_utc", 1)
+            .limit(limit)
+        ):
+            results.append(doc["epic"])
+
+        return results
+
+    def find_epics_to_update(self, limit=20):
+        results = []
+        for doc in (
+            self.mongo_data._mongo.collection.find(
+                {},
+                {
+                    "_id": 0,
+                    "epic": 1,
+                    "last_modified_utc": 1,
+                },
+            )
+            .sort("last_modified_utc", 1)
+            .limit(limit)
+        ):
+            results.append(doc["epic"])
+
+        return results
+
     def _parse_market_info_for_mappings(self):
         for instr in self.get_list_of_instruments():
             for result in self.mongo_data._mongo.collection.find(
@@ -203,6 +280,7 @@ class mongoMarketInfoData(marketInfoData):
                     "_id": 0,
                     "epic": 1,
                     "in_hours": 1,
+                    "instrument_code": 1,
                     "last_modified_utc": 1,
                     "in_hours_status": 1,
                     "instrument.expiry": 1,
@@ -227,6 +305,8 @@ class mongoMarketInfoData(marketInfoData):
                 self._last_modified[contract_date_str] = doc["last_modified_utc"]
 
                 self._min_bet[contract_date_str] = doc.dealingRules.minDealSize.value
+
+                self._instr_code[doc["epic"]] = instr
 
                 try:
                     self._in_hours[contract_date_str] = doc["in_hours"]

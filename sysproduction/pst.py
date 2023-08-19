@@ -62,5 +62,13 @@ pst.add_command(orders)
 pst.add_command(adjust_forward)
 
 
+pst.add_command(controls)
+pst.add_command(diagnostics)
+pst.add_command(roll)
+pst.add_command(historic)
+pst.add_command(capital)
+pst.add_command(orders)
+pst.add_command(adjust_forward)
+
 if __name__ == "__main__":
     pst()

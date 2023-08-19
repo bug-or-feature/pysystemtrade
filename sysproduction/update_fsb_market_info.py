@@ -180,10 +180,10 @@ def check_historic_status(instr_list=None):
 if __name__ == "__main__":
     # update_fsb_market_info()
     # check_historic_status()
-    # epic = "GOLD_fsb"
+    epic = "GOLD_fsb"
     # epic = "SOYBEAN_fsb"
-    # update_fsb_market_info([epic])
+    update_fsb_market_info([epic])
     # check_historic_status([epic])
 
-    update_epic_config = UpdateFsbMarketInfo(dataBlob())
-    update_epic_config.update_market_info_for_epic("GOLD_fsb", "MT.D.GC.Month3.IP")
+    # update_epic_config = UpdateFsbMarketInfo(dataBlob())
+    # update_epic_config.update_market_info_for_epic("GOLD_fsb", "MT.D.GC.Month3.IP")
