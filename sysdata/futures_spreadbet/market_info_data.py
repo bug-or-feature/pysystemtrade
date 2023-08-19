@@ -46,6 +46,12 @@ class marketInfoData(baseData):
     def delete_for_instrument_code(self, instr_code):
         raise NotImplementedError(USE_CHILD_CLASS_ERROR)
 
+    def find_epics_close_to_expiry(self, delta=None, limit=5):
+        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+
+    def find_epics_to_update(self, limit=20):
+        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+
 
 def contract_date_from_expiry_key(expiry_key):
     expiry_code_date = datetime.datetime.strptime(f"01-{expiry_key}", "%d-%b-%y")

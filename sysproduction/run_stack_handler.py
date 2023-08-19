@@ -22,7 +22,6 @@ def get_list_of_timer_functions_for_stack_handler():
         ("process_fills_stack", stack_handler),  # demo
         ("handle_completed_orders", stack_handler),  # demo
         ("safe_stack_removal", stack_handler),  # demo
-        # ("refresh_additional_sampling_all_instruments", stack_handler),  # live
     ]
 
     return list_of_timer_names_and_functions

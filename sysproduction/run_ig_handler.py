@@ -13,7 +13,7 @@ def run_ig_handler():
 
 
 def get_list_of_timer_functions_for_ig_handler():
-    ig_handler_data = dataBlob(log_name="ig_handler")
+    ig_handler_data = dataBlob(log_name="IG-Handler")
     ig_handler = igHandler(ig_handler_data)
     list_of_timer_names_and_functions = [
         ("do_market_info_updates", ig_handler),  # live
