@@ -247,6 +247,7 @@ class mongoMarketInfoData(marketInfoData):
     def _save(
         self, instrument_code: str, epic: str, market_info: dict, allow_overwrite=True
     ):
+        market_info = self._setup_expiry_as_datetime(market_info)
         market_info = self._adjust_for_hours(market_info)
         market_info = self._set_sync_status(market_info)
         dict_of_keys = {
@@ -292,5 +293,16 @@ class mongoMarketInfoData(marketInfoData):
                     data["in_hours_status"] = "n/a"
         except Exception as exc:
             self.log.error(f"{exc}: No existing market info found, not adjusting")
+
+        return data
+
+    def _setup_expiry_as_datetime(self, data: dict):
+        try:
+            market_info = munchify(data)
+            expiry_str = market_info.instrument.expiryDetails.lastDealingDate
+            last_dealing = datetime.datetime.strptime(expiry_str, "%Y-%m-%dT%H:%M")
+            data["expiry"] = last_dealing
+        except Exception as exc:
+            self.log.error(f"Problem creating expiry: {exc}")
 
         return data
