@@ -110,6 +110,7 @@ setup(
         "ratelimit>=2.2",
         "tenacity>=8.0",
         "munch>=2.5",
+        "pytz==2023.3",
     ],
     tests_require=["nose", "flake8"],
     extras_require=dict(),
