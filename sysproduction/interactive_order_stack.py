@@ -100,6 +100,7 @@ nested_menu_of_options = {
         14: "Balance instrument trade: Create a trade just at the strategy level and fill (not actually executed)",
         15: "Manual trade: Create a series of trades to be executed",
         16: "Cash FX trade",
+        19: "Broker auto roll balance trade",
     },
     2: {
         20: "Manually fill broker or contract order",
@@ -218,6 +219,87 @@ def create_balance_trade(data):
     stack_handler.create_balance_trade(broker_order)
 
 
+def create_auto_roll_balance_trades(data):
+    stack_handler = stackHandler(data)
+
+    print(
+        "Your broker has auto rolled one of your positions; two balance trades "
+        "will be created to maintain consistency"
+    )
+
+    strategy_name = get_valid_strategy_name_from_user(data=data, source="config")
+
+    data_broker = dataBroker(data)
+    default_account = data_broker.get_broker_account()
+    broker_account = get_input_from_user_and_convert_to_type(
+        "Account ID",
+        type_expected=str,
+        allow_default=True,
+        default_value=default_account,
+    )
+
+    (
+        instrument_code,
+        contract_date_yyyy_mm,
+        fill_qty,
+    ) = get_futures_contract_and_qty_to_close_position(
+        data, prompt="Which position has been auto rolled?"
+    )
+
+    auto_rolls = stack_handler.get_recent_auto_rolls()
+
+    print(auto_rolls)
+    roll_id = get_input_from_user_and_convert_to_type(
+        "Which recent auto roll?",
+        type_expected=int,
+        allow_default=False,
+    )
+
+    selected_roll = auto_rolls.iloc[roll_id]
+
+    sell_order = brokerOrder(
+        strategy_name,
+        instrument_code,
+        selected_roll["From"],
+        fill_qty,
+        fill=fill_qty,
+        algo_used="balance_trade",
+        order_type=broker_balance_order_type,
+        filled_price=selected_roll["From price"],
+        fill_datetime=selected_roll["Date"],
+        broker_account=broker_account,
+        commission=0.0,
+        manual_fill=True,
+        active=False,
+    )
+
+    buy_order = brokerOrder(
+        strategy_name,
+        instrument_code,
+        selected_roll["To"],
+        -fill_qty,
+        fill=-fill_qty,
+        algo_used="balance_trade",
+        order_type=broker_balance_order_type,
+        filled_price=selected_roll["To price"],
+        fill_datetime=selected_roll["Date"],
+        broker_account=broker_account,
+        commission=0.0,
+        manual_fill=True,
+        active=False,
+    )
+
+    print(f"Closing: {sell_order}")
+    print(f"Opening: {buy_order}")
+    ans = input("Are you sure? (Y/other)")
+    if ans != "Y":
+        return None
+
+    stack_handler = stackHandlerCreateBalanceTrades(data)
+    stack_handler.create_balance_trade(buy_order)
+    stack_handler.create_balance_trade(sell_order)
+
+
 def get_broker_order_details_for_balance_trade(data: dataBlob) -> brokerOrder:
     ans = true_if_answer_is_yes(
         "Auto close an existing position? (if not, manually enter details)"
@@ -309,6 +391,7 @@ def manually_get_futures_contract_and_qty(data: dataBlob) -> Tuple[str, str, int
 
 def get_futures_contract_and_qty_to_close_position(
     data: dataBlob,
+    prompt: str = "Which position to close?",
 ) -> Tuple[str, str, int]:
     diag_positions = diagPositions(data)
     contract_positions = diag_positions.get_all_current_contract_positions()
@@ -317,7 +400,7 @@ def get_futures_contract_and_qty_to_close_position(
 
     while True:
         position_index = get_input_from_user_and_convert_to_type(
-            "Which position to close?", type_expected=int, allow_default=False
+            prompt, type_expected=int, allow_default=False
         )
         if position_index not in range(len(contract_positions)):
             print("Not a valid row")
@@ -1028,6 +1111,7 @@ dict_of_functions = {
     14: create_instrument_balance_trade,
     15: create_manual_trade,
     16: create_fx_trade,
+    19: create_auto_roll_balance_trades,
     20: generate_generic_manual_fill,
     21: get_fills_from_broker,
     22: pass_fills_upwards_from_broker,

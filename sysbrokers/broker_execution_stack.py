@@ -51,6 +51,9 @@ class brokerExecutionStackData(brokerOrderStackData):
         # throw orderCannotBeModified if can't be modified
         raise NotImplementedError
 
+    def get_recent_activity(self, start, end, filter):
+        raise NotImplementedError
+
     @property
     def data(self):
         return self._data

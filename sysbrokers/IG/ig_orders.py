@@ -310,6 +310,9 @@ class IgExecutionStackData(brokerExecutionStackData):
 
         return status
 
+    def get_recent_activity(self, start, end, filter):
+        return self._broker_conn.get_activity(start, end, filter=filter)
+
 
 def add_trade_info_to_broker_order(
     broker_order: brokerOrder, broker_order_result

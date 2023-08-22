@@ -1,3 +1,4 @@
+import pandas as pd
 from typing import List, Union
 import datetime
 from dataclasses import dataclass
@@ -37,6 +38,62 @@ ROLL_PSEUDO_STRATEGY = "_ROLL_PSEUDO_STRATEGY"
 
 
 class stackHandlerForRolls(stackHandlerCore):
+    def get_recent_auto_rolls(self, lookback=5):
+
+        end = datetime.datetime.now()
+        start = end - datetime.timedelta(days=lookback)
+        filter = "channel==SYSTEM;type==POSITION"
+        activity = self.data_broker.get_recent_activity(start, end, filter)
+        act_records = activity.to_dict(orient="records")
+
+        potentials = []
+        while len(act_records) > 0:
+            new_bet = act_records.pop(0)
+            old_bet = act_records.pop(0)
+
+            auto_roll = {}
+            auto_roll["Date"] = new_bet["date"]
+            assert new_bet["date"] == old_bet["date"]
+
+            buy_epic = new_bet["epic"]
+            instr_code = self.data.db_market_info.instr_code[buy_epic]
+            auto_roll["Instrument"] = instr_code
+            assert instr_code == self.data.db_market_info.instr_code[old_bet["epic"]]
+
+            buy_period_date = datetime.datetime.strptime(
+                f"01-{new_bet['period']}", "%d-%b-%y"
+            )
+            buy_contract = f"{buy_period_date.strftime('%Y%m')}00"
+
+            sell_period_date = datetime.datetime.strptime(
+                f"01-{old_bet['period']}", "%d-%b-%y"
+            )
+            sell_contract = f"{sell_period_date.strftime('%Y%m')}00"
+
+            auto_roll["From"] = sell_contract
+            auto_roll["To"] = buy_contract
+
+            assert old_bet["size"] == new_bet["size"]
+            direction = new_bet["direction"]
+            if direction == "BUY":
+                auto_roll["Size"] = float(new_bet["size"])
+            else:
+                auto_roll["Size"] = -float(new_bet["size"])
+
+            auto_roll["From price"] = float(old_bet["level"])
+            auto_roll["To price"] = float(new_bet["level"])
+
+            assert new_bet["actionType"] == "POSITION_ROLLED"
+            assert old_bet["actionType"] == "POSITION_CLOSED"
+
+            assert new_bet["status"] == "ACCEPTED"
+            assert old_bet["status"] == "ACCEPTED"
+
+            potentials.append(auto_roll)
+
+        results = pd.DataFrame(potentials)
+        return results
+
     def generate_force_roll_orders(self):
         diag_positions = diagPositions(self.data)
         list_of_instruments = (

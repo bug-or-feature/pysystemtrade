@@ -152,29 +152,13 @@ class IGConnection(object):
 
         return result_list
 
-    def get_activity(self):
-        activities = self.rest_service.fetch_account_activity_by_period(
-            48 * 60 * 60 * 1000
+    def get_activity(self, start, end, filter=None):
+
+        activity = self.rest_service.fetch_account_activity(
+            start, end, detailed=True, fiql_filter=filter
         )
-        test_epics = ["CS.D.GBPUSD.TODAY.IP", "IX.D.FTSE.DAILY.IP"]
-        activities = activities.loc[~activities["epic"].isin(test_epics)]
 
-        result_list = []
-        for i in range(0, len(activities)):
-            row = activities.iloc[i]
-            action = dict()
-            action["epic"] = row["epic"]
-            action["date"] = row["date"]
-            action["time"] = row["time"]
-            action["marketName"] = row["marketName"]
-            action["size"] = row["size"]
-            action["level"] = row["level"]
-            action["actionStatus"] = row["actionStatus"]
-            action["expiry"] = row["period"]
-
-            result_list.append(action)
-
-        return result_list
+        return activity
 
     def get_historical_fsb_data_for_epic(
         self,

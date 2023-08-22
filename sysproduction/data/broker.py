@@ -544,3 +544,9 @@ class dataBroker(productionDataLayerGeneric):
         )
 
         return total_margin_in_base_currency
+
+    def get_recent_activity(self, start, end, filter):
+        activity = self.broker_execution_stack_data.get_recent_activity(
+            start, end, filter
+        )
+        return activity
