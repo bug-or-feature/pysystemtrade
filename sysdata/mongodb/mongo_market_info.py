@@ -123,19 +123,17 @@ class mongoMarketInfoData(marketInfoData):
         self._save(instrument_code, epic, market_info, allow_overwrite=True)
 
     def get_market_info_for_epic(self, epic: str):
-        return self.mongo_data._mongo.collection.find_one({"epic": epic})
+        return self.mongo_data.collection.find_one({"epic": epic})
 
     def get_market_info_for_instrument_code(self, instr_code: str):
         results = []
-        for doc in self.mongo_data._mongo.collection.find(
-            {"instrument_code": instr_code}
-        ):
+        for doc in self.mongo_data.collection.find({"instrument_code": instr_code}):
             results.append(doc)
 
         return results
 
     def get_list_of_instruments(self):
-        results = self.mongo_data._mongo.collection.distinct("instrument_code")
+        results = self.mongo_data.collection.distinct("instrument_code")
         return results
 
     def get_expiry_details(self, epic: str):
@@ -180,7 +178,7 @@ class mongoMarketInfoData(marketInfoData):
         instr_code = contract.instrument_code
         the_date = datetime.datetime.strptime(f"{contract.date_str[0:6]}01", "%Y%m%d")
         expiry_key = the_date.strftime("%b-%y").upper()
-        result = self.mongo_data._mongo.collection.find_one(
+        result = self.mongo_data.collection.find_one(
             {"instrument_code": instr_code, "instrument.expiry": expiry_key},
             {"epic": 1},
         )
@@ -192,7 +190,7 @@ class mongoMarketInfoData(marketInfoData):
 
     def get_periods_for_instrument_code(self, instr_code) -> list:
         results = []
-        for doc in self.mongo_data._mongo.collection.find(
+        for doc in self.mongo_data.collection.find(
             {"instrument_code": instr_code},
             {"epic": 1},
         ):
@@ -202,7 +200,7 @@ class mongoMarketInfoData(marketInfoData):
         return results
 
     def delete_for_epic(self, epic):
-        return self.mongo_data._mongo.collection.delete_one({"epic": epic})
+        return self.mongo_data.collection.delete_one({"epic": epic})
 
     def get_history_sync_status_for_epic(self, epic: str) -> bool:
         try:
@@ -216,7 +214,7 @@ class mongoMarketInfoData(marketInfoData):
         return history_synced
 
     def delete_for_instrument_code(self, instr_code):
-        self.mongo_data._mongo.collection.delete_many({"instrument_code": instr_code})
+        self.mongo_data.collection.delete_many({"instrument_code": instr_code})
 
     def find_epics_close_to_expiry(self, delta=None, limit=5):
 
@@ -235,7 +233,7 @@ class mongoMarketInfoData(marketInfoData):
 
         results = []
         for doc in (
-            self.mongo_data._mongo.collection.find(
+            self.mongo_data.collection.find(
                 {
                     "expiry": {
                         "$lt": check_timestamp,
@@ -257,7 +255,7 @@ class mongoMarketInfoData(marketInfoData):
     def find_epics_to_update(self, limit=20):
         results = []
         for doc in (
-            self.mongo_data._mongo.collection.find(
+            self.mongo_data.collection.find(
                 {},
                 {
                     "_id": 0,
@@ -274,7 +272,7 @@ class mongoMarketInfoData(marketInfoData):
 
     def _parse_market_info_for_mappings(self):
         for instr in self.get_list_of_instruments():
-            for result in self.mongo_data._mongo.collection.find(
+            for result in self.mongo_data.collection.find(
                 {"instrument_code": instr},
                 {
                     "_id": 0,

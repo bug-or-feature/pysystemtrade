@@ -36,11 +36,11 @@ class mongoEpicPeriodsData(epicPeriodsData):
         self._save(instr_code, epic_periods, allow_overwrite=True)
 
     def add_epic_periods(self, instr_code: str, epic_periods: dict):
-        self.log.debug(f"Adding market info for '{instr_code}'")
+        self.log.debug(f"Adding epic periods for '{instr_code}'")
         self._save(instr_code, epic_periods)
 
     def get_epic_periods_for_instrument_code(self, instr_code: str):
-        doc = self.mongo_data._mongo.collection.find_one(
+        doc = self.mongo_data.collection.find_one(
             {"instrument_code": instr_code},
             {
                 "_id": 0,
@@ -51,7 +51,7 @@ class mongoEpicPeriodsData(epicPeriodsData):
 
     def get_list_of_instruments(self):
         results = []
-        for doc in self.mongo_data._mongo.collection.find().sort(
+        for doc in self.mongo_data.collection.find().sort(
             "timestamp", pymongo.ASCENDING
         ):
             results.append(doc["instrument_code"])
@@ -59,7 +59,7 @@ class mongoEpicPeriodsData(epicPeriodsData):
         return results
 
     def delete_epic_periods_for_instrument_code(self, instr_code: str):
-        self.mongo_data._mongo.collection.delete_one({"instrument_code": instr_code})
+        self.mongo_data.collection.delete_one({"instrument_code": instr_code})
 
     def _save(self, instrument_code: str, epic_periods: dict, allow_overwrite=True):
         self.mongo_data.add_data(

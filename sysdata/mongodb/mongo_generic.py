@@ -205,15 +205,19 @@ class mongoDataWithMultipleKeys(object):
 
         return f"mongoData connection for {col}/{db}, {host}"
 
+    @property
+    def collection(self):
+        return self._mongo.collection
+
     def get_list_of_all_dicts(self) -> list:
-        cursor = self._mongo.collection.find()
+        cursor = self.collection.find()
         dict_list = [db_entry for db_entry in cursor]
         _ = [dict_item.pop(MONGO_ID_KEY) for dict_item in dict_list]
 
         return dict_list
 
     def get_result_dict_for_dict_keys(self, dict_of_keys: dict) -> dict:
-        result_dict = self._mongo.collection.find_one(dict_of_keys)
+        result_dict = self.collection.find_one(dict_of_keys)
         if result_dict is None:
             raise missingData("Keys %s not found in Mongo data" % dict_of_keys)
 
@@ -268,19 +272,17 @@ class mongoDataWithMultipleKeys(object):
     def _update_existing_data_with_cleaned_dict(
         self, dict_of_keys: dict, cleaned_data_dict: dict
     ):
-
-        self._mongo.collection.update_one(dict_of_keys, {"$set": cleaned_data_dict})
+        self.collection.update_one(dict_of_keys, {"$set": cleaned_data_dict})
 
     def _add_new_cleaned_dict(self, dict_of_keys: dict, cleaned_data_dict: dict):
         dict_with_both_keys_and_data = {}
         dict_with_both_keys_and_data.update(cleaned_data_dict)
         dict_with_both_keys_and_data.update(dict_of_keys)
 
-        self._mongo.collection.insert_one(dict_with_both_keys_and_data)
+        self.collection.insert_one(dict_with_both_keys_and_data)
 
     def delete_data_without_any_warning(self, dict_of_keys):
-
-        self._mongo.collection.remove(dict_of_keys)
+        self.collection.remove(dict_of_keys)
 
 
 _date = date
