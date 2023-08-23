@@ -22,7 +22,12 @@ def reconcile_report(data=arg_not_supplied):
     :return: list of formatted output items
     """
     if data is arg_not_supplied:
-        data = dataBlob()
+        data = dataBlob(
+            csv_data_paths=dict(
+                csvFuturesInstrumentData="fsb.csvconfig",
+                csvRollParametersData="fsb.csvconfig",
+            ),
+        )
 
     reporting_api = reportingApi(data)
     formatted_output = []
