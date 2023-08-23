@@ -10,6 +10,7 @@ from sysbrokers.IG.ig_fx_handling import IgFxHandlingData
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
+from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 
 
 def get_class_list():
@@ -24,6 +25,7 @@ def get_class_list():
         IgFuturesInstrumentData,
         IgFxHandlingData,
         mongoMarketInfoData,
+        mongoFuturesContractData,
         ArcticFsbEpicHistoryData,
         ArcticFsbContractPriceData,
     ]
