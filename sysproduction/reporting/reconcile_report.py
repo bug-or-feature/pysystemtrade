@@ -37,7 +37,7 @@ def reconcile_report(data=arg_not_supplied):
         "table_of_my_positions",
         "table_of_ib_positions",
         "table_of_my_recent_trades_from_db",
-        "table_of_recent_ib_trades",
+        # "table_of_recent_ib_trades",
         "table_of_optimal_positions",
     ]
 
