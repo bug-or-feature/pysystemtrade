@@ -6,6 +6,7 @@ Do standard things to the instrument, order and broker stack (normally automated
 
 
 """
+import datetime
 from typing import Tuple
 import sysexecution.orders.named_order_objects
 from sysexecution.orders.named_order_objects import missing_order, no_children
@@ -257,6 +258,8 @@ def create_auto_roll_balance_trades(data):
 
     selected_roll = auto_rolls.iloc[roll_id]
 
+    fill_date = datetime.datetime.strptime(selected_roll["Date"], "%Y-%m-%dT%H:%M:%S")
+
     sell_order = brokerOrder(
         strategy_name,
         instrument_code,
@@ -266,7 +269,7 @@ def create_auto_roll_balance_trades(data):
         algo_used="balance_trade",
         order_type=broker_balance_order_type,
         filled_price=selected_roll["From price"],
-        fill_datetime=selected_roll["Date"],
+        fill_datetime=fill_date,
         broker_account=broker_account,
         commission=0.0,
         manual_fill=True,
@@ -282,7 +285,7 @@ def create_auto_roll_balance_trades(data):
         algo_used="balance_trade",
         order_type=broker_balance_order_type,
         filled_price=selected_roll["To price"],
-        fill_datetime=selected_roll["Date"],
+        fill_datetime=fill_date,
         broker_account=broker_account,
         commission=0.0,
         manual_fill=True,
