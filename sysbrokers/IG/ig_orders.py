@@ -125,16 +125,51 @@ class IgExecutionStackData(brokerExecutionStackData):
     def get_list_of_broker_orders_with_account_id(
         self, account_id: str = arg_not_supplied
     ) -> listOfOrders:
-        # raise NotImplementedError("Not implemented! build it now")
 
-        list_of_control_objects = self._get_list_of_broker_control_orders(
-            account_id=account_id
-        )
-        order_list = [
-            order_with_control.order for order_with_control in list_of_control_objects
-        ]
+        # list_of_control_objects = self._get_list_of_broker_control_orders(
+        #     account_id=account_id
+        # )
+        # order_list = [
+        #     order_with_control.order for order_with_control in list_of_control_objects
+        # ]
+        #
+        # order_list = listOfOrders(order_list)
 
-        order_list = listOfOrders(order_list)
+        end = datetime.datetime.now()
+        start = end - datetime.timedelta(days=3)
+        filter = "type==POSITION"
+
+        orders_df = self.broker_conn.get_activity(start, end, filter=filter)
+
+        order_records = orders_df.to_dict(orient="records")
+
+        orders = []
+        for rec in order_records:
+
+            epic = rec["epic"]
+            period_date = datetime.datetime.strptime(f"01-{rec['period']}", "%d-%b-%y")
+            contract = f"{period_date.strftime('%Y%m')}00"
+
+            direction = rec["direction"]
+            if direction == "BUY":
+                fill_qty = float(rec["size"])
+            else:
+                fill_qty = -float(rec["size"])
+
+            trade = brokerOrder(
+                "",
+                self.data.db_market_info.instr_code[epic],
+                contract,
+                fill_qty,
+                fill=fill_qty,
+                filled_price=float(rec["level"]),
+                fill_datetime=rec["date"],
+                commission=None,
+            )
+
+            orders.append(trade)
+
+        order_list = listOfOrders(orders)
 
         return order_list
 
@@ -143,32 +178,31 @@ class IgExecutionStackData(brokerExecutionStackData):
     ) -> dict:
         raise NotImplementedError("Not implemented! build it now")
 
-    def _get_list_of_broker_control_orders(
-        self, account_id: str = arg_not_supplied
-    ) -> list:
-        """
-        Get list of broker orders from IG, and return as list of orders with controls
-
-        :return: list of brokerOrder objects
-        """
-
-        list_of_raw_orders_as_trade_objects = self.broker_conn.broker_get_orders(
-            account_id=account_id
-        )
-
-        # TODO adapt this for IG dataframe response
-        broker_order_with_controls_list = [
-            self._create_broker_control_order_object(broker_trade_object_results)
-            for broker_trade_object_results in list_of_raw_orders_as_trade_objects
-        ]
-
-        broker_order_with_controls_list = [
-            broker_order_with_controls
-            for broker_order_with_controls in broker_order_with_controls_list
-            if broker_order_with_controls is not missing_order
-        ]
-
-        return broker_order_with_controls_list
+    # def _get_list_of_broker_control_orders(
+    #     self, account_id: str = arg_not_supplied
+    # ) -> list:
+    #     """
+    #     Get list of broker orders from IG, and return as list of orders with controls
+    #
+    #     :return: list of brokerOrder objects
+    #     """
+    #
+    #     list_of_raw_orders_as_trade_objects = self.broker_conn.broker_get_orders(
+    #         account_id=account_id
+    #     )
+    #
+    #     broker_order_with_controls_list = [
+    #         self._create_broker_control_order_object(broker_trade_object_results)
+    #         for broker_trade_object_results in list_of_raw_orders_as_trade_objects
+    #     ]
+    #
+    #     broker_order_with_controls_list = [
+    #         broker_order_with_controls
+    #         for broker_order_with_controls in broker_order_with_controls_list
+    #         if broker_order_with_controls is not missing_order
+    #     ]
+    #
+    #     return broker_order_with_controls_list
 
     def _create_broker_control_order_object(
         self, trade_with_contract_from_broker: IgTradeWithContract
