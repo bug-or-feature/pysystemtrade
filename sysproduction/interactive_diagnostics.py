@@ -1,3 +1,4 @@
+import pprint
 from syscore.dateutils import SECONDS_PER_HOUR
 from sysobjects.production.trading_hours.trading_hours import (
     tradingHours,
@@ -52,6 +53,7 @@ from sysproduction.data.fsb_prices import (
     DiagFsbPrices,
 )
 from sysproduction.data.fsb_epics import DiagFsbEpics
+from sysproduction.data.market_info import DiagMarketInfo
 
 from syslogdiag.email_via_db_interface import retrieve_and_delete_stored_messages
 from sysproduction.reporting.reporting_functions import run_report
@@ -114,7 +116,8 @@ nested_menu_of_options = {
         10: "View instrument configuration data",
         11: "View contract configuration data",
         12: "View trading hours for all instruments",
-        13: "View FSB epic history",
+        18: "View FSB epic history",
+        19: "View FSB market info",
     },
     2: {20: "View stored emails"},
     3: {
@@ -762,6 +765,25 @@ def view_fsb_epic_history(data):
     return None
 
 
+def view_fsb_market_info(data):
+    instrument_code = get_valid_fsb_instrument_code_from_user(data, source="fsb")
+
+    diag_market_info = DiagMarketInfo(data)
+    epics = diag_market_info.get_epic_selection_info(instrument_code)
+
+    print(f"\n{epics}")
+    epic_id = get_input_from_user_and_convert_to_type(
+        "Which epic?",
+        type_expected=int,
+        allow_default=False,
+    )
+
+    selected_epic = epics.iloc[epic_id, epics.columns.get_loc("Epic")]
+    info = diag_market_info.get_market_info_for_epic(selected_epic)
+    pretty_print_json = pprint.pformat(info)
+    print(f"{pretty_print_json}\n")
+
+
 dict_of_functions = {
     1: backtest_python,
     2: backtest_plot,
@@ -770,7 +792,8 @@ dict_of_functions = {
     10: view_instrument_config,
     11: view_contract_config,
     12: print_trading_hours_for_all_instruments,
-    13: view_fsb_epic_history,
+    18: view_fsb_epic_history,
+    19: view_fsb_market_info,
     20: retrieve_emails,
     30: individual_prices,
     31: multiple_prices,

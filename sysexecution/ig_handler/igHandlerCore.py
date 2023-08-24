@@ -1,5 +1,5 @@
 from sysexecution.stack_handler.stackHandlerCore import stackHandlerCore
-from sysproduction.data.fsb_epics import UpdateMarketInfo
+from sysproduction.data.market_info import UpdateMarketInfo
 
 
 class igHandlerCore(stackHandlerCore):

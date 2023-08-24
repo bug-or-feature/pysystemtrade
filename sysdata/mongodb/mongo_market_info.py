@@ -1,4 +1,6 @@
 import re
+
+import pandas as pd
 import pymongo
 import pytz
 from functools import cached_property
@@ -123,14 +125,50 @@ class mongoMarketInfoData(marketInfoData):
         self._save(instrument_code, epic, market_info, allow_overwrite=True)
 
     def get_market_info_for_epic(self, epic: str):
-        return self.mongo_data.collection.find_one({"epic": epic})
+        return self.mongo_data.collection.find_one(
+            {"epic": epic},
+            {
+                "_id": 0,
+            },
+        )
 
     def get_market_info_for_instrument_code(self, instr_code: str):
         results = []
-        for doc in self.mongo_data.collection.find({"instrument_code": instr_code}):
+        for doc in self.mongo_data.collection.find(
+            {"instrument_code": instr_code},
+            {
+                "_id": 0,
+            },
+        ):
             results.append(doc)
 
         return results
+
+    def get_epic_selection_info(self, instr_code: str):
+        results = []
+        for doc in self.mongo_data.collection.find(
+            {"instrument_code": instr_code},
+            {
+                "_id": 0,
+                "epic": 1,
+                "instrument.expiry": 1,
+                "instrument.expiryDetails.lastDealingDate": 1,
+            },
+        ).sort("expiry", 1):
+            info = munchify(doc)
+
+            row = {
+                "Instrument": instr_code,
+                "Expiry key": info.instrument.expiry,
+                "Expires": info.instrument.expiryDetails.lastDealingDate,
+                "Epic": info.epic,
+            }
+
+            results.append(row)
+
+        df = pd.DataFrame(results)
+
+        return df
 
     def get_list_of_instruments(self):
         results = self.mongo_data.collection.distinct("instrument_code")

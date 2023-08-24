@@ -53,6 +53,8 @@ from sysproduction.data.fsb_prices import (
 from sysproduction.data.fsb_epics import (
     UpdateFsbEpics,
     UpdateEpicPeriods,
+)
+from sysproduction.data.market_info import (
     UpdateMarketInfo,
 )
 from sysproduction.data.strategies import get_valid_strategy_name_from_user
