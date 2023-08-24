@@ -31,3 +31,9 @@ fsb_roll_report_config = reportConfig(
     instrument_code=ALL_ROLL_INSTRUMENTS,
     output="email",
 )
+
+fsb_risk_report_config = reportConfig(
+    title="Risk report",
+    function="sysproduction.reporting.fsb_risk_report.risk_report",
+    output="email",
+)

@@ -63,7 +63,6 @@ from sysproduction.reporting.report_configs import (
     trade_report_config,
     reconcile_report_config,
     strategy_report_config,
-    risk_report_config,
     liquidity_report_config,
     costs_report_config,
     slippage_report_config,
@@ -78,6 +77,7 @@ from sysproduction.reporting.report_configs_fsb import (
     remove_fsb_markets_report_config,
     fsb_report_config,
     fsb_roll_report_config,
+    fsb_risk_report_config,
 )
 
 
@@ -240,7 +240,7 @@ def strategy_report(data):
 
 
 def risk_report(data):
-    report_config = email_or_print_or_file(risk_report_config)
+    report_config = email_or_print_or_file(fsb_risk_report_config)
     run_report(report_config, data=data)
 
 

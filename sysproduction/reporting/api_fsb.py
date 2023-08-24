@@ -63,6 +63,16 @@ class ReportingApiFsb(reportingApi):
 
         return list_of_instruments
 
+    def table_of_fsb_instrument_risk(self):
+        instrument_risk_data = self.instrument_risk_data()
+        fsb_instrument_risk_data = nice_format_fsb_instrument_risk_table(
+            instrument_risk_data
+        )
+        table_fsb_instrument_risk = table(
+            "FSB Instrument risk", fsb_instrument_risk_data
+        )
+        return table_fsb_instrument_risk
+
     def table_of_risk_all_fsb_instruments(
         self,
         table_header="Risk of all instruments with data - sorted by annualised % standard deviation",
@@ -374,3 +384,50 @@ def nice_format_min_capital_table(df: pd.DataFrame) -> pd.DataFrame:
     df.min_cap_portfolio = df.min_cap_portfolio.astype(int)
 
     return df
+
+
+def nice_format_fsb_instrument_risk_table(
+    instrument_risk_data: pd.DataFrame,
+) -> pd.DataFrame:
+    instrument_risk_data.daily_price_stdev = (
+        instrument_risk_data.daily_price_stdev.round(3)
+    )
+    instrument_risk_data.annual_price_stdev = (
+        instrument_risk_data.annual_price_stdev.round(3)
+    )
+    instrument_risk_data.price = instrument_risk_data.price.round(2)
+    instrument_risk_data.daily_perc_stdev = instrument_risk_data.daily_perc_stdev.round(
+        2
+    )
+    instrument_risk_data.annual_perc_stdev = (
+        instrument_risk_data.annual_perc_stdev.round(1)
+    )
+    instrument_risk_data.point_size_base = instrument_risk_data.point_size_base.round(1)
+    instrument_risk_data.contract_exposure = (
+        instrument_risk_data.contract_exposure.astype(int)
+    )
+    instrument_risk_data.daily_risk_per_contract = (
+        instrument_risk_data.daily_risk_per_contract.astype(int)
+    )
+    instrument_risk_data.annual_risk_per_contract = (
+        instrument_risk_data.annual_risk_per_contract.astype(int)
+    )
+    instrument_risk_data.position = instrument_risk_data.position.round(2)
+    instrument_risk_data.capital = instrument_risk_data.capital.astype(int)
+    instrument_risk_data.exposure_held_perc_capital = (
+        instrument_risk_data.exposure_held_perc_capital.round(1)
+    )
+    instrument_risk_data.annual_risk_perc_capital = (
+        instrument_risk_data.annual_risk_perc_capital.round(1)
+    )
+
+    instrument_risk_data.rename(
+        columns={
+            "contract_exposure": "min_bet_exposure",
+            "daily_risk_per_contract": "daily_risk_per_min_bet",
+            "annual_risk_per_contract": "annual_risk_per_min_bet",
+        },
+        inplace=True,
+    )
+
+    return instrument_risk_data

@@ -114,7 +114,7 @@ def run_fsb_remove_markets_report():
 
 
 def run_market_monitor_report():
-    pass
+    do_report(market_monitor_report_config.new_config_with_modified_output("console"))
 
 
 def run_account_curve_report():
@@ -140,6 +140,10 @@ def run_fsb_roll_report(instr_code=None):
     if instr_code is not None:
         config = config.new_config_with_modify_kwargs(instrument_code=instr_code)
     do_report(config)
+
+
+def run_fsb_risk_report():
+    do_report(fsb_risk_report_config.new_config_with_modified_output("console"))
 
 
 def run_adhoc_tradeable_report(instr_code: str):
@@ -210,6 +214,7 @@ if __name__ == "__main__":
     # run_fsb_remove_markets_report()
     # run_fsb_roll_report()
     # run_fsb_roll_report(instr_code="LEANHOG_fsb")
+    # run_fsb_risk_report()
 
     # run_adhoc_tradeable_report()
     # run_adhoc_tradeable_report(instr_code="EDOLLAR_fsb")
