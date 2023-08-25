@@ -2,9 +2,7 @@ from copy import copy
 
 from syscore.constants import arg_not_supplied
 from syscore.dateutils import WEEKS_IN_YEAR
-from systems.futures_spreadbet.fsb_static_system import fsb_static_system
-from syslogging.logger import get_logger
-from sysdata.config.configdata import Config
+
 
 from sysquant.estimators.correlations import correlationEstimate
 from sysquant.optimisation.optimisers.handcraft import *
@@ -320,8 +318,3 @@ def size_penalty(maximum_position):
         return 9999
 
     return 0.125 / maximum_position**2
-
-
-if __name__ == "__main__":
-    config = Config("systems.futures_spreadbet.fsb_minimal_static_system.yaml")
-    find_best_ordered_set_of_instruments(fsb_static_system(config=config))
