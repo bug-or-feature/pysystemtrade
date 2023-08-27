@@ -64,9 +64,7 @@ class UpdateFsbMarketInfo(object):
                 col_headers.append(period)
                 epic = f"{config.ig_data.epic}.{period}.IP"
 
-                self.update_market_info_for_epic(
-                    instr, epic, check_historic=check_historic
-                )
+                self.update_market_info_for_epic(instr, epic)
 
             # anything remaining in db_list needs to be deleted
             for del_period in db_list:
@@ -74,13 +72,9 @@ class UpdateFsbMarketInfo(object):
                 self.data.log.debug(f"Removing unused epic {epic_to_delete}")
                 self.data.db_market_info.delete_for_epic(epic_to_delete)
 
-    def update_market_info_for_epic(self, instr, epic, check_historic=False):
+    def update_market_info_for_epic(self, instr, epic):
         try:
             info = self.data.broker_conn.get_market_info(epic)
-            if check_historic:
-                historic = self._get_historic_data_for_epic(epic)
-                if historic is not None:
-                    info["historic"] = historic
             self.data.db_market_info.update_market_info(instr, epic, info)
         except Exception as exc:
             msg = (
@@ -88,33 +82,6 @@ class UpdateFsbMarketInfo(object):
                 f"- check config: {exc}"
             )
             self.data.log.error(msg)
-
-    def _get_historic_data_for_epic(self, epic):
-        for res in IGConnection.PRICE_RESOLUTIONS:
-            try:
-                hist_df = self.data.broker_conn.get_historical_fsb_data_for_epic(
-                    epic=epic,
-                    bar_freq=res,
-                    numpoints=1,
-                    warn_for_nans=True,
-                )
-                hist_dict = hist_df.to_dict(orient="records")
-                historic = dict(
-                    timestamp=hist_df.index[-1],
-                    bid=hist_dict[0]["Close.bid"],
-                    ask=hist_dict[0]["Close.ask"],
-                    bar_freq=res,
-                )
-                return historic
-
-            except Exception as exc:
-                msg = (
-                    f"Problem getting historic data for '{epic}' at "
-                    f"resolution '{res}': {exc}"
-                )
-                self.data.log.error(msg)
-
-        return None
 
     def do_historic_status_check(self, instrument_list=None):
 

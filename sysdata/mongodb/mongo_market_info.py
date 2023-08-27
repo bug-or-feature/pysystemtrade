@@ -42,6 +42,12 @@ INDEX_CONFIG = {
 #             "instrument.expiry": pymongo.ASCENDING,
 #         },
 #     },
+#     {
+#         "keys": {
+#             "historic.last_modified_utc": pymongo.DESCENDING,
+#         },
+#         "sparse": True
+#     },
 # ]
 
 
@@ -308,6 +314,19 @@ class mongoMarketInfoData(marketInfoData):
 
         return results
 
+    def find_history_epics_to_update(self, limit=50):
+        results = []
+        for doc in self.mongo_data.collection.find(
+            {"historic.last_modified_utc": {"$exists": False}},
+            {
+                "_id": 0,
+                "epic": 1,
+            },
+        ).limit(limit):
+            results.append(doc["epic"])
+
+        return results
+
     def _parse_market_info_for_mappings(self):
         for instr in self.get_list_of_instruments():
             for result in self.mongo_data.collection.find(
@@ -364,8 +383,8 @@ class mongoMarketInfoData(marketInfoData):
         self, instrument_code: str, epic: str, market_info: dict, allow_overwrite=True
     ):
         market_info = self._setup_expiry_as_datetime(market_info)
-        market_info = self._adjust_for_hours(market_info)
-        market_info = self._set_sync_status(market_info)
+        # market_info = self._adjust_for_hours(market_info)
+        # market_info = self._set_sync_status(market_info)
         dict_of_keys = {
             "instrument_code": instrument_code,
             "epic": epic,

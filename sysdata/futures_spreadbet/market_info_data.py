@@ -55,6 +55,9 @@ class marketInfoData(baseData):
     def get_epic_selection_info(self, instr_code: str):
         raise NotImplementedError(USE_CHILD_CLASS_ERROR)
 
+    def find_history_epics_to_update(self, limit=50):
+        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+
 
 def contract_date_from_expiry_key(expiry_key):
     expiry_code_date = datetime.datetime.strptime(f"01-{expiry_key}", "%d-%b-%y")

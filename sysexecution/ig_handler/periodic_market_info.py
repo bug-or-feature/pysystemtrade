@@ -87,6 +87,19 @@ class igHandlerMarketInfo(igHandlerCore):
     def get_update_epics(self, limit: int = 20):
         return self.update_market_info.db_market_info.find_epics_to_update(limit=limit)
 
+    def do_history_status_updates(self):
+        epics = self.update_market_info.db_market_info.find_history_epics_to_update(
+            limit=1
+        )
+        self.update_market_info.update_historic_market_info_for_epic(epics[0])
+        updated_epics = (
+            self.update_market_info.db_market_info.find_history_epics_to_update(
+                limit=1000
+            )
+        )
+
+        self.log.info(f"Epics with no history last modified: {len(updated_epics)}")
+
     @staticmethod
     def randomize_sublist(data: list, size: int):
         if len(data) > 0:
