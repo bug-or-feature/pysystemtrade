@@ -1,5 +1,4 @@
 import datetime
-from sysbrokers.IG.ig_connection import IGConnection
 from sysdata.data_blob import dataBlob
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.futures_spreadbet.market_info_data import marketInfoData
@@ -45,6 +44,21 @@ class UpdateMarketInfo(productionDataLayerGeneric):
     def delete_for_instrument_code(self, instrument_code: str):
         self.db_market_info.delete_for_instrument_code(instrument_code)
 
+    def update_market_info_for_epic(self, instr, epic, check_historic=False):
+        try:
+            info = self.data.broker_conn.get_market_info(epic)
+            if check_historic:
+                historic = self._get_historic_data_for_epic(epic)
+                if historic is not None:
+                    info["historic"] = historic
+            self.db_market_info.update_market_info(instr, epic, info)
+        except Exception as exc:
+            msg = (
+                f"Problem updating market info for epic '{epic}' ({instr}) "
+                f"- check config: {exc}"
+            )
+            self.data.log.error(msg)
+
     def update_historic_market_info_for_epic(self, epic):
         try:
             info = self.db_market_info.get_market_info_for_epic(epic)
@@ -66,27 +80,28 @@ class UpdateMarketInfo(productionDataLayerGeneric):
             last_modified_utc=datetime.datetime.utcnow(),
         )
 
-        for res in IGConnection.PRICE_RESOLUTIONS:
-            try:
-                hist_df = self.data.broker_conn.get_historical_fsb_data_for_epic(
-                    epic=epic,
-                    bar_freq=res,
-                    numpoints=1,
-                    warn_for_nans=True,
-                )
-                hist_dict = hist_df.to_dict(orient="records")
-                historic["timestamp"] = hist_df.index[-1],
-                historic["bid"] = hist_dict[0]["Close.bid"],
-                historic["ask"] = hist_dict[0]["Close.ask"],
-                historic["bar_freq"] = res,
+        res = "D"
+        try:
 
-                return historic
+            hist_df = self.data.broker_conn.get_historical_fsb_data_for_epic(
+                epic=epic,
+                bar_freq=res,
+                numpoints=1,
+                warn_for_nans=True,
+            )
+            hist_dict = hist_df.to_dict(orient="records")
+            historic["timestamp"] = hist_df.index[-1]
+            historic["bid"] = hist_dict[0]["Close.bid"]
+            historic["ask"] = hist_dict[0]["Close.ask"]
+            historic["bar_freq"] = res
 
-            except Exception as exc:
-                msg = (
-                    f"Problem getting historic data for '{epic}' at "
-                    f"resolution '{res}': {exc}"
-                )
-                self.data.log.error(msg)
+            return historic
+
+        except Exception as exc:
+            msg = (
+                f"Problem getting historic data for '{epic}' at "
+                f"resolution '{res}': {exc}"
+            )
+            self.data.log.error(msg)
 
         return historic

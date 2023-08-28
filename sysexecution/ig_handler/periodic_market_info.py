@@ -5,7 +5,7 @@ from syscore.constants import arg_not_supplied
 from syscore.exceptions import missingData
 from sysdata.data_blob import dataBlob
 from sysexecution.ig_handler.igHandlerCore import igHandlerCore
-from sysproduction.update_fsb_market_info import UpdateFsbMarketInfo
+from sysproduction.data.market_info import UpdateMarketInfo
 
 
 class igHandlerMarketInfo(igHandlerCore):
@@ -14,7 +14,7 @@ class igHandlerMarketInfo(igHandlerCore):
 
     def __init__(self, data: dataBlob = arg_not_supplied):
         super().__init__(data)
-        self._updater = UpdateFsbMarketInfo(data)
+        self._update_market_info = UpdateMarketInfo(self.data)
 
     def do_market_info_updates(self):
 
@@ -45,7 +45,7 @@ class igHandlerMarketInfo(igHandlerCore):
 
         update_epics = self.get_update_epics(limit=self.MAX_UPDATES - count)
         self.log.info(f"Updating the {len(update_epics)} least recently updated epics")
-        self.update_info_for_epics(update_epics, count)
+        self.update_info_for_epics(update_epics, count, check_historic=True)
 
         oldest = self.get_update_epics(limit=1)
         info = self.data.db_market_info.get_market_info_for_epic(oldest[0])
@@ -53,10 +53,12 @@ class igHandlerMarketInfo(igHandlerCore):
         diff = datetime.datetime.utcnow() - oldest_ts
         self.log.info(f"Oldest market info: {diff}")
 
-    def update_info_for_epics(self, epic_list: list, count: int):
+    def update_info_for_epics(self, epic_list: list, count: int, check_historic=False):
         for epic in epic_list:
             instr_code = self.data.db_market_info.instr_code[epic]
-            self._updater.update_market_info_for_epic(instr_code, epic)
+            self._update_market_info.update_market_info_for_epic(
+                instr_code, epic, check_historic=check_historic
+            )
             count = count + 1
         return count
 
@@ -91,7 +93,8 @@ class igHandlerMarketInfo(igHandlerCore):
         epics = self.update_market_info.db_market_info.find_history_epics_to_update(
             limit=1
         )
-        self.update_market_info.update_historic_market_info_for_epic(epics[0])
+        if len(epics) > 0:
+            self.update_market_info.update_historic_market_info_for_epic(epics[0])
         updated_epics = (
             self.update_market_info.db_market_info.find_history_epics_to_update(
                 limit=1000

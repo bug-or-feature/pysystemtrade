@@ -127,7 +127,7 @@ class mongoMarketInfoData(marketInfoData):
         self._save(instrument_code, epic, market_info)
 
     def update_market_info(self, instrument_code: str, epic: str, market_info: dict):
-        self.log.debug(f"Updating market info for '{epic}'")
+        self.log.debug(f"Updating market info for '{epic}' ({instrument_code})")
         self._save(instrument_code, epic, market_info, allow_overwrite=True)
 
     def get_market_info_for_epic(self, epic: str):
@@ -383,8 +383,8 @@ class mongoMarketInfoData(marketInfoData):
         self, instrument_code: str, epic: str, market_info: dict, allow_overwrite=True
     ):
         market_info = self._setup_expiry_as_datetime(market_info)
-        # market_info = self._adjust_for_hours(market_info)
-        # market_info = self._set_sync_status(market_info)
+        market_info = self._adjust_for_hours(market_info)
+        market_info = self._set_sync_status(market_info)
         dict_of_keys = {
             "instrument_code": instrument_code,
             "epic": epic,
@@ -396,15 +396,14 @@ class mongoMarketInfoData(marketInfoData):
         )
 
     def _set_sync_status(self, data):
-        history_synced = True
+        history_synced = False
         info = munchify(data)
         if "historic" in info:
-            bid_diff = round(info.snapshot.bid - info.historic.bid, 2)
-            bid_diff_pc = round((bid_diff / info.snapshot.bid) * 100, 2)
-            ask_diff = round(info.snapshot.offer - info.historic.ask)
-            ask_diff_pc = round((ask_diff / info.snapshot.offer) * 100, 2)
-            date_diff = info.last_modified_utc - info.historic.timestamp
-            if bid_diff_pc > 0.1 or ask_diff_pc > 0.1 or date_diff.days > 3:
+            try:
+                date_diff = abs(info.last_modified_utc - info.historic.timestamp)
+                if date_diff.days < 3:
+                    history_synced = True
+            except Exception as ex:
                 history_synced = False
         else:
             history_synced = False

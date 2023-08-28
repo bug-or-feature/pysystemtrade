@@ -1,12 +1,11 @@
-import logging
 from munch import munchify
-from sysbrokers.IG.ig_connection import IGConnection
 from sysbrokers.IG.ig_instruments import (
     FsbInstrumentWithIgConfigData,
 )
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
+from sysproduction.data.market_info import UpdateMarketInfo
 from syscore.constants import success
 
 
@@ -24,6 +23,7 @@ class UpdateFsbMarketInfo(object):
         self.data = data
         self.data.add_class_object(mongoMarketInfoData)
         self._broker = dataBroker(self.data)
+        self._update_market_info = UpdateMarketInfo(self.data)
 
     @property
     def broker(self) -> dataBroker:
@@ -64,7 +64,7 @@ class UpdateFsbMarketInfo(object):
                 col_headers.append(period)
                 epic = f"{config.ig_data.epic}.{period}.IP"
 
-                self.update_market_info_for_epic(instr, epic)
+                self._update_market_info.update_market_info_for_epic(instr, epic)
 
             # anything remaining in db_list needs to be deleted
             for del_period in db_list:
@@ -72,18 +72,11 @@ class UpdateFsbMarketInfo(object):
                 self.data.log.debug(f"Removing unused epic {epic_to_delete}")
                 self.data.db_market_info.delete_for_epic(epic_to_delete)
 
-    def update_market_info_for_epic(self, instr, epic):
-        try:
-            info = self.data.broker_conn.get_market_info(epic)
-            self.data.db_market_info.update_market_info(instr, epic, info)
-        except Exception as exc:
-            msg = (
-                f"Problem updating market info for epic '{epic}' ({instr}) "
-                f"- check config: {exc}"
-            )
-            self.data.log.error(msg)
-
     def do_historic_status_check(self, instrument_list=None):
+
+        """
+        debugging, testing only
+        """
 
         if instrument_list is None:
             instr_list = [

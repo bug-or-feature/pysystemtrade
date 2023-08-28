@@ -6,7 +6,7 @@ from sysdata.data_blob import dataBlob
 
 # weekday
 def run_ig_handler_weekday():
-    process_name = "IG-Handler-Weekday"
+    process_name = "run_ig_handler_weekday"
     data = dataBlob(log_name=process_name)
     handler = igHandler(data)
     process = processToRun(
@@ -22,7 +22,7 @@ def run_ig_handler_weekday():
 
 # weekend
 def run_ig_handler_weekend():
-    process_name = "IG-Handler-Weekend"
+    process_name = "run_ig_handler_weekend"
     data = dataBlob(log_name=process_name)
     handler = igHandler(data)
     process = processToRun(
@@ -44,13 +44,13 @@ def run_ig_handler_overnight():
         process_name,
         data,
         [
-            ("do_history_status_updates", handler),
+            ("do_market_info_updates", handler),
         ],
     )
     process.run_process()
 
 
 if __name__ == "__main__":
-    # run_ig_handler_weekday()
+    run_ig_handler_weekday()
     # run_ig_handler_weekend()
-    run_ig_handler_overnight()
+    # run_ig_handler_overnight()
