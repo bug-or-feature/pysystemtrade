@@ -1,7 +1,7 @@
 from sysbrokers.broker_execution_stack import brokerExecutionStackData
 from sysbrokers.IG.ig_translate_broker_order_objects import IgTradeWithContract
 from sysbrokers.IG.ig_connection import IGConnection
-from syscore.constants import arg_not_supplied
+from syscore.constants import arg_not_supplied, success
 from sysdata.data_blob import dataBlob
 from sysdata.futures.contracts import futuresContractData
 from sysdata.futures.instruments import futuresInstrumentData
@@ -310,7 +310,12 @@ class IgExecutionStackData(brokerExecutionStackData):
     def cancel_order_given_control_object(
         self, broker_orders_with_controls: IgOrderWithControls
     ):
-        raise NotImplementedError("Not implemented! build it now")
+        original_order_object = broker_orders_with_controls.control_object.trade.order
+        print(f"cancel_order_given_control_object(): {original_order_object}")
+        # nothing to do here with IG market orders, will need later for limit orders
+        # self.ib_client.ib_cancel_order(original_order_object)
+
+        return success
 
     def check_order_is_cancelled(self, broker_order: brokerOrder) -> bool:
         raise NotImplementedError("Not implemented! build it now")
@@ -319,7 +324,7 @@ class IgExecutionStackData(brokerExecutionStackData):
         self, broker_order_with_controls: IgOrderWithControls
     ) -> bool:
         status = self.get_status_for_control_object(broker_order_with_controls)
-        cancellation_status = status == "Cancelled"
+        cancellation_status = status == "REJECTED"
 
         return cancellation_status
 
@@ -403,6 +408,9 @@ def add_trade_info_to_broker_order(
     else:
 
         new_broker_order.order_info["reason"] = trade_result["reason"]
+        new_broker_order.algo_comment = (
+            f"{trade_result['dealStatus']}: {trade_result['reason']}"
+        )
         new_broker_order.submit_datetime = datetime.datetime.strptime(
             trade_result["date"], "%Y-%m-%dT%H:%M:%S.%f"
         )
