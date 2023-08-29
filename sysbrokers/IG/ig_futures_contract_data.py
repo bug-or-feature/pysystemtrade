@@ -194,11 +194,11 @@ class IgFuturesContractData(brokerFuturesContractData):
 
         try:
             epic = self.market_info_data.get_epic_for_contract(futures_contract)
+        except missingData:
             self.log.warning(
                 f"No epic found for '{futures_contract}' - perhaps it expired? "
                 f"OK to trade now: False"
             )
-        except missingData:
             return False
 
         trading_hours = self.market_info_data.get_trading_hours_for_epic(epic)
