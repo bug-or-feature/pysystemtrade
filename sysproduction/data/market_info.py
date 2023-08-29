@@ -62,21 +62,6 @@ class UpdateMarketInfo(productionDataLayerGeneric):
             )
             self.data.log.error(msg)
 
-    def update_historic_market_info_for_epic(self, epic):
-        try:
-            info = self.db_market_info.get_market_info_for_epic(epic)
-            historic = self._get_historic_data_for_epic(epic)
-            if historic is not None:
-                info["historic"] = historic
-            instr_code = self.db_market_info.instr_code[epic]
-            self.db_market_info.update_market_info(instr_code, epic, info)
-        except Exception as exc:
-            msg = (
-                f"Problem updating historic market info for epic '{epic}'"
-                f"- check config: {exc}"
-            )
-            self.data.log.error(msg)
-
     def _get_historic_data_for_epic(self, epic):
 
         try:
