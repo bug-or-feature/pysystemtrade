@@ -45,8 +45,7 @@ class igHandlerMarketInfo(igHandlerCore):
 
         update_epics = self.get_update_epics(limit=self.MAX_UPDATES - count)
         self.log.info(f"Updating the {len(update_epics)} least recently updated epics")
-        # TODO revert back when we have credit
-        self.update_info_for_epics(update_epics, count, check_historic=False)
+        self.update_info_for_epics(update_epics, count)
 
         oldest = self.get_update_epics(limit=1)
         info = self.data.db_market_info.get_market_info_for_epic(oldest[0])
@@ -54,12 +53,10 @@ class igHandlerMarketInfo(igHandlerCore):
         diff = datetime.datetime.utcnow() - oldest_ts
         self.log.info(f"Oldest market info: {diff}")
 
-    def update_info_for_epics(self, epic_list: list, count: int, check_historic=False):
+    def update_info_for_epics(self, epic_list: list, count: int):
         for epic in epic_list:
             instr_code = self.data.db_market_info.instr_code[epic]
-            self._update_market_info.update_market_info_for_epic(
-                instr_code, epic, check_historic=check_historic
-            )
+            self._update_market_info.update_market_info_for_epic(instr_code, epic)
             count = count + 1
         return count
 

@@ -1,8 +1,12 @@
 import datetime
 from sysdata.data_blob import dataBlob
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
+from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
 from sysdata.futures_spreadbet.market_info_data import marketInfoData
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
+from sysdata.arctic.arctic_fsb_per_contract_prices import (
+    ArcticFsbContractPriceData,
+)
 
 
 class DiagMarketInfo(productionDataLayerGeneric):
@@ -30,27 +34,26 @@ class DiagMarketInfo(productionDataLayerGeneric):
 
 class UpdateMarketInfo(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
-        data.add_class_list(
-            [
-                mongoMarketInfoData,
-            ]
-        )
+        data.add_class_list([mongoMarketInfoData, ArcticFsbContractPriceData])
         return data
 
     @property
     def db_market_info(self) -> marketInfoData:
         return self.data.db_market_info
 
+    @property
+    def db_fsb_contract_price_data(self) -> futuresContractPriceData:
+        return self.data.db_fsb_contract_price
+
     def delete_for_instrument_code(self, instrument_code: str):
         self.db_market_info.delete_for_instrument_code(instrument_code)
 
-    def update_market_info_for_epic(self, instr, epic, check_historic=False):
+    def update_market_info_for_epic(self, instr, epic):
         try:
             info = self.data.broker_conn.get_market_info(epic)
-            if check_historic:
-                historic = self._get_historic_data_for_epic(epic)
-                if historic is not None:
-                    info["historic"] = historic
+            historic = self._get_historic_data_for_epic(epic)
+            if historic is not None:
+                info["historic"] = historic
             self.db_market_info.update_market_info(instr, epic, info)
         except Exception as exc:
             msg = (
@@ -62,7 +65,6 @@ class UpdateMarketInfo(productionDataLayerGeneric):
     def update_historic_market_info_for_epic(self, epic):
         try:
             info = self.db_market_info.get_market_info_for_epic(epic)
-            # if self._needs_historic_update(info):
             historic = self._get_historic_data_for_epic(epic)
             if historic is not None:
                 info["historic"] = historic
@@ -75,45 +77,28 @@ class UpdateMarketInfo(productionDataLayerGeneric):
             )
             self.data.log.error(msg)
 
-    def _needs_historic_update(self, info):
-        if "historic" in info:
-            try:
-                if info["historic"]["last_modified_utc"]:
-                    diff = (
-                        datetime.datetime.utcnow()
-                        - info["historic"]["last_modified_utc"]
-                    )
-                    return abs(diff.days) > 1
-            except:
-                return True
-
-        return False
-
     def _get_historic_data_for_epic(self, epic):
 
-        res = "D"
         try:
-
-            hist_df = self.data.broker_conn.get_historical_fsb_data_for_epic(
-                epic=epic,
-                bar_freq=res,
-                numpoints=1,
-                warn_for_nans=True,
+            contract = self.db_market_info.contract_mapping[epic]
+            hist_df = (
+                self.db_fsb_contract_price_data.get_merged_prices_for_contract_object(
+                    contract
+                ).iloc[-1:]
             )
-            hist_dict = hist_df.to_dict(orient="records")
-            historic = dict(
-                last_modified_utc=datetime.datetime.utcnow(),
-            )
-            historic["timestamp"] = hist_df.index[-1]
-            historic["bid"] = hist_dict[0]["Close.bid"]
-            historic["ask"] = hist_dict[0]["Close.ask"]
-            historic["bar_freq"] = res
 
-            return historic
+            if len(hist_df) > 0:
+                hist_dict = hist_df.to_dict(orient="records")
+                historic = dict(
+                    last_modified_utc=datetime.datetime.utcnow(),
+                )
+                historic["timestamp"] = hist_df.index[-1]
+                historic["bid"] = hist_dict[0]["Close.bid"]
+                historic["ask"] = hist_dict[0]["Close.ask"]
+                historic["bar_freq"] = "D"
+
+                return historic
 
         except Exception as exc:
-            msg = (
-                f"Problem getting historic data for '{epic}' at "
-                f"resolution '{res}': {exc}"
-            )
+            msg = f"Problem getting historic data for '{epic}': {exc}"
             self.data.log.error(msg)
