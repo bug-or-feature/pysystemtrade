@@ -5,7 +5,6 @@ import pymongo
 import pytz
 from functools import cached_property
 from munch import munchify
-
 from syscore.constants import arg_not_supplied
 from syscore.dateutils import ISO_DATE_FORMAT
 from syscore.exceptions import missingContract, missingData
@@ -15,6 +14,7 @@ from sysdata.futures_spreadbet.market_info_data import (
     contract_date_from_expiry_key,
 )
 from syslogging.logger import *
+from sysobjects.contracts import futuresContract as fc
 from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 from sysbrokers.IG.ig_trading_hours import parse_trading_hours
 
@@ -72,6 +72,7 @@ class mongoMarketInfoData(marketInfoData):
         self._last_modified = {}
         self._min_bet = {}
         self._instr_code = {}
+        self._contract_mappings = {}
 
     def __repr__(self):
         return f"mongoMarketInfoData {str(self.mongo_data)}"
@@ -121,6 +122,12 @@ class mongoMarketInfoData(marketInfoData):
         if len(self._instr_code) == 0:
             self._parse_market_info_for_mappings()
         return self._instr_code
+
+    @cached_property
+    def contract_mapping(self) -> dict:
+        if len(self._contract_mappings) == 0:
+            self._parse_market_info_for_mappings()
+        return self._contract_mappings
 
     def add_market_info(self, instrument_code: str, epic: str, market_info: dict):
         self.log.debug(f"Adding market info for '{epic}'")
@@ -345,10 +352,12 @@ class mongoMarketInfoData(marketInfoData):
             ):
 
                 doc = munchify(result)
-                contract_date_str = (
-                    f"{instr}/{contract_date_from_expiry_key(doc.instrument.expiry)}"
-                )
+                contract_date = contract_date_from_expiry_key(doc.instrument.expiry)
+                contract_date_str = f"{instr}/{contract_date}"
                 self._epic_mappings[contract_date_str] = doc["epic"]
+                self._contract_mappings[doc["epic"]] = fc.from_two_strings(
+                    instr, contract_date
+                )
 
                 date_str = doc.instrument.expiryDetails.lastDealingDate
                 last_dealing = datetime.datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
