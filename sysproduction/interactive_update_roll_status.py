@@ -48,7 +48,6 @@ from sysproduction.reporting.data.rolls import (
     rollingAdjustedAndMultiplePrices,
     relative_volume_in_forward_contract_versus_price,
 )
-from sysproduction.update_fsb_market_info import UpdateFsbMarketInfo
 
 no_change_required = named_object("No roll required")
 EXIT_CODE = "EXIT"
