@@ -62,6 +62,7 @@ class UpdateMarketInfo(productionDataLayerGeneric):
     def update_historic_market_info_for_epic(self, epic):
         try:
             info = self.db_market_info.get_market_info_for_epic(epic)
+            # if self._needs_historic_update(info):
             historic = self._get_historic_data_for_epic(epic)
             if historic is not None:
                 info["historic"] = historic
@@ -74,11 +75,21 @@ class UpdateMarketInfo(productionDataLayerGeneric):
             )
             self.data.log.error(msg)
 
-    def _get_historic_data_for_epic(self, epic):
+    def _needs_historic_update(self, info):
+        if "historic" in info:
+            try:
+                if info["historic"]["last_modified_utc"]:
+                    diff = (
+                        datetime.datetime.utcnow()
+                        - info["historic"]["last_modified_utc"]
+                    )
+                    return abs(diff.days) > 1
+            except:
+                return True
 
-        historic = dict(
-            last_modified_utc=datetime.datetime.utcnow(),
-        )
+        return False
+
+    def _get_historic_data_for_epic(self, epic):
 
         res = "D"
         try:
@@ -90,6 +101,9 @@ class UpdateMarketInfo(productionDataLayerGeneric):
                 warn_for_nans=True,
             )
             hist_dict = hist_df.to_dict(orient="records")
+            historic = dict(
+                last_modified_utc=datetime.datetime.utcnow(),
+            )
             historic["timestamp"] = hist_df.index[-1]
             historic["bid"] = hist_dict[0]["Close.bid"]
             historic["ask"] = hist_dict[0]["Close.ask"]
@@ -103,5 +117,3 @@ class UpdateMarketInfo(productionDataLayerGeneric):
                 f"resolution '{res}': {exc}"
             )
             self.data.log.error(msg)
-
-        return historic

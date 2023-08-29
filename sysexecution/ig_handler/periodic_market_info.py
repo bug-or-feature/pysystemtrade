@@ -39,13 +39,14 @@ class igHandlerMarketInfo(igHandlerCore):
             delta=my_delta, limit=(self.MAX_UPDATES - count)
         )
         self.log.info(
-            f"Updating {len(expiry_epics) if order_epics else 0} epics expiring shortly"
+            f"Updating {len(expiry_epics) if expiry_epics else 0} epics expiring shortly"
         )
         count = self.update_info_for_epics(expiry_epics, count)
 
         update_epics = self.get_update_epics(limit=self.MAX_UPDATES - count)
         self.log.info(f"Updating the {len(update_epics)} least recently updated epics")
-        self.update_info_for_epics(update_epics, count, check_historic=True)
+        # TODO revert back when we have credit
+        self.update_info_for_epics(update_epics, count, check_historic=False)
 
         oldest = self.get_update_epics(limit=1)
         info = self.data.db_market_info.get_market_info_for_epic(oldest[0])
