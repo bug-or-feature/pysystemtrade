@@ -13,7 +13,6 @@ from sysbrokers.IG.ig_instruments_data import (
     get_instrument_object_from_config,
 )
 from sysdata.barchart.bc_connection import bcConnection
-from sysproduction.update_fsb_market_info import UpdateFsbMarketInfo
 
 
 class IgFuturesContractData(brokerFuturesContractData):
@@ -201,11 +200,6 @@ class IgFuturesContractData(brokerFuturesContractData):
             )
         except missingData:
             return False
-
-        update_epic_config = UpdateFsbMarketInfo(self.data)
-        update_epic_config.update_market_info_for_epic(
-            futures_contract.instrument_code, epic
-        )
 
         trading_hours = self.market_info_data.get_trading_hours_for_epic(epic)
 
