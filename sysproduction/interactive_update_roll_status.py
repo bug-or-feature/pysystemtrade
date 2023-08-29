@@ -7,6 +7,7 @@ NOTE: this does not update the roll calendar .csv files stored elsewhere. Under 
 from dataclasses import dataclass
 import numpy as np
 
+from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from syscore.interactive.input import (
     get_input_from_user_and_convert_to_type,
     true_if_answer_is_yes,
@@ -62,6 +63,7 @@ def interactive_update_roll_status():
             csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
+        data.add_class_object(mongoMarketInfoData)
         api = ReportingApiFsb(data)
         function_to_call = get_rolling_master_function()
         function_to_call(api=api, data=data)
