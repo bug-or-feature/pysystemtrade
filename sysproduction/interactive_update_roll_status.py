@@ -528,10 +528,6 @@ def manually_report_and_update_roll_state_for_code(
     auto_parameters: autoRollParameters,
     roll_data: RollDataWithStateReporting,
 ):
-    # update FSB market info for instrument - tradeability may have changed since
-    # previous evening's report run
-    update_epic_config = UpdateFsbMarketInfo(api.data)
-    update_epic_config.do_market_info_updates([instrument_code], check_historic=False)
     run_roll_report(api, instrument_code)
     manually_update_roll_state_for_code(
         data=api.data,
