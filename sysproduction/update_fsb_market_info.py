@@ -29,7 +29,7 @@ class UpdateFsbMarketInfo(object):
     def broker(self) -> dataBroker:
         return self._broker
 
-    def do_market_info_updates(self, instrument_list=None, check_historic=True):
+    def do_market_info_updates(self, instrument_list=None):
 
         if instrument_list is None:
             instr_list = [
