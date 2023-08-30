@@ -116,7 +116,8 @@ class contractPositionData(baseData):
         list_of_contracts = self.get_list_of_contracts()  ## includes zeros
         current_positions = []
         for contract in list_of_contracts:
-            position = self.get_current_position_for_contract_object(contract)
+            # TODO rounding strategy
+            position = round(self.get_current_position_for_contract_object(contract), 2)
             if position == 0:
                 continue
 

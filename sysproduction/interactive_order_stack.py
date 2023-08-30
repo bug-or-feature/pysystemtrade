@@ -434,8 +434,9 @@ def create_instrument_balance_trade(data):
     print("Use to fix breaks between instrument strategy and contract level positions")
     strategy_name = get_valid_strategy_name_from_user(data=data, source="positions")
     instrument_code = get_valid_instrument_code_from_user(data)
+    # TODO rounding strategy
     fill_qty = get_input_from_user_and_convert_to_type(
-        "Quantity ", type_expected=int, allow_default=False
+        "Quantity ", type_expected=float, allow_default=False
     )
 
     default_price = default_price_for_instrument(data, instrument_code)
