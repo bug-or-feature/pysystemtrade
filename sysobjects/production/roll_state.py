@@ -25,6 +25,7 @@ passive_roll_state = RollState.Passive
 roll_explanations = {
     RollState.No_Roll: "No rolling happens. Will only trade priced contract.",
     RollState.Passive: "Allow the contract to roll naturally (closing trades in priced contract, opening trades in forward contract)",
+    RollState.Force: "Force the contract to roll ASAP using spread order",
     RollState.Force_Outright: "Force the contract to roll ASAP using two outright orders",
     RollState.Roll_Adjusted: "Roll adjusted prices from existing priced to new forward contract (after adjusted prices have been changed, will automatically move state to no roll",
     RollState.Close: "Close position in near contract only",
