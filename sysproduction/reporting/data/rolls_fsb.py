@@ -38,7 +38,7 @@ def get_roll_data_for_fsb_instrument(instrument_code, data: dataBlob):
     diag_positions = diagPositions(data)
     roll_status = diag_positions.get_name_of_roll_state(instrument_code)
 
-    # Positions
+    # Position
     position_priced = diag_positions.get_position_for_contract(
         futuresContract(instrument_code, contract_priced)
     )
@@ -80,7 +80,7 @@ def get_roll_data_for_fsb_instrument(instrument_code, data: dataBlob):
         contract_priced=contract_priced,
         priced_expiry=priced_expiry,
         contract_fwd=contract_fwd,
-        position_priced=position_priced,
+        position_priced=round(position_priced, 2),
         relative_volume_fwd=relative_volume_fwd,
         contract_volume_fwd=contract_volume_fwd,
         priced_status=priced_status,

@@ -6,6 +6,7 @@ NOTE: this does not update the roll calendar .csv files stored elsewhere. Under 
 """
 from dataclasses import dataclass
 import numpy as np
+import pandas as pd
 
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from syscore.interactive.input import (
@@ -64,6 +65,11 @@ def interactive_update_roll_status():
     ) as data:
         data.add_class_object(mongoMarketInfoData)
         api = ReportingApiFsb(data)
+
+        pd.set_option("display.max_columns", None)
+        pd.set_option("display.width", 2000)
+        pd.set_option("display.max_colwidth", None)
+
         function_to_call = get_rolling_master_function()
         function_to_call(api=api, data=data)
 
