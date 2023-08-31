@@ -3,16 +3,29 @@
 This document describes changes to this fork. For upstream master, see [CHANGELOG](CHANGELOG.md)
 
 ## Status
-- Upstream version: 1.61
+- Upstream version: 1.71
 
 ## TODO
-- See [Issues](https://github.com/bug-or-feature/pysystemtrade-fsb/issues)
+See
+- [Issues](https://github.com/bug-or-feature/pysystemtrade-fsb/issues)
+- [Roadmap / wishlist](https://github.com/bug-or-feature/pysystemtrade-fsb#roadmap--wishlist)
+
+## July - August 2023
+- interactive order stack adapted for FSBs
+- automated trading of FSBs
+- custom market algo for FSBs
+- rebuild of AEX_fsb, BRENT_W_fsb price data
+- improved market info retrieval, now continuous
+- custom balance trade for positions auto rolled by IG
+- allow viewing of market info from Interactive Diagnostics
+- don't allow 'Force' roll state
+- custom script to adjust forward/carry when IG skip a contract
 
 ## June 2023
 - checks for valid epics on roll
 - temporary roll cycle overrides
 - FSB roll report improvements
-- rebuild of EURIBOR-ICE price data
+- rebuild of EURIBOR-ICE_fsb price data
 - FSB version of `clone_data_for_instrument()`
 - FSB version of `delete_instrument_from_prices()` in Interactive Controls
 

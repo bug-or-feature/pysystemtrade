@@ -29,34 +29,32 @@ See [CHANGES](CHANGES.md) for release notes
 - Custom `dataBroker` and `dataBlob` classes
 - custom scripts for data setup / import
 
-## Status (July 2023)
+## Status (September 2023)
 My own production system
 - is sampling approx 80 instruments ([list](https://pysystemtrade-fsb.bugorfeature.net/reports/instruments.html))
 - get capital data from IG
 - runs a static backtest, generating optimal positions
+- makes automated trades (market orders only)
 - produces the following reports ([examples](https://pysystemtrade-fsb.bugorfeature.net/reports/))
   - Costs report
   - FSB report (new report)
   - Instrument risk report (customised version)
+  - Market monitor report
   - Minimum capital report (customised version)
-  - Roll report (customised version)
+  - P&L report
+  - Reconcile report
   - Remove markets report (customised version)
+  - Risk report (customised version)
+  - Roll report (customised version)
   - Slippage report
   - Status report
+  - Strategy report
+  - Trade report
 
 ## Roadmap / wishlist
 - adding more instruments
-- paper trading, with manual trades
 - add setup instructions to docs
-- implement the remaining reports:
-  - Strategy report
-  - Market monitor report
-  - P&L report
-  - Reconcile report
-  - Risk report
-  - Strategy report
-  - Trade report
-- implement automated trading
+- implement limit orders
 - implement dynamic optimisation
 
 ## Additional dependencies
