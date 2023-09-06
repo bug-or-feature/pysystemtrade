@@ -20,28 +20,28 @@ from syslogging.logger import *
 
 def do_check_external_position_break():
     stack_handler = stackHandlerChecks()
-    stack_handler.log.label(type="stackHandlerChecks")
+    stack_handler.log.info("No-op", type="stackHandlerChecks")
     stack_handler.check_external_position_break()
     stack_handler.data.close()
 
 
 def do_spawn_children_from_new_instrument_orders():
     stack_handler = stackHandlerForSpawning()
-    stack_handler.log.label(type="stackHandlerForSpawning")
+    stack_handler.log.info("No-op", type="stackHandlerForSpawning")
     stack_handler.spawn_children_from_new_instrument_orders()
     stack_handler.data.close()
 
 
 def do_force_roll_orders():
     stack_handler = stackHandlerForRolls()
-    stack_handler.log.label(type="stackHandlerForRolls")
+    stack_handler.log.info("No-op", type="stackHandlerForRolls")
     stack_handler.generate_force_roll_orders()
     stack_handler.data.close()
 
 
 def do_create_broker_orders_from_contract_orders():
     stack_handler = stackHandlerCreateBrokerOrders()
-    stack_handler.log.label(type="stackHandlerCreateBrokerOrders")
+    stack_handler.log.info("No-op", type="stackHandlerCreateBrokerOrders")
     stack_handler.create_broker_orders_from_contract_orders(test_mode=False)
     stack_handler.data.close()
 
@@ -59,14 +59,14 @@ def do_refresh_additional_sampling_all_instruments():
 
 def do_process_fills_stack():
     stack_handler = stackHandlerForFills()
-    stack_handler.log.label(type="stackHandlerForFills")
+    stack_handler.log.info("No-op", type="stackHandlerForFills")
     stack_handler.process_fills_stack()
     stack_handler.data.close()
 
 
 def do_completed_orders():
     stack_handler = stackHandlerForCompletions()
-    stack_handler.log.label(type="stackHandlerForCompletions")
+    stack_handler.log.info("No-op", type="stackHandlerForCompletions")
     stack_handler.handle_completed_orders()
     stack_handler.data.close()
 

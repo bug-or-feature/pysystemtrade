@@ -28,7 +28,7 @@ class bcConnection(object):
 
     def __init__(self, log=get_logger("bcConnection")):
 
-        log.label(broker="Barchart")
+        log.info("Setting up Barchart connection", broker="Barchart")
 
         # start HTTP session
         self._session = requests.Session()

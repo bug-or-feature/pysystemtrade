@@ -60,8 +60,10 @@ def update_historical_prices_with_data(data: dataBlob, instrument_list=None):
     else:
         list_of_codes_all = instrument_list
     for instrument_code in list_of_codes_all:
-        data.log.debug(f"Starting processing for instrument {instrument_code}")
-        data.log.label(instrument_code=instrument_code)
+        data.log.debug(
+            f"Starting processing for instrument {instrument_code}",
+            instrument_code=instrument_code,
+        )
         update_historical_fsb_prices_for_instrument(instrument_code, data)
 
 
@@ -84,8 +86,10 @@ def update_historical_fsb_prices_for_instrument(instrument_code: str, data: data
         return failure
 
     for contract_object in contract_list:
-        data.log.label(contract_date=contract_object.date_str)
-        data.log.debug(f"Starting processing for contract {contract_object.key}")
+        data.log.debug(
+            f"Starting processing for contract {contract_object.key}",
+            contract_date=contract_object.date_str,
+        )
         # update contract_object params so that we know to get data from IG, not Barchart
         contract_object.params.data_source = "IG"
         update_historical_prices_for_instrument_and_contract(contract_object, data)

@@ -62,11 +62,10 @@ class GenerateFsbUpdates(object):
             self.update(instr)
 
     def update(self, instr_code):
-        self.data.log.label(instrument_code=instr_code)
-
         futures_code = remove_suffix(instr_code, "_fsb")
         self.data.log.debug(
-            f"Starting generation of FSB price updates from {futures_code}"
+            f"Starting generation of FSB price updates from {futures_code}",
+            instrument_code=instr_code,
         )
 
         fsb_chain = get_contract_chain(self.data, instr_code)
