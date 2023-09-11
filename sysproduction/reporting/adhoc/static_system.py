@@ -1,5 +1,5 @@
-from systems.basesystem import System
-from systems.provided.futures_chapter15.basesystem import futures_system
+from systems.provided.rob_system.run_system import futures_system, System
+from copy import copy
 from systems.provided.static_small_system_optimise.optimise_small_system import (
     find_best_ordered_set_of_instruments,
     get_correlation_matrix,
@@ -19,7 +19,7 @@ from sysproduction.reporting.report_configs import reportConfig
 
 
 def static_system_adhoc_report(
-    system_function: System, list_of_capital_and_estimate_instrument_count_tuples: list
+    system_function, list_of_capital_and_estimate_instrument_count_tuples: list
 ):
 
     data = dataBlob()
@@ -27,7 +27,7 @@ def static_system_adhoc_report(
         title="Static selection of instruments", function="not_used", output="file"
     )
 
-    system = system_function
+    system = system_function()
     corr_matrix = get_correlation_matrix(system)  ## capital irrelevant
 
     all_results = []
@@ -40,7 +40,7 @@ def static_system_adhoc_report(
         capital,
         est_number_of_instruments,
     ) in list_of_capital_and_estimate_instrument_count_tuples:
-        system = system_function
+        system = futures_system()
         instrument_list = static_system_results_for_capital(
             system,
             corr_matrix=corr_matrix,
@@ -99,6 +99,6 @@ if __name__ == "__main__":
         [25000000, 50],
     ]
     static_system_adhoc_report(
-        system_function=futures_system(),
+        system_function=futures_system,
         list_of_capital_and_estimate_instrument_count_tuples=list_of_capital_and_estimate_instrument_count_tuples,
     )
