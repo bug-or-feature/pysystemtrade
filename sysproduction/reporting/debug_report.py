@@ -13,6 +13,9 @@ from sysproduction.reporting.adhoc.fsb_contract_prices import (
 from sysproduction.reporting.adhoc.instrument_risk_compare import (
     instrument_risk_compare_report,
 )
+from sysproduction.reporting.adhoc.compare_adjusted_prices import (
+    compare_adjusted_prices,
+)
 from sysproduction.reporting.data.fsb_correlation_data import (
     fsb_correlation_data,
     contract_key,
@@ -224,6 +227,10 @@ def run_fut_fsb_price_comparison_report():
     instrument_risk_compare_report()
 
 
+def run_adhoc_compare_adjusted_prices(instr):
+    compare_adjusted_prices(instr, draw=True)
+
+
 if __name__ == "__main__":
     # run_slippage_report()
     # run_costs_report()
@@ -263,3 +270,4 @@ if __name__ == "__main__":
     # )
     # instrument_risk_csv()
     # run_fut_fsb_price_comparison_report()
+    # run_adhoc_compare_adjusted_prices("BRENT_W_fsb")
