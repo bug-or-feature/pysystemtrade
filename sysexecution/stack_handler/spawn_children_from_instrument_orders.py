@@ -261,7 +261,7 @@ def get_required_contract_trade_for_instrument(
         instrument_code
     ) or diag_positions.is_roll_state_adjusted(instrument_code):
         ## do nothing
-        pass
+        return []
 
     elif diag_positions.is_double_sided_trade_roll_state(instrument_code):
         order_reduces_positions = is_order_reducing_order(
@@ -280,7 +280,7 @@ def get_required_contract_trade_for_instrument(
             )
         else:
             ## do nothing
-            pass
+            return []
 
     else:
         log.critical(
@@ -350,7 +350,7 @@ def passive_roll_child_order(
         return [contractIdAndTrade(next_contract, trade)]
 
     # ok a reducing trade
-    new_position = position_current_contract + trade
+    new_position = position_current_contract + trade.as_single_trade_qty_or_error()
     sign_of_position_is_unchanged = sign(position_current_contract) == sign(
         new_position
     )
