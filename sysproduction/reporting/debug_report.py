@@ -1,20 +1,28 @@
+import pickle
 import pandas as pd
+
+from syscore.fileutils import resolve_path_and_filename_for_package
+from syscore.interactive.progress_bar import progressBar
 from syscore.pdutils import print_full
 from sysdata.data_blob import dataBlob
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
-from sysproduction.data.broker import dataBroker
-from sysproduction.reporting.report_configs import *
-from sysproduction.reporting.report_configs_fsb import *
-from sysproduction.reporting.reporting_functions import (
-    run_report_with_data_blob,
-    pandas_display_for_reports,
+from sysproduction.data.prices import get_list_of_instruments
+from sysproduction.reporting.adhoc.fsb_contract_prices import (
+    run_compare_fsb_contract_price_report,
+)
+from sysproduction.reporting.adhoc.instrument_risk_compare import (
+    instrument_risk_compare_report,
 )
 from sysproduction.reporting.data.fsb_correlation_data import (
     fsb_correlation_data,
     contract_key,
 )
-from sysproduction.reporting.adhoc.fsb_contract_prices import (
-    run_compare_fsb_contract_price_report,
+from sysproduction.reporting.data.risk import get_risk_data_for_instrument
+from sysproduction.reporting.report_configs import *
+from sysproduction.reporting.report_configs_fsb import *
+from sysproduction.reporting.reporting_functions import (
+    run_report_with_data_blob,
+    pandas_display_for_reports,
 )
 
 """
@@ -188,6 +196,34 @@ def run_adhoc_fsb_price_comparison_report(first: str, second: str, third: str):
     )
 
 
+def instrument_risk_csv():
+    output = dict()
+    with dataBlob(
+        log_name=f"Instrument Risk CSV",
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
+        ),
+    ) as data:
+        instr_list = get_list_of_instruments(data)
+        p = progressBar(len(instr_list))
+        for instr in instr_list:
+            risk = get_risk_data_for_instrument(data, instr)
+            output[instr] = risk
+            p.iterate()
+        p.close()
+
+    filename = resolve_path_and_filename_for_package(
+        "sysproduction.reporting", "fsb_instrument_risk.pickle"
+    )
+    with open(filename, "wb+") as fhandle:
+        pickle.dump(output, fhandle)
+
+
+def run_fut_fsb_price_comparison_report():
+    instrument_risk_compare_report()
+
+
 if __name__ == "__main__":
     # run_slippage_report()
     # run_costs_report()
@@ -225,3 +261,5 @@ if __name__ == "__main__":
     #     "HANG_fsb/20230400",
     #     "HANG_fsb/20230500",
     # )
+    # instrument_risk_csv()
+    # run_fut_fsb_price_comparison_report()
