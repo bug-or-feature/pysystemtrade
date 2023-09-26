@@ -455,12 +455,13 @@ class updatePositions(productionDataLayerGeneric):
                 instrument_strategy
             )
         )
-        trade_done_as_int = new_fill.as_single_trade_qty_or_error()
-        if trade_done_as_int is missing_order:
+        trade_done = new_fill.as_single_trade_qty_or_error()
+        if trade_done is missing_order:
             self.log.critical("Instrument orders can't be spread orders!")
             return failure
 
-        new_position = current_position + trade_done_as_int
+        # TODO rounding strategy?
+        new_position = round(current_position + trade_done, 2)
 
         self.db_strategy_position_data.update_position_for_instrument_strategy_object(
             instrument_strategy, new_position
@@ -523,7 +524,8 @@ class updatePositions(productionDataLayerGeneric):
 
         current_position = self.diag_positions.get_position_for_contract(contract)
 
-        new_position = current_position + trade_done
+        # TODO rounding strategy?
+        new_position = round(current_position + trade_done, 2)
 
         self.db_contract_position_data.update_position_for_contract_object(
             contract, new_position, date=time_date
