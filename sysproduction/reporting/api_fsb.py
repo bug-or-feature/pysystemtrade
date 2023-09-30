@@ -115,12 +115,39 @@ class ReportingApiFsb(reportingApi):
 
         return instrument_risk_sorted_table
 
+    def table_of_missing_epics(
+        self, table_header="Missing forward epic", style="fwd"
+    ) -> table:
+
+        df = pd.DataFrame(self.market_info_data)
+        grouped = df.groupby("InstrCode")["Pos"].apply(
+            lambda ser: ser.str.contains(style).sum()
+        )
+        rows = []
+        for instr_code in grouped.index.values:
+            if grouped[instr_code] == 0:
+                since = self.get_time_since_last_roll_date(instr_code)
+                rows.append(
+                    dict(Instrument=instr_code, Since_Roll=f"{since.days: >10}")
+                )
+
+        new_df = pd.DataFrame(rows)
+        return table(table_header, new_df)
+
+    def get_time_since_last_roll_date(self, instr_code):
+        now = datetime.datetime.now()
+        df = self.data.db_futures_multiple_prices.get_multiple_prices(instr_code)
+        df["diff"] = df.index.to_series().diff()
+        roll_date = df[df["diff"] < datetime.timedelta(seconds=61)].index[-1]
+        since = now - roll_date
+        return since
+
     def table_of_wrong_min_bet_size(
         self, table_header="Misconfigured minimum bet size"
     ) -> table:
 
         df = pd.DataFrame(self.market_info_data)
-        df = df[["Contract", "ExpectedMinBet", "ActualMinBet", "Status"]]
+        df = df[["Contract", "ExpectedMinBet", "ActualMinBet", "In_Hours_Status"]]
         df = df.loc[(df["ExpectedMinBet"] != df["ActualMinBet"])]
         df.set_index("Contract", inplace=True)
 
@@ -217,7 +244,6 @@ class ReportingApiFsb(reportingApi):
 
         epics = self.data.db_market_info.epic_mapping
         expiries = self.data.db_market_info.expiry_dates
-        in_hours = self.data.db_market_info.in_hours
         in_hours_status = self.data.db_market_info.in_hours_status
         last_modified = self.data.db_market_info.last_modified
         min_bet = self.data.db_market_info.min_bet
@@ -243,8 +269,7 @@ class ReportingApiFsb(reportingApi):
                     Contract=key,
                     Epic=value,
                     Expiry=expiries[key],
-                    Status=in_hours_status[key],
-                    In_Hours=in_hours[key],
+                    In_Hours_Status=in_hours_status[key],
                     LastMod=last_modified[key],
                     Pos=pos,
                     ExpectedMinBet=meta_data.Pointsize,
@@ -260,7 +285,7 @@ class ReportingApiFsb(reportingApi):
     ) -> table:
 
         results = pd.DataFrame(self.market_info_data)
-        results = results[["Contract", "Epic", "Expiry", "Status", "In_Hours", "Pos"]]
+        results = results[["Contract", "Epic", "Expiry", "In_Hours_Status", "Pos"]]
         results.set_index("Contract", inplace=True)
 
         return table(table_header, results)

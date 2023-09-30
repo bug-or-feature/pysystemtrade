@@ -8,6 +8,13 @@ from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.mongodb.mongo_epic_periods import mongoEpicPeriodsData
 
+MISSING_EPIC_HEADER_TEXT = body_text(
+    "Instruments where the epic for a given contract is yet to be defined.\n"
+    "This can happen for forward contracts where there are only two epics, but should "
+    "never happen for priced. Missing forwards will normally resolve just after a  "
+    "roll, but if IG skip a contract will need manual action. "
+)
+
 MISCONFIGURED_MINIMUM_BET_HEADER_TEXT = body_text(
     "Instruments where the minimum bet is misconfigured, or recently changed by IG"
 )
@@ -73,6 +80,15 @@ def do_fsb_report(
     formatted_output = []
 
     formatted_output.append(reporting_api_fsb.terse_header("FSB report"))
+
+    # instruments where epic is yet to be defined
+    formatted_output.append(MISSING_EPIC_HEADER_TEXT)
+    formatted_output.append(reporting_api_fsb.table_of_missing_epics())
+    formatted_output.append(
+        reporting_api_fsb.table_of_missing_epics(
+            table_header="Missing priced epic", style="priced"
+        )
+    )
 
     # misconfigured minimum bets
     formatted_output.append(MISCONFIGURED_MINIMUM_BET_HEADER_TEXT)
