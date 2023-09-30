@@ -67,7 +67,6 @@ class mongoMarketInfoData(marketInfoData):
         )
         self._epic_mappings = {}
         self._expiry_dates = {}
-        self._in_hours = {}
         self._in_hours_status = {}
         self._last_modified = {}
         self._min_bet = {}
@@ -92,12 +91,6 @@ class mongoMarketInfoData(marketInfoData):
         if len(self._expiry_dates) == 0:
             self._parse_market_info_for_mappings()
         return self._expiry_dates
-
-    @cached_property
-    def in_hours(self) -> dict:
-        if len(self._in_hours) == 0:
-            self._parse_market_info_for_mappings()
-        return self._in_hours
 
     @cached_property
     def in_hours_status(self) -> dict:
@@ -341,7 +334,6 @@ class mongoMarketInfoData(marketInfoData):
                 {
                     "_id": 0,
                     "epic": 1,
-                    "in_hours": 1,
                     "instrument_code": 1,
                     "last_modified_utc": 1,
                     "in_hours_status": 1,
@@ -371,14 +363,6 @@ class mongoMarketInfoData(marketInfoData):
                 self._min_bet[contract_date_str] = doc.dealingRules.minDealSize.value
 
                 self._instr_code[doc["epic"]] = instr
-
-                try:
-                    self._in_hours[contract_date_str] = doc["in_hours"]
-                except KeyError:
-                    self.log.error(
-                        f"Problem getting 'in_hours' for {contract_date_str}"
-                    )
-                    self._in_hours[contract_date_str] = "n/a"
 
                 try:
                     self._in_hours_status[contract_date_str] = doc["in_hours_status"]
@@ -426,14 +410,9 @@ class mongoMarketInfoData(marketInfoData):
             market_info = munchify(data)
             trading_hours = parse_trading_hours(market_info.instrument.openingHours)
             if trading_hours.okay_to_trade_now():
-                data["in_hours"] = "TRUE"
                 data["in_hours_status"] = market_info.snapshot.marketStatus
             else:
-                data["in_hours"] = "FALSE"
-                try:
-                    data["in_hours_status"] = market_info.in_hours_status
-                except:
-                    data["in_hours_status"] = "n/a"
+                data["in_hours_status"] = ""
         except Exception as exc:
             self.log.error(f"{exc}: No existing market info found, not adjusting")
 
