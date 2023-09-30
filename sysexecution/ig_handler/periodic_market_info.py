@@ -97,3 +97,8 @@ class igHandlerMarketInfo(igHandlerCore):
                 return data
         else:
             return []
+
+
+if __name__ == "__main__":
+    handler = igHandlerMarketInfo()
+    count = handler.update_info_for_epics(["CO.D.LCC.Month7.IP"], 0)
