@@ -3,6 +3,7 @@ import datetime
 import time
 from importlib import import_module
 import os
+import pickle
 from pathlib import Path
 from typing import List, Tuple
 
@@ -391,3 +392,17 @@ def does_filename_exist(filename: str) -> bool:
 def does_resolved_filename_exist(resolved_filename: str) -> bool:
     file_exists = os.path.isfile(resolved_filename)
     return file_exists
+
+
+def pickle_object(data, path: str, file: str):
+    filename = resolve_path_and_filename_for_package(path, file)
+    with open(filename, "wb+") as fhandle:
+        pickle.dump(data, fhandle)
+
+
+def unpickle_object(path: str, file: str):
+    path = resolve_path_and_filename_for_package(path, file)
+    full_path = resolve_path_and_filename_for_package(path)
+    with open(full_path, "rb") as file:
+        data = pickle.load(file)
+        return data
