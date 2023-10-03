@@ -411,8 +411,6 @@ class mongoMarketInfoData(marketInfoData):
             trading_hours = parse_trading_hours(market_info.instrument.openingHours)
             if trading_hours.okay_to_trade_now():
                 data["in_hours_status"] = market_info.snapshot.marketStatus
-            else:
-                data["in_hours_status"] = ""
         except Exception as exc:
             self.log.error(f"{exc}: No existing market info found, not adjusting")
 
