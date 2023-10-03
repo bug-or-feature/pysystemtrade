@@ -10,6 +10,14 @@ See
 - [Issues](https://github.com/bug-or-feature/pysystemtrade-fsb/issues)
 - [Roadmap / wishlist](https://github.com/bug-or-feature/pysystemtrade-fsb#roadmap--wishlist)
 
+## September 2023
+- better fractional position saving
+- 'Force' roll state no longer allowed
+- new adhoc report compares FSB risk with Future per instrument
+- new adhoc report plots FSB adjusted price vs Future
+- simpler/better FSB market info collection
+- new section in FSB report highlights undefined forward contract epics
+
 ## July - August 2023
 - interactive order stack adapted for FSBs
 - automated trading of FSBs
