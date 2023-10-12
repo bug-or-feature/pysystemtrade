@@ -97,7 +97,7 @@ def write_pickle_file(system):
 
 
 if __name__ == "__main__":
-    # run_static()
+    run_static()
     # run_dynamic()
-    run_saved_dynamic()
+    # run_saved_dynamic()
     # debug_single_instrument("AEX_fsb")
