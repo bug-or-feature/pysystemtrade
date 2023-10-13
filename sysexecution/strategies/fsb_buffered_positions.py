@@ -117,8 +117,7 @@ def fsb_trade_given_optimal_and_actual_positions(
         reference_datetime=ref_date,
     )
 
-    log = order_required.log_with_attributes(data.log)
-    log.debug(
+    data.log.debug(
         "Upper %.2f, Lower %.2f, Min %.2f, Curr %.2f, Req pos %.2f, Req trade %.2f, Ref price %f, contract %s"
         % (
             upper,
@@ -129,7 +128,9 @@ def fsb_trade_given_optimal_and_actual_positions(
             trade_required,
             reference_price,
             reference_contract,
-        )
+        ),
+        **order_required.log_attributes(),
+        method="temp",
     )
 
     return order_required

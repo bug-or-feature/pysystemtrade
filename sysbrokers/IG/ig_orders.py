@@ -265,8 +265,11 @@ class IgExecutionStackData(brokerExecutionStackData):
         :return: tradeWithContract object or missing_order
         """
 
-        log = broker_order.log_with_attributes(self.log)
-        log.debug("Going to submit order %s to IG" % str(broker_order))
+        log_attrs = {**broker_order.log_attributes(), "method": "temp"}
+        self.log.debug(
+            "Going to submit order %s to IG" % str(broker_order),
+            **log_attrs,
+        )
 
         trade_list = broker_order.trade
         order_type = broker_order.order_type
@@ -283,14 +286,14 @@ class IgExecutionStackData(brokerExecutionStackData):
                 limit_price=limit_price,
             )
         except Exception as exc:
-            log.warning(f"Problem submitting broker order: {exc}")
+            self.log.warning(f"Problem submitting broker order: {exc}", **log_attrs)
             placed_broker_trade_object = missing_order
 
         if placed_broker_trade_object is missing_order:
-            log.warning("Couldn't submit order")
+            self.log.warning("Couldn't submit order", **log_attrs)
             return missing_order
 
-        log.debug("Order submitted to IG")
+        self.log.debug("Order submitted to IG", **log_attrs)
 
         return placed_broker_trade_object
 

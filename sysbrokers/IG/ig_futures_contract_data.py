@@ -55,9 +55,12 @@ class IgFuturesContractData(brokerFuturesContractData):
         :return: YYYYMMDD or None
         """
 
-        log = futures_contract.specific_log(self.log)
         if futures_contract.is_spread_contract():
-            log.warning("Can't find expiry for multiple leg contract here")
+            self.log.warning(
+                "Can't find expiry for multiple leg contract here",
+                **futures_contract.log_attributes(),
+                method="temp",
+            )
             raise missingContract
 
         if self._is_fsb(futures_contract):

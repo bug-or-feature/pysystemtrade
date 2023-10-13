@@ -10,9 +10,12 @@ class algoMarketFsb(algoMarket):
 
     def prepare_and_submit_trade(self) -> orderWithControls:
         contract_order = self.contract_order
-        log = contract_order.log_with_attributes(self.data.log)
 
-        log.debug(f"Not changing size {str(contract_order.trade)}, we are an FSB")
+        self.data.log.debug(
+            f"Not changing size {str(contract_order.trade)}, we are an FSB",
+            **contract_order.log_attributes(),
+            method="temp",
+        )
 
         broker_order_with_controls = (
             self.get_and_submit_broker_order_for_contract_order(
