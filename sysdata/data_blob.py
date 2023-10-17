@@ -19,7 +19,7 @@ class dataBlob(object):
         csv_data_paths: dict = arg_not_supplied,
         broker_conn: IGConnection = arg_not_supplied,
         mongo_db: mongoDb = arg_not_supplied,
-        log: pst_logger = arg_not_supplied,
+        log=arg_not_supplied,
         keep_original_prefix: bool = False,
         auto_connect: bool = True,
     ):
@@ -42,7 +42,7 @@ class dataBlob(object):
         This abstracts the precise data source
 
         :param arg_string: str like a named tuple in the form 'classNameOfData1 classNameOfData2' and so on
-        :param log_name: pst_logger type to set
+        :param log_name: logger name
         :param keep_original_prefix: bool. If True then:
 
             data = dataBlob([arcticFuturesContractPriceData, arcticFuturesContractPriceData, mongoFuturesContractData])
