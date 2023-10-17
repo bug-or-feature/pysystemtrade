@@ -55,7 +55,6 @@ def my_config(ewmac_8, ewmac_32):
     my_config = Config()
     my_config.trading_rules = dict(ewmac8=ewmac_8, ewmac32=ewmac_32)
     my_config.instruments = ["US10_fsb", "BUXL_fsb", "GOLD_fsb", "NASDAQ_fsb"]
-    my_config.risk_overlay = arg_not_supplied
     my_config.exclude_instrument_lists = dict(
         ignore_instruments=["MILK"],
         trading_restrictions=["BUTTER"],
@@ -321,7 +320,6 @@ class TestFsbExamples:
                 percentage_vol_target=25.00,
                 notional_trading_capital=500000,
                 base_currency="GBP",
-                risk_overlay=arg_not_supplied,
                 exclude_instrument_lists=dict(
                     ignore_instruments=["MILK"],
                     trading_restrictions=["BUTTER"],
@@ -348,7 +346,6 @@ class TestFsbExamples:
     def test_fsb_system_config_import(self, data):
 
         my_config = Config("systems.futures_spreadbet.simple_fsb_system_config.yaml")
-        my_config.risk_overlay = arg_not_supplied
         my_config.exclude_instrument_lists = dict(
             ignore_instruments=["MILK"],
             trading_restrictions=["BUTTER"],
