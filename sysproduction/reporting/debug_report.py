@@ -189,8 +189,8 @@ def run_adhoc_tradeable_report(instr_code: str):
     print_full(results)
 
 
-def run_adhoc_correlation_report(key: str):
-    fsb_correlation_data(contract_key(key), draw=True)
+def run_adhoc_correlation_report(key: str, plot_returns=True):
+    fsb_correlation_data(contract_key(key), draw=True, plot_returns=plot_returns)
 
 
 def run_adhoc_fsb_price_comparison_report(first: str, second: str, third: str):
@@ -261,7 +261,8 @@ if __name__ == "__main__":
 
     # run_adhoc_tradeable_report()
     # run_adhoc_tradeable_report(instr_code="EDOLLAR_fsb")
-    # run_adhoc_correlation_report("LEANHOG_fsb/20230600")
+    # run_adhoc_correlation_report("LEANHOG_fsb/20231200")
+    # run_adhoc_correlation_report("LEANHOG_fsb/20231200", plot_returns=False)
 
     # run_adhoc_fsb_price_comparison_report(
     #     "HANG_fsb/20230300",

@@ -30,6 +30,7 @@ def fsb_correlation_data(
     is_priced=False,
     is_fwd=False,
     draw=False,
+    plot_returns=True,
 ):
 
     if futures_prices is None:
@@ -104,7 +105,7 @@ def fsb_correlation_data(
     returns_corr = sliced_returns.corr()
 
     if draw:
-        do_plot(contract_obj, sliced_prices, sliced_returns, price_corr, returns_corr)
+        do_plot(contract_obj, sliced_prices, sliced_returns, plot_returns=plot_returns)
         print(
             f"Correlations: price :\n {price_corr.iloc[0, 1]}, returns: {returns_corr.iloc[0, 1]}"
         )
@@ -120,7 +121,7 @@ def fsb_correlation_data(
     return results
 
 
-def do_plot(contract_obj, prices, returns, price_corr, returns_corr):
+def do_plot(contract_obj, prices, returns, plot_returns=True):
     fig = plt.figure(figsize=(12, 8))
     ax = fig.add_subplot(211)
     ax.set_title(f"Prices for {contract_obj.key}")
@@ -132,21 +133,22 @@ def do_plot(contract_obj, prices, returns, price_corr, returns_corr):
         linewidth=2.0,
     )
     ax.plot(prices["IG"], linestyle="--", label="IG", color="red", linewidth=2.0)
-    # ax.plot(prices["IB"], linestyle=":", label="IB", color="green", linewidth=3.0)
-    # ax.text(2, 6, f"Correlation: {price_corr.iloc[0,1]}", fontsize=15)
     ax.legend()
     ax.grid(True)
 
-    ax = fig.add_subplot(212)
-    ax.set_title(f"Returns for {contract_obj.key}")
-    ax.plot(
-        returns["Future"], linestyle="-", label="Future", color="black", linewidth=2.0
-    )
-    ax.plot(returns["FSB"], linestyle="--", label="FSB", color="red", linewidth=2.0)
-    # ax.text(2, 6, f"Correlation: {returns_corr.iloc[0,1]}", fontsize=15)
-    # ax.figtext(0.5, 0.5, "Correlation: wank")
-    ax.legend()
-    ax.grid(True)
+    if plot_returns:
+        ax = fig.add_subplot(212)
+        ax.set_title(f"Returns for {contract_obj.key}")
+        ax.plot(
+            returns["Future"],
+            linestyle="-",
+            label="Future",
+            color="black",
+            linewidth=2.0,
+        )
+        ax.plot(returns["FSB"], linestyle="--", label="FSB", color="red", linewidth=2.0)
+        ax.legend()
+        ax.grid(True)
     show()
 
 
