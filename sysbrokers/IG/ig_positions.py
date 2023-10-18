@@ -43,7 +43,7 @@ def from_ig_positions_to_dict(
     )
     for position in raw_positions:
         if account_id is not arg_not_supplied:
-            if position.account != account_id:
+            if position["account"] != account_id:
                 continue
 
         asset_class = "FSB"
