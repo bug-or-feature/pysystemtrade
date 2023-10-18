@@ -144,10 +144,10 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
         :param new_futures_per_contract_prices:
         :return: int, number of rows
         """
-        new_log = contract_object.log(self.log)
+        log_attrs = {**contract_object.log_attributes(), "method": "temp"}
 
         if len(new_futures_per_contract_prices) == 0:
-            new_log.debug("No new data")
+            self.log.debug("No new data", **log_attrs)
             return 0
 
         old_prices = self.get_merged_prices_for_contract_object(contract_object)
@@ -156,24 +156,27 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
         )
 
         if merged_prices is SPIKE_IN_DATA:
-            new_log.debug(
-                "Price has moved too much - will need to manually check - no price update done"
+            self.log.debug(
+                "Price has moved too much - will need to manually check - no price "
+                "update done",
+                **log_attrs,
             )
             return SPIKE_IN_DATA
 
         rows_added = len(merged_prices) - len(old_prices)
 
         if rows_added < 0:
-            new_log.critical("Can't remove prices something gone wrong!")
+            self.log.critical("Can't remove prices something gone wrong!", **log_attrs)
             return 0
 
         elif rows_added == 0:
             if len(old_prices) == 0:
-                new_log.debug("No existing or additional data")
+                self.log.debug("No existing or additional data", **log_attrs)
                 return 0
             else:
-                new_log.debug(
-                    "No additional data since %s " % str(old_prices.index[-1])
+                self.log.debug(
+                    "No additional data since %s " % str(old_prices.index[-1]),
+                    **log_attrs,
                 )
             return 0
 
@@ -182,7 +185,7 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
             contract_object, merged_prices, ignore_duplication=True
         )
 
-        new_log.debug("Added %d additional rows of data" % rows_added)
+        self.log.debug("Added %d additional rows of data" % rows_added, **log_attrs)
 
         return rows_added
 
