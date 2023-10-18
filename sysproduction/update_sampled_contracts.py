@@ -388,8 +388,10 @@ def update_expiry_and_sampling_status_for_contract(
         else:
             existing_expiry_source = contract_object.params.expiry_source
             if existing_expiry_source == "B" and broker_expiry_date.source == "E":
-                log.debug(
-                    f"Not updating expiry for {contract_object.key}, new date is estimated"
+                data.log.debug(
+                    f"Not updating expiry for {contract_object.key}, "
+                    f"new date is estimated",
+                    **log_attrs,
                 )
             else:
                 # Different!
