@@ -65,15 +65,16 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
         :return: None
         """
 
-        log = futures_contract_object.log(self.log)
         ident = from_contract_to_key(futures_contract_object)
         futures_price_data_as_pd = pd.DataFrame(futures_price_data)
 
         self.arctic_connection.write(ident, futures_price_data_as_pd)
 
-        log.debug(
+        self.log.debug(
             "Wrote %s lines of prices for %s to %s"
-            % (len(futures_price_data), str(futures_contract_object.key), str(self))
+            % (len(futures_price_data), str(futures_contract_object.key), str(self)),
+            futures_contract_object.log_attributes(),
+            method="temp",
         )
 
     def get_contracts_with_merged_price_data(self) -> listOfFuturesContracts:
@@ -123,13 +124,14 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
         :param futures_contract_object:
         :return: None
         """
-        log = futures_contract_object.log(self.log)
 
         ident = from_contract_to_key(futures_contract_object)
         self.arctic_connection.delete(ident)
-        log.debug(
+        self.log.debug(
             "Deleted all prices for %s from %s"
-            % (futures_contract_object.key, str(self))
+            % (futures_contract_object.key, str(self)),
+            futures_contract_object.log_attributes(),
+            method="temp",
         )
 
     def update_prices_for_contract(
@@ -196,7 +198,8 @@ class ArcticFsbContractPriceData(futuresContractPriceData):
         Merges self with new data.
         Only newer data will be added
 
-        :param new_futures_per_contract_prices: another futures per contract prices object
+        :param new_futures_per_contract_prices: another futures per contract prices
+        object
 
         :return: merged futures_per_contract object
         """
