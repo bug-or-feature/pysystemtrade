@@ -65,24 +65,22 @@ class UpdateMarketInfo(productionDataLayerGeneric):
     def _get_historic_data_for_epic(self, epic):
 
         try:
-            contract = self.db_market_info.contract_mapping[epic]
-            hist_df = (
-                self.db_fsb_contract_price_data.get_merged_prices_for_contract_object(
-                    contract
-                ).iloc[-1:]
+            hist_df = self.data.broker_conn.get_historical_fsb_data_for_epic(
+                epic, numpoints=1
+            ).iloc[-1:]
+
+            historic = dict(
+                last_modified_utc=datetime.datetime.utcnow(),
             )
 
             if len(hist_df) > 0:
                 hist_dict = hist_df.to_dict(orient="records")
-                historic = dict(
-                    last_modified_utc=datetime.datetime.utcnow(),
-                )
                 historic["timestamp"] = hist_df.index[-1]
                 historic["bid"] = hist_dict[0]["Close.bid"]
                 historic["ask"] = hist_dict[0]["Close.ask"]
                 historic["bar_freq"] = "D"
 
-                return historic
+            return historic
 
         except Exception as exc:
             msg = f"Problem getting historic data for '{epic}': {exc}"
