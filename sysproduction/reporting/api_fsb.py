@@ -247,6 +247,7 @@ class ReportingApiFsb(reportingApi):
         in_hours_status = self.data.db_market_info.in_hours_status
         last_modified = self.data.db_market_info.last_modified
         min_bet = self.data.db_market_info.min_bet
+        synced = self.data.db_market_info.sync_status
 
         rows = []
 
@@ -274,6 +275,7 @@ class ReportingApiFsb(reportingApi):
                     Pos=pos,
                     ExpectedMinBet=meta_data.Pointsize,
                     ActualMinBet=min_bet[key],
+                    HistorySynced=synced[key],
                 )
             )
 
@@ -285,7 +287,9 @@ class ReportingApiFsb(reportingApi):
     ) -> table:
 
         results = pd.DataFrame(self.market_info_data)
-        results = results[["Contract", "Epic", "Expiry", "In_Hours_Status", "Pos"]]
+        results = results[
+            ["Contract", "Epic", "Expiry", "In_Hours_Status", "Pos", "HistorySynced"]
+        ]
         results.set_index("Contract", inplace=True)
 
         return table(table_header, results)

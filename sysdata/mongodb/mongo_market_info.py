@@ -72,6 +72,7 @@ class mongoMarketInfoData(marketInfoData):
         self._min_bet = {}
         self._instr_code = {}
         self._contract_mappings = {}
+        self._sync_status = {}
 
     def __repr__(self):
         return f"mongoMarketInfoData {str(self.mongo_data)}"
@@ -121,6 +122,12 @@ class mongoMarketInfoData(marketInfoData):
         if len(self._contract_mappings) == 0:
             self._parse_market_info_for_mappings()
         return self._contract_mappings
+
+    @cached_property
+    def sync_status(self) -> dict:
+        if len(self._sync_status) == 0:
+            self._parse_market_info_for_mappings()
+        return self._sync_status
 
     def add_market_info(self, instrument_code: str, epic: str, market_info: dict):
         self.log.debug(f"Adding market info for '{epic}'")
@@ -340,6 +347,7 @@ class mongoMarketInfoData(marketInfoData):
                     "instrument.expiry": 1,
                     "instrument.expiryDetails.lastDealingDate": 1,
                     "dealingRules.minDealSize.value": 1,
+                    "history_synced": 1,
                 },
             ):
 
@@ -363,6 +371,8 @@ class mongoMarketInfoData(marketInfoData):
                 self._min_bet[contract_date_str] = doc.dealingRules.minDealSize.value
 
                 self._instr_code[doc["epic"]] = instr
+
+                self._sync_status[contract_date_str] = bool(doc["history_synced"])
 
                 try:
                     self._in_hours_status[contract_date_str] = doc["in_hours_status"]
