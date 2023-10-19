@@ -69,18 +69,15 @@ class UpdateMarketInfo(productionDataLayerGeneric):
                 epic, numpoints=1
             ).iloc[-1:]
 
-            historic = dict(
-                last_modified_utc=datetime.datetime.utcnow(),
-            )
-
             if len(hist_df) > 0:
+                historic = dict(last_modified_utc=datetime.datetime.utcnow())
                 hist_dict = hist_df.to_dict(orient="records")
                 historic["timestamp"] = hist_df.index[-1]
                 historic["bid"] = hist_dict[0]["Close.bid"]
                 historic["ask"] = hist_dict[0]["Close.ask"]
                 historic["bar_freq"] = "D"
 
-            return historic
+                return historic
 
         except Exception as exc:
             msg = f"Problem getting historic data for '{epic}': {exc}"
