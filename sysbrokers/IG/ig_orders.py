@@ -1,6 +1,7 @@
 from sysbrokers.broker_execution_stack import brokerExecutionStackData
 from sysbrokers.IG.ig_translate_broker_order_objects import IgTradeWithContract
 from sysbrokers.IG.ig_connection import IGConnection
+from sysbrokers.IG.ig_utils import convert_ig_date
 from syscore.constants import arg_not_supplied, success
 from sysdata.data_blob import dataBlob
 from sysdata.futures.contracts import futuresContractData
@@ -378,12 +379,14 @@ def add_trade_info_to_broker_order(
 
     # FAILURE
     # {
-    #     'date': '2023-07-25T00:15:04.265', 'status': None, 'reason': 'MARKET_CLOSED_WITH_EDITS',
-    #     'dealStatus': 'REJECTED', 'epic': 'CO.D.KC.Month1.IP', 'expiry': None,
+    #     'date': '2023-07-25T00:15:04.265', 'status': None,
+    #     'reason': 'MARKET_CLOSED_WITH_EDITS', 'dealStatus': 'REJECTED', 'epic':
+    #     'CO.D.KC.Month1.IP', 'expiry': None,
     #     'dealReference': 'N42RA9MXX3STYQ3', 'dealId': 'DIAAAAMWV8MMEA2',
     #     'affectedDeals': [], 'level': None, 'size': None, 'direction': 'BUY',
-    #     'stopLevel': None, 'limitLevel': None, 'stopDistance': None, 'limitDistance': None,
-    #     'guaranteedStop': False, 'trailingStop': False, 'profit': None, 'profitCurrency': None
+    #     'stopLevel': None, 'limitLevel': None, 'stopDistance': None,
+    #     'limitDistance': None, 'guaranteedStop': False, 'trailingStop': False,
+    #     'profit': None, 'profitCurrency': None
     # }
 
     trade_result = broker_order_result._attrs
@@ -397,26 +400,22 @@ def add_trade_info_to_broker_order(
     new_broker_order.order_info["dealStatus"] = trade_result["dealStatus"]
 
     if success:
-
         new_broker_order.order_info["affectedDeals"] = trade_result["affectedDeals"]
         size = float(trade_result["size"])
         if trade_result["direction"] == "SELL":
             size = -size
-
         new_broker_order.fill_order(
             tradeQuantity(size),
             float(trade_result["level"]),
-            datetime.datetime.strptime(trade_result["date"], "%Y-%m-%dT%H:%M:%S.%f"),
+            convert_ig_date(trade_result["date"]),
         )
-    else:
 
+    else:
         new_broker_order.order_info["reason"] = trade_result["reason"]
         new_broker_order.algo_comment = (
             f"{trade_result['dealStatus']}: {trade_result['reason']}"
         )
-        new_broker_order.submit_datetime = datetime.datetime.strptime(
-            trade_result["date"], "%Y-%m-%dT%H:%M:%S.%f"
-        )
+        new_broker_order.submit_datetime = convert_ig_date(trade_result["date"])
         new_broker_order.deactivate()
 
     return new_broker_order
