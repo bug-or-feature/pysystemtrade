@@ -342,7 +342,15 @@ class IGConnection(object):
     ) -> IgTradeWithContract:
 
         # TODO validate
+        self.log.info(f"broker_submit_order() trade_list: {trade_list}")
         size = trade_list[0]
+
+        if size is None:
+            raise TypeError("Bet size must be defined")
+
+        if expiry_key is None:
+            raise TypeError("Expiry key must be defined")
+
         direction = "BUY" if size > 0.0 else "SELL"
 
         result = self.rest_service.create_open_position(
