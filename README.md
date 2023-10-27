@@ -59,7 +59,7 @@ My own production system
 
 ## Support
 
-This is an open source project, maintained one busy developer in his spare time. It is probably not suitable for people who are not prepared to read docs, delve into code, and go deep down rabbit holes. Report a bug or feature [here](https://github.com/bug-or-feature/pysystemtrade-fsb/issues). But please read [the docs](https://pysystemtrade-fsb.bugorfeature.net/docs/) first
+This is an open source project, maintained one busy developer in his spare time. Same rules apply [as for upstream](https://github.com/robcarver17/pysystemtrade#a-note-on-support). It is probably not suitable for people who are not prepared to read docs, delve into code, and go deep down rabbit holes. Report a bug or feature [here](https://github.com/bug-or-feature/pysystemtrade-fsb/issues). But please read [the docs](https://pysystemtrade-fsb.bugorfeature.net/docs/) first
 
 
 ## Additional dependencies
