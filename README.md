@@ -57,6 +57,11 @@ My own production system
 - implement limit orders
 - implement dynamic optimisation
 
+## Support
+
+This is an open source project, maintained one busy developer in his spare time. It is probably not suitable for people who are not prepared to read docs, delve into code, and go deep down rabbit holes. Report a bug or feature [here](https://github.com/bug-or-feature/pysystemtrade-fsb/issues). But please read [the docs](https://pysystemtrade-fsb.bugorfeature.net/docs/) first
+
+
 ## Additional dependencies
 
 - [trading-ig](https://pypi.org/project/trading-ig/) - for talking to IG
