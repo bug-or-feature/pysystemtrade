@@ -27,6 +27,8 @@ See [CHANGES](CHANGES.md) for release notes
 - Futures Spread Bets (FSBs) are represented internally as futures instruments, but with codes like `GOLD_fsb`, 
   `SP500_fsb`
 - Custom `dataBroker` and `dataBlob` classes
+- fractional positions, fills
+- custom market algo
 - custom scripts for data setup / import
 
 ## Status (September 2023)
@@ -55,11 +57,12 @@ My own production system
 - adding more instruments
 - add setup instructions to docs
 - implement limit orders
+- implement 'best' algo
 - implement dynamic optimisation
 
 ## Support
 
-This is an open source project, maintained one busy developer in his spare time. Same rules apply [as for upstream](https://github.com/robcarver17/pysystemtrade#a-note-on-support). It is probably not suitable for people who are not prepared to read docs, delve into code, and go deep down rabbit holes. Report a bug or feature [here](https://github.com/bug-or-feature/pysystemtrade-fsb/issues). But please read [the docs](https://pysystemtrade-fsb.bugorfeature.net/docs/) first
+This is an open source project, maintained by one busy developer in his spare time. Same rules apply [as for upstream](https://github.com/robcarver17/pysystemtrade#a-note-on-support). It is probably not suitable for people who are not prepared to read docs, delve into code, and go deep down rabbit holes. Report a bug or feature [here](https://github.com/bug-or-feature/pysystemtrade-fsb/issues). But please read [the docs](https://pysystemtrade-fsb.bugorfeature.net/docs/) first
 
 
 ## Additional dependencies
