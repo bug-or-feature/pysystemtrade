@@ -10,6 +10,13 @@ See
 - [Issues](https://github.com/bug-or-feature/pysystemtrade-fsb/issues)
 - [Roadmap / wishlist](https://github.com/bug-or-feature/pysystemtrade-fsb#roadmap--wishlist)
 
+## October 2023
+- improved IG market info collection
+- better fractional positions / fills
+- improved FSB report
+- instrument config uses IG names for Description
+- pre submit order validation
+
 ## September 2023
 - better fractional position saving
 - 'Force' roll state no longer allowed
