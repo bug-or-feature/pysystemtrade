@@ -31,7 +31,7 @@ See [CHANGES](CHANGES.md) for release notes
 - custom market algo
 - custom scripts for data setup / import
 
-## Status (September 2023)
+## Status (October 2023)
 My own production system
 - is sampling approx 80 instruments ([list](https://pysystemtrade-fsb.bugorfeature.net/reports/instruments.html))
 - get capital data from IG
