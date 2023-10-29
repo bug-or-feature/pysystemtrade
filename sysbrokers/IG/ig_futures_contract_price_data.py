@@ -9,6 +9,7 @@ from sysbrokers.IG.ig_connection import IGConnection, tickerConfig
 from sysbrokers.broker_futures_contract_price_data import brokerFuturesContractPriceData
 from sysdata.data_blob import dataBlob
 from sysdata.barchart.bc_connection import bcConnection
+from sysdata.config.production_config import get_production_config
 from sysdata.futures_spreadbet.market_info_data import marketInfoData
 from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
 from sysexecution.tick_data import dataFrameOfRecentTicks, tickerObject
@@ -83,6 +84,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         super().__init__(log=log, data=data)
         self._broker_conn = broker_conn
         self._barchart = bcConnection()
+        self._intraday_freq = self._calc_freq()
 
     def __repr__(self):
         return "IG/Barchart Spreadbet Futures per contract price data"
@@ -110,6 +112,10 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
     @property
     def existing_prices(self) -> futuresContractPriceData:
         return self.data.db_fsb_contract_price
+
+    @property
+    def intraday_frequency(self) -> str:
+        return self._intraday_freq
 
     def has_merged_price_data_for_contract(
         self, futures_contract: futuresContract
@@ -294,11 +300,11 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         end_date = datetime.datetime.now().astimezone(tz=pytz.utc)
         if existing.shape[0] > 0:
             last_index_date = existing.index[-1]
-            # TODO switch to 4H or 3H?
-            freq = "3H"
+            freq = self.intraday_frequency
             start_date = last_index_date + timedelta(minutes=1)
             self.log.debug(
-                f"Appending IG data: last row of existing {last_index_date}, freq {freq}, "
+                f"Appending IG data: last row of existing {last_index_date}, "
+                f"freq {freq}, "
                 f"start {start_date.strftime('%Y-%m-%d %H:%M:%S')}, "
                 f"end {end_date.strftime('%Y-%m-%d %H:%M:%S')}",
                 instrument_code=contract_object.instrument_code,
@@ -395,6 +401,12 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         price_data = price_data.remove_zero_volumes()
 
         return price_data
+
+    @staticmethod
+    def _calc_freq():
+        ig_config = get_production_config().get_element("ig_markets")
+        ig_intraday_freq = ig_config["intraday_frequency"]
+        return ig_intraday_freq
 
 
 def from_bid_ask_tick_data_to_dataframe(tick_data) -> dataFrameOfRecentTicks:
