@@ -1,6 +1,9 @@
+import datetime
+
 import pytest
 from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysbrokers.IG.ig_futures_contract_data import IgFuturesContractData
+from sysbrokers.IG.ig_utils import convert_ig_date
 from sysobjects.contracts import futuresContract as fc
 from sysobjects.contract_dates_and_expiries import expiryDate
 from syscore.exceptions import missingContract
@@ -218,3 +221,14 @@ class TestIg:
             data.broker_futures_contract.get_actual_expiry_date_for_single_contract(
                 fc.from_two_strings("CRAP", "20220300")
             )
+
+    def test_date_formats(self):
+        assert convert_ig_date("2023-09-18T12:30:00.018") == datetime.datetime(
+            2023, 9, 18, 12, 30
+        )
+        assert convert_ig_date("2023-09-18T12:30:00.45") == datetime.datetime(
+            2023, 9, 18, 12, 30
+        )
+        assert convert_ig_date("2023-09-18T12:30:00") == datetime.datetime(
+            2023, 9, 18, 12, 30
+        )
