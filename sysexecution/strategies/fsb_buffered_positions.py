@@ -21,13 +21,18 @@ from sysexecution.strategies.classic_buffered_positions import optimalPositions
 
 
 MIN_BET_DEMO_OVERRIDES = {
+    "BRENT_W_fsb": 0.5,
     "CAD_fsb": 0.5,
-    "EUA_fsb": 0.5,
     "COPPER_fsb": 0.5,
     "CRUDE_W_fsb": 0.5,
+    "EUA_fsb": 0.5,
     "EUROSTX_fsb": 0.5,
+    "GAS_US_fsb": 1.0,
     "GOLD_fsb": 0.5,
     "HANG_fsb": 0.5,
+    "LEANHOG_fsb": 0.5,
+    "PALLAD_fsb": 0.5,
+    "SOYOIL_fsb": 0.5,
 }
 
 
