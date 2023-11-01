@@ -161,6 +161,7 @@ def calculate_adjusted_order_given_existing_orders(  # TODO passed logger instan
     # can change sign
     residual_trade = desired_new_trade - net_existing_trades_to_execute
 
+    # TODO deal with minimum bet size here
     adjusted_order = (
         new_order.replace_required_trade_size_only_use_for_unsubmitted_trades(
             residual_trade
