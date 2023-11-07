@@ -26,16 +26,7 @@ from sysproduction.data.contracts import dataContracts, get_dates_to_choose_from
 from sysproduction.data.prices import (
     get_valid_instrument_code_from_user,
 )
-
-
-MIN_BET_DEMO_OVERRIDES = {
-    "CAD_fsb": 0.5,
-    "CARBON_fsb": 0.5,
-    "CRUDE_W_fsb": 0.5,
-    "EUROSTX_fsb": 0.5,
-    "GOLD_fsb": 0.5,
-    "HANG_fsb": 0.5,
-}
+from sysexecution.strategies.fsb_buffered_positions import MIN_BET_DEMO_OVERRIDES
 
 
 @click.command(name="fh")
