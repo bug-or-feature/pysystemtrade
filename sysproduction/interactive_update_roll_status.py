@@ -238,13 +238,13 @@ def get_days_ahead_to_consider_when_auto_cycling() -> int:
         "How many days ahead should I look for expiries?",
         type_expected=int,
         allow_default=True,
-        default_value=10,
+        default_value=2,
     )
 
     return days_ahead
 
 
-def get_list_of_instruments_to_auto_cycle(data: dataBlob, days_ahead: int = 10) -> list:
+def get_list_of_instruments_to_auto_cycle(data: dataBlob, days_ahead: int = 2) -> list:
 
     diag_prices = diagPrices()
     list_of_potential_instruments = (
@@ -267,7 +267,7 @@ def get_list_of_instruments_to_auto_cycle(data: dataBlob, days_ahead: int = 10) 
 
 
 def include_instrument_in_auto_cycle(
-    data: dataBlob, instrument_code: str, days_ahead: int = 10
+    data: dataBlob, instrument_code: str, days_ahead: int = 2
 ) -> bool:
 
     days_until_expiry = days_until_earliest_expiry(data, instrument_code)
