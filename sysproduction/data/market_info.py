@@ -49,18 +49,36 @@ class UpdateMarketInfo(productionDataLayerGeneric):
         self.db_market_info.delete_for_instrument_code(instrument_code)
 
     def update_market_info_for_epic(self, instr, epic):
-        try:
-            info = self.data.broker_conn.get_market_info(epic)
+        now = datetime.datetime.utcnow()
+        old_info = self.db_market_info.get_market_info_for_epic(epic)
+        new_info = self.data.broker_conn.get_market_info(epic)  # munch
+        if self._needs_historic_update(old_info, now):
             historic = self._get_historic_data_for_epic(epic)
             if historic is not None:
-                info["historic"] = historic
-            self.db_market_info.update_market_info(instr, epic, info)
+                new_info.historic = historic
+            else:
+                new_info.historic = old_info["historic"]
+        else:
+            new_info.historic = old_info["historic"]
+
+        try:
+            self.db_market_info.update_market_info(instr, epic, new_info)
         except Exception as exc:
             msg = (
                 f"Problem updating market info for epic '{epic}' ({instr}) "
                 f"- check config: {exc}"
             )
             self.data.log.error(msg)
+
+    @staticmethod
+    def _needs_historic_update(info, now):
+        try:
+            hist_last_mod = info["historic"]["last_modified_utc"]
+            diff = now - hist_last_mod
+            if diff.days > 3:
+                return True
+        except:
+            return False
 
     def _get_historic_data_for_epic(self, epic):
 
@@ -82,3 +100,8 @@ class UpdateMarketInfo(productionDataLayerGeneric):
         except Exception as exc:
             msg = f"Problem getting historic data for '{epic}': {exc}"
             self.data.log.error(msg)
+
+
+if __name__ == "__main__":
+    update_market_info = UpdateMarketInfo()
+    update_market_info.update_market_info_for_epic("AUD_fsb", "CF.D.AUD.MAR.IP")
