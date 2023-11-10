@@ -23,10 +23,10 @@ from sysinit.futures_spreadbet.fsb_rollcalendars_to_csv import (
 from sysobjects.contracts import futuresContract as fc
 from sysproduction.data.broker import dataBroker
 from sysproduction.data.contracts import dataContracts, get_dates_to_choose_from
+from sysproduction.data.fsb_instruments import diagFsbInstruments
 from sysproduction.data.prices import (
     get_valid_instrument_code_from_user,
 )
-from sysexecution.strategies.fsb_buffered_positions import MIN_BET_DEMO_OVERRIDES
 
 
 @click.command(name="fh")
@@ -43,6 +43,7 @@ def show_optimals():
     data.add_class_object(mongoFuturesContractData)
     data.add_class_object(arcticFuturesAdjustedPricesData)
     broker = dataBroker(data=data)
+    diag_instruments = diagFsbInstruments(data)
     pos = orderGeneratorForBufferedPositions(data=data, strategy_name="fsb_strategy_v3")
     now = datetime.datetime.now()
 
@@ -77,10 +78,7 @@ def show_optimals():
 
         lower = round(lower_positions[instr_code], 2)
         upper = round(upper_positions[instr_code], 2)
-        instr_data = data.db_futures_instrument.get_instrument_data(instr_code)
-        min_bet = instr_data.as_dict()["Pointsize"]
-        if instr_code in MIN_BET_DEMO_OVERRIDES:
-            min_bet = MIN_BET_DEMO_OVERRIDES[instr_code]
+        min_bet = diag_instruments.get_minimum_bet(instr_code)
         delta = expiry - now
         price = data.db_futures_adjusted_prices.get_adjusted_prices(instr_code).values[
             -1

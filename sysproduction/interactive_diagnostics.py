@@ -40,7 +40,7 @@ from sysproduction.data.fsb_contracts import (
     get_valid_fsb_contract_object_from_user,
 )
 from sysproduction.data.currency_data import dataCurrency, get_valid_fx_code_from_user
-from sysproduction.data.instruments import diagInstruments
+from sysproduction.data.fsb_instruments import diagFsbInstruments
 from sysproduction.data.orders import dataOrders
 from sysproduction.data.positions import diagPositions
 from sysproduction.data.optimal_positions import dataOptimalPositions
@@ -617,7 +617,7 @@ def view_individual_order(data):
 
 def view_instrument_config(data):
     instrument_code = get_valid_instrument_code_from_user(data)
-    diag_instruments = diagInstruments(data)
+    diag_instruments = diagFsbInstruments(data)
     meta_data = diag_instruments.get_meta_data(instrument_code)
     print(f"{meta_data}\n")
     data_broker = dataBroker(data)
@@ -748,7 +748,7 @@ def get_trading_hours_for_instrument(
 
     contract = futuresContract(instrument_code, contract_id)
 
-    diag_instruments = diagInstruments(data)
+    diag_instruments = diagFsbInstruments(data)
     trading_hours = diag_instruments.get_trading_hours_for_epic(contract)
 
     return trading_hours

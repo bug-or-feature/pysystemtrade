@@ -23,6 +23,7 @@ from sysobjects.production.tradeable_object import instrumentStrategy
 from sysproduction.data.currency_data import dataCurrency
 from sysproduction.data.capital import dataCapital
 from sysproduction.data.contracts import dataContracts
+from sysproduction.data.fsb_instruments import diagFsbInstruments
 from sysproduction.data.optimal_positions import dataOptimalPositions
 from sysproduction.data.sim_data import get_sim_data_object_for_production
 
@@ -149,13 +150,14 @@ def updated_buffered_positions(data: dataBlob, strategy_name: str, system: Syste
     log = data.log
 
     data_optimal_positions = dataOptimalPositions(data)
+    diag_instruments = diagFsbInstruments(data)
 
     list_of_instruments = system.get_instrument_list()
     for instrument_code in list_of_instruments:
         lower_buffer, upper_buffer = get_position_buffers_from_system(
             system, instrument_code
         )
-        position_entry = construct_position_entry(
+        pos = construct_position_entry(
             data=data,
             system=system,
             instrument_code=instrument_code,
@@ -166,11 +168,12 @@ def updated_buffered_positions(data: dataBlob, strategy_name: str, system: Syste
             instrument_code=instrument_code, strategy_name=strategy_name
         )
         data_optimal_positions.update_optimal_position_for_instrument_strategy(
-            instrument_strategy=instrument_strategy, position_entry=position_entry
+            instrument_strategy=instrument_strategy, position_entry=pos
         )
+        min_bet = diag_instruments.get_minimum_bet(instrument_code, data.log.name)
         log.debug(
-            "New buffered positions %.3f %.3f"
-            % (position_entry.lower_position, position_entry.upper_position),
+            f"New buffered positions {pos.lower_position:.2f} "
+            f"{pos.upper_position:.2f} (min bet: {min_bet})",
             instrument_code=instrument_code,
         )
 

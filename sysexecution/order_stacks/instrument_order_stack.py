@@ -9,6 +9,10 @@ class zeroOrderException(Exception):
     pass
 
 
+class minBetException(Exception):
+    pass
+
+
 class instrumentOrderStackData(orderStackData):
     @property
     def _name(self):
@@ -143,6 +147,18 @@ class instrumentOrderStackData(orderStackData):
             log.warning(error_msg)
             raise zeroOrderException(error_msg)
 
+        min_bet = self.diag_instruments.get_minimum_bet(
+            new_order.instrument_code, self.log.name
+        )
+        if abs(adjusted_order.as_single_trade_qty_or_error()) < min_bet:
+            error_msg = (
+                f"Adjusted order size is "
+                f"{adjusted_order.as_single_trade_qty_or_error()}, "
+                f"but min bet is {min_bet}"
+            )
+            log.warning(error_msg)
+            raise minBetException(error_msg)
+
         order_id = self._put_order_on_stack_and_get_order_id(adjusted_order)
 
         return order_id
@@ -161,7 +177,6 @@ def calculate_adjusted_order_given_existing_orders(  # TODO passed logger instan
     # can change sign
     residual_trade = desired_new_trade - net_existing_trades_to_execute
 
-    # TODO deal with minimum bet size here
     adjusted_order = (
         new_order.replace_required_trade_size_only_use_for_unsubmitted_trades(
             residual_trade

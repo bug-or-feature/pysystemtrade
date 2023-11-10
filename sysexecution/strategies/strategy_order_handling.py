@@ -10,7 +10,10 @@ from sysdata.data_blob import dataBlob
 
 from sysexecution.orders.list_of_orders import listOfOrders
 from sysexecution.orders.instrument_orders import instrumentOrder
-from sysexecution.order_stacks.instrument_order_stack import zeroOrderException
+from sysexecution.order_stacks.instrument_order_stack import (
+    zeroOrderException,
+    minBetException,
+)
 from syslogging.logger import *
 from sysproduction.data.positions import diagPositions
 from sysproduction.data.orders import dataOrders
@@ -198,6 +201,12 @@ class orderGeneratorForStrategy(object):
             self.log.warning(
                 "Ignoring new order as either zero size or it replicates an existing "
                 "order on the stack",
+                **log_attrs,
+            )
+        except minBetException:
+            # less than minimum bet
+            self.log.warning(
+                "Ignoring new order as it is less than the minimum bet",
                 **log_attrs,
             )
 
