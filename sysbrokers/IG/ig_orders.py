@@ -148,14 +148,19 @@ class IgExecutionStackData(brokerExecutionStackData):
         for rec in order_records:
 
             epic = rec["epic"]
-            period_date = datetime.datetime.strptime(f"01-{rec['period']}", "%d-%b-%y")
-            contract = f"{period_date.strftime('%Y%m')}00"
+            if rec["period"] == "DFB":
+                continue
+            else:
+                period_date = datetime.datetime.strptime(
+                    f"01-{rec['period']}", "%d-%b-%y"
+                )
+                contract = f"{period_date.strftime('%Y%m')}00"
 
             direction = rec["direction"]
             if direction == "BUY":
-                fill_qty = float(rec["size"])
+                fill_qty = tradeQuantity(float(rec["size"]))
             else:
-                fill_qty = -float(rec["size"])
+                fill_qty = tradeQuantity(-float(rec["size"]))
 
             trade = brokerOrder(
                 "",
@@ -165,7 +170,7 @@ class IgExecutionStackData(brokerExecutionStackData):
                 fill=fill_qty,
                 filled_price=float(rec["level"]),
                 fill_datetime=rec["date"],
-                commission=None,
+                commission=0.0,
             )
 
             orders.append(trade)
@@ -393,7 +398,14 @@ def add_trade_info_to_broker_order(
 
     success = True if trade_result["dealStatus"] == "ACCEPTED" else False
 
-    # TODO which one of these?
+    # dealReference: id returned by IG in response to open order request. You make
+    # another request to /confirms with this ID to get status, eg
+    #     /confirms/VN68DYYNHVYTYP5
+
+    # dealId is the (supposedly) unique ID per transaction. So for a normal buy/sell
+    # trade there would be two. Currently /confirms on a close returns the wrong one.
+    # /history/activity and /history/transactions report correctly
+
     new_broker_order.broker_tempid = trade_result["dealReference"]
     new_broker_order.broker_permid = trade_result["dealId"]
     new_broker_order.order_info["dealReference"] = trade_result["dealReference"]
