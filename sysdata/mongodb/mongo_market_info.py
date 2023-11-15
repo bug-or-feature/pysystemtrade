@@ -8,6 +8,7 @@ from munch import munchify
 from syscore.constants import arg_not_supplied
 from syscore.dateutils import ISO_DATE_FORMAT
 from syscore.exceptions import missingContract, missingData
+from sysdata.config.production_config import get_production_config
 from sysdata.mongodb.mongo_generic import mongoDataWithMultipleKeys
 from sysdata.futures_spreadbet.market_info_data import (
     marketInfoData,
@@ -215,11 +216,22 @@ class mongoMarketInfoData(marketInfoData):
         else:
             raise missingData
 
-    # TODO change name
     def get_trading_hours_for_epic(self, epic) -> listOfTradingHours:
         try:
             market_info = munchify(self.get_market_info_for_epic(epic))
-            trading_hours = parse_trading_hours(market_info.instrument.openingHours)
+            mkt_hours_overrides = get_production_config().get_element_or_default(
+                "market_hours_overrides", {}
+            )
+            if market_info.instrument_code in mkt_hours_overrides:
+                self.log.info(
+                    f"Market hours for '{epic}' are overriden: "
+                    f"{mkt_hours_overrides[market_info.instrument_code]}"
+                )
+                trading_hours = parse_trading_hours(
+                    munchify(mkt_hours_overrides[market_info.instrument_code])
+                )
+            else:
+                trading_hours = parse_trading_hours(market_info.instrument.openingHours)
             return trading_hours
         except Exception as exc:
             self.log.error(f"Problem getting trading hours for '{epic}': {exc}")

@@ -267,3 +267,18 @@ class IgFuturesContractData(brokerFuturesContractData):
         # bc_symbol = config_data.bc_code
         symbol = f"{config_data.bc_code}{contract_month_from_number(int(date_obj.strftime('%m')))}{date_obj.strftime('%y')}"
         return symbol
+
+
+if __name__ == "__main__":
+    from sysproduction.data.broker import dataBroker
+    from sysobjects.contracts import futuresContract as fc
+
+    data = dataBlob(
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
+        ),
+    )
+    broker = dataBroker(data)
+    con = fc.from_two_strings("GOLD_fsb", "20231200")
+    ok_to_trade = broker.broker_futures_contract_data.is_contract_okay_to_trade(con)
