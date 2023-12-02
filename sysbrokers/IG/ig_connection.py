@@ -2,7 +2,7 @@ import datetime
 import pandas as pd
 from pandas import json_normalize
 from tenacity import Retrying, wait_exponential, retry_if_exception_type
-from trading_ig.rest import IGService, ApiExceededException
+from trading_ig.rest import IGService, ApiExceededException, TokenInvalidException
 from trading_ig.stream import IGStreamService
 
 try:
@@ -22,6 +22,8 @@ from sysexecution.orders.broker_orders import (
     brokerOrderType,
     market_order_type,
 )
+
+RETRYABLE = (ApiExceededException, TokenInvalidException)
 
 
 class tickerConfig(object):
@@ -72,7 +74,7 @@ class IGConnection(object):
 
     def _create_rest_session(self):
         retryer = Retrying(
-            wait=wait_exponential(), retry=retry_if_exception_type(ApiExceededException)
+            wait=wait_exponential(), retry=retry_if_exception_type(RETRYABLE)
         )
         rest_service = IGService(
             self._ig_username,
