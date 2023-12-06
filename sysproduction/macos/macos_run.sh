@@ -3,7 +3,8 @@
 # shellcheck source=/dev/null
 . ~/.profile
 cd $PYSYS_CODE || return
-source .envs/pst_3.8.16/bin/activate
+#source .envs/pst_3.8.16/bin/activate
+source .envs/pst_3.10.13/bin/activate
 
 IN=$1
 array=(${IN//./ })
