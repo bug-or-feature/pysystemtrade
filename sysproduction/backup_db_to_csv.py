@@ -514,21 +514,21 @@ def backup_contract_data(data):
 
 
 def backup_epic_history_to_csv(data):
-    instrument_list = data.arctic_fsb_epic_history.get_list_of_instruments()
+    instrument_list = data.db_fsb_epic_history.get_list_of_instruments()
     for instrument_code in instrument_list:
         backup_epic_history_to_csv_for_instrument(data, instrument_code)
 
 
 def backup_epic_history_to_csv_for_instrument(data, instrument_code: str):
-    arctic_data = data.arctic_fsb_epic_history.get_epic_history(instrument_code)
+    db_data = data.db_fsb_epic_history.get_epic_history(instrument_code)
     csv_data = data.csv_fsb_epic_history.get_epic_history(instrument_code)
 
-    if check_df_equals(arctic_data, csv_data):
+    if check_df_equals(db_data, csv_data):
         data.log.debug("No epic history backup needed for %s" % instrument_code)
         pass
     else:
         try:
-            data.csv_fsb_epic_history.add_epics_history(instrument_code, arctic_data)
+            data.csv_fsb_epic_history.add_epics_history(instrument_code, db_data)
             data.log.debug("Written .csv backup epic history for %s" % instrument_code)
         except BaseException as exc:
             data.log.warning(
@@ -539,7 +539,7 @@ def backup_epic_history_to_csv_for_instrument(data, instrument_code: str):
 # Futures spread bet price data
 def backup_fsb_contract_prices_to_csv(data):
     instrument_list = (
-        data.arctic_fsb_contract_price.get_list_of_instrument_codes_with_merged_price_data()
+        data.db_fsb_contract_price.get_list_of_instrument_codes_with_merged_price_data()
     )
     for instrument_code in instrument_list:
         backup_fsb_contract_prices_for_instrument_to_csv(data, instrument_code)
@@ -548,7 +548,7 @@ def backup_fsb_contract_prices_to_csv(data):
 def backup_fsb_contract_prices_for_instrument_to_csv(
     data: dataBlob, instrument_code: str
 ):
-    list_of_contracts = data.arctic_fsb_contract_price.contracts_with_merged_price_data_for_instrument_code(
+    list_of_contracts = data.db_fsb_contract_price.contracts_with_merged_price_data_for_instrument_code(
         instrument_code
     )
 
@@ -565,7 +565,7 @@ def backup_fsb_contract_prices_for_contract_to_csv(
 
         return None
 
-    arctic_data = data.arctic_fsb_contract_price.get_merged_prices_for_contract_object(
+    db_data = data.db_fsb_contract_price.get_merged_prices_for_contract_object(
         futures_contract
     )
 
@@ -573,7 +573,7 @@ def backup_fsb_contract_prices_for_contract_to_csv(
         futures_contract
     )
 
-    if check_df_equals(arctic_data, csv_data):
+    if check_df_equals(db_data, csv_data):
         # No update needed, move on
         data.log.debug("No FSB prices backup needed for %s" % str(futures_contract))
     else:
@@ -581,7 +581,7 @@ def backup_fsb_contract_prices_for_contract_to_csv(
         try:
             data.csv_fsb_contract_price.write_merged_prices_for_contract_object(
                 futures_contract,
-                arctic_data,
+                db_data,
                 ignore_duplication=True,
             )
             data.log.debug(
