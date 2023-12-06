@@ -1,12 +1,5 @@
 import datetime
 
-from sysdata.arctic.arctic_fsb_per_contract_prices import (
-    ArcticFsbContractPriceData,
-)
-from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
-from sysdata.csv.csv_roll_parameters import csvRollParametersData
-from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
-
 from sysobjects.contract_dates_and_expiries import (
     listOfContractDateStr,
 )
@@ -17,6 +10,14 @@ from sysobjects.contracts import futuresContract
 from sysproduction.data.fsb_prices import DiagFsbPrices
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
 from sysdata.data_blob import dataBlob
+from sysproduction.data.production_data_objects import (
+    get_class_for_data_type,
+    FSB_CONTRACT_PRICE_DATA,
+    ROLL_PARAMETERS_DATA,
+    FUTURES_MULTIPLE_PRICE_DATA,
+    FUTURES_CONTRACT_DATA,
+)
+
 
 missing_expiry = datetime.datetime(1900, 1, 1)
 
@@ -25,10 +26,10 @@ class DataFsbContracts(dataContracts, productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(
             [
-                ArcticFsbContractPriceData,
-                csvRollParametersData,
-                arcticFuturesMultiplePricesData,
-                mongoFuturesContractData,
+                get_class_for_data_type(FSB_CONTRACT_PRICE_DATA),
+                get_class_for_data_type(ROLL_PARAMETERS_DATA),
+                get_class_for_data_type(FUTURES_MULTIPLE_PRICE_DATA),
+                get_class_for_data_type(FUTURES_CONTRACT_DATA),
             ]
         )
 
@@ -52,7 +53,6 @@ def get_valid_contract_object_from_user(
     instrument_code: str = None,
     only_include_priced_contracts: bool = False,
 ) -> futuresContract:
-
     (
         instrument_code,
         contract_date_str,
@@ -70,7 +70,6 @@ def get_valid_fsb_contract_object_from_user(
     instrument_code: str = None,
     only_include_priced_contracts: bool = False,
 ) -> futuresContract:
-
     (
         instrument_code,
         contract_date_str,
@@ -88,7 +87,6 @@ def get_valid_fsb_instrument_code_and_contractid_from_user(
     instrument_code: str = None,
     only_include_priced_contracts: bool = False,
 ) -> (str, str):
-
     diag_contracts = DataFsbContracts(data)
 
     invalid_input = True
@@ -130,7 +128,6 @@ def get_valid_fsb_instrument_code_and_contractid_from_user(
 def get_dates_to_choose_from(
     data: dataBlob, instrument_code: str, only_priced_contracts: bool = False
 ) -> listOfContractDateStr:
-
     diag_contracts = DataFsbContracts(data)
     diag_prices = DiagFsbPrices(data)
     if only_priced_contracts:

@@ -79,7 +79,6 @@ def convert_norgate_to_barchart(instrument_code: str, date_str: str):
 
 
 if __name__ == "__main__":
-
     # for date in ["19990200", "19990300", "19990400", "19990500", "19990600", "19990700", "19990800", "19990900",
     #               "19991000", "19991100", "19991200"]:
     # #for date in ["19990100"]:

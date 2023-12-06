@@ -23,7 +23,6 @@ HEADER_TEXT = body_text(
 def minimum_capital_fsb_report(
     data: dataBlob = arg_not_supplied,
 ):
-
     if data is arg_not_supplied:
         data = dataBlob()
 

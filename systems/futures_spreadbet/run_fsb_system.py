@@ -15,7 +15,6 @@ SAVED_SYSTEM = "systems.futures_spreadbet.saved-system.pck"
 
 
 def run_static():
-
     system = fsb_static_system(
         # data=csvFuturesSimData(),
         config=Config("systems.futures_spreadbet.fsb_static_system_v5_1.yaml"),
@@ -29,7 +28,6 @@ def run_static():
 
 
 def run_dynamic():
-
     system = fsb_dynamic_system()
     portfolio = system.accounts.optimised_portfolio()
     print(portfolio.percent.stats())

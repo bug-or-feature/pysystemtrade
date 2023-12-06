@@ -1,41 +1,42 @@
 import pandas as pd
 from syscore.constants import arg_not_supplied
 from syscore.dateutils import Frequency
-from sysdata.arctic.arctic_adjusted_prices import (
-    arcticFuturesAdjustedPricesData,
-)
+
 from sysdata.arctic.arctic_fsb_epics_history import (
-    ArcticFsbEpicHistoryData,
     FsbEpicsHistoryData,
 )
 from sysdata.arctic.arctic_fsb_per_contract_prices import (
-    ArcticFsbContractPriceData,
     FsbContractPrices,
 )
-from sysdata.arctic.arctic_multiple_prices import (
-    arcticFuturesMultiplePricesData,
-)
+
 from sysdata.data_blob import dataBlob
 from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
 from sysdata.futures.multiple_prices import futuresMultiplePricesData
-from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
-from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
 from sysobjects.contract_dates_and_expiries import listOfContractDateStr
 from sysobjects.contracts import futuresContract
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
+from sysproduction.data.production_data_objects import (
+    get_class_for_data_type,
+    FUTURES_ADJUSTED_PRICE_DATA,
+    FUTURES_MULTIPLE_PRICE_DATA,
+    FUTURES_CONTRACT_DATA,
+    MARKET_INFO_DATA,
+    FSB_EPIC_HISTORY_DATA,
+    FSB_CONTRACT_PRICE_DATA,
+)
 
 
 class DiagFsbPrices(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(
             [
-                ArcticFsbContractPriceData,
-                mongoFuturesContractData,
-                arcticFuturesAdjustedPricesData,
-                arcticFuturesMultiplePricesData,
-                ArcticFsbEpicHistoryData,
-                mongoMarketInfoData,
+                get_class_for_data_type(FSB_CONTRACT_PRICE_DATA),
+                get_class_for_data_type(FUTURES_CONTRACT_DATA),
+                get_class_for_data_type(FUTURES_ADJUSTED_PRICE_DATA),
+                get_class_for_data_type(FUTURES_MULTIPLE_PRICE_DATA),
+                get_class_for_data_type(FSB_EPIC_HISTORY_DATA),
+                get_class_for_data_type(MARKET_INFO_DATA),
             ]
         )
         return data
@@ -100,8 +101,8 @@ class UpdateFsbPrices(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(
             [
-                ArcticFsbContractPriceData,
-                mongoFuturesContractData,
+                get_class_for_data_type(FSB_CONTRACT_PRICE_DATA),
+                get_class_for_data_type(FUTURES_CONTRACT_DATA),
                 # arcticSpreadsForInstrumentData,
             ]
         )
@@ -114,7 +115,6 @@ class UpdateFsbPrices(productionDataLayerGeneric):
         new_prices: pd.DataFrame,
         check_for_spike: bool = True,
     ) -> int:
-
         error_or_rows_added = (
             self.db_fsb_contract_price_data.update_prices_for_contract(
                 contract_object, new_prices, check_for_spike=check_for_spike

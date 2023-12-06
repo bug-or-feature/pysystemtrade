@@ -121,7 +121,6 @@ class mongoDataWithSingleKey(object):
         self.collection.remove({key_name: key})
 
     def delete_data_with_any_warning_for_custom_dict(self, custom_dict: dict):
-
         self.collection.remove(custom_dict)
 
     def add_data(self, key, data_dict: dict, allow_overwrite=False, clean_ints=True):
@@ -149,7 +148,6 @@ class mongoDataWithSingleKey(object):
                 )
 
     def _update_existing_data_with_cleaned_dict(self, key, cleaned_data_dict):
-
         key_name = self.key_name
         self.collection.update_one({key_name: key}, {"$set": cleaned_data_dict})
 

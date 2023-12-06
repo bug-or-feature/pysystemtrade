@@ -1,11 +1,13 @@
 import datetime
 from sysdata.data_blob import dataBlob
-from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
+
 from sysdata.futures.futures_per_contract_prices import futuresContractPriceData
 from sysdata.futures_spreadbet.market_info_data import marketInfoData
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
-from sysdata.arctic.arctic_fsb_per_contract_prices import (
-    ArcticFsbContractPriceData,
+from sysproduction.data.production_data_objects import (
+    get_class_for_data_type,
+    MARKET_INFO_DATA,
+    FSB_CONTRACT_PRICE_DATA
 )
 
 
@@ -13,7 +15,7 @@ class DiagMarketInfo(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(
             [
-                mongoMarketInfoData,
+                get_class_for_data_type(MARKET_INFO_DATA),
             ]
         )
         return data
@@ -34,7 +36,12 @@ class DiagMarketInfo(productionDataLayerGeneric):
 
 class UpdateMarketInfo(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
-        data.add_class_list([mongoMarketInfoData, ArcticFsbContractPriceData])
+        data.add_class_list(
+            [
+                get_class_for_data_type(MARKET_INFO_DATA),
+                get_class_for_data_type(FSB_CONTRACT_PRICE_DATA),
+            ]
+        )
         return data
 
     @property
@@ -81,7 +88,6 @@ class UpdateMarketInfo(productionDataLayerGeneric):
             return False
 
     def _get_historic_data_for_epic(self, epic):
-
         try:
             hist_df = self.data.broker_conn.get_historical_fsb_data_for_epic(
                 epic, numpoints=1

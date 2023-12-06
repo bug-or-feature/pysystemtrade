@@ -92,7 +92,6 @@ def update_active_contracts_with_data(
 
 
 def update_active_contracts_for_instrument(fsb_code: str, data: dataBlob):
-
     fut_code = remove_suffix(fsb_code, "_fsb")
 
     # Get the list of contracts we'd want to get prices for, given current
@@ -125,7 +124,6 @@ def update_active_contracts_for_instrument(fsb_code: str, data: dataBlob):
 
 
 def get_contract_chain(data: dataBlob, instrument_code: str) -> listOfFuturesContracts:
-
     furthest_out_contract = get_furthest_out_contract_with_roll_parameters(
         data, instrument_code
     )
@@ -139,7 +137,6 @@ def get_contract_chain(data: dataBlob, instrument_code: str) -> listOfFuturesCon
 def get_furthest_out_contract_with_roll_parameters(
     data: dataBlob, instrument_code: str
 ) -> contractDateWithRollParameters:
-
     furthest_out_contract_date = get_furthest_out_contract_date(data, instrument_code)
     furthest_out_contract = (
         create_furthest_out_contract_with_roll_parameters_from_contract_date(
@@ -151,7 +148,6 @@ def get_furthest_out_contract_with_roll_parameters(
 
 
 def get_furthest_out_contract_date(data: dataBlob, instrument_code: str) -> str:
-
     diag_prices = diagPrices(data)
 
     # Get the last contract currently being used
@@ -165,7 +161,6 @@ def get_furthest_out_contract_date(data: dataBlob, instrument_code: str) -> str:
 def create_furthest_out_contract_with_roll_parameters_from_contract_date(
     data: dataBlob, instrument_code: str, furthest_out_contract_date: str
 ):
-
     diag_contracts = dataContracts(data)
     roll_parameters = diag_contracts.get_roll_parameters(instrument_code)
 
@@ -179,7 +174,6 @@ def create_furthest_out_contract_with_roll_parameters_from_contract_date(
 def create_contract_object_chain(
     furthest_out_contract: contractDateWithRollParameters, instrument_code: str
 ) -> listOfFuturesContracts:
-
     contract_date_chain = create_contract_date_chain(furthest_out_contract)
     contract_object_chain = create_contract_object_chain_from_contract_date_chain(
         instrument_code, contract_date_chain
@@ -207,7 +201,6 @@ def create_contract_date_chain(
 def create_contract_object_chain_from_contract_date_chain(
     instrument_code: str, contract_date_chain: list
 ) -> listOfFuturesContracts:
-
     # We have a list of contract_date objects, need futureContracts
     # create a 'bare' instrument object
     instrument_object = futuresInstrument(instrument_code)
@@ -448,7 +441,6 @@ def update_contract_object_with_new_expiry_date(
 
 
 def check_key_contracts_have_not_expired(instrument_code: str, data: dataBlob):
-
     key_contract_ids = get_list_of_key_contract_ids(
         instrument_code=instrument_code, data=data
     )
@@ -488,7 +480,6 @@ def has_contract_expired(
 
 # testing / debugging only
 def _get_all_currently_sampling(fsb_code):
-
     with dataBlob(log_name="Test-Sampled_Contracts") as data:
         sampling = get_list_of_currently_sampling_contracts_in_db(data, fsb_code)
 

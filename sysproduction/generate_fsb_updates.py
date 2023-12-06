@@ -72,7 +72,6 @@ class GenerateFsbUpdates(object):
         self.data.log.debug(f"FSB contract chain: {fsb_chain}")
 
         for fsb_contract in fsb_chain:
-
             self.data.log.debug(f"Generating FSB price updates for {fsb_contract}")
 
             fut_contract = futuresContract.from_two_strings(

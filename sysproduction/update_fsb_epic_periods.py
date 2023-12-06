@@ -12,10 +12,10 @@ from sysproduction.data.broker import dataBroker
 from syscore.constants import success
 from syscore.exceptions import missingContract
 
+
 # start 2023-02-15 21:16:44
 # end 2023-02-15 21:24:28  8 mins per instrument
 def update_periods(instr_list=None, test_mode=False):
-
     with dataBlob(log_name="Update-FSB-Epic-Periods") as data:
         update_fsb_epic_periods = updateFsbEpicPeriods(data)
         update_fsb_epic_periods.do_epic_discovery(instr_list, test_mode=test_mode)
@@ -24,7 +24,6 @@ def update_periods(instr_list=None, test_mode=False):
 
 
 class updateFsbEpicPeriods(object):
-
     MAX_COUNT_PER_RUN = 20
 
     def __init__(self, data):
@@ -41,7 +40,6 @@ class updateFsbEpicPeriods(object):
         return self._broker
 
     def do_epic_discovery(self, instrument_list=None, test_mode=False):
-
         # do MAX_COUNT_PER_RUN instruments, in reverse order of when it was last run
         if instrument_list is None:
             full_list = [
@@ -54,7 +52,6 @@ class updateFsbEpicPeriods(object):
             i_list = instrument_list
 
         for instr in i_list:
-
             self.data.log.debug(f"Starting IG Epic Discovery for '{instr}'")
 
             config = self.get_instr_config(instr)

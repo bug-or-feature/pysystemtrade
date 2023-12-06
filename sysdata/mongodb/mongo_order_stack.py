@@ -11,8 +11,8 @@ from sysexecution.orders.contract_orders import contractOrder
 from sysexecution.order_stacks.contract_order_stack import contractOrderStackData
 from sysexecution.orders.broker_orders import brokerOrder
 from sysexecution.order_stacks.broker_order_stack import brokerOrderStackData
-from sysproduction.data.fsb_instruments import diagFsbInstruments
-from sysdata.data_blob import dataBlob
+# from sysproduction.data.fsb_instruments import diagFsbInstruments
+# from sysdata.data_blob import dataBlob
 
 ORDER_ID_STORE_KEY = "_ORDER_ID_STORE_KEY"
 MAX_ORDER_KEY = "max_order_id"
@@ -41,21 +41,21 @@ class mongoOrderStackData(orderStackData):
         )
 
         super().__init__(log=log)
-        self._diag_instruments = diagFsbInstruments(
-            dataBlob(
-                csv_data_paths=dict(
-                    csvFuturesInstrumentData="fsb.csvconfig",
-                )
-            )
-        )
+        # self._diag_instruments = diagFsbInstruments(
+        #     dataBlob(
+        #         csv_data_paths=dict(
+        #             csvFuturesInstrumentData="fsb.csvconfig",
+        #         )
+        #     )
+        # )
 
     @property
     def mongo_data(self):
         return self._mongo_data
 
-    @property
-    def diag_instruments(self):
-        return self._diag_instruments
+    # @property
+    # def diag_instruments(self):
+    #     return self._diag_instruments
 
     def __repr__(self):
         return "%s: %s with %d active orders" % (

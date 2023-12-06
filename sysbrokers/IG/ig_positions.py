@@ -62,7 +62,6 @@ def from_ig_positions_to_dict(
 
 
 def resolve_ig_fsb_position(position):
-
     return dict(
         account=position["account"],
         symbol=position["epic"],

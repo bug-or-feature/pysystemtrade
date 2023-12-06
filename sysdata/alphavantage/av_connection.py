@@ -40,7 +40,6 @@ class avConnection(object):
         calls=1, period=12
     )  # Alpha Vantage free API limit is max 5 requests per minute
     def broker_get_daily_fx_data(self, ccy1, ccy2="USD") -> pd.Series:
-
         """
         Get daily FX prices
 

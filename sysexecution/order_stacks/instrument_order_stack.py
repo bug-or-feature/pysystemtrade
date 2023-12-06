@@ -147,17 +147,18 @@ class instrumentOrderStackData(orderStackData):
             log.warning(error_msg)
             raise zeroOrderException(error_msg)
 
-        min_bet = self.diag_instruments.get_minimum_bet(
-            new_order.instrument_code, self.log.name
-        )
-        if abs(adjusted_order.as_single_trade_qty_or_error()) < min_bet:
-            error_msg = (
-                f"Adjusted order size is "
-                f"{adjusted_order.as_single_trade_qty_or_error()}, "
-                f"but min bet is {min_bet}"
-            )
-            log.warning(error_msg)
-            raise minBetException(error_msg)
+        # TODO find better place for this
+        # min_bet = self.diag_instruments.get_minimum_bet(
+        #     new_order.instrument_code, self.log.name
+        # )
+        # if abs(adjusted_order.as_single_trade_qty_or_error()) < min_bet:
+        #     error_msg = (
+        #         f"Adjusted order size is "
+        #         f"{adjusted_order.as_single_trade_qty_or_error()}, "
+        #         f"but min bet is {min_bet}"
+        #     )
+        #     log.warning(error_msg)
+        #     raise minBetException(error_msg)
 
         order_id = self._put_order_on_stack_and_get_order_id(adjusted_order)
 
@@ -167,7 +168,6 @@ class instrumentOrderStackData(orderStackData):
 def calculate_adjusted_order_given_existing_orders(  # TODO passed logger instance
     new_order: instrumentOrder, existing_orders: listOfOrders, log
 ):
-
     desired_new_trade = new_order.trade
     (
         existing_trades,

@@ -1,16 +1,18 @@
-from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
-
 from sysdata.data_blob import dataBlob
 from sysdata.config.production_config import get_production_config
 from sysdata.futures_spreadbet.market_info_data import marketInfoData
-from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
-from sysdata.mongodb.mongo_spread_costs import mongoSpreadCostData
 
 from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 from sysobjects.contracts import futuresContract
 from syscore.constants import arg_not_supplied
 from syscore.exceptions import missingData
 from sysproduction.data.instruments import diagInstruments
+from sysproduction.data.production_data_objects import (
+    STORED_SPREAD_DATA,
+    get_class_for_data_type,
+    FUTURES_INSTRUMENT_DATA,
+    MARKET_INFO_DATA,
+)
 
 
 class diagFsbInstruments(diagInstruments):
@@ -23,9 +25,9 @@ class diagFsbInstruments(diagInstruments):
     def _add_required_classes_to_data(self, data: dataBlob) -> dataBlob:
         data.add_class_list(
             [
-                csvFuturesInstrumentData,
-                mongoSpreadCostData,
-                mongoMarketInfoData,
+                get_class_for_data_type(FUTURES_INSTRUMENT_DATA),
+                get_class_for_data_type(STORED_SPREAD_DATA),
+                get_class_for_data_type(MARKET_INFO_DATA),
             ]
         )
         return data

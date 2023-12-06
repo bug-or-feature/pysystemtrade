@@ -95,7 +95,6 @@ def check_csv_prices(instr_code):
 
 
 def run_new_instrument_report(instr_code, do_print=True):
-
     system = fsb_static_system()
     # system = fsb_static_system(data=dbFuturesSimData())
     # system.config.instrument_weights=dict(instr_code=1.0)

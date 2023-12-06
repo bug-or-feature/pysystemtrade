@@ -49,7 +49,6 @@ class BetExpiry:
     pst_date_key: str = field(init=False)
 
     def __post_init__(self, str_val):
-
         if str_val != "unmapped":
             split = str_val.split("|")
             self.epic_key = split[0]

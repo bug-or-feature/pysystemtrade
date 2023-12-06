@@ -12,7 +12,6 @@ def run_compare_fsb_contract_price_report(
     fsb_prices=None,
     draw=False,
 ):
-
     if fsb_prices is None:
         fsb_prices = ArcticFsbContractPriceData()
 

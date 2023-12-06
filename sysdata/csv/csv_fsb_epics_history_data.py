@@ -21,7 +21,6 @@ class CsvFsbEpicHistoryData(FsbEpicsHistoryData):
         datapath=arg_not_supplied,
         log=get_logger("CsvFsbEpicHistoryData"),
     ):
-
         super().__init__(log=log)
 
         if datapath is arg_not_supplied:

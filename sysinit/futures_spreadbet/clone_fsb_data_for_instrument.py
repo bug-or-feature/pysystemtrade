@@ -14,7 +14,6 @@ def clone_data_for_instrument(
     offset: float = 0.0,
     ignore_duplication: bool = False,
 ):
-
     clone_prices_per_contract(
         instrument_from,
         instrument_to,
@@ -38,7 +37,6 @@ def clone_prices_per_fsb_contract(
     list_of_contract_dates=None,
     ignore_duplication=False,
 ):
-
     if list_of_contract_dates is None:
         list_of_contract_dates = (
             fsb_prices.contract_dates_with_merged_price_data_for_instrument_code(
@@ -63,7 +61,6 @@ def clone_single_fsb_contract(
     contract_date: str,
     ignore_duplication=False,
 ):
-
     futures_contract_from = futuresContract(instrument_from, contract_date)
     futures_contract_to = futuresContract(instrument_to, contract_date)
 

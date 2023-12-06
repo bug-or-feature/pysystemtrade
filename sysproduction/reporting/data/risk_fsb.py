@@ -25,7 +25,6 @@ def minimum_capital_table(
     idm=IDM_ASSUMED,
     instrument_weight=INSTRUMENT_WEIGHT_ASSUMED,
 ) -> pd.DataFrame:
-
     instrument_risk_table = get_instrument_risk_table(
         data, only_held_instruments=only_held_instruments
     )
@@ -48,7 +47,6 @@ def from_risk_table_to_min_capital(
     idm=IDM_ASSUMED,
     instrument_weight=INSTRUMENT_WEIGHT_ASSUMED,
 ) -> pd.DataFrame:
-
     base_multiplier = instrument_risk_table.point_size_base
     price = instrument_risk_table.price
     ann_perc_stdev = instrument_risk_table.annual_perc_stdev

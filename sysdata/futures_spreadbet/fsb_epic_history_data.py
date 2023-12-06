@@ -18,7 +18,6 @@ class FsbEpicsHistoryData(baseData):
     def add_epics_history(
         self, instrument_code: str, epics_history: FsbEpicsHistory
     ) -> status:
-
         raise NotImplementedError(USE_CHILD_CLASS_ERROR)
 
     def is_code_in_data(self, instrument_code: str) -> bool:

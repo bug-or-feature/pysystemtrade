@@ -167,7 +167,6 @@ def run_adhoc_tradeable_report(instr_code: str):
         key,
         value,
     ) in data.db_market_info.epic_mapping.items():
-
         if instr_code is None or key.startswith(instr_code):
             epic_info = data.broker_conn.rest_service.fetch_market_by_epic(value)
             status = epic_info.snapshot.marketStatus

@@ -106,7 +106,6 @@ class TestFsbExamples:
         print(my_system.rules.get_raw_forecast("BUXL_fsb", "ewmac").tail(5))
 
     def test_fsb_system_trading_rule(self, data, raw_data, ewmac_8, ewmac_32):
-
         ewmac_rule = TradingRule(ewmac)
         my_rules = Rules(dict(ewmac=ewmac_rule))
         print(ewmac_rule)
@@ -120,7 +119,6 @@ class TestFsbExamples:
     def test_fsb_system_trading_rules_estimated(
         self, data, raw_data, ewmac_8, ewmac_32, fcs
     ):
-
         my_rules = Rules(dict(ewmac8=ewmac_8, ewmac32=ewmac_32))
         my_config = Config()
         print(my_config)
@@ -144,7 +142,6 @@ class TestFsbExamples:
         )
 
     def test_fsb_system_trading_rules_fixed(self, data, my_rules, fcs):
-
         # or we can use the values from the book
         my_config = Config()
         my_config.trading_rules = dict(ewmac8=ewmac_8, ewmac32=ewmac_32)
@@ -160,7 +157,6 @@ class TestFsbExamples:
         )
 
     def test_fsb_system_combing_rules(self, data, raw_data, my_rules, my_config, fcs):
-
         # defaults
         combiner = ForecastCombine()
         my_system = System([fcs, my_rules, combiner, raw_data], data, my_config)
@@ -175,7 +171,6 @@ class TestFsbExamples:
     def test_fsb_system_combining_and_estimating(
         self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, account
     ):
-
         # estimates:
         my_config.forecast_weight_estimate = dict(method="one_period")
         my_config.use_forecast_weight_estimates = True
@@ -193,7 +188,6 @@ class TestFsbExamples:
         )
 
     def test_fsb_system_combining_fixed(self, data, raw_data, my_config, fcs):
-
         # fixed:
         my_config.forecast_weights = dict(ewmac8=0.5, ewmac32=0.5)
         my_config.forecast_div_multiplier = 1.1
@@ -210,7 +204,6 @@ class TestFsbExamples:
     def test_fsb_system_position_sizing(
         self, data, raw_data, my_rules, my_config, fcs, combiner, possizer
     ):
-
         # size positions
         my_config.percentage_vol_target = 25
         my_config.notional_trading_capital = 500000
@@ -236,7 +229,6 @@ class TestFsbExamples:
     def test_fsb_system_portfolio_estimated(
         self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, account
     ):
-
         # portfolio - estimated
         portfolio = Portfolios()
 
@@ -258,7 +250,6 @@ class TestFsbExamples:
     def test_fsb_system_portfolio_fixed(
         self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, portfolio
     ):
-
         # or fixed
         my_config.use_instrument_weight_estimates = False
         my_config.use_instrument_div_mult_estimates = False
@@ -287,7 +278,6 @@ class TestFsbExamples:
         portfolio,
         account,
     ):
-
         my_config.forecast_weights = dict(ewmac8=0.5, ewmac32=0.5)
         my_config.instrument_weights = dict(
             US10_fsb=0.1, BUXL_fsb=0.4, GOLD_fsb=0.3, NASDAQ_fsb=0.2
@@ -306,7 +296,6 @@ class TestFsbExamples:
         print(profits.net.percent.stats())
 
     def test_fsb_system_config_object(self, data, ewmac_8, ewmac_32):
-
         my_config = Config(
             dict(
                 trading_rules=dict(ewmac8=ewmac_8, ewmac32=ewmac_32),
@@ -344,7 +333,6 @@ class TestFsbExamples:
         print(my_system.portfolio.get_notional_position("BUXL_fsb").tail(5))
 
     def test_fsb_system_config_import(self, data):
-
         my_config = Config("systems.futures_spreadbet.simple_fsb_system_config.yaml")
         my_config.exclude_instrument_lists = dict(
             ignore_instruments=["MILK"],

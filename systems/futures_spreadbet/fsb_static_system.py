@@ -24,7 +24,6 @@ def fsb_static_system(
     config=arg_not_supplied,
     trading_rules=arg_not_supplied,
 ):
-
     if data is arg_not_supplied:
         # data = dbFuturesSimData()
         data = build_fsb_csv_sim_data()

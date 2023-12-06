@@ -10,7 +10,6 @@ from syscore.constants import success
 
 
 def update_fsb_market_info(instr_list=None):
-
     with dataBlob(log_name="Update-FSB-Market-Info") as data:
         update_epic_config = UpdateFsbMarketInfo(data)
         update_epic_config.do_market_info_updates(instr_list)
@@ -30,7 +29,6 @@ class UpdateFsbMarketInfo(object):
         return self._broker
 
     def do_market_info_updates(self, instrument_list=None):
-
         if instrument_list is None:
             instr_list = [
                 instr_code
@@ -40,7 +38,6 @@ class UpdateFsbMarketInfo(object):
             instr_list = instrument_list
 
         for instr in sorted(instr_list):
-
             self.data.log.debug(f"Starting market info update for '{instr}'")
 
             config = self.get_instr_config(instr)
@@ -73,7 +70,6 @@ class UpdateFsbMarketInfo(object):
                 self.data.db_market_info.delete_for_epic(epic_to_delete)
 
     def do_historic_status_check(self, instrument_list=None):
-
         """
         debugging, testing only
         """
@@ -87,7 +83,6 @@ class UpdateFsbMarketInfo(object):
             instr_list = instrument_list
 
         for instr in sorted(instr_list):
-
             # self.data.log.debug(
             #     f"Starting market info historic status check for '{instr}'"
             # )
@@ -129,7 +124,6 @@ class UpdateFsbMarketInfo(object):
 
 
 def check_historic_status(instr_list=None):
-
     with dataBlob(log_name="Update-FSB-Market-Info") as data:
         historic_status_check_config = UpdateFsbMarketInfo(data)
         historic_status_check_config.do_historic_status_check(instr_list)

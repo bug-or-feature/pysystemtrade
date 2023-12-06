@@ -22,7 +22,6 @@ output_data = ArcticFsbEpicHistoryData()
 
 
 def import_epics_history_single(instrument_code):
-
     print(f"Importing epics history for {instrument_code}")
 
     status = output_data.add_epics_history(
@@ -45,7 +44,6 @@ def import_epics_history_all():
 
 
 def view_epics_history_single(instrument_code):
-
     print(f"Epics history for {instrument_code}:")
 
     df = output_data.get_epic_history(instrument_code)
@@ -53,7 +51,6 @@ def view_epics_history_single(instrument_code):
 
 
 def delete_epics_history_single(instrument_code):
-
     print(f"Deleting epics history for {instrument_code}")
 
     status = output_data.delete_epics_history(instrument_code)
@@ -63,7 +60,6 @@ def delete_epics_history_single(instrument_code):
 
 
 def convert_to_new_format():
-
     market_info = mongoMarketInfoData()
     new_output_data = CsvFsbEpicHistoryData(datapath="fsb.epic_history_new")
     instr_list = input_data.get_list_of_instruments()

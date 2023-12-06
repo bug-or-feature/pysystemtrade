@@ -45,7 +45,6 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 
     @cached_property
     def config(self) -> IGConfig:
-
         try:
             df = pd.read_csv(IG_INSTRUMENT_CONFIG_FILE)
             config_data = IGConfig(df)
@@ -64,7 +63,6 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
         raise NotImplementedError
 
     def get_instrument_code_from_broker_code(self, broker_code: str) -> str:
-
         dot_pos = self.find_char_instances(broker_code, ".")
         code_base = broker_code[: dot_pos[2]]
 
@@ -88,7 +86,6 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
     def get_futures_instrument_object_with_ig_data(
         self, instrument_code: str
     ) -> FsbInstrumentWithIgConfigData:
-
         new_log = self.log.setup(instrument_code=instrument_code)
 
         try:
@@ -119,7 +116,6 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
 def get_instrument_object_from_config(
     instrument_code: str, config: IGConfig = None
 ) -> FsbInstrumentWithIgConfigData:
-
     config_row = config[config.Instrument == f"{instrument_code}"]
     if len(config_row) > 0:
         epic = config_row.IGEpic.values[0]

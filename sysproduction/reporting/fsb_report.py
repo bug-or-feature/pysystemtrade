@@ -4,9 +4,13 @@ from syscore.interactive.display import set_pd_print_options
 from sysproduction.reporting.reporting_functions import body_text
 from sysproduction.reporting.api_fsb import ReportingApiFsb
 from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
-from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
-from sysdata.mongodb.mongo_market_info import mongoMarketInfoData
-from sysdata.mongodb.mongo_epic_periods import mongoEpicPeriodsData
+from sysproduction.data.production_data_objects import (
+    get_class_for_data_type,
+
+    MARKET_INFO_DATA,
+    FSB_EPIC_HISTORY_DATA,
+    EPIC_PERIODS_DATA,
+)
 
 MISSING_EPIC_HEADER_TEXT = body_text(
     "Instruments where the epic for a given contract is yet to be defined.\n"
@@ -64,16 +68,16 @@ BELOW_MIN_CORR_FWD_HEADER_TEXT = body_text(
 def do_fsb_report(
     data: dataBlob = arg_not_supplied,
 ):
-
     if data is arg_not_supplied:
         data = dataBlob()
 
     data.add_class_list(
         [
             IgFuturesInstrumentData,
-            ArcticFsbEpicHistoryData,
-            mongoMarketInfoData,
-            mongoEpicPeriodsData,
+            get_class_for_data_type(FSB_EPIC_HISTORY_DATA),
+            get_class_for_data_type(MARKET_INFO_DATA),
+            get_class_for_data_type(EPIC_PERIODS_DATA),
+
         ]
     )
     reporting_api_fsb = ReportingApiFsb(data)
@@ -133,5 +137,4 @@ def do_fsb_report(
 
 
 if __name__ == "__main__":
-
     do_fsb_report()

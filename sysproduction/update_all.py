@@ -8,7 +8,6 @@ from sysproduction.data.prices import diagPrices
 
 
 def update_all():
-
     instr_list = [
         "AEX",
         "ASX",

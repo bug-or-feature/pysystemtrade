@@ -32,7 +32,6 @@ def fsb_correlation_data(
     draw=False,
     plot_returns=True,
 ):
-
     if futures_prices is None:
         futures_prices = arcticFuturesContractPriceData()
 
@@ -153,7 +152,6 @@ def do_plot(contract_obj, prices, returns, plot_returns=True):
 
 
 def currently_sampling_report():
-
     futures_prices = arcticFuturesContractPriceData()
     fsb_prices = ArcticFsbContractPriceData()
 
@@ -191,7 +189,6 @@ def contract_key(key):
 
 
 if __name__ == "__main__":
-
     # run_fsb_report(fc.from_two_strings("V2X_fsb", "20210500"), plot=True)
     # run_fsb_report(fc.from_key("BTP_fsb/20210300"), plot=True)
     # run_fsb_report(fc("CRUDE_W_fsb", "20210700"), draw=True) # CRUDE_W_fsb/20220400

@@ -28,7 +28,6 @@ from syscore.dateutils import contract_month_from_number
 
 
 class ReportingApiFsb(reportingApi):
-
     ### MINIMUM CAPITAL
     def table_of_minimum_capital_fsb(self) -> table:
         min_capital = minimum_capital_table(
@@ -118,7 +117,6 @@ class ReportingApiFsb(reportingApi):
     def table_of_missing_epics(
         self, table_header="Missing forward epic", style="fwd"
     ) -> table:
-
         df = pd.DataFrame(self.market_info_data)
         grouped = df.groupby("InstrCode")["Pos"].apply(
             lambda ser: ser.str.contains(style).sum()
@@ -145,7 +143,6 @@ class ReportingApiFsb(reportingApi):
     def table_of_wrong_min_bet_size(
         self, table_header="Misconfigured minimum bet size"
     ) -> table:
-
         df = pd.DataFrame(self.market_info_data)
         df = df[["Contract", "ExpectedMinBet", "ActualMinBet", "In_Hours_Status"]]
         df = df.loc[(df["ExpectedMinBet"] != df["ActualMinBet"])]
@@ -182,7 +179,6 @@ class ReportingApiFsb(reportingApi):
     def table_of_problem_fsb_correlations(
         self, min_price_corr=0.8, min_returns_corr=0.6
     ) -> table:
-
         df = pd.DataFrame(self.correlation_data)
         df.set_index("Contract", inplace=True)
         df.Price = df.Price.round(2)
@@ -195,7 +191,6 @@ class ReportingApiFsb(reportingApi):
     def table_of_problem_priced_fsb_correlations(
         self, min_price_corr=0.8, min_returns_corr=0.6
     ) -> table:
-
         df = pd.DataFrame(self.correlation_data)
         df.set_index("Contract", inplace=True)
         df.Price = df.Price.round(2)
@@ -213,7 +208,6 @@ class ReportingApiFsb(reportingApi):
     def table_of_problem_forward_fsb_correlations(
         self, min_price_corr=0.8, min_returns_corr=0.6
     ) -> table:
-
         df = pd.DataFrame(self.correlation_data)
         df.set_index("Contract", inplace=True)
         df.Price = df.Price.round(2)
@@ -239,7 +233,6 @@ class ReportingApiFsb(reportingApi):
 
     @cached_property
     def market_info_data(self):
-
         roll_data = self._get_roll_data_dict()
 
         epics = self.data.db_market_info.epic_mapping
@@ -285,7 +278,6 @@ class ReportingApiFsb(reportingApi):
     def fsb_mappings_and_expiries(
         self, table_header="FSB mappings and expiries"
     ) -> table:
-
         results = pd.DataFrame(self.market_info_data)
         results = results[
             ["Contract", "Epic", "Expiry", "In_Hours_Status", "Pos", "HistorySynced"]
@@ -371,7 +363,6 @@ class ReportingApiFsb(reportingApi):
             diag_contracts = dataContracts(data)
 
             for instr_code in price_data.get_list_of_instruments_in_multiple_prices():
-
                 contract_priced = diag_contracts.get_priced_contract_id(instr_code)
                 contract_fwd = diag_contracts.get_forward_contract_id(instr_code)
 
@@ -384,7 +375,6 @@ class ReportingApiFsb(reportingApi):
                     if futures_prices.has_merged_price_data_for_contract(
                         contract
                     ) and fsb_prices.has_merged_price_data_for_contract(contract):
-
                         is_priced = contract.date_str == contract_priced
                         is_fwd = contract.date_str == contract_fwd
 

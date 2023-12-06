@@ -20,7 +20,6 @@ class DataHistoricAllowance(productionDataLayerGeneric):
 
 
 if __name__ == "__main__":
-
     hist_data = DataHistoricAllowance()
     # expiry = datetime.datetime(2022, 6, 5)
     # data_dict = dict(

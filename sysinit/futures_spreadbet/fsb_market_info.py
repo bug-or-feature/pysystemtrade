@@ -32,7 +32,6 @@ def file_import_market_info_all():
 
 
 def import_market_info(instrument_list=None):
-
     with dataBlob(
         log_name="Import-Market-Info",
         csv_data_paths=dict(
@@ -64,7 +63,6 @@ def _get_instr_config(broker, instr) -> FsbInstrumentWithIgConfigData:
 
 
 def _do_single(data, broker, instr):
-
     data.log.debug(f"Importing market info for {instr}")
 
     config = _get_instr_config(broker, instr)
@@ -140,7 +138,6 @@ def test_write_json():
 
 
 if __name__ == "__main__":
-
     # file_import_market_info_single("GAS_NL_fsb")
 
     import_market_info(

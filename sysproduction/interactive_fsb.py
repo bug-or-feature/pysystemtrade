@@ -4,9 +4,6 @@ import click
 import pandas as pd
 
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
-from sysdata.arctic.arctic_futures_per_contract_prices import (
-    arcticFuturesContractPriceData,
-)
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.data_blob import dataBlob
@@ -27,7 +24,10 @@ from sysproduction.data.fsb_instruments import diagFsbInstruments
 from sysproduction.data.prices import (
     get_valid_instrument_code_from_user,
 )
-
+from sysproduction.data.production_data_objects import (
+    get_class_for_data_type,
+    FUTURES_CONTRACT_PRICE_DATA,
+)
 
 @click.command(name="fh")
 def hello():
@@ -139,7 +139,11 @@ def adjust_forward():
         ),
     ) as data:
         diag_contracts = dataContracts(data)
-        data.add_class_list([arcticFuturesContractPriceData])
+        data.add_class_list(
+            [
+                get_class_for_data_type(FUTURES_CONTRACT_PRICE_DATA),
+            ]
+        )
         do_another = True
         while do_another:
             EXIT_STR = "Finished: Exit"
@@ -196,7 +200,6 @@ def adjust_forward():
                     f"Are you sure? (y/other)"
                 )
                 if ans == "y":
-
                     click.echo(
                         f"OK. Adjusting multiple prices for {instr_code} with "
                         f"{new_fwd} as forward and carry, instead of {fwd}"
