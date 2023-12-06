@@ -548,8 +548,10 @@ def backup_fsb_contract_prices_to_csv(data):
 def backup_fsb_contract_prices_for_instrument_to_csv(
     data: dataBlob, instrument_code: str
 ):
-    list_of_contracts = data.db_fsb_contract_price.contracts_with_merged_price_data_for_instrument_code(
-        instrument_code
+    list_of_contracts = (
+        data.db_fsb_contract_price.contracts_with_merged_price_data_for_instrument_code(
+            instrument_code
+        )
     )
 
     for futures_contract in list_of_contracts:
