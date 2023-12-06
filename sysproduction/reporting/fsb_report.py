@@ -6,7 +6,6 @@ from sysproduction.reporting.api_fsb import ReportingApiFsb
 from sysbrokers.IG.ig_instruments_data import IgFuturesInstrumentData
 from sysproduction.data.production_data_objects import (
     get_class_for_data_type,
-
     MARKET_INFO_DATA,
     FSB_EPIC_HISTORY_DATA,
     EPIC_PERIODS_DATA,
@@ -77,7 +76,6 @@ def do_fsb_report(
             get_class_for_data_type(FSB_EPIC_HISTORY_DATA),
             get_class_for_data_type(MARKET_INFO_DATA),
             get_class_for_data_type(EPIC_PERIODS_DATA),
-
         ]
     )
     reporting_api_fsb = ReportingApiFsb(data)
