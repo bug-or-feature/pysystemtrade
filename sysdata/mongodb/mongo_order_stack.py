@@ -41,21 +41,10 @@ class mongoOrderStackData(orderStackData):
         )
 
         super().__init__(log=log)
-        # self._diag_instruments = diagFsbInstruments(
-        #     dataBlob(
-        #         csv_data_paths=dict(
-        #             csvFuturesInstrumentData="fsb.csvconfig",
-        #         )
-        #     )
-        # )
 
     @property
     def mongo_data(self):
         return self._mongo_data
-
-    # @property
-    # def diag_instruments(self):
-    #     return self._diag_instruments
 
     def __repr__(self):
         return "%s: %s with %d active orders" % (
