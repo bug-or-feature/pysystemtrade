@@ -7,7 +7,7 @@ from sysproduction.data.generic_production_data import productionDataLayerGeneri
 from sysproduction.data.production_data_objects import (
     get_class_for_data_type,
     MARKET_INFO_DATA,
-    FSB_CONTRACT_PRICE_DATA
+    FSB_CONTRACT_PRICE_DATA,
 )
 
 

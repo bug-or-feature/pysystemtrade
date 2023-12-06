@@ -29,6 +29,7 @@ from sysproduction.data.production_data_objects import (
     FUTURES_CONTRACT_PRICE_DATA,
 )
 
+
 @click.command(name="fh")
 def hello():
     """FSB hello test"""

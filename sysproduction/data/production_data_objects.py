@@ -17,7 +17,9 @@
 
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
 from sysdata.arctic.arctic_capital import arcticCapitalData
-from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData
+from sysdata.arctic.arctic_futures_per_contract_prices import (
+    arcticFuturesContractPriceData,
+)
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
 from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
 from sysdata.arctic.arctic_optimal_positions import arcticOptimalPositionData

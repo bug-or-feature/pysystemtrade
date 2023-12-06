@@ -48,11 +48,7 @@ class UpdateFsbEpics(productionDataLayerGeneric):
 
 class UpdateEpicPeriods(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
-        data.add_class_list(
-            [
-                get_class_for_data_type(EPIC_PERIODS_DATA)
-            ]
-        )
+        data.add_class_list([get_class_for_data_type(EPIC_PERIODS_DATA)])
         return data
 
     @property

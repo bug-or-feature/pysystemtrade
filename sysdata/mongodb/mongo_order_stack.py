@@ -11,8 +11,7 @@ from sysexecution.orders.contract_orders import contractOrder
 from sysexecution.order_stacks.contract_order_stack import contractOrderStackData
 from sysexecution.orders.broker_orders import brokerOrder
 from sysexecution.order_stacks.broker_order_stack import brokerOrderStackData
-# from sysproduction.data.fsb_instruments import diagFsbInstruments
-# from sysdata.data_blob import dataBlob
+
 
 ORDER_ID_STORE_KEY = "_ORDER_ID_STORE_KEY"
 MAX_ORDER_KEY = "max_order_id"
