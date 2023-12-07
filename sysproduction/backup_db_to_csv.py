@@ -172,9 +172,8 @@ def get_data_and_create_csv_directories(logname):
             get_class_for_data_type(OPTIMAL_POSITION_DATA),
             get_class_for_data_type(ROLL_STATE_DATA),
             get_class_for_data_type(HISTORIC_SPREAD_DATA),
-            # TODO
-            # ArcticFsbEpicHistoryData,
-            # ArcticFsbContractPriceData,
+            get_class_for_data_type(FSB_EPIC_HISTORY_DATA),
+            get_class_for_data_type(FSB_CONTRACT_PRICE_DATA),
         ],
         use_prefix="db",
     )
