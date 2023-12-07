@@ -14,9 +14,9 @@ from sysproduction.data.production_data_objects import (
 
 from sysdata.data_blob import dataBlob
 
-diag_prices = diagPrices()
+# diag_prices = diagPrices()
 
-parquet_futures_contract_price_data = diag_prices.db_futures_contract_price_data
+# parquet_futures_contract_price_data = diag_prices.db_futures_contract_price_data
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
@@ -41,7 +41,10 @@ def build_and_write_roll_calendar(
         print("Writing to %s" % output_datapath)
 
     if input_prices is arg_not_supplied:
-        prices = parquet_futures_contract_price_data
+        # prices = parquet_futures_contract_price_data
+        print(
+            "*** WARNING *** Prices needed"
+        )
     else:
         prices = input_prices
 
@@ -104,7 +107,10 @@ def check_saved_roll_calendar(
     roll_calendar = csv_roll_calendars.get_roll_calendar(instrument_code)
 
     if input_prices is arg_not_supplied:
-        prices = parquet_futures_contract_price_data
+        # prices = parquet_futures_contract_price_data
+        print(
+            "*** WARNING *** Prices needed"
+        )
     else:
         prices = input_prices
 
