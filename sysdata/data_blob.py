@@ -277,7 +277,7 @@ class dataBlob(object):
         return log
 
     def _resolve_names_and_add(self, resolved_instance, new_name: str):
-        attr_name = self._get_new_name(class_name)
+        attr_name = self._get_new_name(new_name)
         self._add_new_class_with_new_name(resolved_instance, attr_name)
 
     def _get_new_name(self, class_name: str, use_prefix: str = arg_not_supplied) -> str:
