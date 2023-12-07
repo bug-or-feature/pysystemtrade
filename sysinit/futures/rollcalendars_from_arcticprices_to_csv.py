@@ -42,9 +42,7 @@ def build_and_write_roll_calendar(
 
     if input_prices is arg_not_supplied:
         # prices = parquet_futures_contract_price_data
-        print(
-            "*** WARNING *** Prices needed"
-        )
+        print("*** WARNING *** Prices needed")
     else:
         prices = input_prices
 
@@ -108,9 +106,7 @@ def check_saved_roll_calendar(
 
     if input_prices is arg_not_supplied:
         # prices = parquet_futures_contract_price_data
-        print(
-            "*** WARNING *** Prices needed"
-        )
+        print("*** WARNING *** Prices needed")
     else:
         prices = input_prices
 
