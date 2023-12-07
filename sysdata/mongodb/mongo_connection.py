@@ -65,7 +65,7 @@ class MongoClientFactory(object):
         if key in self.mongo_clients:
             return self.mongo_clients.get(key)
         else:
-            client = MongoClient(host=host, port=port)
+            client = MongoClient(host=host, port=port, serverSelectionTimeoutMS=5000)
             self.mongo_clients[key] = client
             return client
 
