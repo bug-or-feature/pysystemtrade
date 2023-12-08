@@ -86,12 +86,13 @@ class IgFuturesInstrumentData(brokerFuturesInstrumentData):
     def get_futures_instrument_object_with_ig_data(
         self, instrument_code: str
     ) -> FsbInstrumentWithIgConfigData:
-        new_log = self.log.setup(instrument_code=instrument_code)
-
         try:
             assert instrument_code in self.get_list_of_instruments()
         except Exception:
-            new_log.warning(f"Instrument {instrument_code} is not in IG config")
+            self.log.warning(
+                f"Instrument {instrument_code} is not in IG config",
+                **{INSTRUMENT_CODE_LOG_LABEL: instrument_code, "method": "temp"},
+            )
             raise missingInstrument
 
         instrument_object = get_instrument_object_from_config(

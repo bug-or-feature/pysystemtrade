@@ -38,7 +38,7 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
         epic_history: FsbEpicsHistory,
         remove_duplicates=True,
     ):
-        log = self.log.setup(instrument_code=instrument_code)
+        log_attrs = {INSTRUMENT_CODE_LOG_LABEL: instrument_code, "method": "temp"}
         existing = self.get_epic_history(instrument_code)
         merged_data = pd.concat([existing, epic_history], axis=0)
 
@@ -48,12 +48,17 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
             merged_data = merged_data[~(merged_data.shift() == merged_data).all(axis=1)]
         count = merged_data.shape[0] - existing.shape[0]
         if count > 0:
-            log.debug(f"Adding {count} row(s) of epic history for {instrument_code}")
+            self.log.debug(
+                f"Adding {count} row(s) of epic history for {instrument_code}",
+                **log_attrs,
+            )
             self.add_epics_history(
                 instrument_code, FsbEpicsHistory(merged_data), ignore_duplication=True
             )
         else:
-            log.debug(f"No change to epic history for {instrument_code}")
+            self.log.debug(
+                f"No change to epic history for {instrument_code}", **log_attrs
+            )
 
     def add_epics_history(
         self,
@@ -61,12 +66,14 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
         epics_history: FsbEpicsHistory,
         ignore_duplication=False,
     ) -> status:
-        log = self.log.setup(instrument_code=instrument_code)
+        log_attrs = {INSTRUMENT_CODE_LOG_LABEL: instrument_code, "method": "temp"}
         if self.is_code_in_data(instrument_code):
             if ignore_duplication:
                 pass
             else:
-                log.error(f"Data exists for {instrument_code}, delete it first")
+                self.log.error(
+                    f"Data exists for {instrument_code}, delete it first", **log_attrs
+                )
                 return failure
 
         data = pd.DataFrame(epics_history)
@@ -76,7 +83,7 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
         self.arctic.write(instrument_code, data)
         self.log.debug(
             f"Wrote {len(data)} lines of history for {instrument_code}",
-            instrument_code=instrument_code,
+            **log_attrs,
         )
 
         return success

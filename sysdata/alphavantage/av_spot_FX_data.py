@@ -91,14 +91,12 @@ class AvFxPricesData(brokerFxPricesData):
         return raw_fx_prices_as_series
 
     def _get_config_info_for_code(self, currency_code: str) -> fxConfig:
-        new_log = self.log.setup(currency_code=currency_code)
-
         try:
             config_data = self._get_fx_config()
         except missingFile:
-            new_log.warning(
+            self.log.warning(
                 "Can't get AV FX config for %s as config file missing" % currency_code,
-                currency_code=currency_code,
+                **{CURRENCY_CODE_LOG_LABEL: currency_code, "method": "temp"},
             )
 
             raise missingInstrument
