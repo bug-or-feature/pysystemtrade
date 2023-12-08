@@ -18,7 +18,6 @@ from sysdata.data_blob import dataBlob
 
 
 def instrument_list_report():
-
     report_config = reportConfig(
         title="Instrument list", function="not_used", output="file"
     )
@@ -30,7 +29,6 @@ def instrument_list_report():
             csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
-
         diag_instruments = diagInstruments(data)
         diag_prices = diagPrices(data)
 
@@ -74,7 +72,6 @@ def instrument_results_as_pd_df_row(
     data_broker: dataBroker,
     diag_prices: diagPrices,
 ):
-
     instrument_broker_data = data_broker.get_brokers_instrument_with_metadata(
         instrument_code
     )

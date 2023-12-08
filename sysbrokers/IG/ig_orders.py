@@ -126,7 +126,6 @@ class IgExecutionStackData(brokerExecutionStackData):
     def get_list_of_broker_orders_with_account_id(
         self, account_id: str = arg_not_supplied
     ) -> listOfOrders:
-
         # list_of_control_objects = self._get_list_of_broker_control_orders(
         #     account_id=account_id
         # )
@@ -146,7 +145,6 @@ class IgExecutionStackData(brokerExecutionStackData):
 
         orders = []
         for rec in order_records:
-
             epic = rec["epic"]
             if rec["period"] == "DFB":
                 continue
@@ -365,7 +363,6 @@ class IgExecutionStackData(brokerExecutionStackData):
 def add_trade_info_to_broker_order(
     broker_order: brokerOrder, broker_order_result
 ) -> brokerOrder:
-
     new_broker_order = copy(broker_order)
 
     # SUCCESS

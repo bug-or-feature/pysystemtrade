@@ -29,7 +29,6 @@ def parse_trading_hours(
     trading_hours: dict,
     adjustment_hours: int = 0,
 ) -> listOfTradingHours:
-
     if adjustment_hours != 0:
         print(f"WARNING: trading hours ({adjustment_hours}) not implemented!!")
 
@@ -50,7 +49,6 @@ def parse_trading_hours(
 
 
 def build_hours_for_day(dt: datetime, open: str, close: str):
-
     day = dt.strftime("%Y-%m-%d")
     dt_open = datetime.datetime.strptime(f"{day} {open}:00", ISO_DATE_FORMAT)
     dt_close = datetime.datetime.strptime(f"{day} {close}:00", ISO_DATE_FORMAT)

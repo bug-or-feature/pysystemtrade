@@ -95,7 +95,6 @@ class updateMultipleAdjustedPrices(object):
 def update_multiple_adjusted_prices_with_data(
     data: dataBlob, instrument_code: str = ALL_INSTRUMENTS, instrument_list=None
 ):
-
     diag_prices = diagPrices(data)
     if instrument_list is not None:
         list_of_codes = instrument_list
@@ -105,7 +104,6 @@ def update_multiple_adjusted_prices_with_data(
         list_of_codes = [instrument_code]
 
     for instrument_code in list_of_codes:
-
         if not instrument_code.endswith("_fsb"):
             instrument_code = instrument_code + "_fsb"
 
@@ -171,7 +169,6 @@ def calc_updated_multiple_prices(
 def calc_update_adjusted_prices(
     data: dataBlob, instrument_code: str, updated_multiple_prices: futuresMultiplePrices
 ) -> futuresAdjustedPrices:
-
     diag_prices = diagPrices(data)
     existing_adjusted_prices = diag_prices.get_adjusted_prices(instrument_code)
 
@@ -230,7 +227,6 @@ def update_with_new_prices(
     updated_multiple_prices: futuresMultiplePrices,
     updated_adjusted_prices: futuresAdjustedPrices,
 ):
-
     update_prices = updatePrices(data)
 
     update_prices.add_multiple_prices(

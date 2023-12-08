@@ -35,7 +35,6 @@ class tickerConfig(object):
 
 
 class IGConnection(object):
-
     PRICE_RESOLUTIONS = [
         "1s",
         "1Min",
@@ -155,7 +154,6 @@ class IGConnection(object):
         return result_list
 
     def get_activity(self, start, end, filter=None):
-
         activity = self.rest_service.fetch_account_activity(
             start, end, detailed=True, fiql_filter=filter
         )
@@ -171,7 +169,6 @@ class IGConnection(object):
         numpoints: int = None,
         warn_for_nans=False,
     ) -> pd.DataFrame:
-
         """
         Get historical FSB price data for the given epic
 
@@ -194,7 +191,6 @@ class IGConnection(object):
         df = FsbContractPrices.create_empty()
 
         try:
-
             if bar_freq not in self.PRICE_RESOLUTIONS:
                 raise NotImplementedError(
                     f"IG supported data frequencies: {self.PRICE_RESOLUTIONS}"
@@ -251,9 +247,7 @@ class IGConnection(object):
         self,
         epic: str,
     ) -> pd.DataFrame:
-
         if epic is not None:
-
             self.log.debug(f"Getting snapshot price data for {epic}")
             snapshot_rows = []
             now = datetime.datetime.now()
@@ -316,7 +310,6 @@ class IGConnection(object):
         epic: str,
         trade_qty: tradeQuantity = None,
     ) -> tickerConfig:
-
         subkey = self.streamer.start_tick_subscription(epic)
         try:
             ticker = self.streamer.ticker(epic)
@@ -342,7 +335,6 @@ class IGConnection(object):
         order_type: brokerOrderType = market_order_type,
         limit_price: float = None,
     ) -> IgTradeWithContract:
-
         # TODO validate
         self.log.info(f"broker_submit_order() trade_list: {trade_list}")
         size = trade_list[0]
@@ -394,7 +386,6 @@ class IGConnection(object):
 
     @staticmethod
     def _flat_prices_tick_format(prices, version):
-
         """Format price data as a flat DataFrame, no hierarchy"""
 
         if len(prices) == 0:
@@ -433,7 +424,6 @@ class IGConnection(object):
 
     @staticmethod
     def _flat_prices_bid_ask_format(prices, version):
-
         """Format price data as a flat DataFrame, no hierarchy, with bid/ask OHLC prices"""
 
         if len(prices) == 0:

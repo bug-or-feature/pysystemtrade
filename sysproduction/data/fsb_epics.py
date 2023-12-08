@@ -1,17 +1,20 @@
-from sysdata.arctic.arctic_fsb_epics_history import ArcticFsbEpicHistoryData
 from sysdata.data_blob import dataBlob
 from sysdata.futures_spreadbet.fsb_epic_history_data import FsbEpicsHistoryData
 from sysdata.futures_spreadbet.epic_periods_data import epicPeriodsData
-from sysdata.mongodb.mongo_epic_periods import mongoEpicPeriodsData
 from sysobjects.epic_history import FsbEpicsHistory
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
+from sysproduction.data.production_data_objects import (
+    get_class_for_data_type,
+    FSB_EPIC_HISTORY_DATA,
+    EPIC_PERIODS_DATA,
+)
 
 
 class DiagFsbEpics(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(
             [
-                ArcticFsbEpicHistoryData,
+                get_class_for_data_type(FSB_EPIC_HISTORY_DATA),
             ]
         )
         return data
@@ -30,7 +33,7 @@ class UpdateFsbEpics(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(
             [
-                ArcticFsbEpicHistoryData,
+                get_class_for_data_type(FSB_EPIC_HISTORY_DATA),
             ]
         )
         return data
@@ -45,11 +48,7 @@ class UpdateFsbEpics(productionDataLayerGeneric):
 
 class UpdateEpicPeriods(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
-        data.add_class_list(
-            [
-                mongoEpicPeriodsData,
-            ]
-        )
+        data.add_class_list([get_class_for_data_type(EPIC_PERIODS_DATA)])
         return data
 
     @property

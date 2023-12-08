@@ -13,7 +13,6 @@ HEADER_TEXT = body_text(
 def remove_fsb_markets_report(
     data: dataBlob = arg_not_supplied,
 ):
-
     if data is arg_not_supplied:
         data = dataBlob()
 

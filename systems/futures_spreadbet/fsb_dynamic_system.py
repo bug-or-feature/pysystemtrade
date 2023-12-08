@@ -20,7 +20,6 @@ def fsb_dynamic_system(
     sim_data=arg_not_supplied,
     config_filename="systems.futures_spreadbet.fsb_dynamic_minimal.yaml",
 ):
-
     if sim_data is arg_not_supplied:
         # sim_data = dbFuturesSimData()
         sim_data = build_fsb_csv_sim_data()

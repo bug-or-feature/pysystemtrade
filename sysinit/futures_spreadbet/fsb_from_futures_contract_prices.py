@@ -12,7 +12,6 @@ from syscore.exceptions import missingInstrument
 
 
 def convert_futures_prices_to_fsb_single(instr):
-
     arctic_prices = arcticFuturesContractPriceData()
     instr_data = IgFuturesInstrumentData(None, data=dataBlob())
     instr_prices = arctic_prices.get_merged_prices_for_instrument(instr)

@@ -280,7 +280,6 @@ class mongoMarketInfoData(marketInfoData):
         self.mongo_data.collection.delete_many({"instrument_code": instr_code})
 
     def find_epics_close_to_expiry(self, delta=None, limit=5):
-
         """
         Find any epics where the expiry dates is less than datetime delta from now
         :return:
@@ -362,7 +361,6 @@ class mongoMarketInfoData(marketInfoData):
                     "history_synced": 1,
                 },
             ):
-
                 doc = munchify(result)
                 contract_date = contract_date_from_expiry_key(doc.instrument.expiry)
                 contract_date_str = f"{instr}/{contract_date}"

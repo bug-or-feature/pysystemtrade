@@ -18,6 +18,7 @@ from syslogging.logger import *
 from sysproduction.data.positions import diagPositions
 from sysproduction.data.orders import dataOrders
 from sysproduction.data.controls import diagOverrides, dataLocks, dataPositionLimits
+from sysproduction.data.fsb_instruments import diagFsbInstruments
 
 name_of_main_generator_method = "get_and_place_orders"
 
@@ -30,12 +31,12 @@ class orderGeneratorForStrategy(object):
     """
 
     def __init__(self, data: dataBlob, strategy_name: str):
-
         self._strategy_name = strategy_name
         self._data = data
         data_orders = dataOrders(data)
         self._log = data.log
         self._data_orders = data_orders
+        self._diag_instruments = diagFsbInstruments(self._data)
 
     @property
     def data(self) -> dataBlob:
@@ -56,6 +57,10 @@ class orderGeneratorForStrategy(object):
     @property
     def order_stack(self):
         return self.data_orders.db_instrument_stack_data
+
+    @property
+    def diag_instruments(self):
+        return self._diag_instruments
 
     def get_and_place_orders(self):
         # THIS IS THE MAIN FUNCTION THAT IS RUN
@@ -89,7 +94,6 @@ class orderGeneratorForStrategy(object):
     def apply_overrides_and_position_limits(
         self, order_list: listOfOrders
     ) -> listOfOrders:
-
         new_order_list = [
             self.apply_overrides_and_position_limits_for_instrument_and_strategy(
                 proposed_order
@@ -152,7 +156,6 @@ class orderGeneratorForStrategy(object):
     def adjust_order_for_position_limits(
         self, order: instrumentOrder
     ) -> instrumentOrder:
-
         log_attrs = {**order.log_attributes(), "method": "temp"}
 
         data_position_limits = dataPositionLimits(self.data)
@@ -192,6 +195,18 @@ class orderGeneratorForStrategy(object):
         log_attrs = {**order.log_attributes(), "method": "temp"}
 
         try:
+            min_bet = self.diag_instruments.get_minimum_bet(
+                order.instrument_code, self.log.name
+            )
+            if abs(order.as_single_trade_qty_or_error()) < min_bet:
+                error_msg = (
+                    f"Order size is "
+                    f"{order.as_single_trade_qty_or_error()}, "
+                    f"but min bet is {min_bet}"
+                )
+                self.log.warning(error_msg)
+                raise minBetException(error_msg)
+
             order_id = self.order_stack.put_order_on_stack(order)
             log_attrs[INSTRUMENT_ORDER_ID_LABEL] = order_id
         except zeroOrderException:

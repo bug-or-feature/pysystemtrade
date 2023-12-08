@@ -61,7 +61,6 @@ class ArcticFsbEpicHistoryData(FsbEpicsHistoryData):
         epics_history: FsbEpicsHistory,
         ignore_duplication=False,
     ) -> status:
-
         log = self.log.setup(instrument_code=instrument_code)
         if self.is_code_in_data(instrument_code):
             if ignore_duplication:

@@ -9,7 +9,6 @@ from sysproduction.data.market_info import UpdateMarketInfo
 
 
 class igHandlerMarketInfo(igHandlerCore):
-
     MAX_UPDATES = 10
 
     def __init__(self, data: dataBlob = arg_not_supplied):
@@ -17,7 +16,6 @@ class igHandlerMarketInfo(igHandlerCore):
         self._update_market_info = UpdateMarketInfo(self.data)
 
     def do_market_info_updates(self):
-
         """
         For a given max epics, say 5 (configurable), fill with:
         - the epic associated with any active contract orders (rotate if more than max)

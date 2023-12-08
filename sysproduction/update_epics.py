@@ -15,7 +15,6 @@ from syscore.constants import success
 
 
 def update_epics(instrument_list=None):
-
     with dataBlob(log_name="Update-Epic-Mappings") as data:
         data.add_class_object(mongoMarketInfoData)
         update_epic_history = UpdateEpicHistory(data, instrument_list)
@@ -25,7 +24,6 @@ def update_epics(instrument_list=None):
 
 
 class UpdateEpicHistory(object):
-
     MISSING_KEY = "UNMAPPED"
 
     def __init__(self, data, instrument_list=None):
@@ -47,7 +45,6 @@ class UpdateEpicHistory(object):
     def update_epic_history(self):
         now = datetime.datetime.now()
         for instr in sorted(self._instrument_list):
-
             self.data.log.debug(f"Starting processing for '{instr}'")
 
             config = self.get_instr_config(instr)

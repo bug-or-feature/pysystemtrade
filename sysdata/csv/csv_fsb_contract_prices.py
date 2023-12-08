@@ -43,7 +43,6 @@ class CsvFsbContractPriceData(csvFuturesContractPriceData):
     def _get_prices_at_frequency_for_contract_object_no_checking(
         self, futures_contract_object: futuresContract, frequency: Frequency
     ) -> FsbContractPrices:
-
         keyname = self._keyname_given_contract_object_and_freq(
             futures_contract_object, frequency=frequency
         )
@@ -108,7 +107,6 @@ class CsvFsbContractPriceData(csvFuturesContractPriceData):
         futures_price_data: FsbContractPrices,
         frequency: Frequency,
     ):
-
         keyname = self._keyname_given_contract_object_and_freq(
             futures_contract_object, frequency=frequency
         )

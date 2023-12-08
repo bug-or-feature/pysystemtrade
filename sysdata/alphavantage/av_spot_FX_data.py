@@ -122,7 +122,6 @@ class AvFxPricesData(brokerFxPricesData):
         return config
 
     def _get_and_set_config_from_file(self) -> pd.DataFrame:
-
         try:
             config_data = pd.read_csv(self._get_fx_config_filename())
         except Exception as e:

@@ -16,7 +16,6 @@ from sysdata.data_blob import dataBlob
 
 
 def instrument_risk_compare_report():
-
     report_config = reportConfig(
         title="Instrument Risk Compare Report", function="not_used", output="file"
     )
@@ -40,14 +39,12 @@ def instrument_risk_compare_report():
     rows = []
     no_matches = []
     for key, value in fsb_data.items():
-
         if key in manual_override:
             fut_instr_code = manual_override[key]
         else:
             fut_instr_code = remove_suffix(key, "_fsb")
 
         if fut_instr_code in fut_data:
-
             fut_dict = fut_data[fut_instr_code]
             fsb_ann = round(value["annual_perc_stdev"], 2)
             fut_ann = round(fut_dict["annual_perc_stdev"], 2)

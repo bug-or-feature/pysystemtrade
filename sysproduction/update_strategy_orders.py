@@ -19,7 +19,6 @@ def update_strategy_orders():
             csvRollParametersData="fsb.csvconfig",
         ),
     ) as data:
-
         list_of_strategies = get_list_of_strategies_for_process(data, process_name)
         ALL = "ALL"
         print("Which strategy?")

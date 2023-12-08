@@ -97,7 +97,6 @@ def run_system():
     total_cap_req = 0.0
 
     for instr in instr_list:
-
         # config
         instr_obj = system.data.get_instrument_meta_data(instr)
         asset_class = instr_obj.meta_data.AssetClass

@@ -24,7 +24,6 @@ def get_broker_class_list(data: dataBlob):
 
 
 def get_ib_class_list():
-
     try:
         from sysbrokers.IB.ib_capital_data import ibCapitalData
         from sysbrokers.IB.ib_Fx_prices_data import ibFxPricesData

@@ -43,7 +43,6 @@ class IgContractPositionData(brokerContractPositionData):
     def get_all_current_positions_as_list_with_contract_objects(
         self, account_id=arg_not_supplied
     ) -> listOfContractPositions:
-
         all_positions = self._get_all_futures_positions_as_raw_list(
             account_id=account_id
         )

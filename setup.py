@@ -5,15 +5,8 @@ import platform
 from setuptools import setup, find_packages
 from distutils.version import StrictVersion
 
-if StrictVersion(platform.python_version()) <= StrictVersion("3.7.0"):
-    print("pysystemtrade requires Python 3.7.0 or later. Exiting.", file=sys.stderr)
-    sys.exit(1)
-
-if StrictVersion(platform.python_version()) >= StrictVersion("3.9.0"):
-    print(
-        "pysystemtrade requires Python 3.8.* or earlier (pandas issue). Exiting.",
-        file=sys.stderr,
-    )
+if StrictVersion(platform.python_version()) <= StrictVersion("3.10.0"):
+    print("pysystemtrade requires Python 3.10.0 or later. Exiting.", file=sys.stderr)
     sys.exit(1)
 
 
@@ -24,7 +17,7 @@ def read(fname):
 
 def package_files(directory, extension="yaml"):
     paths = []
-    for (path, directories, filenames) in os.walk(directory):
+    for path, directories, filenames in os.walk(directory):
         for filename in filenames:
             if filename.split(".")[-1] == extension:
                 paths.append(os.path.join("..", path, filename))
@@ -91,18 +84,18 @@ setup(
     package_data=package_data,
     long_description=read("README.md"),
     install_requires=[
-        "pandas==1.0.5",
+        "pandas>=1.5.3,<=2.1.3",
         "matplotlib>=3.0.0",
-        "PyYAML>=5.4",
-        "numpy>=1.19.4,<1.24.0",
+        "PyYAML>=5.3",
+        "numpy>=1.24.0",
         "scipy>=1.0.0",
-        "pymongo==3.11.3",
-        "arctic==1.79.2",
+        "pymongo==3.11.0",
+        "arctic==1.82.0",
         "psutil==5.6.6",
         "pytest>6.2",
         "Flask>=2.0.1",
         "Werkzeug>=2.0.1",
-        "statsmodels==0.13.0",
+        "statsmodels==0.14.0",
         "PyPDF2>=2.5.0",
         "requests>=2.25",
         "trading-ig",

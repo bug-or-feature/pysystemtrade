@@ -27,7 +27,6 @@ class bcConnection(object):
     """
 
     def __init__(self, log=get_logger("bcConnection")):
-
         log.info("Setting up Barchart connection", broker="Barchart")
 
         # start HTTP session
@@ -51,7 +50,6 @@ class bcConnection(object):
         :return: str
         """
         try:
-
             resp = self._get_overview(bc_symbol)
             if resp.status_code == 200:
                 overview_soup = Scraper(resp.text, "html.parser")
@@ -99,7 +97,6 @@ class bcConnection(object):
             raise missingData
 
         try:
-
             # GET the futures quote chart page, scrape to get XSRF token
             # https://www.barchart.com/futures/quotes/GCM21/interactive-chart
             chart_url = (
@@ -172,7 +169,6 @@ class bcConnection(object):
         log: pst_logger,
         bar_freq: Frequency = Frequency.Day,
     ) -> pd.DataFrame:
-
         if price_data_raw is None:
             log.warn("No historical price data from Barchart")
             raise missingData

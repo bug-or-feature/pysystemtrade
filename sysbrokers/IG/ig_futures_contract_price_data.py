@@ -163,7 +163,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
     def get_prices_at_frequency_for_potentially_expired_contract_object(
         self, contract: futuresContract, freq: Frequency = DAILY_PRICE_FREQ
     ) -> futuresContractPrices:
-
         price_data = self._get_prices_at_frequency_for_contract_object_no_checking_with_expiry_flag(
             contract, frequency=freq, allow_expired=True
         )
@@ -173,7 +172,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
     def _get_merged_prices_for_contract_object_no_checking(
         self, contract_object: futuresContract
     ) -> futuresContractPrices:
-
         raise Exception("Have to get prices from IB with specific frequency")
 
     def get_prices_at_frequency_for_contract_object(
@@ -182,7 +180,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         frequency: Frequency,
         return_empty: bool = True,
     ):
-
         # Override this because don't want to check for existing data first
         try:
             prices = self._get_prices_at_frequency_for_contract_object_no_checking(
@@ -199,7 +196,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
     def _get_prices_at_frequency_for_contract_object_no_checking(
         self, futures_contract_object: futuresContract, frequency: Frequency
     ) -> futuresContractPrices:
-
         return self._get_prices_at_frequency_for_contract_object_no_checking_with_expiry_flag(
             futures_contract_object=futures_contract_object,
             frequency=frequency,
@@ -212,7 +208,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         frequency: Frequency,
         allow_expired: bool = False,
     ) -> futuresContractPrices:
-
         """
         Get historical prices at a particular frequency
 
@@ -258,7 +253,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         futures_contract: futuresContract,
         trade_qty: tradeQuantity = None,
     ) -> tickerObject:
-
         epic = self.market_info_data.get_epic_for_contract(futures_contract)
         expiry_info = self.market_info_data.get_expiry_details(epic)
         ticker_with_bs = self.broker_conn.get_ticker_object(
@@ -367,7 +361,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
     def _get_barchart_prices(
         self, contract_object: futuresContract, freq: Frequency
     ) -> futuresContractPrices:
-
         """
         Get historical Barchart prices at a particular frequency
 

@@ -16,7 +16,6 @@ class MongoHistoricAllowanceData:
         mongo_db=arg_not_supplied,
         log=get_logger("mongoHistoricAllowanceData"),
     ):
-
         self._mongo_data = mongoDataWithSingleKey(
             HA_COLLECTION, "Environment", mongo_db
         )

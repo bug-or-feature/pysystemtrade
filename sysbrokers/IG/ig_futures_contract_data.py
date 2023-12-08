@@ -95,7 +95,6 @@ class IgFuturesContractData(brokerFuturesContractData):
         return contract_object.instrument_code.endswith("_fsb")
 
     def _get_fsb_expiry_date(self, contract_object: futuresContract) -> expiryDate:
-
         contract_object_with_config_data = self.get_contract_object_with_config_data(
             contract_object
         )
@@ -125,7 +124,6 @@ class IgFuturesContractData(brokerFuturesContractData):
     def _get_contract_object_plus(
         self, contract_object: futuresContract
     ) -> futuresContract:
-
         try:
             futures_contract_plus = (
                 self.ig_instrument_data.get_futures_instrument_object_with_ig_data(
@@ -146,7 +144,6 @@ class IgFuturesContractData(brokerFuturesContractData):
     def _get_actual_expiry_date_given_single_contract_plus(
         self, futures_contract_plus: futuresContract
     ) -> expiryDate:
-
         if futures_contract_plus.is_spread_contract():
             self.log.warning("Can't find expiry for multiple leg contract here")
             raise missingContract
@@ -194,7 +191,6 @@ class IgFuturesContractData(brokerFuturesContractData):
         return 0.01
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
-
         try:
             epic = self.market_info_data.get_epic_for_contract(futures_contract)
         except missingData:

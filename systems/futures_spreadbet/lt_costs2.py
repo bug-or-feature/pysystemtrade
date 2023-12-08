@@ -50,7 +50,6 @@ MAV_SCALING_FACTOR = 57.12
 
 
 def get_spreadbet_costs(source="db"):
-
     """
     calculates spreadbet costs using formulas from Leveraged Trading
     """
@@ -82,7 +81,6 @@ def get_spreadbet_costs(source="db"):
     list = system.get_instrument_list()
     # for instr in system.get_instrument_list():
     for instr in system.get_instrument_list():
-
         # if instr not in ['GOLD']:
         # if instr not in ["GOLD", "BUND", "NZD", "SP500"]:
         # if instr not in ["AEX","CAC","CORN","EUROSTX","GOLD","NASDAQ","PALLAD","PLAT","SMI","SOYBEAN","SP500","V2X","VIX","WHEAT"]:
@@ -208,7 +206,6 @@ def get_spreadbet_costs(source="db"):
 
 
 def write_file(df, calc_type, write=True):
-
     now = datetime.now()
     dir = "data/cost_calcs"
     full_path = f"{dir}/{calc_type}_db_{now.strftime('%Y-%m-%d_%H%M%S')}.csv"
