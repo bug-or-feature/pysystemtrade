@@ -10,7 +10,6 @@ from sysexecution.algos.common_functions import (
     post_trade_processing,
     MESSAGING_FREQUENCY,
     cancel_order,
-    # file_log_report_market_order,
 )
 from sysexecution.order_stacks.broker_order_stack import orderWithControls
 from sysexecution.orders.broker_orders import market_order_type, brokerOrderType
@@ -100,7 +99,6 @@ class algoMarket(Algo):
                 messaging_frequency_seconds=MESSAGING_FREQUENCY
             )
             if log_message_required:
-                # file_log_report_market_order(log, broker_order_with_controls)
                 self.file_log_report_market_order(broker_order_with_controls)
 
             is_order_completed = broker_order_with_controls.completed()
