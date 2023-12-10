@@ -3,12 +3,19 @@
 This document describes changes to this fork. For upstream master, see [CHANGELOG](CHANGELOG.md)
 
 ## Status
-- Upstream version: 1.71
+- Upstream version: 1.80
 
 ## TODO
 See
 - [Issues](https://github.com/bug-or-feature/pysystemtrade-fsb/issues)
 - [Roadmap / wishlist](https://github.com/bug-or-feature/pysystemtrade-fsb#roadmap--wishlist)
+
+## November 2023
+- improved IG market info collection
+- improved handling for minimum bets
+- minimum bet overrides for DEMO env defined in config
+- market hours overrides per instrument
+- merge in upstream changes for Parquet, updated Python and pandas
 
 ## October 2023
 - improved IG market info collection
@@ -19,7 +26,6 @@ See
 
 ## September 2023
 - better fractional position saving
-- 'Force' roll state no longer allowed
 - new adhoc report compares FSB risk with Future per instrument
 - new adhoc report plots FSB adjusted price vs Future
 - simpler/better FSB market info collection
