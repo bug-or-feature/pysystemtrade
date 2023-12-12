@@ -88,9 +88,9 @@ def nice_format_min_capital_table(min_capital_pd: pd.DataFrame) -> pd.DataFrame:
 
 
 def nice_format_roll_table(roll_table: pd.DataFrame) -> pd.DataFrame:
-    roll_table.relative_volume_fwd = roll_table.relative_volume_fwd.astype(float)
-    roll_table.relative_volume_fwd = roll_table.relative_volume_fwd.round(3)
-    roll_table.contract_volume_fwd = roll_table.contract_volume_fwd.astype(int)
+    roll_table.rel_vol_fwd = roll_table.rel_vol_fwd.astype(float)
+    roll_table.rel_vol_fwd = roll_table.rel_vol_fwd.round(3)
+    roll_table.vol_fwd = roll_table.vol_fwd.astype(int)
 
     return roll_table
 

@@ -2,6 +2,7 @@ import datetime
 import pandas as pd
 from functools import cached_property
 
+from syscore.constants import arg_not_supplied
 from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
@@ -9,9 +10,10 @@ from sysdata.arctic.arctic_futures_per_contract_prices import (
 from sysdata.data_blob import dataBlob
 from sysproduction.data.contracts import dataContracts
 from sysproduction.data.prices import diagPrices
-from sysproduction.data.instruments import diagInstruments
+from sysproduction.data.fsb_instruments import diagFsbInstruments
 from sysproduction.data.fsb_prices import DiagFsbPrices
 from sysproduction.data.fsb_epics import DiagFsbEpics
+from sysproduction.data.positions import diagPositions
 from sysproduction.reporting.api import reportingApi
 from sysproduction.reporting.data.fsb_correlation_data import fsb_correlation_data
 from sysproduction.reporting.data.risk_fsb import minimum_capital_table
@@ -28,6 +30,49 @@ from syscore.dateutils import contract_month_from_number
 
 
 class ReportingApiFsb(reportingApi):
+    def __init__(
+        self,
+        data: dataBlob,
+        calendar_days_back: int = arg_not_supplied,
+        end_date: datetime.datetime = arg_not_supplied,
+        start_date: datetime.datetime = arg_not_supplied,
+        start_period: str = arg_not_supplied,
+        end_period: str = arg_not_supplied,
+    ):
+        super().__init__(
+            data, calendar_days_back, end_date, start_date, start_period, end_period
+        )
+        self._prices = diagPrices(data)
+        self._fsb_prices = DiagFsbPrices(self.data)
+        self._instruments = diagFsbInstruments(self.data)
+        self._epics = DiagFsbEpics(self.data)
+        self._contracts = dataContracts(data)
+        self._positions = diagPositions(data)
+
+    @property
+    def futures_prices(self) -> diagPrices:
+        return self._prices
+
+    @property
+    def fsb_prices(self) -> DiagFsbPrices:
+        return self._fsb_prices
+
+    @property
+    def positions(self) -> diagPositions:
+        return self._positions
+
+    @property
+    def fsb_instruments(self) -> diagFsbInstruments:
+        return self._instruments
+
+    @property
+    def contracts(self) -> dataContracts:
+        return self._contracts
+
+    @property
+    def epics(self) -> DiagFsbEpics:
+        return self._epics
+
     ### MINIMUM CAPITAL
     def table_of_minimum_capital_fsb(self) -> table:
         min_capital = minimum_capital_table(
@@ -51,14 +96,21 @@ class ReportingApiFsb(reportingApi):
 
         roll_data_dict = {}
         for instrument_code in list_of_instruments:
-            roll_data = get_roll_data_for_fsb_instrument(instrument_code, data)
+            roll_data = get_roll_data_for_fsb_instrument(
+                instrument_code,
+                data,
+                self.contracts,
+                self.positions,
+                self.fsb_instruments,
+            )
             roll_data_dict[instrument_code] = roll_data
 
         return roll_data_dict
 
     def _list_of_all_instruments(self):
-        diag_prices = DiagFsbPrices(self.data)
-        list_of_instruments = diag_prices.get_list_of_instruments_in_multiple_prices()
+        list_of_instruments = (
+            self.fsb_prices.get_list_of_instruments_in_multiple_prices()
+        )
 
         return list_of_instruments
 
@@ -244,16 +296,14 @@ class ReportingApiFsb(reportingApi):
 
         rows = []
 
-        diag_instruments = diagInstruments(self.data)
-
         for key, value in epics.items():
             instr_code = key[:-9]
-            meta_data = diag_instruments.get_meta_data(instr_code)
+            meta_data = self.fsb_instruments.get_meta_data(instr_code)
             if instr_code not in roll_data:
                 continue
-            if roll_data[instr_code]["contract_priced"] == key[-8:]:
+            if roll_data[instr_code]["priced"] == key[-8:]:
                 pos = "priced"
-            elif roll_data[instr_code]["contract_fwd"] == key[-8:]:
+            elif roll_data[instr_code]["fwd"] == key[-8:]:
                 pos = "fwd"
             else:
                 pos = "-"
@@ -313,10 +363,9 @@ class ReportingApiFsb(reportingApi):
     @cached_property
     def chain_data(self):
         rows = []
-        diagFsbEpics = DiagFsbEpics(self.data)
         # for instr in ["CAD_fsb"]:
         for instr in self._list_of_all_instruments():
-            epic_history = diagFsbEpics.get_epic_history(instr)
+            epic_history = self.epics.get_epic_history(instr)
 
             furthest_out_contract = get_furthest_out_contract_with_roll_parameters(
                 self.data, instr
@@ -358,35 +407,31 @@ class ReportingApiFsb(reportingApi):
         fsb_prices = ArcticFsbContractPriceData()
 
         rows = []
-        with dataBlob(log_name="FSB-Report") as data:
-            price_data = diagPrices(data)
-            diag_contracts = dataContracts(data)
+        for (
+            instr_code
+        ) in self.futures_prices.get_list_of_instruments_in_multiple_prices():
+            contract_priced = self.contracts.get_priced_contract_id(instr_code)
+            contract_fwd = self.contracts.get_forward_contract_id(instr_code)
 
-            for instr_code in price_data.get_list_of_instruments_in_multiple_prices():
-                contract_priced = diag_contracts.get_priced_contract_id(instr_code)
-                contract_fwd = diag_contracts.get_forward_contract_id(instr_code)
+            all_contracts_list = (
+                self.contracts.get_all_contract_objects_for_instrument_code(instr_code)
+            )
+            for contract in all_contracts_list.currently_sampling():
+                if futures_prices.has_merged_price_data_for_contract(
+                    contract
+                ) and fsb_prices.has_merged_price_data_for_contract(contract):
+                    is_priced = contract.date_str == contract_priced
+                    is_fwd = contract.date_str == contract_fwd
 
-                all_contracts_list = (
-                    diag_contracts.get_all_contract_objects_for_instrument_code(
-                        instr_code
-                    )
-                )
-                for contract in all_contracts_list.currently_sampling():
-                    if futures_prices.has_merged_price_data_for_contract(
-                        contract
-                    ) and fsb_prices.has_merged_price_data_for_contract(contract):
-                        is_priced = contract.date_str == contract_priced
-                        is_fwd = contract.date_str == contract_fwd
-
-                        rows.append(
-                            fsb_correlation_data(
-                                contract,
-                                futures_prices=futures_prices,
-                                fsb_prices=fsb_prices,
-                                is_priced=is_priced,
-                                is_fwd=is_fwd,
-                            )
+                    rows.append(
+                        fsb_correlation_data(
+                            contract,
+                            futures_prices=futures_prices,
+                            fsb_prices=fsb_prices,
+                            is_priced=is_priced,
+                            is_fwd=is_fwd,
                         )
+                    )
         return rows
 
 
