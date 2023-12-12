@@ -22,13 +22,15 @@ from syscore.interactive.display import (
 
 from sysdata.data_blob import dataBlob
 
-
+from sysproduction.reporting.data.rolls_fsb import (
+    get_roll_data_for_fsb_instrument,
+)
 from sysobjects.contracts import futuresContract
 from sysobjects.production.roll_state import (
     default_state,
     roll_adj_state,
     explain_roll_state_str,
-    allowable_roll_state_from_current_and_position,
+    allowable_roll_state_fsb,
     RollState,
     no_open_state,
     is_double_sided_trade_roll_state,
@@ -38,8 +40,7 @@ from sysproduction.reporting.api_fsb import ReportingApiFsb
 
 from sysproduction.reporting.report_configs_fsb import fsb_roll_report_config
 from sysproduction.reporting.reporting_functions import run_report_with_data_blob
-from sysproduction.reporting.data.rolls import volume_contracts_in_forward_contract
-
+from sysproduction.data.fsb_instruments import diagFsbInstruments
 from sysproduction.data.positions import diagPositions, updatePositions
 from sysproduction.data.controls import updateOverrides, dataTradeLimits
 from sysproduction.data.contracts import dataContracts
@@ -48,6 +49,7 @@ from sysproduction.data.prices import diagPrices, get_valid_instrument_code_from
 from sysproduction.reporting.data.rolls import (
     rollingAdjustedAndMultiplePrices,
     relative_volume_in_forward_contract_versus_price,
+    volume_contracts_in_forward_contract
 )
 
 no_change_required = named_object("No roll required")
@@ -112,6 +114,8 @@ class RollDataWithStateReporting(object):
     relative_volume: float
     absolute_forward_volume: int
     days_until_expiry: int
+    fwd_status: str
+    min_bet: float
 
     @property
     def original_roll_status_as_string(self):
@@ -473,24 +477,34 @@ def suggest_roll_state_for_instrument(
     expired_and_auto_rolling_expired = check_if_expired_and_auto_rolling_expired(
         roll_data=roll_data, auto_parameters=auto_parameters
     )
+    forward_tradeable = roll_data.fwd_status == "TRADEABLE"
+    pos_more_than_min = roll_data.position_priced_contract >= roll_data.min_bet
 
-    if expired_and_auto_rolling_expired and no_position_held:
-        ## contract expired so roll regardless of liquidity
+    if expired_and_auto_rolling_expired and no_position_held and forward_tradeable:
+        ## contract expired with tradeable fwd, so roll regardless of liquidity
         return RollState.Roll_Adjusted
 
     if forward_liquid:
         if no_position_held:
-            ## liquid forward, with no position
-            return RollState.Roll_Adjusted
-        else:
-            ## liquid forward, with position held
-            if getting_close_to_desired_roll_date:
-                ## liquid forward, with position, close to expiry
-                ##   Up to the user to decide
-                return auto_parameters.default_roll_state_if_undecided
+            if forward_tradeable:
+                ## liquid forward, with no position
+                return RollState.Roll_Adjusted
             else:
-                ## liquid forward, with position held, not close to expiring
-                return RollState.Passive
+                ## liquid forward, with no position, but untradeable forward contract
+                return RollState.No_Roll
+        else:
+            if pos_more_than_min:
+                ## liquid forward, with position held >= min
+                if getting_close_to_desired_roll_date:
+                    ## liquid forward, with position, close to expiry
+                    ##   Up to the user to decide
+                    return auto_parameters.default_roll_state_if_undecided
+                else:
+                    ## liquid forward, with position held, not close to expiring
+                    return RollState.Passive
+            else:
+                # we have a position < minimum bet, so we wait for auto roll
+                return RollState.No_Open
     else:
         # forward illiquid
         if getting_close_to_desired_roll_date:
@@ -582,7 +596,14 @@ def manually_update_roll_state_for_code(
         roll_data=roll_data, auto_parameters=auto_parameters
     )
     if roll_state_suggested == ASK_FOR_STATE:
-        print("No specific state suggested: recommend one of Force_Outright or Close)")
+        if roll_data.fwd_status == "TRADEABLE":
+            print(
+                "No specific state suggested: recommend one of Force_Outright or Close)"
+            )
+        else:
+            print(
+                "No specific state suggested: recommend one of No_Roll or No_Open)"
+            )
         default_state = roll_data.original_roll_status.name
     else:
         roll_state_suggested_str = roll_state_suggested.name
@@ -657,6 +678,15 @@ def setup_roll_data_with_state_reporting(
 ) -> RollDataWithStateReporting:
     diag_positions = diagPositions(data)
     diag_contracts = dataContracts(data)
+    fsb_instruments = diagFsbInstruments(data)
+
+    roll_data = get_roll_data_for_fsb_instrument(
+        instrument_code,
+        data,
+        diag_contracts,
+        diag_positions,
+        fsb_instruments,
+    )
 
     original_roll_status = diag_positions.get_roll_state(instrument_code)
     priced_contract_date = diag_contracts.get_priced_contract_id(instrument_code)
@@ -669,10 +699,12 @@ def setup_roll_data_with_state_reporting(
         diag_positions.get_position_for_contract(contract), 2
     )
 
-    # TODO remove Roll_adjusted from allowable states if forward contract is not TRADEABLE
-    allowable_roll_states = allowable_roll_state_from_current_and_position(
-        original_roll_status, position_priced_contract
-    )
+    if roll_data["status_f"] == "TRADEABLE":
+        allowable_roll_states = allowable_roll_state_fsb(
+            original_roll_status, position_priced_contract, roll_data["min"]
+        )
+    else:
+        allowable_roll_states = ["No_Roll", "No_Open", "Close"]
 
     days_until_roll = diag_contracts.days_until_roll(instrument_code)
     days_until_expiry = diag_contracts.days_until_price_expiry(instrument_code)
@@ -697,6 +729,8 @@ def setup_roll_data_with_state_reporting(
         relative_volume=relative_volume,
         absolute_forward_volume=absolute_forward_volume,
         days_until_expiry=days_until_expiry,
+        fwd_status=roll_data["status_f"],
+        min_bet=roll_data["min"],
     )
 
     return roll_data_with_state

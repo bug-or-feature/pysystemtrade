@@ -65,6 +65,17 @@ def complete_roll_state(roll_state: RollState, priced_position):
     return "%s%s" % (name_of_roll_state(roll_state), flag_position_in_priced)
 
 
+def complete_fsb_roll_state(roll_state: RollState, priced_position, min_bet):
+    if priced_position == 0:
+        flag_position_in_priced = 0
+    else:
+        if priced_position >= min_bet:
+            flag_position_in_priced = 1
+        else:
+            flag_position_in_priced = 2
+    return f"{name_of_roll_state(roll_state)}{flag_position_in_priced}"
+
+
 def allowable_roll_state_from_current_and_position(
     # TODO rounding strategy
     current_roll_state: RollState,
@@ -97,6 +108,52 @@ def allowable_roll_state_from_current_and_position(
     )
 
     status_plus_position = complete_roll_state(current_roll_state, priced_position)
+    try:
+        allowable_states = allowed_transition[status_plus_position]
+    except KeyError:
+        raise Exception("State plus position %s not recognised" % status_plus_position)
+
+    return allowable_states
+
+
+def allowable_roll_state_fsb(
+    # TODO rounding strategy
+    current_roll_state: RollState,
+    priced_position: float,
+    min_bet: float,
+):
+    # Transition matrix: First option is recommended
+    # A 0 suffix indicates we have no position in the priced contract
+    # A 1 suffix indicates we have a position >= min bet
+    # A 2 suffix indicates we have a position < min bet>
+    allowed_transition = dict(
+        No_Roll0=["Roll_Adjusted", "Passive", "No_Roll", "No_Open"],
+        No_Roll1=["Passive", "Force_Outright", "No_Roll", "Close", "No_Open"],
+        No_Roll2=["No_Roll", "Close", "No_Open"],
+        Passive0=["Roll_Adjusted", "Passive", "No_Roll", "No_Open"],
+        Passive1=["Force_Outright", "Passive", "No_Roll", "Close", "No_Open"],
+        Passive2=["No_Roll", "Close", "No_Open"],
+        Force_Outright0=["Roll_Adjusted", "Passive"],
+        Force_Outright1=[
+            "Force_Outright",
+            "Passive",
+            "No_Roll",
+            "Close",
+            "No_Open",
+        ],
+        Force_Outright2=["No_Roll", "Close", "No_Open"],
+        Close0=["Roll_Adjusted", "Passive"],
+        Close1=["Close", "Force_Outright", "Passive", "No_Roll", "No_Open"],
+        Close2=["Close", "No_Roll", "No_Open"],
+        Roll_Adjusted0=["No_Roll"],
+        Roll_Adjusted1=["Roll_Adjusted"],
+        Roll_Adjusted2=["No_Open", "No_Roll", "Close"],
+        No_Open0=["Roll_Adjusted", "Passive", "No_Open"],
+        No_Open1=["Close", "Force_Outright", "Passive", "No_Roll"],
+        No_Open2=["No_Open", "Close", "No_Roll"],
+    )
+
+    status_plus_position = complete_fsb_roll_state(current_roll_state, priced_position, min_bet)
     try:
         allowable_states = allowed_transition[status_plus_position]
     except KeyError:
