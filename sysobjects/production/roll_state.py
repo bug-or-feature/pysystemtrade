@@ -153,7 +153,9 @@ def allowable_roll_state_fsb(
         No_Open2=["No_Open", "Close", "No_Roll"],
     )
 
-    status_plus_position = complete_fsb_roll_state(current_roll_state, priced_position, min_bet)
+    status_plus_position = complete_fsb_roll_state(
+        current_roll_state, priced_position, min_bet
+    )
     try:
         allowable_states = allowed_transition[status_plus_position]
     except KeyError:

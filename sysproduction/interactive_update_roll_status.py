@@ -49,7 +49,7 @@ from sysproduction.data.prices import diagPrices, get_valid_instrument_code_from
 from sysproduction.reporting.data.rolls import (
     rollingAdjustedAndMultiplePrices,
     relative_volume_in_forward_contract_versus_price,
-    volume_contracts_in_forward_contract
+    volume_contracts_in_forward_contract,
 )
 
 no_change_required = named_object("No roll required")
@@ -601,9 +601,7 @@ def manually_update_roll_state_for_code(
                 "No specific state suggested: recommend one of Force_Outright or Close)"
             )
         else:
-            print(
-                "No specific state suggested: recommend one of No_Roll or No_Open)"
-            )
+            print("No specific state suggested: recommend one of No_Roll or No_Open)")
         default_state = roll_data.original_roll_status.name
     else:
         roll_state_suggested_str = roll_state_suggested.name
