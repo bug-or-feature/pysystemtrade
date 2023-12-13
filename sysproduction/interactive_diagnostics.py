@@ -836,7 +836,7 @@ def interactive_diag_function(function_id):
 if __name__ == "__main__":
     interactive_diagnostics()
     # interactive_diag_function(30) # individual contract prices
-    # interactive_diag_function(13)  # FSB history
+    # interactive_diag_function(18)  # FSB history
     # interactive_diag_function(10)  # view_instrument_config
     # interactive_diag_function(12)  # view trading hours
     # interactive_diag_function(30)  # prices
