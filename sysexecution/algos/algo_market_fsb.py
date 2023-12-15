@@ -1,5 +1,7 @@
 from sysexecution.algos.algo_market import algoMarket
 from sysexecution.order_stacks.broker_order_stack import orderWithControls
+from sysexecution.orders.named_order_objects import missing_order
+from syscore.exceptions import missingData
 
 
 class algoMarketFsb(algoMarket):
@@ -17,10 +19,14 @@ class algoMarketFsb(algoMarket):
             method="temp",
         )
 
-        broker_order_with_controls = (
-            self.get_and_submit_broker_order_for_contract_order(
-                contract_order, order_type=self.order_type_to_use
+        try:
+            broker_order_with_controls = (
+                self.get_and_submit_broker_order_for_contract_order(
+                    contract_order, order_type=self.order_type_to_use
+                )
             )
-        )
+        except missingData as md:
+            self.data.log.error(f"Problem submitting order: {md}")
+            return missing_order
 
         return broker_order_with_controls

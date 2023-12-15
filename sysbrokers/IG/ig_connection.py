@@ -312,7 +312,7 @@ class IGConnection(object):
     ) -> tickerConfig:
         subkey = self.streamer.start_tick_subscription(epic)
         try:
-            ticker = self.streamer.ticker(epic)
+            ticker = self.streamer.ticker(epic, timeout_length=10)
             if trade_qty is None:
                 dir = None
                 qty = None
