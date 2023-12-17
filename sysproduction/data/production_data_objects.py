@@ -51,6 +51,9 @@ from sysdata.mongodb.mongo_epic_periods import mongoEpicPeriodsData
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
 
+# from sysdata.config.production_config import get_production_config
+
+
 FUTURES_CONTRACT_PRICE_DATA = "futures_contract_price_data"
 FUTURES_MULTIPLE_PRICE_DATA = "futures_multiple_price_data"
 FUTURES_ADJUSTED_PRICE_DATA = "futures_adjusted_price_data"
@@ -107,4 +110,8 @@ use_production_classes = {
 
 
 def get_class_for_data_type(data_type: str):
+    # config = get_production_config().get_element_or_arg_not_supplied("use_production_classes")
+    # value = config[data_type]
+    # classobj = globals()[value]
+    # return classobj
     return use_production_classes[data_type]
