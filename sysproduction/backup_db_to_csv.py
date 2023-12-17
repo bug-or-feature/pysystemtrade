@@ -4,7 +4,11 @@ import pandas as pd
 from syscore.exceptions import missingData
 from syscore.pandas.pdutils import check_df_equals, check_ts_equals
 from syscore.dateutils import (
-    CALENDAR_DAYS_IN_YEAR, Frequency, DAILY_PRICE_FREQ, HOURLY_FREQ, MIXED_FREQ
+    CALENDAR_DAYS_IN_YEAR,
+    Frequency,
+    DAILY_PRICE_FREQ,
+    HOURLY_FREQ,
+    MIXED_FREQ,
 )
 from sysdata.data_blob import dataBlob
 
@@ -225,8 +229,10 @@ def backup_futures_contract_prices_for_instrument_to_csv(
 
 
 def backup_futures_contract_prices_for_contract_to_csv(
-    data: dataBlob, futures_contract: futuresContract, ignore_long_expired: bool = True,
-        frequency: Frequency = MIXED_FREQ
+    data: dataBlob,
+    futures_contract: futuresContract,
+    ignore_long_expired: bool = True,
+    frequency: Frequency = MIXED_FREQ,
 ):
     if ignore_long_expired:
         if futures_contract.days_since_expiry() > CALENDAR_DAYS_IN_YEAR:
@@ -235,25 +241,28 @@ def backup_futures_contract_prices_for_contract_to_csv(
 
             return None
 
-    db_data = data.db_futures_contract_price.get_prices_at_frequency_for_contract_object(
-        futures_contract, frequency=frequency
+    db_data = (
+        data.db_futures_contract_price.get_prices_at_frequency_for_contract_object(
+            futures_contract, frequency=frequency
+        )
     )
 
-    csv_data = data.csv_futures_contract_price.get_prices_at_frequency_for_contract_object(
-        futures_contract, frequency=frequency
+    csv_data = (
+        data.csv_futures_contract_price.get_prices_at_frequency_for_contract_object(
+            futures_contract, frequency=frequency
+        )
     )
 
     if check_df_equals(db_data, csv_data):
         # No update needed, move on
-        data.log.debug(f"No prices backup needed for {str(futures_contract)} at {frequency}")
+        data.log.debug(
+            f"No prices backup needed for {str(futures_contract)} at {frequency}"
+        )
     else:
         # Write backup
         try:
             data.csv_futures_contract_price.write_prices_at_frequency_for_contract_object(
-                futures_contract,
-                db_data,
-                ignore_duplication=True,
-                frequency=frequency
+                futures_contract, db_data, ignore_duplication=True, frequency=frequency
             )
             data.log.debug(
                 f"Written backup .csv of prices for {str(futures_contract)} at {frequency}"
