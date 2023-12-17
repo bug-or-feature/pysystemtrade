@@ -3,7 +3,9 @@ import pandas as pd
 
 from syscore.exceptions import missingData
 from syscore.pandas.pdutils import check_df_equals, check_ts_equals
-from syscore.dateutils import CALENDAR_DAYS_IN_YEAR
+from syscore.dateutils import (
+    CALENDAR_DAYS_IN_YEAR, Frequency, DAILY_PRICE_FREQ, HOURLY_FREQ, MIXED_FREQ
+)
 from sysdata.data_blob import dataBlob
 
 from sysdata.csv.csv_futures_contracts import csvFuturesContractData
@@ -25,7 +27,8 @@ from sysdata.csv.csv_roll_state_storage import csvRollStateData
 from sysdata.csv.csv_spreads import csvSpreadsForInstrumentData
 from sysdata.csv.csv_fsb_epics_history_data import CsvFsbEpicHistoryData
 from sysdata.csv.csv_fsb_contract_prices import CsvFsbContractPriceData
-
+from sysobjects.contracts import futuresContract as fc
+from sysobjects.contracts import listOfFuturesContracts
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
@@ -99,6 +102,7 @@ class backupDbToCsv:
         backup_fsb_contract_prices_to_csv(backup_data)
         log.debug("Copying to backup directory")
         backup_csv_dump(self.data)
+        # check_mixed_freq_csv_prices(backup_data)
 
 
 def get_data_and_create_csv_directories(logname):
@@ -190,6 +194,7 @@ def backup_futures_contract_prices_to_csv(data, ignore_long_expired: bool = True
     instrument_list = (
         data.db_futures_contract_price.get_list_of_instrument_codes_with_merged_price_data()
     )
+    # instrument_list = ["GOLD"]
     for instrument_code in instrument_list:
         backup_futures_contract_prices_for_instrument_to_csv(
             data=data,
@@ -204,17 +209,24 @@ def backup_futures_contract_prices_for_instrument_to_csv(
     list_of_contracts = data.db_futures_contract_price.contracts_with_merged_price_data_for_instrument_code(
         instrument_code
     )
+    # list_of_futures_contract = [
+    #     fc.from_two_strings("GOLD", year) for year in
+    #     ["20230200", "20230400", "20230600", "20230800", "20231000", "20231200"]
+    # ]
+    # list_of_contracts = listOfFuturesContracts(list_of_futures_contract)
 
     for futures_contract in list_of_contracts:
         backup_futures_contract_prices_for_contract_to_csv(
             data=data,
             futures_contract=futures_contract,
             ignore_long_expired=ignore_long_expired,
+            frequency=MIXED_FREQ,
         )
 
 
 def backup_futures_contract_prices_for_contract_to_csv(
-    data: dataBlob, futures_contract: futuresContract, ignore_long_expired: bool = True
+    data: dataBlob, futures_contract: futuresContract, ignore_long_expired: bool = True,
+        frequency: Frequency = MIXED_FREQ
 ):
     if ignore_long_expired:
         if futures_contract.days_since_expiry() > CALENDAR_DAYS_IN_YEAR:
@@ -223,32 +235,53 @@ def backup_futures_contract_prices_for_contract_to_csv(
 
             return None
 
-    db_data = data.db_futures_contract_price.get_merged_prices_for_contract_object(
-        futures_contract
+    db_data = data.db_futures_contract_price.get_prices_at_frequency_for_contract_object(
+        futures_contract, frequency=frequency
     )
 
-    csv_data = data.csv_futures_contract_price.get_merged_prices_for_contract_object(
-        futures_contract
+    csv_data = data.csv_futures_contract_price.get_prices_at_frequency_for_contract_object(
+        futures_contract, frequency=frequency
     )
 
     if check_df_equals(db_data, csv_data):
         # No update needed, move on
-        data.log.debug("No prices backup needed for %s" % str(futures_contract))
+        data.log.debug(f"No prices backup needed for {str(futures_contract)} at {frequency}")
     else:
         # Write backup
         try:
-            data.csv_futures_contract_price.write_merged_prices_for_contract_object(
+            data.csv_futures_contract_price.write_prices_at_frequency_for_contract_object(
                 futures_contract,
                 db_data,
                 ignore_duplication=True,
+                frequency=frequency
             )
             data.log.debug(
-                "Written backup .csv of prices for %s" % str(futures_contract)
+                f"Written backup .csv of prices for {str(futures_contract)} at {frequency}"
             )
         except BaseException:
             data.log.warning(
-                "Problem writing .csv of prices for %s" % str(futures_contract)
+                f"Problem writing .csv of prices for {str(futures_contract)} at {frequency}"
             )
+
+
+# def check_mixed_freq_csv_prices(data):
+#
+#     list_of_futures_contract = [
+#         fc.from_two_strings("GOLD", year) for year in
+#         ["20230200", "20230400", "20230600", "20230800", "20231000", "20231200"]
+#     ]
+#     list_of_contracts = listOfFuturesContracts(list_of_futures_contract)
+#
+#     for futures_contract in list_of_contracts:
+#         csv_hourly_data = data.csv_futures_contract_price.get_prices_at_frequency_for_contract_object(
+#             futures_contract, frequency=HOURLY_FREQ
+#         )
+#         print(csv_hourly_data)
+#
+#         csv_daily_data = data.csv_futures_contract_price.get_prices_at_frequency_for_contract_object(
+#             futures_contract, frequency=DAILY_PRICE_FREQ
+#         )
+#         print(csv_daily_data)
 
 
 # fx
