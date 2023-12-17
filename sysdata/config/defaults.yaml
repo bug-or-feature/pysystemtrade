@@ -46,6 +46,31 @@ mongo_port: 27017
 # Parquet store
 parquet_store: '/home/me/data/parquet'
 #
+# Production data objects
+#use_production_classes:
+#  broker_historic_orders_data: mongoBrokerHistoricOrdersData
+#  broker_order_stack_data: mongoBrokerOrderStackData
+#  capital_data: parquetCapitalData
+#  contract_historic_orders_data: mongoContractHistoricOrdersData
+#  contract_order_stack_data: mongoContractOrderStackData
+#  contract_position_data: parquetContractPositionData
+#  futures_adjusted_price_data: parquetFuturesAdjustedPricesData
+#  futures_contract_data: mongoFuturesContractData
+#  futures_contract_price_data: parquetFuturesContractPriceData
+#  futures_instrument_data: csvFuturesInstrumentData
+#  futures_multiple_price_data: parquetFuturesMultiplePricesData
+#  fx_data: parquetFxPricesData
+#  historic_spread_data: parquetSpreadsForInstrumentData
+#  instrument_order_stack_data: mongoInstrumentOrderStackData
+#  optimal_position_data: parquetOptimalPositionData
+#  process_control_data: mongoControlProcessData
+#  roll_parameters_data: csvRollParametersData
+#  roll_state_data: mongoRollStateData
+#  stored_spread_data: mongoSpreadCostData
+#  strategy_historic_orders_data: mongoStrategyHistoricOrdersData
+#  strategy_position_data: parquetStrategyPositionData
+#
+#
 # Needs to be consistent with what you are using in crontab
 echo_extension: '.txt'
 # Spike checker
