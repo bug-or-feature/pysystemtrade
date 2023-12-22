@@ -484,7 +484,7 @@ def suggest_roll_state_for_instrument(
         ## contract expired with tradeable fwd, so roll regardless of liquidity
         return RollState.Roll_Adjusted
 
-    #if forward_liquid:
+    # if forward_liquid:
     if no_position_held:
         if forward_tradeable:
             ## liquid forward, with no position
