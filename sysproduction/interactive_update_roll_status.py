@@ -478,46 +478,46 @@ def suggest_roll_state_for_instrument(
         roll_data=roll_data, auto_parameters=auto_parameters
     )
     forward_tradeable = roll_data.fwd_status == "TRADEABLE"
-    pos_more_than_min = roll_data.position_priced_contract >= roll_data.min_bet
+    pos_more_than_min = abs(roll_data.position_priced_contract) >= roll_data.min_bet
 
     if expired_and_auto_rolling_expired and no_position_held and forward_tradeable:
         ## contract expired with tradeable fwd, so roll regardless of liquidity
         return RollState.Roll_Adjusted
 
-    if forward_liquid:
-        if no_position_held:
-            if forward_tradeable:
-                ## liquid forward, with no position
-                return RollState.Roll_Adjusted
-            else:
-                ## liquid forward, with no position, but untradeable forward contract
-                return RollState.No_Roll
+    #if forward_liquid:
+    if no_position_held:
+        if forward_tradeable:
+            ## liquid forward, with no position
+            return RollState.Roll_Adjusted
         else:
-            if pos_more_than_min:
-                ## liquid forward, with position held >= min
-                if getting_close_to_desired_roll_date:
-                    ## liquid forward, with position, close to expiry
-                    ##   Up to the user to decide
-                    return auto_parameters.default_roll_state_if_undecided
-                else:
-                    ## liquid forward, with position held, not close to expiring
-                    return RollState.Passive
-            else:
-                # we have a position < minimum bet, so we wait for auto roll
-                return RollState.No_Open
-    else:
-        # forward illiquid
-        if getting_close_to_desired_roll_date:
-            ## forward illiqud and getting close
-            # We don't want to trade the forward - it's not liquid yet.
-            # And we don't want to open a position or increase it in the current
-            #   priced contract, since we will only have to close it again soon.
-            # But we do want to allow ourselves to close any position
-            #   we have in the current priced contract.
-            return RollState.No_Open
-        else:
-            ## forward illiquid and miles away. Don't roll yet.
+            ## liquid forward, with no position, but untradeable forward contract
             return RollState.No_Roll
+    else:
+        if pos_more_than_min:
+            ## liquid forward, with position held >= min
+            if getting_close_to_desired_roll_date:
+                ## liquid forward, with position, close to expiry
+                ##   Up to the user to decide
+                return auto_parameters.default_roll_state_if_undecided
+            else:
+                ## liquid forward, with position held, not close to expiring
+                return RollState.Passive
+        else:
+            # we have a position < minimum bet, so we wait for auto roll
+            return RollState.No_Open
+    # else:
+    #     # forward illiquid
+    #     if getting_close_to_desired_roll_date:
+    #         ## forward illiqud and getting close
+    #         # We don't want to trade the forward - it's not liquid yet.
+    #         # And we don't want to open a position or increase it in the current
+    #         #   priced contract, since we will only have to close it again soon.
+    #         # But we do want to allow ourselves to close any position
+    #         #   we have in the current priced contract.
+    #         return RollState.No_Open
+    #     else:
+    #         ## forward illiquid and miles away. Don't roll yet.
+    #         return RollState.No_Roll
 
 
 def check_if_forward_liquid(

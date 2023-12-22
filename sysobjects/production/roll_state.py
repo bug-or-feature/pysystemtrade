@@ -69,7 +69,7 @@ def complete_fsb_roll_state(roll_state: RollState, priced_position, min_bet):
     if priced_position == 0:
         flag_position_in_priced = 0
     else:
-        if priced_position >= min_bet:
+        if abs(priced_position) >= min_bet:
             flag_position_in_priced = 1
         else:
             flag_position_in_priced = 2
