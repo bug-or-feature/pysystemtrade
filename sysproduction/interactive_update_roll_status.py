@@ -504,6 +504,15 @@ def suggest_roll_state_for_instrument(
                 return RollState.Passive
         else:
             # we have a position < minimum bet, so we wait for auto roll
+            # TODO if expired, then auto roll has already happened - suggest Roll_Adjusted
+
+            # example of already auto rolled and < min:
+            #               status  roll_exp  price_exp  carry_exp    priced           expires_at       fwd   pos  min  rel_vol_fwd  vol_fwd status_p   status_f  periods
+            # BRENT_W_fsb  No_Open        -3         -2         32  20240200  2023-12-27 19:30:00  20240300  0.29  0.5         5.21   139007  OFFLINE  TRADEABLE        5
+
+            # example of already auto rolled and >= min:
+            #              status  roll_exp  price_exp  carry_exp    priced expires_at       fwd   pos  min  rel_vol_fwd  vol_fwd status_p   status_f  periods
+            # SOYOIL_fsb  No_Open        -3         -2         60  20240100        n/a  20240300  0.52  0.5        9.326    42000      n/a  TRADEABLE        4
             return RollState.No_Open
     # else:
     #     # forward illiquid
