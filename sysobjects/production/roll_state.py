@@ -128,8 +128,8 @@ def allowable_roll_state_fsb(
     # A 2 suffix indicates we have a position < min bet>
     allowed_transition = dict(
         No_Roll0=["Roll_Adjusted", "Passive", "No_Roll", "No_Open"],
-        No_Roll1=["Passive", "Force_Outright", "No_Roll", "Close", "No_Open"],
-        No_Roll2=["No_Roll", "Close", "No_Open"],
+        No_Roll1=["Passive", "Force_Outright", "No_Roll", "Close", "No_Open", "Roll_Adjusted"],
+        No_Roll2=["No_Roll", "Close", "No_Open", "Roll_Adjusted"],
         Passive0=["Roll_Adjusted", "Passive", "No_Roll", "No_Open"],
         Passive1=["Force_Outright", "Passive", "No_Roll", "Close", "No_Open"],
         Passive2=["No_Roll", "Close", "No_Open"],
@@ -149,8 +149,8 @@ def allowable_roll_state_fsb(
         Roll_Adjusted1=["Roll_Adjusted"],
         Roll_Adjusted2=["No_Open", "No_Roll", "Close"],
         No_Open0=["Roll_Adjusted", "Passive", "No_Open"],
-        No_Open1=["Close", "Force_Outright", "Passive", "No_Roll"],
-        No_Open2=["No_Open", "Close", "No_Roll"],
+        No_Open1=["Close", "Force_Outright", "Passive", "No_Roll", "Roll_Adjusted"],
+        No_Open2=["No_Open", "Close", "No_Roll", "Roll_Adjusted"],
     )
 
     status_plus_position = complete_fsb_roll_state(
