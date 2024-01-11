@@ -199,10 +199,8 @@ class dataBlob(object):
         except Exception as e:
             class_name = get_class_name(class_object)
             msg = (
-                "Error %s couldn't evaluate %s(log = self.log.setup(component = %s)) \
-                    This might be because import is missing\
-                     or arguments don't follow pattern"
-                % (str(e), class_name, class_name)
+                "Error %s couldn't evaluate %s(log=log) This might be because import "
+                "is missing or arguments don't follow pattern" % (str(e), class_name)
             )
             self._raise_and_log_error(msg)
 
@@ -251,10 +249,9 @@ class dataBlob(object):
         except Exception as e:
             class_name = get_class_name(class_object)
             msg = (
-                "Error %s couldn't evaluate %s(datapath = datapath, log = self.log.setup(component = %s)) \
-                        This might be because import is missing\
-                         or arguments don't follow pattern"
-                % (str(e), class_name, class_name)
+                "Error %s couldn't evaluate %s(datapath=datapath, log=log) This might "
+                "be because import is missing or arguments don't follow pattern"
+                % (str(e), class_name)
             )
             self._raise_and_log_error(msg)
 
