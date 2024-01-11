@@ -953,6 +953,7 @@ class reportingApi(object):
                 "fill_datetime",
                 "fill",
                 "filled_price",
+                "broker_permid",
             ]
         ]
         overview = overview.sort_values("instrument_code")

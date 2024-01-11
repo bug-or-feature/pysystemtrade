@@ -83,7 +83,11 @@ def run_reconcile_report():
 
 
 def run_trade_report():
-    do_report(trade_report_config.new_config_with_modified_output("console"))
+    do_report(
+        trade_report_config.new_config_with_modify_kwargs(
+            calendar_days_back=1,
+        ).new_config_with_modified_output("console")
+    )
 
 
 def run_strategy_report():
@@ -237,7 +241,7 @@ if __name__ == "__main__":
     # run_roll_report(instr_code="LEANHOG_fsb")
     # run_daily_pandl_report()
     # run_reconcile_report()
-    # run_trade_report()
+    run_trade_report()
     # run_strategy_report()
     # run_risk_report()
     # run_status_report()
@@ -250,7 +254,7 @@ if __name__ == "__main__":
     # run_account_curve_report()
     # run_slippage_report()
 
-    run_fsb_report()
+    # run_fsb_report()
     # run_min_capital_fsb_report()
     # run_instrument_risk_fsb_report()
     # run_fsb_remove_markets_report()

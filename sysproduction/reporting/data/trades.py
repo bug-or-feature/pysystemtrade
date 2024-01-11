@@ -87,6 +87,7 @@ tradesData = namedtuple(
         "buy_or_sell",
         "parent_limit_price",
         "commission",
+        "broker_permid",
     ],
 )
 
