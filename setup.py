@@ -97,6 +97,8 @@ setup(
         "Werkzeug>=2.0.1",
         "statsmodels==0.14.0",
         "PyPDF2>=2.5.0",
+        "pyarrow>=14.0.1",
+        "scikit-learn>1.3.0",
         "requests>=2.25",
         "trading-ig",
         "beautifulsoup4>4.9",
