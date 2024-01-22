@@ -304,7 +304,7 @@ def create_auto_roll_balance_trades(data):
 
 def get_broker_order_details_for_balance_trade(data: dataBlob) -> brokerOrder:
     ans = true_if_answer_is_yes(
-        "Auto close an existing position? (if not, manually enter details)"
+        "Auto close an existing position (if not, manually enter details)?"
     )
     if ans:
         (
@@ -529,7 +529,7 @@ def create_manual_trade(data):
         )
 
     print(
-        "For instant execution, you may want to do menu [1] create orders, menu [13] create broker orders"
+        "For instant execution, you may want to do menu [1] create orders, menu [12] create broker orders"
     )
 
     return None
