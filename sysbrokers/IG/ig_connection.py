@@ -160,6 +160,13 @@ class IGConnection(object):
 
         return activity
 
+    def get_history(self, start, end):
+        history = self.rest_service.fetch_transaction_history(
+            from_date=start, to_date=end
+        )
+
+        return history
+
     def get_historical_fsb_data_for_epic(
         self,
         epic: str,
