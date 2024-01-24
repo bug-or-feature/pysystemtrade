@@ -1,7 +1,7 @@
 from syscore.constants import arg_not_supplied
 
 from sysdata.data_blob import dataBlob
-from sysproduction.reporting.api import reportingApi
+from sysproduction.reporting.api_fsb import ReportingApiFsb
 
 
 def trades_report(
@@ -19,7 +19,7 @@ def trades_report(
     if data is arg_not_supplied:
         data = dataBlob()
 
-    reporting_api = reportingApi(
+    reporting_api = ReportingApiFsb(
         data,
         start_date=start_date,
         end_date=end_date,

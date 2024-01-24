@@ -17,7 +17,7 @@ from sysproduction.data.positions import diagPositions
 from sysproduction.reporting.api import reportingApi
 from sysproduction.reporting.data.fsb_correlation_data import fsb_correlation_data
 from sysproduction.reporting.data.risk_fsb import minimum_capital_table
-from sysproduction.reporting.reporting_functions import table
+from sysproduction.reporting.reporting_functions import table, body_text
 from sysproduction.reporting.data.rolls_fsb import (
     get_roll_data_for_fsb_instrument,
 )
@@ -72,6 +72,20 @@ class ReportingApiFsb(reportingApi):
     @property
     def epics(self) -> DiagFsbEpics:
         return self._epics
+
+    @property
+    def broker_history(self) -> pd.DataFrame:
+        return self.cache.get(self._get_broker_history)
+
+    def _get_broker_history(self) -> pd.DataFrame:
+        broker_orders = self.get_recent_broker_history(
+            start_date=self.start_date, end_date=self.end_date
+        )
+        return broker_orders
+
+    def get_recent_broker_history(self, start_date, end_date):
+        history = self.data.broker_conn.get_history(start=start_date, end=end_date)
+        return history
 
     ### MINIMUM CAPITAL
     def table_of_minimum_capital_fsb(self) -> table:
@@ -433,6 +447,41 @@ class ReportingApiFsb(reportingApi):
                         )
                     )
         return rows
+
+    ##### TRADES ######
+    def table_of_orders_overview(self):
+        broker_orders = self.broker_orders
+        history = self.broker_history
+        if len(broker_orders) == 0:
+            return body_text("No trades")
+
+        broker_orders["pnl"] = "n/a"
+        history["profitAndLoss"] = (
+            history["profitAndLoss"].replace("[\£]", "", regex=True).astype(float)
+        )
+
+        for permid in broker_orders["broker_permid"].tolist():
+            rows = history.loc[history["reference"] == permid]
+            pnl = rows["profitAndLoss"].sum()
+            if pnl != 0.0:
+                broker_orders.loc[broker_orders["broker_permid"] == permid, "pnl"] = pnl
+
+        overview = broker_orders[
+            [
+                "instrument_code",
+                "strategy_name",
+                "contract_date",
+                "fill_datetime",
+                "fill",
+                "filled_price",
+                "broker_permid",
+                "pnl",
+            ]
+        ]
+        overview = overview.sort_values("instrument_code")
+        overview_table = table("Broker orders", overview)
+
+        return overview_table
 
 
 def nice_format_min_capital_table(df: pd.DataFrame) -> pd.DataFrame:
