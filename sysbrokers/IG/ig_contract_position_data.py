@@ -78,6 +78,8 @@ class IgContractPositionData(brokerContractPositionData):
         if instrument_code is None:
             raise missingContract
         expiry_key = position_entry["expiry"]
+        if expiry_key == "DFB":
+            raise missingContract
         contract = futuresContract(
             instrument_code,
             contractDate(self.get_actual_expiry(instrument_code, expiry_key)),
