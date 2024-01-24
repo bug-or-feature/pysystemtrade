@@ -405,11 +405,9 @@ def add_trade_info_to_broker_order(
 
     new_broker_order.broker_tempid = trade_result["dealReference"]
     new_broker_order.broker_permid = trade_result["dealId"]
-    new_broker_order.order_info["dealReference"] = trade_result["dealReference"]
-    new_broker_order.order_info["dealStatus"] = trade_result["dealStatus"]
 
     if success:
-        new_broker_order.order_info["affectedDeals"] = trade_result["affectedDeals"]
+        new_broker_order.order_info["affected_deals"] = trade_result["affectedDeals"]
         size = float(trade_result["size"])
         if trade_result["direction"] == "SELL":
             size = -size
@@ -420,7 +418,6 @@ def add_trade_info_to_broker_order(
         )
 
     else:
-        new_broker_order.order_info["reason"] = trade_result["reason"]
         new_broker_order.algo_comment = (
             f"{trade_result['dealStatus']}: {trade_result['reason']}"
         )

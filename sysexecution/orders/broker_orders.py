@@ -85,6 +85,7 @@ class brokerOrder(Order):
         broker_tempid: str = "",
         commission: float = 0.0,
         manual_fill: bool = False,
+        affected_deals: list = [],
         **kwargs_ignored,
     ):
         """
@@ -155,6 +156,7 @@ class brokerOrder(Order):
             commission=commission,
             roll_order=roll_order,
             leg_filled_price=leg_filled_price,
+            affected_deals=affected_deals,
         )
 
         super().__init__(
@@ -298,6 +300,15 @@ class brokerOrder(Order):
     @leg_filled_price.setter
     def leg_filled_price(self, leg_filled_price: list):
         self.order_info["leg_filled_price"] = leg_filled_price
+
+    @property
+    def affected_deals(self):
+        if "affected_deals" in self.order_info:
+            return self.order_info["affected_deals"]
+
+    @affected_deals.setter
+    def affected_deals(self, affected_deals: list):
+        self.order_info["affected_deals"] = affected_deals
 
     @classmethod
     def from_dict(instrumentOrder, order_as_dict):
