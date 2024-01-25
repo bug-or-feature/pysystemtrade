@@ -149,9 +149,8 @@ instrument_weights:
     groups:
       ags:
         weight: 0.167
-        SUGAR11_fsb: 0.333
-        LEANHOG_fsb: 0.333
-        SOYOIL_fsb: 0.333
+        LEANHOG_fsb: 0.5
+        SOYOIL_fsb: 0.5
       rates:
         weight: 0.167
         BUND_fsb: 0.5
