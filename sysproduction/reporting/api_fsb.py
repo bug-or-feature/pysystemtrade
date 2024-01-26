@@ -457,7 +457,7 @@ class ReportingApiFsb(reportingApi):
 
         broker_orders["pnl"] = "n/a"
         history["profitAndLoss"] = (
-            history["profitAndLoss"].replace("[\£]", "", regex=True).astype(float)
+            history["profitAndLoss"].replace("[\£,]", "", regex=True).astype(float)
         )
 
         for permid in broker_orders["broker_permid"].tolist():
