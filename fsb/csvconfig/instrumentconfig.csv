@@ -29,7 +29,6 @@ EUR_fsb,EUR/USD Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURCAD_fsb,EUR/CAD Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURCHF_fsb,EUR/CHF Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURGBP_fsb,EUR/GBP Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
-EURIBOR_fsb,Three Month EURIBOR,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 EURIBOR-ICE_fsb,Euribor,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 EUROSTX_fsb,EU Stocks 50,1.0,GBP,Equity,0.0,0.0,0.0,EMEA
 FED_fsb,US 30-Day Fed Funds Rate,0.5,GBP,Bond,0.0,0.0,0.0,US
