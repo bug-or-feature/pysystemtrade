@@ -73,6 +73,13 @@ def run_report_with_data_blob(report_config: reportConfig, data: dataBlob):
     data.log.debug("Running report %s" % str(report_config))
 
     report_results = run_report_from_config(report_config=report_config, data=data)
+
+    # uncomment this to write a report dataframe to CSV
+    # full_filename = resolve_report_filename(report_config=report_config, data=data)
+    # table = report_results[2]
+    # df = table.Body
+    # df.to_csv(f"{full_filename}.csv")
+
     parsed_report = parse_report_results(data=data, report_results=report_results)
 
     output_report(parsed_report=parsed_report, report_config=report_config, data=data)
