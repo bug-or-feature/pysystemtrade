@@ -5,15 +5,9 @@ Get data from mongo and arctic used for futures trading
 
 from syscore.constants import arg_not_supplied
 
-from sysdata.parquet.parquet_adjusted_prices import parquetFuturesAdjustedPricesData
-from sysdata.parquet.parquet_multiple_prices import parquetFuturesMultiplePricesData
-from sysdata.parquet.parquet_spotfx_prices import parquetFxPricesData
-
-"""
 from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
 from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
-"""
 
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
@@ -26,7 +20,10 @@ from syslogging.logger import *
 
 class dbFuturesSimData(genericBlobUsingFuturesSimData):
     def __init__(
-        self, data: dataBlob = arg_not_supplied, log=get_logger("dbFuturesSimData")
+        self,
+        data: dataBlob = arg_not_supplied,
+        csv_data_paths=arg_not_supplied,
+        log=get_logger("dbFuturesSimData"),
     ):
         if data is arg_not_supplied:
             data = dataBlob(
@@ -39,6 +36,7 @@ class dbFuturesSimData(genericBlobUsingFuturesSimData):
                     get_class_for_data_type(ROLL_PARAMETERS_DATA),
                     get_class_for_data_type(STORED_SPREAD_DATA),
                 ],
+                csv_data_paths=csv_data_paths,
             )
 
         super().__init__(data=data)
@@ -63,11 +61,11 @@ def get_class_for_data_type(data_type: str):
 
 
 use_sim_classes = {
-    FX_DATA: parquetFxPricesData,
+    FX_DATA: arcticFxPricesData,
     ROLL_PARAMETERS_DATA: csvRollParametersData,
     FUTURES_INSTRUMENT_DATA: csvFuturesInstrumentData,
-    FUTURES_MULTIPLE_PRICE_DATA: parquetFuturesMultiplePricesData,
-    FUTURES_ADJUSTED_PRICE_DATA: parquetFuturesAdjustedPricesData,
+    FUTURES_MULTIPLE_PRICE_DATA: arcticFuturesMultiplePricesData,
+    FUTURES_ADJUSTED_PRICE_DATA: arcticFuturesAdjustedPricesData,
     STORED_SPREAD_DATA: mongoSpreadCostData,
 }
 
