@@ -430,7 +430,7 @@ def delay_calc(first_time, second_time):
     time_diff_seconds = time_diff.total_seconds()
 
     if time_diff_seconds < 0:
-        return np.nan
+        return 0.00
 
     return time_diff_seconds
 
