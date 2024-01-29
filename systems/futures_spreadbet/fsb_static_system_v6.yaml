@@ -176,26 +176,23 @@ instrument_weights:
         softs:
           weight: 0.333
           cocoa:
-            weight: 0.167
+            weight: 0.2
             COCOA_fsb: 0.5
             COCOA_LDN_fsb: 0.5
           coffee:
-            weight: 0.167
+            weight: 0.2
             COFFEE_fsb: 0.5
             ROBUSTA_fsb: 0.5
           cotton:
-            weight: 0.167
+            weight: 0.2
             COTTON2_fsb: 1.0
           juice:
-            weight: 0.167
+            weight: 0.2
             OJ_fsb: 1.0
           sugar:
-            weight: 0.167
+            weight: 0.2
             SUGAR11_fsb: 0.5
             SUGAR_WHITE_fsb: 0.5
-          wood:
-            weight: 0.167
-            LUMBER_new_fsb: 1.0
       rates:
         weight: 0.143
         Americas:
@@ -209,8 +206,7 @@ instrument_weights:
             US30U_fsb: 0.2
           STIR:
             weight: 0.4
-            SOFR_fsb: 0.5
-            FED_fsb: 0.5
+            FED_fsb: 1.0
         Asia:
           weight: 0.333
           JGB_fsb: 1.0
@@ -292,27 +288,15 @@ instrument_weights:
             MSCISING_fsb: 1.0
       fx:
         weight: 0.143
-        cross:
-          weight: 0.5
-          AUDJPY_fsb: 0.143
-          CHFJPY_fsb: 0.143
-          EURCAD_fsb: 0.143
-          EURCHF_fsb: 0.143
-          GBPCHF_fsb: 0.143
-          EURGBP_fsb: 0.143
-          GBPJPY_fsb: 0.143
-        developed:
-          weight: 0.5
-          AUD_fsb: 0.1
-          CAD_fsb: 0.1
-          CHF_fsb: 0.1
-          DX_fsb: 0.1
-          EUR_fsb: 0.1
-          GBP_fsb: 0.1
-          JPY_fsb: 0.1
-          NOK_fsb: 0.1
-          NZD_fsb: 0.1
-          SEK_fsb: 0.1
+        AUD_fsb: 0.111
+        CAD_fsb: 0.111
+        CHF_fsb: 0.111
+        DX_fsb: 0.111
+        EUR_fsb: 0.111
+        EURGBP_fsb: 0.111
+        GBP_fsb: 0.111
+        JPY_fsb: 0.111
+        NZD_fsb: 0.111
       metals:
         weight: 0.143
         industrial:
