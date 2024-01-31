@@ -605,12 +605,7 @@ def manually_update_roll_state_for_code(
         roll_data=roll_data, auto_parameters=auto_parameters
     )
     if roll_state_suggested == ASK_FOR_STATE:
-        if roll_data.fwd_status == "TRADEABLE":
-            print(
-                "No specific state suggested: recommend one of Force_Outright or Close)"
-            )
-        else:
-            print("No specific state suggested: recommend one of No_Roll or No_Open)")
+        print("No specific state suggested: recommend one of Force_Outright or Close")
         default_state = roll_data.original_roll_status.name
     else:
         roll_state_suggested_str = roll_state_suggested.name
@@ -706,12 +701,9 @@ def setup_roll_data_with_state_reporting(
         diag_positions.get_position_for_contract(contract), 2
     )
 
-    if roll_data["status_f"] == "TRADEABLE":
-        allowable_roll_states = allowable_roll_state_fsb(
-            original_roll_status, position_priced_contract, roll_data["min"]
-        )
-    else:
-        allowable_roll_states = ["No_Roll", "No_Open", "Close"]
+    allowable_roll_states = allowable_roll_state_fsb(
+        original_roll_status, position_priced_contract, roll_data["min"]
+    )
 
     days_until_roll = diag_contracts.days_until_roll(instrument_code)
     days_until_expiry = diag_contracts.days_until_price_expiry(instrument_code)
