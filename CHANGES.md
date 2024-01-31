@@ -10,6 +10,16 @@ See
 - [Issues](https://github.com/bug-or-feature/pysystemtrade-fsb/issues)
 - [Roadmap / wishlist](https://github.com/bug-or-feature/pysystemtrade-fsb#roadmap--wishlist)
 
+## January 2024
+- Improved Trade report
+- move to Python logging complete
+- affected deals written to db on trade completed
+
+## December 2023
+- getter IG error handling
+- better minimum bet handling
+- Improved interactive rolling
+
 ## November 2023
 - improved IG market info collection
 - improved handling for minimum bets
