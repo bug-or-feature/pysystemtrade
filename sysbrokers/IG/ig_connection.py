@@ -118,10 +118,14 @@ class IGConnection(object):
 
     def get_capital(self, account: str):
         data = self.rest_service.fetch_accounts()
-        balance = float(data[data["accountId"] == account]["balance"])
-        # profit_loss = float(data[data["accountId"] == account]["profitLoss"])
-        # margin = float(data[data["accountId"] == account]["deposit"])
-        # available = float(data[data["accountId"] == account]["available"])
+        try:
+            balance = float(data[data["accountId"] == account]["balance"])
+            # profit_loss = float(data[data["accountId"] == account]["profitLoss"])
+            # margin = float(data[data["accountId"] == account]["deposit"])
+            # available = float(data[data["accountId"] == account]["available"])
+        except Exception as ex:  # noqa broad exception by design
+            self.log.error(f"Problem getting capital: {ex}, returning 0.0")
+            balance = 0.0
 
         return balance
 
