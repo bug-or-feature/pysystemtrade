@@ -3,7 +3,7 @@ from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 
 from sysinit.futures.contract_prices_from_csv_to_arctic import (
-    init_arctic_with_csv_futures_contract_prices_for_code,
+    init_db_with_csv_futures_contract_prices_for_code,
     init_arctic_with_csv_futures_contract_prices_for_contract,
 )
 
@@ -21,7 +21,7 @@ BARCHART_CONFIG = ConfigCsvFuturesPrices(
 
 
 def transfer_barchart_prices_to_arctic_single(instr, datapath):
-    init_arctic_with_csv_futures_contract_prices_for_code(
+    init_db_with_csv_futures_contract_prices_for_code(
         instr, datapath, csv_config=BARCHART_CONFIG
     )
 
