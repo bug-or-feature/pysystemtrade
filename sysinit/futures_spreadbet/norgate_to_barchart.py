@@ -11,8 +11,8 @@ from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysinit.futures.contract_prices_from_csv_to_arctic import (
-    init_arctic_with_csv_futures_contract_prices,
-    init_arctic_with_csv_futures_contract_prices_for_code,
+    init_db_with_csv_futures_contract_prices,
+    init_db_with_csv_futures_contract_prices_for_code,
 )
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysobjects.contracts import futuresContract
