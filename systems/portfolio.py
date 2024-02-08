@@ -953,6 +953,8 @@ class Portfolios(SystemStage):
     @diagnostic()
     def get_risk_scalar(self) -> pd.Series:
         risk_overlay_config = self.config.get_element("risk_overlay")
+        if risk_overlay_config is arg_not_supplied:
+            raise missingData
 
         normal_risk = self.get_portfolio_risk_for_original_positions()
         shocked_vol_risk = (
