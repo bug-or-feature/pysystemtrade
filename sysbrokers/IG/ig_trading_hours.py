@@ -1,4 +1,5 @@
 import datetime
+from dateutil import tz
 import pandas as pd
 
 from sysdata.config.private_directory import get_full_path_for_private_config
@@ -27,11 +28,7 @@ def get_saved_trading_hours():
 
 def parse_trading_hours(
     trading_hours: dict,
-    adjustment_hours: int = 0,
 ) -> listOfTradingHours:
-    if adjustment_hours != 0:
-        print(f"WARNING: trading hours ({adjustment_hours}) not implemented!!")
-
     now = datetime.datetime.now()
     list_of_open_times = []
 
@@ -42,16 +39,22 @@ def parse_trading_hours(
         else:
             for period in trading_hours.marketTimes:
                 list_of_open_times.append(
-                    build_hours_for_day(day, period.openTime, period.closeTime)
+                    build_hours_for_day(
+                        day, period.openTime, period.closeTime, trading_hours.zone
+                    )
                 )
 
     return listOfTradingHours(list_of_open_times)
 
 
-def build_hours_for_day(dt: datetime, open: str, close: str):
+def build_hours_for_day(dt: datetime, open: str, close: str, zone: str):
     day = dt.strftime("%Y-%m-%d")
+    timezone = tz.gettz(zone)
+
     dt_open = datetime.datetime.strptime(f"{day} {open}:00", ISO_DATE_FORMAT)
+    dt_open = dt_open.astimezone(timezone)
     dt_close = datetime.datetime.strptime(f"{day} {close}:00", ISO_DATE_FORMAT)
+    dt_close = dt_close.astimezone(timezone)
 
     if dt_close < dt_open:
         return tradingHours(dt_open - datetime.timedelta(days=1), dt_close)

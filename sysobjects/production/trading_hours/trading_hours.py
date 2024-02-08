@@ -1,4 +1,5 @@
 import datetime
+from dateutil import tz
 from dataclasses import dataclass
 from typing import List
 
@@ -30,7 +31,7 @@ class tradingHours:
         )
 
     def okay_to_trade_now(self) -> bool:
-        datetime_now = datetime.datetime.now()
+        datetime_now = datetime.datetime.now(tz=tz.gettz("Europe/London"))
         if datetime_now >= self.opening_time and datetime_now <= self.closing_time:
             return True
         else:
