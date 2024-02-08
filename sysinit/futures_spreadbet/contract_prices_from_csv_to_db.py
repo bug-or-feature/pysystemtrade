@@ -61,21 +61,17 @@ def init_db_with_csv_futures_prices_for_code(
 
 
 def init_db_with_csv_futures_prices_for_contract(
-    instrument_code: str,
+    instr_code: str,
     date_str: str,
     datapath: str,
     csv_config=arg_not_supplied,
     freq: Frequency = MIXED_FREQ,
 ):
-    fut_instr_code = remove_suffix(instrument_code, "_fsb")
-    print(f"Futures: {fut_instr_code}, fsb: {instrument_code}")
     csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
     db_prices = diag_prices.db_futures_contract_price_data
 
-    print(f"Getting .csv prices ({freq.name}) - may take some time")
-    csv_price_dict = csv_prices.get_prices_at_frequency_for_instrument(
-        fut_instr_code, freq
-    )
+    print(f"Getting .csv prices for {instr_code} ({freq.name}) - may take some time")
+    csv_price_dict = csv_prices.get_prices_at_frequency_for_instrument(instr_code, freq)
     print(f"Have .csv prices ({freq.name}) for the following contracts:")
     print(str(csv_price_dict.keys()))
 
@@ -83,7 +79,7 @@ def init_db_with_csv_futures_prices_for_contract(
         prices_for_contract = csv_price_dict[date_str]
         print(f"Processing {date_str}")
         print(f".csv prices ({freq.name}) are \n{str(prices_for_contract)}")
-        contract = futuresContract.from_two_strings(instrument_code, date_str)
+        contract = futuresContract.from_two_strings(instr_code, date_str)
         print(f"Contract object is {str(contract)}")
         print("Writing to arctic")
         db_prices.write_prices_at_frequency_for_contract_object(
@@ -95,7 +91,7 @@ def init_db_with_csv_futures_prices_for_contract(
         )
         print(f"Read back prices ({freq.name}) are\n{str(written_prices)}")
     else:
-        print(f"Can't find {freq.name} csv price data for {instrument_code}/{date_str}")
+        print(f"Can't find {freq.name} csv price data for {instr_code}/{date_str}")
 
 
 # def init_db_with_csv_fsb_contract_prices(datapath: str, csv_config=arg_not_supplied):

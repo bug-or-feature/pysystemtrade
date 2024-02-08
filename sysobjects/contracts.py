@@ -134,6 +134,15 @@ class futuresContract(object):
         else:
             return False
 
+    def __key(self):
+        return (
+            self.instrument.instrument_code,
+            self.contract_date.date_str,
+        )
+
+    def __hash__(self):
+        return hash(self.__key())
+
     @classmethod
     def from_key(cls, key):
         code_and_id = get_code_and_id_from_contract_key(key)
