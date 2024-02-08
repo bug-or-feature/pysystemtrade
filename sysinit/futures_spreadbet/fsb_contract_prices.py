@@ -2,11 +2,12 @@ from sysdata.config.production_config import get_production_config
 from sysdata.data_blob import dataBlob
 from syscore.fileutils import resolve_path_and_filename_for_package
 from syscore.exceptions import missingInstrument
+from syscore.dateutils import MIXED_FREQ, DAILY_PRICE_FREQ, HOURLY_FREQ
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 
-from sysinit.futures_spreadbet.contract_prices_from_csv_to_arctic import (
-    init_arctic_with_csv_futures_contract_prices_for_code,
-    init_arctic_with_csv_futures_contract_prices_for_contract,
+from sysinit.futures_spreadbet.contract_prices_from_csv_to_db import (
+    init_db_with_csv_futures_prices_for_code,
+    init_db_with_csv_futures_prices_for_contract,
 )
 from sysbrokers.IG.ig_instruments_data import (
     IgFuturesInstrumentData,
@@ -14,15 +15,21 @@ from sysbrokers.IG.ig_instruments_data import (
 )
 
 
-def transfer_barchart_prices_to_arctic_single(instr, datapath):
-    init_arctic_with_csv_futures_contract_prices_for_code(
-        instr, datapath, csv_config=build_import_config(instr)
+def transfer_barchart_prices_to_db_single(instr, datapath, freq=MIXED_FREQ):
+    init_db_with_csv_futures_prices_for_code(
+        instr, datapath, csv_config=build_import_config(instr), freq=freq
     )
 
 
-def transfer_barchart_prices_to_arctic_single_contract(instr, contract, datapath):
-    init_arctic_with_csv_futures_contract_prices_for_contract(
-        instr, contract, datapath, csv_config=build_import_config(instr)
+def transfer_barchart_prices_to_db_single_contract(
+    instr, contract, datapath, freq=MIXED_FREQ
+):
+    init_db_with_csv_futures_prices_for_contract(
+        instr,
+        contract,
+        datapath,
+        csv_config=build_import_config(instr),
+        freq=freq,
     )
 
 
@@ -70,9 +77,36 @@ if __name__ == "__main__":
         get_production_config().get_element_or_default("barchart_path", None)
     )
 
-    # XXX
-    # "AUDJPY","BTP3"
+    # MIXED frequency
+    # "AUDJPY"
     for instr in ["AUDJPY", "BTP3"]:
-        transfer_barchart_prices_to_arctic_single(instr, datapath=datapath)
+        transfer_barchart_prices_to_db_single(instr, datapath=datapath)
 
-    # transfer_barchart_prices_to_arctic_single_contract(instr, contract_date, datapath)
+    # split frequencies
+    # "AUDJPY"
+    for instr in ["AUDJPY", "BTP3"]:
+        transfer_barchart_prices_to_db_single(
+            instr, datapath=datapath, freq=HOURLY_FREQ
+        )
+        transfer_barchart_prices_to_db_single(
+            instr, datapath=datapath, freq=DAILY_PRICE_FREQ
+        )
+
+    # MIXED frequency
+    # "DOW_fsb"
+    # for instr in ["DOW_fsb"]:
+    #     for contract in ["20080900"]:
+    #         transfer_barchart_prices_to_db_single_contract(
+    #             instr, contract, datapath, frequency=MIXED_FREQ
+    #         )
+
+    # split frequencies
+    # "HANG_fsb"
+    for instr in ["HANG_fsb"]:
+        for contract in ["20221100"]:
+            transfer_barchart_prices_to_db_single_contract(
+                instr, contract, datapath, freq=HOURLY_FREQ
+            )
+            transfer_barchart_prices_to_db_single_contract(
+                instr, contract, datapath, freq=DAILY_PRICE_FREQ
+            )
