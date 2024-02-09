@@ -13,6 +13,7 @@ def clone_data_for_instrument(
     offset: float = 0.0,
     ignore_duplication: bool = False,
 ):
+    # futures prices
     clone_prices_per_contract(
         instrument_from,
         instrument_to,
@@ -20,9 +21,35 @@ def clone_data_for_instrument(
         inverse=inverse,
         ignore_duplication=ignore_duplication,
     )
+
+    # fsb prices
+    clone_prices_per_contract(
+        f"{instrument_from}_fsb",
+        f"{instrument_to}_fsb",
+        offset=offset,
+        inverse=inverse,
+        ignore_duplication=ignore_duplication,
+    )
+
     if write_to_csv:
         clone_roll_calendar(instrument_from, instrument_to)
 
+    clone_multiple_prices(
+        f"{instrument_from}_fsb",
+        f"{instrument_to}_fsb",
+        write_to_csv=write_to_csv,
+        inverse=inverse,
+        ignore_duplication=ignore_duplication,
+    )
+    clone_adjusted_prices(
+        f"{instrument_from}_fsb",
+        f"{instrument_to}_fsb",
+        write_to_csv=write_to_csv,
+        inverse=inverse,
+        ignore_duplication=ignore_duplication,
+    )
+
+    # IG prices
     clone_prices_per_fsb_contract(
         f"{instrument_from}_fsb",
         f"{instrument_to}_fsb",
@@ -75,3 +102,7 @@ def clone_single_fsb_contract(
 def clone_roll_calendar(instrument_from: str, instrument_to: str):
     roll_calendar = csv_roll_calendar.get_roll_calendar(instrument_from)
     csv_roll_calendar.add_roll_calendar(instrument_to, roll_calendar=roll_calendar)
+
+
+if __name__ == "__main__":
+    pass
