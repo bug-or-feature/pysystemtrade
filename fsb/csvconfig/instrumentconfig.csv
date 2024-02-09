@@ -82,7 +82,7 @@ SUGAR_WHITE_fsb,London Sugar No. 5,5.0,GBP,Ags,0.0,0.0,0.0,EMEA
 US2_fsb,2-Year T-Note Decimalised,0.5,GBP,Bond,0.0,0.0,0.0,US
 US5_fsb,5-Year T-Note Decimalised,0.5,GBP,Bond,0.0,0.0,0.0,US
 US10_fsb,10-Year T-Note Decimalised,0.5,GBP,Bond,0.0,0.0,0.0,US
-US30_fsb,Treasury Bond Decimalised,0.5,GBP,Bond,0.0,0.0,0.0,US
+US30Y_fsb,Treasury Bond Decimalised,0.5,GBP,Bond,0.0,0.0,0.0,US
 US30U_fsb,Ultra Treasury Bond Decimalised,0.5,GBP,Bond,0.0,0.0,0.0,US
 V2X_fsb,EU Volatility Index,100.0,GBP,Vol,0.0,0.0,0.0,EMEA
 VIX_fsb,Volatility Index,100.0,GBP,Vol,0.0,0.0,0.0,US
