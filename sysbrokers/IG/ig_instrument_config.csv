@@ -167,8 +167,8 @@ US5,,,,,na,,ZF
 US5_fsb,IR.D.05YEAR100,GBP,100.0,False,Month1|Month2,0.2,ZF
 US10,,,,,na,,ZN
 US10_fsb,IR.D.10YEAR100,GBP,100.0,False,Month1|Month2,0.2,ZN
-US30,,,,,na,,ZB
-US30_fsb,IR.D.BOND100,GBP,100.0,False,Month1|Month2,0.2,ZB
+US30Y,,,,,na,,ZB
+US30Y_fsb,IR.D.BOND100,GBP,100.0,False,Month1|Month2,0.2,ZB
 US30U,,,,,na,,UD
 US30U_fsb,IR.D.ULTRA100,GBP,100.0,False,Month1|Month2,0.2,UD
 VIX,,,,,na,,VI
