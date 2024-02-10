@@ -280,7 +280,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         """
 
         if contract_object.key not in self.market_info_data.epic_mapping:
-            self.log.warn(
+            self.log.warning(
                 f"No epic mapped for {str(contract_object.key)}",
                 instrument_code=contract_object.instrument_code,
                 contract_date=contract_object.contract_date.date_str,
@@ -323,7 +323,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
                 epic=epic, bar_freq=freq, start_date=start_date, end_date=end_date
             )
         except missingData:
-            self.log.warn(
+            self.log.warning(
                 f"Problem getting IG price data for {str(contract_object)}",
                 instrument_code=contract_object.instrument_code,
                 contract_date=contract_object.contract_date.date_str,
@@ -378,7 +378,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
                 barchart_id, bar_freq=freq
             )
         except missingData:
-            self.log.warn(
+            self.log.warning(
                 f"Problem getting Barchart price data for {str(contract_object)}",
                 instrument_code=contract_object.instrument_code,
                 contract_date=contract_object.contract_date.date_str,
