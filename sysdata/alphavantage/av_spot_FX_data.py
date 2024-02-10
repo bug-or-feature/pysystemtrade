@@ -123,7 +123,7 @@ class AvFxPricesData(brokerFxPricesData):
         try:
             config_data = pd.read_csv(self._get_fx_config_filename())
         except Exception as e:
-            self.log.warn("Can't read file %s" % self._get_fx_config_filename())
+            self.log.warning("Can't read file %s" % self._get_fx_config_filename())
             raise missingFile from e
 
         self._config = config_data
