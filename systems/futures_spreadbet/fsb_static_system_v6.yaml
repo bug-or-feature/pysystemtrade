@@ -117,6 +117,30 @@ base_currency: "GBP"
 # Portfolio creation
 #
 
+#forecast_weights:
+#  auto_weight_from_grouping:
+#    parameters:
+#      use_approx_DM: False
+#      apply_forecast_post_ceiling_cost_SR_before_weighting: True
+#    groups:
+#      convergent:
+#        weight: 0.4
+#        carry:
+#          weight: 1.0
+#          carry10: 0.25
+#          carry125: 0.25
+#          carry30: 0.25
+#          carry60: 0.25
+#      divergent:
+#        weight: 0.6
+#        trend:
+#          weight: 1.0
+#          momentum4: 0.2
+#          momentum8: 0.2
+#          momentum16: 0.2
+#          momentum32: 0.2
+#          momentum64: 0.2
+
 forecast_weights:
   auto_weight_from_grouping:
     parameters:
@@ -133,13 +157,56 @@ forecast_weights:
           carry60: 0.25
       divergent:
         weight: 0.6
-        trend:
-          weight: 1.0
-          momentum4: 0.2
-          momentum8: 0.2
-          momentum16: 0.2
-          momentum32: 0.2
-          momentum64: 0.2
+        speed1:
+          weight: 0.1
+          trend:
+            weight: 1.0
+            breakout10: 0.333
+            normmom2: 0.333
+            momentum4: 0.333
+        speed2:
+          weight: 0.18
+          accel:
+            weight: 0.4
+            accel16: 1.0
+          trend:
+            weight: 0.6
+            breakout20: 0.333
+            normmom4: 0.333
+            momentum8: 0.333
+        speed3:
+          weight: 0.18
+          accel:
+            weight: 0.4
+            accel32: 1.0
+          trend:
+            weight: 0.6
+            breakout40: 0.333
+            normmom8: 0.333
+            momentum16: 0.333
+        speed4:
+          weight: 0.18
+          accel:
+            weight: 0.4
+            accel64: 1.0
+          trend:
+            weight: 0.6
+            breakout80: 0.333
+            normmom16: 0.333
+            momentum32: 0.333
+        speed5:
+          weight: 0.18
+          trend:
+            weight: 1.0
+            breakout160: 0.333
+            normmom32: 0.333
+            momentum64: 0.333
+        speed6:
+          weight: 0.18
+          trend:
+            weight: 1.0
+            normmom64: 0.5
+            breakout320: 0.5
 
 #
 instrument_weights:
@@ -288,15 +355,16 @@ instrument_weights:
             MSCISING_fsb: 1.0
       fx:
         weight: 0.143
-        AUD_fsb: 0.111
-        CAD_fsb: 0.111
-        CHF_fsb: 0.111
-        DX_fsb: 0.111
-        EUR_fsb: 0.111
-        EURGBP_fsb: 0.111
-        GBP_fsb: 0.111
-        JPY_fsb: 0.111
-        NZD_fsb: 0.111
+        AUD_fsb: 0.1
+        AUDJPY_fsb: 0.1
+        CAD_fsb: 0.1
+        CHF_fsb: 0.1
+        DX_fsb: 0.1
+        EUR_fsb: 0.1
+        EURGBP_fsb: 0.1
+        GBP_fsb: 0.1
+        JPY_fsb: 0.1
+        NZD_fsb: 0.1
       metals:
         weight: 0.143
         industrial:
@@ -409,6 +477,15 @@ forecast_div_multiplier:
 instrument_div_multiplier: 2.5
 #
 
+# buffering / position inertia
+buffer_method: forecast
+buffer_size: 0.10
+buffer_trade_to_edge: True
+# costs and accounting
+use_SR_costs: True
+vol_normalise_currency_costs: True
+multiply_roll_costs_by: 0.5
+
 exclude_instrument_lists:
   # ignore_instruments are ignored in backtests
   # we still collect price data for them in production, do rolls etc
@@ -446,6 +523,7 @@ exclude_instrument_lists:
     - EURGBP_fsb
     - FED_fsb
     - JGB_fsb
+    - JPY_fsb
     - MSCISING_fsb
     - OATIES_fsb
     - SHATZ_fsb
