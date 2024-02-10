@@ -84,8 +84,15 @@ def static_system_results_for_capital(
 
 if __name__ == "__main__":
     list_of_capital_and_estimate_instrument_count_tuples = [
+        # [5000, 4],
         [10000, 5],
+        # [15000, 6],
+        # [20000, 7],
         [25000, 7],
+        # [30000, 8],
+        # [35000, 10],
+        # [40000, 12],
+        # [45000, 13],
         [50000, 14],
         [100000, 16],
         [250000, 22],
