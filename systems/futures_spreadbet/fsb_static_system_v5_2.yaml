@@ -192,36 +192,36 @@ trading_rules:
 forecast_cap: 20.0
 #
 forecast_scalars:
-  momentum4: 8.539940954709955
-  momentum8: 5.949404365193165
-  momentum16: 4.104172020369661
-  momentum32: 2.786994330124792
-  momentum64: 1.9093945630747895
-  carry10: 27.815707053556984
-  carry30: 28.384062881349813
-  carry60: 28.40072429176199
-  carry125: 29.366474500729886
-  accel16: 7.8170710605387095
-  accel32: 5.563487137713779
-  accel64: 3.896720541225276
-  breakout10: 0.6031025130185256
-  breakout20: 0.6742627921625178
-  breakout40: 0.7036929411910525
-  breakout80: 0.726260784624834
-  breakout160: 0.7388310187414805
-  breakout320: 0.7366197028421859
-  normmom2: 12.388305650778637
-  normmom4: 8.614429965006694
-  normmom8: 5.979138542342214
-  normmom16: 4.116536590599602
-  normmom32: 2.758872936017786
-  normmom64: 1.8706800701120874
+  momentum4: 9.64110105510109
+  momentum8: 6.83483272250168
+  momentum16: 4.873798925900704
+  momentum32: 3.496509469611604
+  momentum64: 2.5317746215404915
+  carry10: 36.65709734262937
+  carry30: 38.80993693337063
+  carry60: 41.807652257796114
+  carry125: 47.008219995718825
+  accel16: 7.0519319276977
+  accel32: 5.072172102407444
+  accel64: 3.60483366065117
+  breakout10: 0.722373559146361
+  breakout20: 0.8124857828766572
+  breakout40: 0.8568291290017438
+  breakout80: 0.9074682933671988
+  breakout160: 0.9347237539327788
+  breakout320: 0.971560452159631
+  normmom2: 36.75850590424999
+  normmom4: 26.656700766302258
+  normmom8: 19.154360155780516
+  normmom16: 13.772394219465061
+  normmom32: 9.734263162083103
+  normmom64: 6.494354666335101
 #
 # forecast combination
 #
 # Capital correction
 #
-percentage_vol_target: 20.0
+percentage_vol_target: 25.0
 notional_trading_capital: 25000
 base_currency: "GBP"
 
@@ -297,6 +297,22 @@ forecast_weights:
             breakout320: 0.5
 
 #
+#instrument_weights:
+#  auto_weight_from_grouping:
+#    parameters:
+#      use_approx_DM: True
+#    groups:
+#      ags:
+#        weight: 0.333
+#        LEANHOG_fsb: 1.0
+#      rates:
+#        weight: 0.333
+#        US30_fsb: 1.0
+#      equity:
+#        weight: 0.33
+#        DOW_fsb: 0.5
+#        HANG_fsb: 0.5
+
 instrument_weights:
   auto_weight_from_grouping:
     parameters:
@@ -304,20 +320,21 @@ instrument_weights:
     groups:
       ags:
         weight: 0.167
-        COCOA_fsb: 0.333
-        LEANHOG_fsb: 0.333
-        ROBUSTA_fsb: 0.333
+        #COCOA_fsb: 0.333
+        LEANHOG_fsb: 0.5
+        ROBUSTA_fsb: 0.5
       rates:
         weight: 0.167
         BTP_fsb: 0.5
-        US30_fsb: 0.5
+        US30Y_fsb: 0.5
       energies:
         weight: 0.167
-        EUA_fsb : 1.0
+        EUA_fsb: 1.0
       equity:
         weight: 0.167
-        DOW_fsb: 0.5
-        HANG_fsb: 0.5
+        ASX_fsb: 0.333
+        DOW_fsb: 0.333
+        HANG_fsb: 0.333
       fx:
         weight: 0.167
         EUR_fsb: 1.0
@@ -328,15 +345,20 @@ instrument_weights:
 #        weight: 0.143
 #        VIX_fsb: 1.0
 
-forecast_div_multiplier: 1.67
-instrument_div_multiplier: 2.19
+# 8K
+#forecast_div_multiplier: 1.74
+#instrument_div_multiplier: 1.89
+
+# 25K
+forecast_div_multiplier: 1.66
+instrument_div_multiplier: 2.09
 
 # buffering / position inertia
 buffer_method: forecast
 buffer_size: 0.10
 buffer_trade_to_edge: True
 # costs and accounting
-use_SR_costs: False
+use_SR_costs: True
 vol_normalise_currency_costs: True
 multiply_roll_costs_by: 0.5
 
