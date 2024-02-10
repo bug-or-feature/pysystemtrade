@@ -2,7 +2,9 @@ from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPrice
 from sysinit.futures.clone_data_for_instrument import *
 
 fsb_prices = ArcticFsbContractPriceData()
-csv_roll_calendar = csvRollCalendarData()
+csv_roll_calendar = csvRollCalendarData(datapath="fsb.roll_calendars_csv")
+csv_multiple = csvFuturesMultiplePricesData(datapath="fsb.multiple_prices_csv")
+csv_adjusted = csvFuturesAdjustedPricesData(datapath="fsb.adjusted_prices_csv")
 
 
 def clone_data_for_instrument(
