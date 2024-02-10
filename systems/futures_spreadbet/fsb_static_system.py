@@ -1,8 +1,3 @@
-"""
-import matplotlib
-matplotlib.use("TkAgg")
-"""
-
 from syscore.constants import arg_not_supplied
 
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
@@ -25,11 +20,11 @@ def fsb_static_system(
     trading_rules=arg_not_supplied,
 ):
     if data is arg_not_supplied:
-        # data = dbFuturesSimData()
-        data = build_fsb_csv_sim_data()
+        data = build_fsb_db_sim_data()
+        # data = build_fsb_csv_sim_data()
 
     if config is arg_not_supplied:
-        config = Config("systems.futures_spreadbet.fsb_static_system_v5.yaml")
+        config = Config("systems.futures_spreadbet.fsb_static_system_v5_2.yaml")
         config.risk_overlay = arg_not_supplied
 
     rules = Rules(trading_rules)
@@ -59,6 +54,16 @@ def build_fsb_csv_sim_data():
             csvFxPricesData="data.futures.fx_prices_csv",
             csvFuturesMultiplePricesData="fsb.multiple_prices_csv",
             csvFuturesAdjustedPricesData="fsb.adjusted_prices_csv",
+            csvSpreadCostData="fsb.csvconfig",
+        )
+    )
+
+
+def build_fsb_db_sim_data():
+    return dbFuturesSimData(
+        csv_data_paths=dict(
+            csvFuturesInstrumentData="fsb.csvconfig",
+            csvRollParametersData="fsb.csvconfig",
             csvSpreadCostData="fsb.csvconfig",
         )
     )
