@@ -91,7 +91,7 @@ class bcConnection(object):
             )
 
         if instr_symbol is None:
-            self.log.warn(
+            self.log.warning(
                 f"get_historical_futures_data_for_contract() instr_symbol is required"
             )
             raise missingData
@@ -170,7 +170,7 @@ class bcConnection(object):
         bar_freq: Frequency = Frequency.Day,
     ) -> pd.DataFrame:
         if price_data_raw is None:
-            log.warn("No historical price data from Barchart")
+            log.warning("No historical price data from Barchart")
             raise missingData
 
         date_format = "%Y-%m-%d"
