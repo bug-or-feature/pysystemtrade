@@ -16,26 +16,11 @@ from sysbrokers.IG.ig_instruments_data import (
     IgFuturesInstrumentData,
     get_instrument_object_from_config,
 )
-from sysinit.futures_spreadbet.barchart_futures_contract_prices import BARCHART_CONFIG
+from sysinit.futures_spreadbet.barchart_futures_contract_prices import (
+    BARCHART_CONFIG,
+    BACKUP_CONFIG,
+)
 from syscore.constants import arg_not_supplied
-
-
-def transfer_barchart_prices_to_db_single(instr, datapath, freq=MIXED_FREQ):
-    init_db_with_csv_futures_prices_for_code(
-        instr, datapath, csv_config=BARCHART_CONFIG, freq=freq
-    )
-
-
-def transfer_barchart_prices_to_db_single_contract(
-    instr, contract, datapath, freq=MIXED_FREQ
-):
-    init_db_with_csv_futures_prices_for_contract(
-        instr,
-        contract,
-        datapath,
-        csv_config=BARCHART_CONFIG,
-        freq=freq,
-    )
 
 
 def build_import_config(instr):
@@ -103,16 +88,18 @@ if __name__ == "__main__":
 
     # MIXED frequency
     # "AUDJPY"
-    # for instr in ["AUDJPY", "BTP3"]:
-    #     transfer_barchart_prices_to_db_single(instr, datapath=datapath)
+    for instr in ["AUDJPY"]:
+        init_db_with_csv_futures_prices_for_code(
+            instr, datapath, csv_config=BACKUP_CONFIG, freq=MIXED_FREQ
+        )
 
     # split frequencies
     # "AUDJPY"
     # for instr in ["AUDJPY", "BTP3"]:
-    #     transfer_barchart_prices_to_db_single(
+    #     init_db_with_csv_futures_prices_for_code(
     #         instr, datapath=datapath, freq=HOURLY_FREQ
     #     )
-    #     transfer_barchart_prices_to_db_single(
+    #     init_db_with_csv_futures_prices_for_code(
     #         instr, datapath=datapath, freq=DAILY_PRICE_FREQ
     #     )
 
@@ -120,24 +107,24 @@ if __name__ == "__main__":
     # "DOW"
     # for instr in ["DOW"]:
     #     for contract in ["20080900"]:
-    #         transfer_barchart_prices_to_db_single_contract(
+    #         init_db_with_csv_futures_prices_for_contract(
     #             instr, contract, datapath, freq=MIXED_FREQ
     #         )
 
     # "DOW"
-    for instr in ["HANG"]:
-        for contract in ["20160700", "20160800"]:
-            transfer_barchart_prices_to_db_single_contract(
-                instr, contract, datapath, freq=MIXED_FREQ
-            )
+    # for instr in ["HANG"]:
+    #     for contract in ["20160700", "20160800"]:
+    #         init_db_with_csv_futures_prices_for_contract(
+    #             instr, contract, datapath, freq=MIXED_FREQ
+    #         )
 
     # split frequencies
     # "HANG"
-    for instr in ["HANG"]:
-        for contract in ["20160700", "20160800", "20221100"]:
-            transfer_barchart_prices_to_db_single_contract(
-                instr, contract, datapath, freq=HOURLY_FREQ
-            )
-            transfer_barchart_prices_to_db_single_contract(
-                instr, contract, datapath, freq=DAILY_PRICE_FREQ
-            )
+    # for instr in ["HANG"]:
+    #     for contract in ["20160700", "20160800", "20221100"]:
+    #         init_db_with_csv_futures_prices_for_contract(
+    #             instr, contract, datapath, freq=HOURLY_FREQ
+    #         )
+    #         init_db_with_csv_futures_prices_for_contract(
+    #             instr, contract, datapath, freq=DAILY_PRICE_FREQ
+    #         )
