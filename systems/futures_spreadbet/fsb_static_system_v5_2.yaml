@@ -1,5 +1,5 @@
 # YAML
-start_date: 2000-01-01
+#start_date: 2000-01-01
 use_forecast_weight_estimates: False
 use_instrument_weight_estimates: False
 use_forecast_scale_estimates: False
