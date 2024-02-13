@@ -121,13 +121,17 @@ class IGConnection(object):
         try:
             balance = float(data[data["accountId"] == account]["balance"])
             profit_loss = float(data[data["accountId"] == account]["profitLoss"])
-            # margin = float(data[data["accountId"] == account]["deposit"])
-            # available = float(data[data["accountId"] == account]["available"])
+            margin = float(data[data["accountId"] == account]["deposit"])
+            available = float(data[data["accountId"] == account]["available"])
+            capital = balance + profit_loss
+            self.log.info(
+                f"{balance=}, {profit_loss=}, {margin=}, {available=}, {capital=}, "
+            )
         except Exception as ex:  # noqa broad exception by design
             self.log.error(f"Problem getting capital: {ex}, returning 0.0")
-            balance = 0.0
+            capital = 0.0
 
-        return balance - profit_loss
+        return capital
 
     def get_margin(self, account: str):
         data = self.rest_service.fetch_accounts()
