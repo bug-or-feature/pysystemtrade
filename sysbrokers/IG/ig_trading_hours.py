@@ -17,6 +17,7 @@ PRIVATE_CONFIG_TRADING_HOURS_FILE = get_full_path_for_private_config(
 )
 
 MARKET_HOURS_DAY_COUNT = 5
+DEFAULT_ZONE = "America/Chicago"
 
 
 def get_saved_trading_hours():
@@ -35,12 +36,17 @@ def parse_trading_hours(
     date_range = pd.date_range(now, periods=5, freq="B")
     for day in date_range:
         if trading_hours is None:
-            list_of_open_times.append(build_hours_for_day(day, "00:00", "23:59"))
+            list_of_open_times.append(
+                build_hours_for_day(day, "00:00", "23:59", DEFAULT_ZONE)
+            )
         else:
             for period in trading_hours.marketTimes:
+                timezone = (
+                    trading_hours.zone if "zone" in trading_hours else DEFAULT_ZONE
+                )
                 list_of_open_times.append(
                     build_hours_for_day(
-                        day, period.openTime, period.closeTime, trading_hours.zone
+                        day, period.openTime, period.closeTime, timezone
                     )
                 )
 
