@@ -218,7 +218,11 @@ class pandlCalculateAndStore(object):
             self.data, instrument_code, self.start_date, self.end_date
         )
 
-        pandl_df = pandl_df_all_data[self.start_date : self.end_date]
+        try:
+            pandl_df = pandl_df_all_data[self.start_date : self.end_date]
+        except:
+            # print(f"Failed on {instrument_code}")
+            return pd.DataFrame([])
 
         return pandl_df
 
