@@ -65,34 +65,45 @@ def init_db_with_csv_futures_contract_prices_for_code(
         print("Read back prices are \n %s" % str(written_prices))
 
 
-# def init_arctic_with_csv_futures_contract_prices_for_contract(
-#     instrument_code: str, date_str: str, datapath: str, csv_config=arg_not_supplied
-# ):
-#     print(f"Futures: {instrument_code}")
-#     csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
-#     db_prices = diag_prices.db_futures_contract_price_data
-#
-#     print("Getting .csv prices may take some time")
-#     csv_price_dict = csv_prices.get_merged_prices_for_instrument(instrument_code)
-#
-#     print("Have .csv prices for the following contracts:")
-#     print(str(csv_price_dict.keys()))
-#
-#     for contract_date_str, prices_for_contract in csv_price_dict.items():
-#         if contract_date_str == date_str:
-#             print("Processing %s" % contract_date_str)
-#             print(".csv prices are \n %s" % str(prices_for_contract))
-#             contract = futuresContract.from_two_strings(
-#                 instrument_code, contract_date_str
-#             )
-#             print("Contract object is %s" % str(contract))
-#             print("Writing to arctic")
-#             db_prices.write_merged_prices_for_contract_object(
-#                 contract, prices_for_contract, ignore_duplication=True
-#             )
-#             print("Reading back prices from arctic to check")
-#             written_prices = db_prices.get_merged_prices_for_contract_object(contract)
-#             print("Read back prices are \n %s" % str(written_prices))
+def init_db_with_csv_futures_contract_prices_for_contract(
+    instrument_code: str,
+    date_str: str,
+    datapath: str,
+    csv_config=arg_not_supplied,
+    frequency=MIXED_FREQ,
+):
+    print(f"Futures: {instrument_code}")
+    csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
+    db_prices = diag_prices.db_futures_contract_price_data
+
+    print(f"Getting {frequency} .csv prices may take some time")
+    csv_price_dict = csv_prices.get_prices_at_frequency_for_instrument(
+        instrument_code, frequency=frequency
+    )
+
+    print(f"Have {frequency} .csv prices for the following contracts:")
+    print(str(csv_price_dict.keys()))
+
+    for contract_date_str, prices_for_contract in csv_price_dict.items():
+        if contract_date_str == date_str:
+            print("Processing %s" % contract_date_str)
+            print(f"{frequency} .csv prices are \n{str(prices_for_contract)}")
+            contract = futuresContract.from_two_strings(
+                instrument_code, contract_date_str
+            )
+            print("Contract object is %s" % str(contract))
+            print("Writing to arctic")
+            db_prices.write_prices_at_frequency_for_contract_object(
+                contract,
+                prices_for_contract,
+                ignore_duplication=True,
+                frequency=frequency,
+            )
+            print(f"Reading back {frequency} prices from arctic to check")
+            written_prices = db_prices.get_prices_at_frequency_for_contract_object(
+                contract, frequency=frequency
+            )
+            print(f"Read back {frequency} prices are \n{str(written_prices)}")
 
 
 if __name__ == "__main__":
@@ -102,3 +113,4 @@ if __name__ == "__main__":
     init_db_with_csv_futures_contract_prices(datapath)
     # init_db_with_csv_futures_contract_prices(datapath, frequency=HOURLY_FREQ)
     # init_db_with_csv_futures_contract_prices(datapath, frequency=DAILY_PRICE_FREQ)
+    # init_db_with_csv_futures_contract_prices_for_contract(datapath, "GOLD", "20240200")
