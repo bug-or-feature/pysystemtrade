@@ -158,7 +158,8 @@ nested_menu_of_options = {
         73: "Remove FSB markets",
         74: "Market monitor",
         75: "P&L account curve",
-        79: "FSB report",
+        78: "FSB report",
+        79: "All reports",
     },
 }
 
@@ -285,6 +286,72 @@ def remove_markets_report(data):
 
 def fsb_report(data):
     report_config = email_or_print_or_file(fsb_report_config)
+    run_report(report_config, data=data)
+
+
+def all_reports(data):
+    start_date, end_date = get_report_dates()
+
+    strategy_name = get_valid_strategy_name_from_user(
+        data=data, allow_all=True, all_code=ALL_STRATEGIES
+    )
+    if strategy_name != ALL_STRATEGIES:
+        timestamp = interactively_choose_timestamp(
+            strategy_name=strategy_name, data=data
+        )
+    else:
+        timestamp = arg_not_supplied
+
+    # roll report
+    report_config = fsb_roll_report_config.new_config_with_modified_output("file")
+    report_config.modify_kwargs(instrument_code=ALL_ROLL_INSTRUMENTS)
+    run_report(report_config, data=data)
+
+    # pandl_report
+    report_config = daily_pandl_report_config.new_config_with_modified_output("file")
+    report_config.modify_kwargs(start_date=start_date, end_date=end_date)
+    run_report(report_config, data=data)
+
+    # status_report
+    report_config = status_report_config.new_config_with_modified_output("file")
+    run_report(report_config, data=data)
+
+    # trade_report
+    report_config = trade_report_config.new_config_with_modified_output("file")
+    report_config.modify_kwargs(start_date=start_date, end_date=end_date)
+    run_report(report_config, data=data)
+
+    # reconcile_report
+    report_config = reconcile_report_config.new_config_with_modified_output("file")
+    run_report(report_config, data=data)
+
+    # strategy_report
+    report_config = strategy_report_config.new_config_with_modified_output("file")
+    report_config.modify_kwargs(strategy_name=strategy_name, timestamp=timestamp)
+    run_report(report_config, data=data)
+
+    # 66: risk_report,
+
+    # 67: cost_report,
+
+    # 68: slippage_report,
+
+    # 69: liquidity_report,
+
+    # 70: instrument_risk_report,
+
+    # 71: min_capital_report,
+
+    # 72: duplicate_market_report,
+
+    # 73: remove_markets_report,
+
+    # 74: market_monitor_report,
+
+    # 75: account_curve_report,
+
+    # fsb_report
+    report_config = fsb_report_config.new_config_with_modified_output("file")
     run_report(report_config, data=data)
 
 
@@ -823,7 +890,8 @@ dict_of_functions = {
     73: remove_markets_report,
     74: market_monitor_report,
     75: account_curve_report,
-    79: fsb_report,
+    78: fsb_report,
+    79: all_reports,
 }
 
 
