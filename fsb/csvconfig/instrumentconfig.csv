@@ -60,7 +60,7 @@ NOK_fsb,USD/NOK Forward,0.2,GBP,FX,0.0,0.0,0.0,EMEA
 NZD_fsb,NZD/USD Forward,1.0,GBP,FX,0.0,0.0,0.0,ASIA
 OAT_fsb,OAT French Government Bond,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 OATIES_fsb,Oats,15.0,GBP,Ags,0.0,0.0,0.0,US
-OJ_fsb,NY Orange Juice,0.5,GBP,Ags,0.0,0.0,0.0,US
+OJ_fsb,NY Orange Juice,0.25,GBP,Ags,0.0,0.0,0.0,US
 OMXS30_fsb,Sweden 30,3.0,GBP,Equity,0.0,0.0,0.0,EMEA
 PALLAD_fsb,Palladium,2.0,GBP,Metals,0.0,0.0,0.0,US
 PLAT_fsb,Platinum,3.0,GBP,Metals,0.0,0.0,0.0,US
