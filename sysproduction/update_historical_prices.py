@@ -395,7 +395,7 @@ def get_and_add_prices_for_frequency(
         data.log.debug(f"broker_prices latest price {broker_prices.index[-1]}")
 
     if interactive_mode:
-        print("\n\n Manually checking prices for %s \n\n" % str(contract_object))
+        print("\n\nManually checking prices for %s \n\n" % str(contract_object))
         max_price_spike = cleaning_config.max_price_spike
 
         price_data = diagPrices(data)
