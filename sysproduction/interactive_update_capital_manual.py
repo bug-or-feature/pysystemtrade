@@ -13,6 +13,8 @@ from sysdata.data_blob import dataBlob
 from sysobjects.production.capital import LargeCapitalChange
 from sysproduction.data.capital import dataCapital
 from sysproduction.data.broker import dataBroker
+from matplotlib.pyplot import show
+from syscore.pdutils import print_full
 
 
 def interactive_update_capital_manual():
@@ -266,3 +268,16 @@ def delete_all_capital(data: dataBlob):
             )
     else:
         print("OK you decided not to do it")
+
+
+def plot_capital():
+    data_capital = dataCapital(dataBlob(log_name="Plot-Capital"))
+    df = data_capital.get_series_of_all_global_capital()
+    # df = df.resample("1B")
+    print_full(df)
+    df["Actual"].plot()
+    show()
+
+
+if __name__ == "__main__":
+    plot_capital()
