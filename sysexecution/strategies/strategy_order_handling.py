@@ -202,9 +202,9 @@ class orderGeneratorForStrategy(object):
                 error_msg = (
                     f"Order size is "
                     f"{order.as_single_trade_qty_or_error()}, "
-                    f"but min bet is {min_bet}"
+                    f"but min bet is {min_bet}",
                 )
-                self.log.warning(error_msg)
+                self.log.warning(error_msg, **log_attrs)
                 raise minBetException(error_msg)
 
             order_id = self.order_stack.put_order_on_stack(order)
