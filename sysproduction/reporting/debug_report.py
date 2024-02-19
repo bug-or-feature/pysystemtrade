@@ -49,7 +49,7 @@ from sysproduction.reporting.reporting_functions import (
 def do_report(config: reportConfig):
     pandas_display_for_reports()
     with dataBlob(
-        log_name=f"Test {config.title}",
+        log_name=f"Test_Report",
         csv_data_paths=dict(
             csvFuturesInstrumentData="fsb.csvconfig",
             csvRollParametersData="fsb.csvconfig",
@@ -232,6 +232,12 @@ def run_fut_fsb_price_comparison_report():
 
 def run_adhoc_compare_adjusted_prices(instr):
     compare_adjusted_prices(instr, draw=True)
+
+
+def run_fsb_instrument_list_report():
+    do_report(
+        fsb_instrument_list_report_config.new_config_with_modified_output("console")
+    )
 
 
 if __name__ == "__main__":

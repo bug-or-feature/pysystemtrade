@@ -1,69 +1,51 @@
 import pandas as pd
 
 from syscore.interactive.progress_bar import progressBar
-
+from syscore.constants import arg_not_supplied
 from sysproduction.data.broker import dataBroker
 from sysproduction.data.instruments import diagInstruments
 from sysproduction.data.prices import diagPrices
 from sysproduction.reporting.reporting_functions import (
-    parse_report_results,
-    output_file_report,
     header,
     table,
     pandas_display_for_reports,
 )
-from sysproduction.reporting.report_configs import reportConfig
 
 from sysdata.data_blob import dataBlob
 
 
-def instrument_list_report():
-    report_config = reportConfig(
-        title="Instrument list", function="not_used", output="file"
+def instrument_list_report(data: dataBlob = arg_not_supplied):
+    formatted_output = []
+
+    diag_instruments = diagInstruments(data)
+    diag_prices = diagPrices(data)
+    data_broker = dataBroker(data)
+
+    list_of_instruments = diag_instruments.get_list_of_instruments()
+
+    p = progressBar(len(list_of_instruments))
+    list_of_results = []
+    for instrument_code in list_of_instruments:
+        meta_data = diag_instruments.get_meta_data(instrument_code)
+        row_for_instrument = instrument_results_as_pd_df_row(
+            meta_data,
+            instrument_code=instrument_code,
+            data_broker=data_broker,
+            diag_prices=diag_prices,
+        )
+        list_of_results.append(row_for_instrument)
+        p.iterate()
+
+    results_as_df = pd.concat(list_of_results, axis=0)
+
+    formatted_output.append(header("List of instruments with configuration"))
+    formatted_output.append(
+        table("Combined instrument and broker config", results_as_df)
     )
 
-    with dataBlob(
-        log_name="Interactive-Controls",
-        csv_data_paths=dict(
-            csvFuturesInstrumentData="fsb.csvconfig",
-            csvRollParametersData="fsb.csvconfig",
-        ),
-    ) as data:
-        diag_instruments = diagInstruments(data)
-        diag_prices = diagPrices(data)
+    pandas_display_for_reports()
 
-        list_of_instruments = diag_instruments.get_list_of_instruments()
-        data_broker = dataBroker(data)
-
-        p = progressBar(len(list_of_instruments))
-        list_of_results = []
-        for instrument_code in list_of_instruments:
-            meta_data = diag_instruments.get_meta_data(instrument_code)
-            row_for_instrument = instrument_results_as_pd_df_row(
-                meta_data,
-                instrument_code=instrument_code,
-                data_broker=data_broker,
-                diag_prices=diag_prices,
-            )
-            list_of_results.append(row_for_instrument)
-            p.iterate()
-
-        results_as_df = pd.concat(list_of_results, axis=0)
-
-        report_results = [
-            header("List of instruments with configuration"),
-            table("Combined instrument and broker config", results_as_df),
-        ]
-
-        pandas_display_for_reports()
-
-        parsed_report_results = parse_report_results(
-            data, report_results=report_results
-        )
-
-        output_file_report(
-            parsed_report=parsed_report_results, data=data, report_config=report_config
-        )
+    return formatted_output
 
 
 def instrument_results_as_pd_df_row(
@@ -89,8 +71,11 @@ def instrument_results_as_pd_df_row(
         [(key, value) for key, value in broker_data_as_dict.items()]
     )
 
-    merged_data = {**meta_data_as_dict, **relabelled_broker_data_as_dict}
-    merged_data["from"] = first_date
+    merged_data = {
+        **meta_data_as_dict,
+        **relabelled_broker_data_as_dict,
+        "from": first_date,
+    }
     merged_data_as_pd = pd.DataFrame(merged_data, index=[instrument_code])
     del merged_data_as_pd["PerBlock"]
     del merged_data_as_pd["PerTrade"]
