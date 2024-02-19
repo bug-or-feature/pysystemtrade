@@ -379,7 +379,6 @@ class IGConnection(object):
             stop_level=None,
             trailing_stop=None,
             trailing_stop_increment=None,
-            fix_response=False,
         )
 
         trade_result = IgTradeWithContract(result)
