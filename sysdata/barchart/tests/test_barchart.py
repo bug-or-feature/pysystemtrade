@@ -38,3 +38,16 @@ class TestBarchart:
     def test_freq_names(self):
         for freq in Frequency:
             print(f"member= {freq}, name={freq.name}, value={freq.value}")
+
+    def test_expiry(self):
+        bc = bcConnection()
+        expiry = bc.get_expiry_date_for_symbol("GCG24")
+        assert isinstance(expiry, str)
+        assert expiry == "02/27/24"
+        print(f"{expiry=}")
+
+    def test_exchange(self):
+        bc = bcConnection()
+        exchange = bc.get_exchange_for_code("GC")
+        assert exchange == "COMEX"
+        print(f"{exchange=}")

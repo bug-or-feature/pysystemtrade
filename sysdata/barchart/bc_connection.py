@@ -163,6 +163,34 @@ class bcConnection(object):
             self.log.error(f"Problem getting historical data: {ex}")
             raise missingData
 
+    def get_exchange_for_code(self, bc_code: str, contract_code="G24"):
+        """
+        Get the exchange for the given Barchart code
+
+        Scrapes the info page for the given contract to grab the exchange
+        :param futures_contract:
+        :return: str
+        """
+        try:
+            resp = self._get_overview(f"{bc_code}{contract_code}")
+            if resp.status_code == 200:
+                overview_soup = Scraper(resp.text, "html.parser")
+                table = overview_soup.find(
+                    name="div", attrs={"class": "commodity-profile"}
+                )
+                label = table.find(name="div", string="Exchange")
+                exchange_raw = label.next_sibling.next_sibling  # whitespace counts
+                exchange = exchange_raw.text.strip()
+                return exchange
+            if resp.status_code == 404:
+                self.log.warning(
+                    f"Barchart page for {bc_code}{contract_code} not found"
+                )
+
+        except Exception as e:
+            self.log.error("Error: %s" % e)
+            return None
+
     @staticmethod
     def _raw_barchart_data_to_df(
         price_data_raw: pd.DataFrame,
