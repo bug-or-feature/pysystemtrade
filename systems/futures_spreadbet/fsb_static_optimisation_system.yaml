@@ -1,0 +1,267 @@
+# YAML
+# start_date: 2000-01-19
+use_forecast_weight_estimates: False
+use_instrument_weight_estimates: False
+use_forecast_scale_estimates: False
+
+use_forecast_div_mult_estimates: False
+use_instrument_div_mult_estimates: False
+#
+#
+#
+#
+# Raw data
+#
+#
+# Trading rules
+#
+volatility_calculation:
+  func: "sysquant.estimators.vol.mixed_vol_calc"
+  days: 35
+  min_periods: 10
+  vol_abs_min: 0.0000000001
+  slow_vol_years: 20
+  proportion_of_slow_vol: 0.35
+  backfill: True
+#
+trading_rules:
+  carry10:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 10
+  carry30:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 30
+  carry60:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 60
+  carry125:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 125
+  momentum4:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  momentum8:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  momentum16:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  momentum32:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  momentum64:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+
+#
+forecast_cap: 20.0
+#
+forecast_scalars:
+  momentum4: 8.539940954709955
+  momentum8: 5.949404365193165
+  momentum16: 4.104172020369661
+  momentum32: 2.786994330124792
+  momentum64: 1.9093945630747895
+  carry10: 27.815707053556984
+  carry30: 28.384062881349813
+  carry60: 28.40072429176199
+  carry125: 29.366474500729886
+
+#
+# forecast combination
+#
+# Capital correction
+#
+percentage_vol_target: 25.0
+# notional_trading_capital: 50000
+base_currency: "GBP"
+
+#
+# Portfolio creation
+#
+
+forecast_weights:
+  auto_weight_from_grouping:
+    parameters:
+      use_approx_DM: False
+      apply_forecast_post_ceiling_cost_SR_before_weighting: True
+    groups:
+      convergent:
+        weight: 0.4
+        carry:
+          weight: 1.0
+          carry10: 0.25
+          carry125: 0.25
+          carry30: 0.25
+          carry60: 0.25
+      divergent:
+        weight: 0.6
+        trend:
+          weight: 1.0
+          momentum4: 0.2
+          momentum8: 0.2
+          momentum16: 0.2
+          momentum32: 0.2
+          momentum64: 0.2
+
+#
+# instrument_weights:
+# forecast_div_multiplier:
+
+instruments:
+  - LEANHOG_fsb
+  - IBXEX_fsb
+  - GOLD_fsb
+  - DX_fsb
+  - US10_fsb
+  - COCOA_LDN_fsb
+  - FTSE100_fsb
+  - ROBUSTA_fsb
+  - HANG_fsb
+  - SP500_fsb
+  - AEX_fsb
+  - OAT_fsb
+  - NZD_fsb
+  - BUND_fsb
+  - SILVER_fsb
+  - BTP_fsb
+  - SMI_fsb
+  - GILT_fsb
+  - AUD_fsb
+  - EUROSTX_fsb
+#  - WHEAT_ICE_fsb
+#  - CHF_fsb
+#  - PLAT_fsb
+#  - COPPER_fsb
+#  - DOW_fsb
+#  - US30Y_fsb
+#  - CAD_fsb
+#  - EUR_fsb
+#  - EUA_fsb
+#  - RUSSELL_fsb
+#  - ASX_fsb
+#  - COCOA_fsb
+#  - AUDJPY_fsb
+#  - COTTON2_fsb
+#  - CORN_fsb
+#  - CAC_fsb
+#  - SUGAR_WHITE_fsb
+#  - GBP_fsb
+#  - US30U_fsb
+#  - LIVECOW_fsb
+#  - DAX_fsb
+#  - OMXS30_fsb
+#  - PALLAD_fsb
+#  - SOYBEAN_fsb
+#  - NASDAQ_fsb
+#  - GAS_US_fsb
+#  - BUXL_fsb
+#  - SOYOIL_fsb
+#  - RICE_fsb
+#  - SUGAR11_fsb
+#  - SOYMEAL_fsb
+#  - BRENT_W_fsb
+#  - CRUDE_W_fsb
+#  - NIKKEI_fsb
+#  - GASOIL_fsb
+#  - WHEAT_fsb
+#  - COFFEE_fsb
+#  - GASOLINE_fsb
+#  - HEATOIL_fsb
+#  - OJ_fsb
+#  - JPY_fsb
+#  -
+#  - LEANHOG_fsb
+#  - DOW_fsb
+#  - US10_fsb
+#  - GOLD_fsb
+#  - PALLAD_fsb
+#  - SOYBEAN_fsb
+#  - CORN_fsb
+#  - WHEAT_fsb
+#  - VIX_fsb
+
+instrument_div_multiplier: 2.5
+#
+
+exclude_instrument_lists:
+  # ignore_instruments are ignored in backtests
+  # we still collect price data for them in production, do rolls etc
+  # You can override this by modifying the backtest config .yaml file used in either sim or production
+  # If you want to ignore because a duplicate market, use duplicate_instruments
+  # If you want to include in sim data, but not actually trade, use trading_restrictions
+  #
+  # BEST FOR INSTRUMENTS THAT LOOK EXPENSIVE, BUT WHERE WE HAVEN'T GOT ACCURATE DATA YET
+  #
+  # REVIEW REGULARLY AND CHECK THESE INSTRUMENTS AREN'T BETTER ELSEWHERE...
+  ignore_instruments:
+    - CHFJPY_fsb
+    - EURCAD_fsb
+    - EURCHF_fsb
+    - EURGBP_fsb
+    - EURIBOR_fsb
+    - GAS_NL_fsb
+    - GAS_UK_fsb
+    - GBPCHF_fsb
+    - GBPJPY_fsb
+    - JSE40_fsb
+    - LUMBER_fsb
+    - LUMBER-new_fsb
+    - LUMBER_new_fsb
+    - NOK_fsb
+    - SEK_fsb
+    - SOFR_fsb
+    - V2X
+    - VIX
+
+  bad_markets:
+    - BOBL_fsb
+    - BRENT
+    - BTP3_fsb
+    - EURGBP_fsb
+    - FED_fsb
+    - JGB_fsb
+    - MSCISING_fsb
+    - OATIES_fsb
+    - SHATZ_fsb
+    - SONIA3_fsb
+    - US2_fsb
+    - US5_fsb
+    - V2X_fsb
