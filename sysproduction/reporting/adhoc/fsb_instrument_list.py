@@ -1,17 +1,16 @@
 import pandas as pd
 
-from syscore.interactive.progress_bar import progressBar
 from syscore.constants import arg_not_supplied
+from syscore.interactive.progress_bar import progressBar
+from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
 from sysproduction.data.instruments import diagInstruments
 from sysproduction.data.prices import diagPrices
+from sysproduction.reporting.api import reportingApi
 from sysproduction.reporting.reporting_functions import (
-    header,
     table,
     pandas_display_for_reports,
 )
-
-from sysdata.data_blob import dataBlob
 
 
 def instrument_list_report(data: dataBlob = arg_not_supplied):
@@ -20,6 +19,9 @@ def instrument_list_report(data: dataBlob = arg_not_supplied):
     diag_instruments = diagInstruments(data)
     diag_prices = diagPrices(data)
     data_broker = dataBroker(data)
+    reporting_api = reportingApi(
+        data,
+    )
 
     list_of_instruments = diag_instruments.get_list_of_instruments()
 
@@ -36,14 +38,17 @@ def instrument_list_report(data: dataBlob = arg_not_supplied):
         list_of_results.append(row_for_instrument)
         p.iterate()
 
+    pandas_display_for_reports()
     results_as_df = pd.concat(list_of_results, axis=0)
 
-    formatted_output.append(header("List of instruments with configuration"))
+    formatted_output.append(
+        reporting_api.terse_header("List of instruments with configuration")
+    )
     formatted_output.append(
         table("Combined instrument and broker config", results_as_df)
     )
 
-    pandas_display_for_reports()
+    formatted_output.append(reporting_api.footer())
 
     return formatted_output
 
