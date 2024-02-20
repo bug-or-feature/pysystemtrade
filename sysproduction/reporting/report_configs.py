@@ -145,6 +145,12 @@ fsb_report_config = reportConfig(
     output="email",
 )
 
+fsb_instrument_list_report_config = reportConfig(
+    title="Instrument List report",
+    function="sysproduction.reporting.adhoc.fsb_instrument_list.instrument_list_report",
+    output="email",
+)
+
 ## The reports will be run in this order
 report_config_defaults = dict(
     slippage_report=slippage_report_config,
@@ -164,4 +170,5 @@ report_config_defaults = dict(
     market_monitor_report=market_monitor_report_config,
     account_curve_report=account_curve_report_config,
     fsb_report=fsb_report_config,
+    fsb_instrument_list_report=fsb_instrument_list_report_config,
 )

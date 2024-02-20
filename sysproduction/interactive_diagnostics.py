@@ -59,7 +59,6 @@ from syslogdiag.email_via_db_interface import retrieve_and_delete_stored_message
 from sysproduction.reporting.reporting_functions import run_report
 from sysproduction.reporting.strategies_report import ALL_STRATEGIES
 from sysproduction.reporting.report_configs import (
-    roll_report_config,
     daily_pandl_report_config,
     status_report_config,
     trade_report_config,
@@ -71,6 +70,7 @@ from sysproduction.reporting.report_configs import (
     duplicate_market_report_config,
     market_monitor_report_config,
     account_curve_report_config,
+    fsb_instrument_list_report_config,
 )
 
 from sysproduction.reporting.report_configs_fsb import (
@@ -158,6 +158,7 @@ nested_menu_of_options = {
         73: "Remove FSB markets",
         74: "Market monitor",
         75: "P&L account curve",
+        77: "FSB Instrument List Report",
         78: "FSB report",
         79: "All reports",
     },
@@ -281,6 +282,11 @@ def duplicate_market_report(data):
 
 def remove_markets_report(data):
     report_config = email_or_print_or_file(remove_fsb_markets_report_config)
+    run_report(report_config, data=data)
+
+
+def fsb_instrument_list_report(data):
+    report_config = email_or_print_or_file(fsb_instrument_list_report_config)
     run_report(report_config, data=data)
 
 
@@ -890,6 +896,7 @@ dict_of_functions = {
     73: remove_markets_report,
     74: market_monitor_report,
     75: account_curve_report,
+    77: fsb_instrument_list_report,
     78: fsb_report,
     79: all_reports,
 }

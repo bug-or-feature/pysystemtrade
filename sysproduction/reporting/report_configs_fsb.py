@@ -37,9 +37,3 @@ fsb_risk_report_config = reportConfig(
     function="sysproduction.reporting.fsb_risk_report.risk_report",
     output="email",
 )
-
-fsb_instrument_list_report_config = reportConfig(
-    title="Instrument List report",
-    function="sysproduction.reporting.adhoc.fsb_instrument_list.instrument_list_report",
-    output="email",
-)
