@@ -312,6 +312,9 @@ forecast_weights:
 #        weight: 0.33
 #        DOW_fsb: 0.5
 #        HANG_fsb: 0.5
+# 8K
+#forecast_div_multiplier: 1.74
+#instrument_div_multiplier: 1.89
 
 instrument_weights:
   auto_weight_from_grouping:
@@ -344,14 +347,63 @@ instrument_weights:
 #      vol:
 #        weight: 0.143
 #        VIX_fsb: 1.0
-
-# 8K
-#forecast_div_multiplier: 1.74
-#instrument_div_multiplier: 1.89
-
 # 25K
 forecast_div_multiplier: 1.66
 instrument_div_multiplier: 2.09
+
+#instrument_weights:
+#  auto_weight_from_grouping:
+#    parameters:
+#      use_approx_DM: True
+#    groups:
+#      ags:
+#        weight: 0.167
+#        COCOA_LDN_fsb: 0.111
+#        COFFEE_fsb: 0.111
+#        LEANHOG_fsb: 0.111
+#        ROBUSTA_fsb: 0.111
+#        COTTON2_fsb: 0.111
+#        SOYOIL_fsb: 0.111
+#        SOYMEAL_fsb: 0.111
+#        LIVECOW_fsb: 0.111
+#        RICE_fsb: 0.111
+#      rates:
+#        weight: 0.167
+#        BUND_fsb: 0.167
+#        BUXL_fsb: 0.167
+#        BTP_fsb: 0.167
+#        US30U_fsb: 0.167
+#        US5_fsb: 0.167
+#        OAT_fsb: 0.167
+#      energies:
+#        weight: 0.167
+#        GAS_US_fsb: 0.5
+#        GASOLINE_fsb: 0.5
+#      equity:
+#        weight: 0.167
+#        ASX_fsb: 0.167
+#        DOW_fsb: 0.167
+#        HANG_fsb: 0.167
+#        NASDAQ_fsb: 0.167
+#        NIKKEI_fsb: 0.167
+#        IBXEX_fsb: 0.167
+#      fx:
+#        weight: 0.167
+#        AUDJPY_fsb: 0.333
+#        EUR_fsb: 0.333
+#        CHF_fsb: 0.333
+#      metals:
+#        weight: 0.167
+#        COPPER_fsb: 0.25
+#        PALLAD_fsb: 0.25
+#        SILVER_fsb: 0.25
+#        GOLD_fsb: 0.25
+##      vol:
+##        weight: 0.143
+##        VIX_fsb: 1.0
+#forecast_div_multiplier: 1.68
+#instrument_div_multiplier: 2.5
+
 
 # buffering / position inertia
 buffer_method: forecast
