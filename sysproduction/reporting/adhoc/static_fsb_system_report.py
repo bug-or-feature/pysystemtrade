@@ -57,7 +57,7 @@ def static_fsb_instrument_selection_report(
         )
 
         text_to_output = body_text(
-            f"For capital of {capital}, {len(instrument_list)} instruments, "
+            f"\n\nFor capital of {capital}, {len(instrument_list)} instruments, "
             f"selected order: {str(instrument_list)}"
         )
         formatted_output.append(text_to_output)
