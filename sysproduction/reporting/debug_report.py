@@ -242,7 +242,22 @@ def run_fsb_instrument_list_report():
 
 def run_fsb_static_selection_report():
     do_report(
-        fsb_static_selection_report_config.new_config_with_modified_output("console")
+        fsb_static_selection_report_config.new_config_with_modify_kwargs(
+            output="console",
+            selection_config=[
+                # [2000, 1],
+                # [5000, 3],
+                # [10000, 5],
+                # [15000, 8],
+                # [20000, 10],
+                [25000, 15],
+                # [30000, 20],
+                # [35000, 23],
+                # [40000, 25],
+                # [35000, 28],
+                # [50000, 30],
+            ],
+        )
     )
 
 
