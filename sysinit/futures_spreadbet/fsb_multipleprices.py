@@ -199,7 +199,7 @@ if __name__ == "__main__":
     csv_roll_data_path = "fsb.roll_calendars_csv"
 
     # "AUDJPY_fsb", "BTP3_fsb"
-    for instrument_code in ["AUDJPY_fsb", "BTP3_fsb"]:
+    for instrument_code in ["JPY_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instrument_code,
             adjust_calendar_to_prices=False,

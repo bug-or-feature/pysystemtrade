@@ -87,6 +87,6 @@ if __name__ == "__main__":
 
     # 'XXX'
     # "AUDJPY", "BTP3"
-    for instr in ["DOW", "HANG"]:
+    for instr in ["JPY"]:
         convert_futures_prices_to_fsb_single(instr)
         # convert_futures_prices_to_fsb_single(instr, ["20080900"])

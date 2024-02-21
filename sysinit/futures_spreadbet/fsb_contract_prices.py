@@ -23,6 +23,18 @@ from sysinit.futures_spreadbet.barchart_futures_contract_prices import (
 from syscore.constants import arg_not_supplied
 
 
+OLD_JPY_CONFIG = ConfigCsvFuturesPrices(
+    input_date_index_name="Time",
+    input_skiprows=0,
+    input_skipfooter=0,
+    input_date_format="%Y-%m-%dT%H:%M:%S%z",
+    input_column_mapping=dict(
+        OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
+    ),
+    apply_multiplier=0.01,
+)
+
+
 def build_import_config(instr):
     instr_data = IgFuturesInstrumentData(None, data=dataBlob())
     try:
@@ -86,31 +98,24 @@ if __name__ == "__main__":
     #     "HANG", None, datapath, csv_config=BARCHART_CONFIG, freq=HOURLY_FREQ
     # )
 
-    # MIXED frequency
-    # "AUDJPY"
-    for instr in ["AUDJPY"]:
+    # import by instrument with MIXED frequency
+    # "JPY"
+    for instr in ["JPY"]:
         init_db_with_csv_futures_prices_for_code(
-            instr, datapath, csv_config=BACKUP_CONFIG, freq=MIXED_FREQ
+            instr, datapath, csv_config=OLD_JPY_CONFIG, freq=MIXED_FREQ
         )
 
-    # split frequencies
-    # "AUDJPY"
-    # for instr in ["AUDJPY", "BTP3"]:
+    # import by instrument with split frequencies
+    # "JPY"
+    # for instr in ["JPY"]:
     #     init_db_with_csv_futures_prices_for_code(
-    #         instr, datapath=datapath, freq=HOURLY_FREQ
+    #         instr, datapath=datapath, csv_config=OLD_JPY_CONFIG, freq=HOURLY_FREQ
     #     )
     #     init_db_with_csv_futures_prices_for_code(
-    #         instr, datapath=datapath, freq=DAILY_PRICE_FREQ
+    #         instr, datapath=datapath, csv_config=OLD_JPY_CONFIG, freq=DAILY_PRICE_FREQ
     #     )
 
-    # MIXED frequency
-    # "DOW"
-    # for instr in ["DOW"]:
-    #     for contract in ["20080900"]:
-    #         init_db_with_csv_futures_prices_for_contract(
-    #             instr, contract, datapath, freq=MIXED_FREQ
-    #         )
-
+    # import by contract with MIXED frequency
     # "DOW"
     # for instr in ["HANG"]:
     #     for contract in ["20160700", "20160800"]:
@@ -118,7 +123,7 @@ if __name__ == "__main__":
     #             instr, contract, datapath, freq=MIXED_FREQ
     #         )
 
-    # split frequencies
+    # import by contract with split frequencies
     # "HANG"
     # for instr in ["HANG"]:
     #     for contract in ["20160700", "20160800", "20221100"]:

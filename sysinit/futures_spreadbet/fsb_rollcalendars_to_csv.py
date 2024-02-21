@@ -174,7 +174,7 @@ if __name__ == "__main__":
     # "SOFR_fsb"
 
     # XXX_fsb
-    instr_code = "CHFJPY_fsb"
+    instr_code = "JPY_fsb"
 
     # run with database prices
     # prices = arcticFuturesContractPriceData()
