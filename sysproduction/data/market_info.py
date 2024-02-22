@@ -64,9 +64,11 @@ class UpdateMarketInfo(productionDataLayerGeneric):
             if historic is not None:
                 new_info.historic = historic
             else:
-                new_info.historic = old_info["historic"]
+                if "historic" in old_info:
+                    new_info.historic = old_info["historic"]
         else:
-            new_info.historic = old_info["historic"]
+            if "historic" in old_info:
+                new_info.historic = old_info["historic"]
 
         try:
             self.db_market_info.update_market_info(instr, epic, new_info)
@@ -82,10 +84,9 @@ class UpdateMarketInfo(productionDataLayerGeneric):
         try:
             hist_last_mod = info["historic"]["last_modified_utc"]
             diff = now - hist_last_mod
-            if diff.days > 3:
-                return True
+            return diff.days > 3
         except:
-            return False
+            return True
 
     def _get_historic_data_for_epic(self, epic):
         try:
@@ -110,4 +111,4 @@ class UpdateMarketInfo(productionDataLayerGeneric):
 
 if __name__ == "__main__":
     update_market_info = UpdateMarketInfo()
-    update_market_info.update_market_info_for_epic("AUD_fsb", "CF.D.AUD.MAR.IP")
+    update_market_info.update_market_info_for_epic("JPY_fsb", "CF.D.USDJPY.DEC.IP")
