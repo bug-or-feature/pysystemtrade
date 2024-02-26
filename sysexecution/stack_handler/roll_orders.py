@@ -103,6 +103,13 @@ class stackHandlerForRolls(stackHandlerCore):
         if no_roll_required:
             return None
 
+        epics_not_tradeable = not self.priced_and_forward_are_tradeable(instrument_code)
+        if epics_not_tradeable:
+            self.log.warning(
+                f"Cannot force roll {instrument_code}, both epics must be tradeable"
+            )
+            return None
+
         self.generate_force_roll_orders_for_instrument_without_checking(instrument_code)
 
     def generate_force_roll_orders_for_instrument_without_checking(
@@ -148,6 +155,19 @@ class stackHandlerForRolls(stackHandlerCore):
             return False
 
         return safe_to_roll
+
+    def priced_and_forward_are_tradeable(self, instrument_code: str) -> bool:
+        priced_id = self.data_contracts.get_priced_contract_id(instrument_code)
+        priced_contract = futuresContract(instrument_code, priced_id)
+
+        forward_id = self.data_contracts.get_forward_contract_id(instrument_code)
+        forward_contract = futuresContract(instrument_code, forward_id)
+
+        both_tradeable = self.data_broker.is_contract_okay_to_trade(
+            priced_contract
+        ) and self.data_broker.is_contract_okay_to_trade(forward_contract)
+
+        return both_tradeable
 
     def check_if_positions_require_order_generation(self, instrument_code: str) -> bool:
         position_in_priced = get_position_in_priced(
