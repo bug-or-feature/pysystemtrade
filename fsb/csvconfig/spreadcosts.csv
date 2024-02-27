@@ -25,7 +25,6 @@ DAX_fsb,3.1
 DOW_fsb,3.6
 DX_fsb,3.96
 EDOLLAR,0.0025
-EDOLLAR_fsb,0.8
 EUA_fsb,3.0
 EURCAD_fsb,8.25
 EURCHF_fsb,5.0
@@ -55,7 +54,6 @@ JSE40_fsb,30.0
 LEANHOG_fsb,7.19
 LIVECOW_fsb,9.94
 LUMBER-new_fsb,250.0
-LUMBER_fsb,400.0
 MSCISING_fsb,0.15
 NASDAQ_fsb,1.5
 NIKKEI_fsb,9.9

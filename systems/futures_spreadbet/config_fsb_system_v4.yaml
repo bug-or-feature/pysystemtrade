@@ -763,7 +763,6 @@ exclude_instrument_lists:
     - EDOLLAR_fsb
     - EURCAD_fsb
     - EURCHF_fsb
-    - EURIBOR_fsb
     - EUROSTX_fsb
     - GAS_US_fsb
     - GASOIL_fsb

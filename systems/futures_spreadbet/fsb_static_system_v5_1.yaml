@@ -219,7 +219,6 @@ exclude_instrument_lists:
   # To override this list, change in sim .yaml config (sim) and private_config.yaml (production)
   bad_markets:
     - BOBL_fsb
-    - BRENT
     - BTP3_fsb
     - EURGBP_fsb
     - FED_fsb

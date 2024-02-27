@@ -501,7 +501,6 @@ exclude_instrument_lists:
     - EURCAD_fsb
     - EURCHF_fsb
     - EURGBP_fsb
-    - EURIBOR_fsb
     - GAS_NL_fsb
     - GAS_UK_fsb
     - GBPCHF_fsb
@@ -509,7 +508,6 @@ exclude_instrument_lists:
     - JSE40_fsb
     - LUMBER_fsb
     - LUMBER-new_fsb
-    - LUMBER_new_fsb
     - NOK_fsb
     - SEK_fsb
     - SOFR_fsb
@@ -518,7 +516,6 @@ exclude_instrument_lists:
 
   bad_markets:
     - BOBL_fsb
-    - BRENT
     - BTP3_fsb
     - EURGBP_fsb
     - FED_fsb

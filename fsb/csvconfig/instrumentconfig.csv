@@ -23,7 +23,6 @@ CRUDE_W_fsb,Oil - US Crude,1.0,GBP,OilGas,0.0,0.0,0.0,US
 DAX_fsb,Germany 40,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
 DOW_fsb,Wall Street,0.2,GBP,Equity,0.0,0.0,0.0,US
 DX_fsb,US Dollar Basket,0.5,GBP,FX,0.0,0.0,0.0,US
-EDOLLAR_fsb,US STIR Eurodollar,0.5,GBP,Bond,0.0,0.0,0.0,US
 EUA_fsb,Carbon Emissions,0.25,GBP,OilGas,0.0,0.0,0.0,EMEA
 EUR_fsb,EUR/USD Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURCAD_fsb,EUR/CAD Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
@@ -51,7 +50,6 @@ JPY_fsb,USD/JPY Forward,1.0,GBP,FX,0.0,0.0,0.0,ASIA
 JSE40_fsb,South Africa 40,0.25,GBP,Equity,0.0,0.0,0.0,EMEA
 LEANHOG_fsb,Lean Hogs,0.1,GBP,Ags,0.0,0.0,0.0,US
 LIVECOW_fsb,Live Cattle,0.5,GBP,Ags,0.0,0.0,0.0,US
-LUMBER_fsb,Random Length Lumber,0.1,GBP,Ags,0.0,0.0,0.0,US
 LUMBER-new_fsb,Lumber Future,0.1,GBP,Ags,0.0,0.0,0.0,US
 MSCISING_fsb,Singapore Blue Chip,20.0,GBP,Equity,0.0,0.0,0.0,ASIA
 NASDAQ_fsb,US Tech 100,0.5,GBP,Equity,0.0,0.0,0.0,US
