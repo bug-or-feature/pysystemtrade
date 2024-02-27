@@ -121,7 +121,7 @@ class updateFsbEpicPeriods(object):
         for cap in list(string.ascii_uppercase):
             numerator.append(cap)
 
-        month_types = ("Month", "MONTH", "month", "Mnth")
+        month_types = ("Month", "MONTH", "month", "Mnth", "Mth")
         for num in numerator:
             for month in month_types:
                 results.append(f"{month}{num}")
