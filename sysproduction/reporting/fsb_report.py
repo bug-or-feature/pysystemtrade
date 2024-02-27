@@ -14,7 +14,7 @@ from sysproduction.data.production_data_objects import (
 MISSING_EPIC_HEADER_TEXT = body_text(
     "Instruments where the epic for a given contract is yet to be defined.\n"
     "This can happen for forward contracts where there are only two epics, but should "
-    "never happen for priced. Missing forwards will normally resolve just after a  "
+    "never happen for priced. Missing forwards will normally resolve just after a "
     "roll, but if IG skip a contract will need manual action. "
 )
 
