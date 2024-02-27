@@ -142,7 +142,7 @@ SMI_fsb,IX.D.SMI,GBP,1.0,False,MONTH1|MONTH2,0.1,SZ
 SOFR,,,,,na,,SQ
 SOFR_fsb,IR.D.SRA,GBP,100.0,False,Month1|Month3|MONTH7|Mnth10|Mnth11|Month12|Month13|Month16|Month17|MonthM,0.2,SQ
 SONIA3,,,,,na,,MZ
-SONIA3_fsb,IR.D.FSS,GBP,100.0,False,Month2|Month3|Month4|Month6|Month7|Month8|month9|Month10|Month11|MONTHC,0.2,MZ
+SONIA3_fsb,IR.D.FSS,GBP,100.0,False,Month2|Month3|Month4|Month6|Month7|Month8|month9|Month10|Month11|MONTHC|Mth14,0.2,MZ
 SOYBEAN,,,,,na,,ZS
 SOYBEAN_fsb,CO.D.S,GBP,1.0,False,Month1|Month2,0.1,ZS
 SOYMEAL,,,,,na,,ZM
