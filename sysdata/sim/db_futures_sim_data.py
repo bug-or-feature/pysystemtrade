@@ -28,6 +28,7 @@ class dbFuturesSimData(genericBlobUsingFuturesSimData):
         if data is arg_not_supplied:
             data = dataBlob(
                 log=log,
+                csv_data_paths=csv_data_paths,
                 class_list=[
                     get_class_for_data_type(FUTURES_ADJUSTED_PRICE_DATA),
                     get_class_for_data_type(FUTURES_MULTIPLE_PRICE_DATA),
