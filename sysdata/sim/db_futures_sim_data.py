@@ -37,7 +37,6 @@ class dbFuturesSimData(genericBlobUsingFuturesSimData):
                     get_class_for_data_type(ROLL_PARAMETERS_DATA),
                     get_class_for_data_type(STORED_SPREAD_DATA),
                 ],
-                csv_data_paths=csv_data_paths,
             )
 
         super().__init__(data=data)
