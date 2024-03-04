@@ -18,7 +18,7 @@ def static_fsb_instrument_selection_report(
 ):
     if selection_config is None:
         selection_config = [
-            [2000, 1],
+            [2500, 1],
             [5000, 3],
             [10000, 5],
             [15000, 8],
