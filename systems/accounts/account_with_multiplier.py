@@ -96,6 +96,7 @@ class accountWithMultiplier(accountPortfolio, accountBufferingSystemLevel):
 
         buffered_position = (
             self._get_buffered_position_given_optimal_position_and_buffers(
+                instr_code=instrument_code,
                 optimal_position=optimal_position,
                 pos_buffers=pos_buffers,
                 roundpositions=roundpositions,
