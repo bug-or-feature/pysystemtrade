@@ -221,7 +221,7 @@ forecast_scalars:
 #
 # Capital correction
 #
-percentage_vol_target: 15.0
+percentage_vol_target: 25.0
 # notional_trading_capital: 50000
 base_currency: "GBP"
 
@@ -411,7 +411,6 @@ exclude_instrument_lists:
     - EURGBP_fsb
     - FED_fsb
     - JGB_fsb
-    - JPY_fsb
     - MSCISING_fsb
     - OATIES_fsb
     - SHATZ_fsb
