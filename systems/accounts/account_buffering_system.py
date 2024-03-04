@@ -124,7 +124,7 @@ class accountBufferingSystemLevel(accountInputs):
                 optimal_position,
                 pos_buffers,
                 trade_to_edge=trade_to_edge,
-                roundpositions=roundpositions,
+                roundpositions=False,
                 min_position=min_bet,
             )
         else:
