@@ -29,6 +29,7 @@ def fsb_system(
             csv_data_paths=dict(
                 csvFuturesInstrumentData="fsb.csvconfig",
                 csvRollParametersData="fsb.csvconfig",
+                csvSpreadCostData="fsb.csvconfig",
             )
         )
 
