@@ -221,7 +221,7 @@ forecast_scalars:
 #
 # Capital correction
 #
-percentage_vol_target: 25.0
+percentage_vol_target: 15.0
 # notional_trading_capital: 50000
 base_currency: "GBP"
 
@@ -369,7 +369,14 @@ forecast_weights:
 #  - WHEAT_fsb
 #  - VIX_fsb
 
-#
+# buffering / position inertia
+buffer_method: forecast
+buffer_size: 0.10
+buffer_trade_to_edge: True
+# costs and accounting
+use_SR_costs: True
+vol_normalise_currency_costs: True
+multiply_roll_costs_by: 0.5
 
 exclude_instrument_lists:
   # ignore_instruments are ignored in backtests
