@@ -154,7 +154,7 @@ fsb_instrument_list_report_config = reportConfig(
 fsb_static_selection_report_config = reportConfig(
     title="FSB Static Instrument Selection report",
     function="sysproduction.reporting.adhoc.static_fsb_system_report.static_fsb_instrument_selection_report",
-    output="email",
+    output="console",
     selection_config=[
         [2500, 2],
         [5000, 3],
