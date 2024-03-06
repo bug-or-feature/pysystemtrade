@@ -296,6 +296,44 @@ forecast_weights:
             normmom64: 0.5
             breakout320: 0.5
 
+# only instruments with min bet of 1.0
+#instruments:
+#  - GOLD_fsb
+#  - EURGBP_fsb
+#  - EUROSTX_fsb
+#  - NZD_fsb
+#  - SP500_fsb
+#  - AUD_fsb
+#  - SILVER_fsb
+#  - CHF_fsb
+#  - EUR_fsb
+#  - CAD_fsb
+#  - AUDJPY_fsb
+#  - GBP_fsb
+#  - ASX_fsb
+#  - CAC_fsb
+#  - JPY_fsb
+#  - SOYOIL_fsb
+#  - BRENT_W_fsb
+#  - CRUDE_W_fsb
+#  - COCOA_fsb
+
+#instruments:
+#  - LEANHOG_fsb # small 0.10
+#  - US5_fsb   # small 0.50
+#  - GOLD_fsb  # small 1.00
+#  - AEX_fsb   # small 5.00
+#  - DOW_fsb     # med 0.20
+#  - AUD_fsb        # med 0.50
+#  - GBP_fsb         # med 1.00
+#  - PLAT_fsb        # med 3.00
+#  - SUGAR_WHITE_fsb # med 5.00
+#  - VIX_fsb        # med 100.00
+#  - OJ_fsb       # large 0.25
+#  - HEATOIL_fsb # large 0.50
+#  - COCOA_fsb  # large 1.00
+#  - WHEAT_fsb # large 15.00
+
 #instruments:
 #  - LEANHOG_fsb
 #  - IBXEX_fsb
