@@ -269,11 +269,13 @@ def net_SR_for_instrument_in_system(
         system, instrument_code, instrument_weight_idm=instrument_weight_idm
     )
     trading_cost = calculate_trading_cost(system, instrument_code)
+    min_pos = minimum_position(system, instrument_code)
 
     return net_SR_for_instrument(
+        instrument_code,
         maximum_position=maximum_pos_final,
         trading_cost=trading_cost,
-        minimum_position=minimum_position(system, instrument_code),
+        minimum_position=min_pos,
     )
 
 
@@ -303,6 +305,7 @@ def calculate_trading_cost(system, instrument_code):
 
 
 def net_SR_for_instrument(
+    instrument_code,
     maximum_position,
     trading_cost,
     notional_SR=0.5,
@@ -312,16 +315,31 @@ def net_SR_for_instrument(
     return (
         notional_SR
         - (trading_cost * cost_multiplier)
-        - size_penalty(maximum_position, minimum_position)
+        - size_penalty(instrument_code, maximum_position, minimum_position)
     )
 
 
-def size_penalty(maximum_position, minimum_position=1):
-    multiple_of_min_bet = maximum_position / minimum_position
-    if multiple_of_min_bet < 0.5:
+def size_penalty(instr_code, maximum_position, min_bet=1.0):
+    if maximum_position < 0.5:
         return 9999
-    else:
-        return 0.125 / multiple_of_min_bet**2
+
+    return 0.125 / maximum_position**2
+
+
+# def size_penalty(instr_code, maximum_position, min_bet=1.0):
+#     # multiple_of_min_bet = maximum_position / minimum_position
+#     if maximum_position < (min_bet * 0.5):
+#         return 9999
+#     else:
+#         return min_bet * (0.125 / maximum_position**2)
+
+
+# def size_penalty(instr_code, maximum_position, min_bet=1.0):
+#     # multiple_of_min_bet = maximum_position / minimum_position
+#     if maximum_position < (min_bet * 0.5):
+#         return 9999
+#     else:
+#         return 0.125 / maximum_position**2
 
 
 # override this for non futures
