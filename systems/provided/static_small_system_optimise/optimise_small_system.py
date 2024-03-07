@@ -327,11 +327,18 @@ def size_penalty(instr_code, maximum_position, min_bet=1.0):
 
 
 # def size_penalty(instr_code, maximum_position, min_bet=1.0):
-#     # multiple_of_min_bet = maximum_position / minimum_position
-#     if maximum_position < (min_bet * 0.5):
+#     if maximum_position < 0.5:
+#         return 9999
+#
+#     return 0.125 / maximum_position**2
+
+
+# def size_penalty(instr_code, maximum_position, min_bet=1.0):
+#     multiple_of_min_bet = maximum_position / min_bet
+#     if maximum_position < multiple_of_min_bet:
 #         return 9999
 #     else:
-#         return min_bet * (0.125 / maximum_position**2)
+#         return 0.125 / multiple_of_min_bet**2
 
 
 # def size_penalty(instr_code, maximum_position, min_bet=1.0):
