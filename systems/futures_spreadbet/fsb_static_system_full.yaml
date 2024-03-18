@@ -3,9 +3,8 @@
 use_forecast_weight_estimates: False
 use_instrument_weight_estimates: False
 use_forecast_scale_estimates: False
-
-use_forecast_div_mult_estimates: True
-use_instrument_div_mult_estimates: True
+use_forecast_div_mult_estimates: False
+use_instrument_div_mult_estimates: False
 #
 #
 #
@@ -89,20 +88,134 @@ trading_rules:
      other_args:
          Lfast: 64
          Lslow: 256
+  accel16:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 16
+  accel32:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 32
+  accel64:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 64
+  breakout10:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 10
+  breakout20:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 20
+  breakout40:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 40
+  breakout80:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 80
+  breakout160:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 160
+  breakout320:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 320
+  normmom2:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+  normmom4:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  normmom8:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  normmom16:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  normmom32:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  normmom64:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 64
+         Lslow: 256
 
 #
 forecast_cap: 20.0
 #
 forecast_scalars:
-  momentum4: 8.539940954709955
-  momentum8: 5.949404365193165
-  momentum16: 4.104172020369661
-  momentum32: 2.786994330124792
-  momentum64: 1.9093945630747895
-  carry10: 27.815707053556984
-  carry30: 28.384062881349813
-  carry60: 28.40072429176199
-  carry125: 29.366474500729886
+  accel16: 7.6759225994693585
+  accel32: 5.3347643128221085
+  accel64: 3.6278373495463194
+  breakout10: 0.7124878815135691
+  breakout20: 0.7986982879195087
+  breakout40: 0.828104233943375
+  breakout80: 0.8491581048752734
+  breakout160: 0.850191594352648
+  breakout320: 0.8418667533932289
+  carry10: 21.80285759891443
+  carry30: 23.166615908332364
+  carry60: 24.901032606912874
+  carry125: 26.839077772549775
+  momentum4: 10.292010239099067
+  momentum8: 7.022014640044213
+  momentum16: 4.74792669493723
+  momentum32: 3.1791398979769436
+  momentum64: 2.1603119041075742
+  normmom2: 42.22705063220413
+  normmom4: 28.78459513486178
+  normmom8: 19.260226272955382
+  normmom16: 12.898448623165972
+  normmom32: 8.75682098964825
+  normmom64: 5.967039006327134
 
 #
 # forecast combination
@@ -110,36 +223,12 @@ forecast_scalars:
 # Capital correction
 #
 percentage_vol_target: 25.0
-notional_trading_capital: 50000
+notional_trading_capital: 1000000
 base_currency: "GBP"
 
 #
 # Portfolio creation
 #
-
-#forecast_weights:
-#  auto_weight_from_grouping:
-#    parameters:
-#      use_approx_DM: False
-#      apply_forecast_post_ceiling_cost_SR_before_weighting: True
-#    groups:
-#      convergent:
-#        weight: 0.4
-#        carry:
-#          weight: 1.0
-#          carry10: 0.25
-#          carry125: 0.25
-#          carry30: 0.25
-#          carry60: 0.25
-#      divergent:
-#        weight: 0.6
-#        trend:
-#          weight: 1.0
-#          momentum4: 0.2
-#          momentum8: 0.2
-#          momentum16: 0.2
-#          momentum32: 0.2
-#          momentum64: 0.2
 
 forecast_weights:
   auto_weight_from_grouping:
@@ -269,7 +358,7 @@ instrument_weights:
             US2_fsb: 0.2
             US5_fsb: 0.2
             US10_fsb: 0.2
-            US30_fsb: 0.2
+            US30Y_fsb: 0.2
             US30U_fsb: 0.2
           STIR:
             weight: 0.4
@@ -399,80 +488,80 @@ instrument_weights:
         VIX_fsb: 0.5
 
 forecast_div_multiplier:
-  AEX_fsb: 2.0966654434816365
-  ASX_fsb: 2.0966654434816365
-  AUDJPY_fsb: 2.0966654434816365
-  AUD_fsb: 2.0966654434816365
-  BOBL_fsb: 2.0966654434816365
-  BRENT_W_fsb: 2.0966654434816365
-  BTP3_fsb: 2.0966654434814513
-  BTP_fsb: 2.0966654434816365
-  BUND_fsb: 2.0966654434816365
-  BUXL_fsb: 2.0966654434816365
-  CAC_fsb: 2.0966654434816365
-  CAD_fsb: 2.0966654434816365
-  CHF_fsb: 2.0966654434816365
-  COCOA_LDN_fsb: 2.0966654434816365
-  COCOA_fsb: 2.0966654434816365
-  COFFEE_fsb: 2.0966654434816365
-  COPPER_fsb: 2.0966654434816365
-  CORN_fsb: 2.0966654434816365
-  COTTON2_fsb: 2.0966654434816365
-  CRUDE_W_fsb: 2.0966654434816365
-  DAX_fsb: 2.0966654434816365
-  DOW_fsb: 2.0966654434816365
-  DX_fsb: 2.0966654434816365
-  EUA_fsb: 2.0966654434816365
-  EURIBOR-ICE_fsb: 2.0966654434816365
-  EUROSTX_fsb: 2.0966654434816365
-  EUR_fsb: 2.0966654434816365
-  FED_fsb: 2.0966654434816365
-  FTSE100_fsb: 2.0966654434816365
-  GASOIL_fsb: 2.0966654434816365
-  GASOLINE_fsb: 2.0966654434816365
-  GAS_US_fsb: 2.0966654434816365
-  GBP_fsb: 2.0966654434816365
-  GILT_fsb: 2.0966654434816365
-  GOLD_fsb: 2.0966654434816365
-  HANG_fsb: 2.0966654434816365
-  HEATOIL_fsb: 2.0966654434816365
-  IBXEX_fsb: 2.09665121432917
-  JGB_fsb: 2.09665121432917
-  JPY_fsb: 2.0966654434816365
-  LEANHOG_fsb: 2.0966654434816365
-  LIVECOW_fsb: 2.0966654434816365
-  MSCISING_fsb: 2.09665121432917
-  NASDAQ_fsb: 2.0966654434816365
-  NIKKEI_fsb: 2.0966654434816365
-  NZD_fsb: 2.0966654434816365
-  OATIES_fsb: 2.0966654434816365
-  OAT_fsb: 2.096665443481135
-  OJ_fsb: 2.0966654434816365
-  OMXS30_fsb: 2.0966512143290026
-  PALLAD_fsb: 2.0966654434816365
-  PLAT_fsb: 2.0966654434816365
-  RICE_fsb: 2.0966654434816365
-  ROBUSTA_fsb: 2.0966654434816365
-  RUSSELL_fsb: 2.0966654434816365
-  SHATZ_fsb: 2.0966654434816365
-  SILVER_fsb: 2.0966654434816365
-  SMI_fsb: 2.0966654434816365
-  SONIA3_fsb: 1.859770149075154
-  SOYBEAN_fsb: 2.0966654434816365
-  SOYMEAL_fsb: 2.0966654434816365
-  SOYOIL_fsb: 2.0966654434816365
-  SP500_fsb: 2.0966654434816365
-  SUGAR11_fsb: 2.0966654434816365
-  SUGAR_WHITE_fsb: 2.0966654434816365
-  US10_fsb: 2.0966654434816365
-  US2_fsb: 2.0966654434816365
-  US30U_fsb: 2.0966654434816365
-  US30_fsb: 2.0966654434816365
-  US5_fsb: 2.0966654434816365
-  V2X_fsb: 2.0966654434768395
-  VIX_fsb: 2.0966654434816365
-  WHEAT_ICE_fsb: 2.0966654434816365
-  WHEAT_fsb: 2.0966654434816365
+  AEX_fsb: 1.6752205295490035
+  ASX_fsb: 1.4672461853481367
+  AUDJPY_fsb: 1.4673203024558876
+  AUD_fsb: 1.3894604895788722
+  BOBL_fsb: 1.543621424434351
+  BRENT_W_fsb: 1.6438306895695303
+  BTP3_fsb: 1.4541369020600416
+  BTP_fsb: 1.5869357603446863
+  BUND_fsb: 1.6103282066506412
+  BUXL_fsb: 1.6667259923758029
+  CAC_fsb: 1.5045285618582893
+  CAD_fsb: 1.4587502668787375
+  CHF_fsb: 1.388640829490002
+  COCOA_LDN_fsb: 1.5956800019435189
+  COCOA_fsb: 1.7106154192622285
+  COFFEE_fsb: 1.6161133485803942
+  COPPER_fsb: 1.7353903149220302
+  CORN_fsb: 1.5741752477366744
+  COTTON2_fsb: 1.5222342139152523
+  CRUDE_W_fsb: 1.6361138164350524
+  DAX_fsb: 1.496244017067044
+  DOW_fsb: 1.4610662410097404
+  DX_fsb: 1.3993550084754658
+  EUA_fsb: 1.5270207217398195
+  EURIBOR-ICE_fsb: 1.7077350723079285
+  EUROSTX_fsb: 1.706784704782437
+  EUR_fsb: 1.4004635276997497
+  FED_fsb: 1.4286398784128458
+  FTSE100_fsb: 1.4699793096887905
+  GASOIL_fsb: 1.610705336933131
+  GASOLINE_fsb: 1.5518042808170849
+  GAS_US_fsb: 1.5606311009785125
+  GBP_fsb: 1.441124926878119
+  GILT_fsb: 1.6393393301360828
+  GOLD_fsb: 1.550285852800159
+  HANG_fsb: 1.6737779963770028
+  HEATOIL_fsb: 1.6225020418247313
+  IBXEX_fsb: 1.5416136299832859
+  JGB_fsb: 1.5441328611581118
+  JPY_fsb: 1.4547499032148203
+  LEANHOG_fsb: 1.5515496905667685
+  LIVECOW_fsb: 1.5095243203933457
+  MSCISING_fsb: 1.6657496473217577
+  NASDAQ_fsb: 1.4750274406213808
+  NIKKEI_fsb: 1.478002870963287
+  NZD_fsb: 1.463963498777848
+  OATIES_fsb: 1.3932696673309726
+  OAT_fsb: 1.6045327100985014
+  OJ_fsb: 1.591968539364134
+  OMXS30_fsb: 1.6366865178852292
+  PALLAD_fsb: 1.3960872754146127
+  PLAT_fsb: 1.4530484667568973
+  RICE_fsb: 1.5108987607543616
+  ROBUSTA_fsb: 1.600194183442422
+  RUSSELL_fsb: 1.4759433039478616
+  SHATZ_fsb: 1.549245029774881
+  SILVER_fsb: 1.4822644804016591
+  SMI_fsb: 1.6920953282760982
+  SONIA3_fsb: 1.516129936426928
+  SOYBEAN_fsb: 1.5894428988593452
+  SOYMEAL_fsb: 1.579785262380086
+  SOYOIL_fsb: 1.6480390184351268
+  SP500_fsb: 1.4630290566842425
+  SUGAR11_fsb: 1.5742349719247724
+  SUGAR_WHITE_fsb: 1.5785946486406006
+  US10_fsb: 1.693580326930053
+  US2_fsb: 1.551581349075492
+  US30U_fsb: 1.6981491045628216
+  US30Y_fsb: 1.696119899725007
+  US5_fsb: 1.6246923988778719
+  V2X_fsb: 1.3463870633849353
+  VIX_fsb: 1.4986152195193456
+  WHEAT_ICE_fsb: 1.3628857344685426
+  WHEAT_fsb: 1.581590054899753
 
 instrument_div_multiplier: 2.5
 #
@@ -518,6 +607,7 @@ exclude_instrument_lists:
     - BOBL_fsb
     - BTP3_fsb
     - EURGBP_fsb
+    - EURIBOR-ICE_fsb
     - FED_fsb
     - JGB_fsb
     - JPY_fsb
