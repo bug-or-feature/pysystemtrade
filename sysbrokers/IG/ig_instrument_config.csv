@@ -70,7 +70,7 @@ GAS_NL_fsb,EN.D.ICETTF,GBP,1000.0,False,Month1|Month2|Month3|Month4|Month5|Month
 GAS_UK,,,,,na,,NF
 GAS_UK_fsb,EN.D.ICENG,GBP,1000.0,False,Month1|Month2|Month3|Month4|Month5|Month6|Month7|Month8|Month9|Month10|Month11,0.1,NF
 GAS_US,,,,,na,,NG
-GAS_US_fsb,EN.D.NG,GBP,1000.0,False,Month1|Month2,0.1,NG
+GAS_US_fsb,EN.D.NG,GBP,1000.0,False,Month1|Month2|Month3,0.1,NG
 GASOIL,,,,,na,,LF
 GASOIL_fsb,EN.D.LGO,GBP,1.0,False,Month1|Month2,0.1,LF
 GASOLINE,,,,,na,,RB
