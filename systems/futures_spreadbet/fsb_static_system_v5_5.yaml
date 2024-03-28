@@ -1,0 +1,392 @@
+# YAML
+# start_date: 2020-01-01
+use_forecast_weight_estimates: False
+use_instrument_weight_estimates: False
+use_forecast_scale_estimates: False
+
+use_forecast_div_mult_estimates: False
+use_instrument_div_mult_estimates: False
+#
+#
+#
+#
+# Raw data
+#
+#
+# Trading rules
+#
+volatility_calculation:
+  func: "sysquant.estimators.vol.mixed_vol_calc"
+  days: 35
+  min_periods: 10
+  vol_abs_min: 0.0000000001
+  slow_vol_years: 20
+  proportion_of_slow_vol: 0.35
+  backfill: True
+#
+trading_rules:
+  carry10:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 10
+  carry30:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 30
+  carry60:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 60
+  carry125:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 125
+  momentum4:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  momentum8:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  momentum16:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  momentum32:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  momentum64:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+  accel16:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 16
+  accel32:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 32
+  accel64:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 64
+  breakout10:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 10
+  breakout20:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 20
+  breakout40:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 40
+  breakout80:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 80
+  breakout160:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 160
+  breakout320:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 320
+  normmom2:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+  normmom4:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  normmom8:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  normmom16:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  normmom32:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  normmom64:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+
+forecast_cap: 20.0
+#
+forecast_scalars:
+  momentum4: 9.64110105510109
+  momentum8: 6.83483272250168
+  momentum16: 4.873798925900704
+  momentum32: 3.496509469611604
+  momentum64: 2.5317746215404915
+  carry10: 36.65709734262937
+  carry30: 38.80993693337063
+  carry60: 41.807652257796114
+  carry125: 47.008219995718825
+  accel16: 7.0519319276977
+  accel32: 5.072172102407444
+  accel64: 3.60483366065117
+  breakout10: 0.722373559146361
+  breakout20: 0.8124857828766572
+  breakout40: 0.8568291290017438
+  breakout80: 0.9074682933671988
+  breakout160: 0.9347237539327788
+  breakout320: 0.971560452159631
+  normmom2: 36.75850590424999
+  normmom4: 26.656700766302258
+  normmom8: 19.154360155780516
+  normmom16: 13.772394219465061
+  normmom32: 9.734263162083103
+  normmom64: 6.494354666335101
+#
+# forecast combination
+#
+# Capital correction
+#
+percentage_vol_target: 15.0
+notional_trading_capital: 25000
+base_currency: "GBP"
+
+#
+# Portfolio creation
+#
+
+forecast_weights:
+  auto_weight_from_grouping:
+    parameters:
+      use_approx_DM: False
+      apply_forecast_post_ceiling_cost_SR_before_weighting: True
+    groups:
+      convergent:
+        weight: 0.4
+        carry:
+          weight: 1.0
+          carry10: 0.25
+          carry125: 0.25
+          carry30: 0.25
+          carry60: 0.25
+      divergent:
+        weight: 0.6
+        speed1:
+          weight: 0.1
+          trend:
+            weight: 1.0
+            breakout10: 0.333
+            normmom2: 0.333
+            momentum4: 0.333
+        speed2:
+          weight: 0.18
+          accel:
+            weight: 0.4
+            accel16: 1.0
+          trend:
+            weight: 0.6
+            breakout20: 0.333
+            normmom4: 0.333
+            momentum8: 0.333
+        speed3:
+          weight: 0.18
+          accel:
+            weight: 0.4
+            accel32: 1.0
+          trend:
+            weight: 0.6
+            breakout40: 0.333
+            normmom8: 0.333
+            momentum16: 0.333
+        speed4:
+          weight: 0.18
+          accel:
+            weight: 0.4
+            accel64: 1.0
+          trend:
+            weight: 0.6
+            breakout80: 0.333
+            normmom16: 0.333
+            momentum32: 0.333
+        speed5:
+          weight: 0.18
+          trend:
+            weight: 1.0
+            breakout160: 0.333
+            normmom32: 0.333
+            momentum64: 0.333
+        speed6:
+          weight: 0.18
+          trend:
+            weight: 1.0
+            normmom64: 0.5
+            breakout320: 0.5
+
+instrument_weights:
+  auto_weight_from_grouping:
+    parameters:
+      use_approx_DM: True
+    groups:
+      ags:
+        weight: 0.167
+        ROBUSTA_fsb: 1.0
+      rates:
+        weight: 0.167
+        BTP_fsb: 1.0
+      energies:
+        weight: 0.167
+        GAS_US_fsb: 1.0
+      equity:
+        weight: 0.167
+        DOW_fsb: 1.0
+      fx:
+        weight: 0.167
+        EUR_fsb: 1.0
+      metals:
+        weight: 0.167
+        GOLD_fsb: 1.0
+#      vol:
+#        weight: 0.143
+#        VIX_fsb: 1.0
+
+instrument_div_multiplier: 2.01
+forecast_div_multiplier: 1.57
+
+
+# buffering / position inertia
+buffer_method: forecast
+buffer_size: 0.10
+buffer_trade_to_edge: True
+# costs and accounting
+use_SR_costs: True
+vol_normalise_currency_costs: True
+multiply_roll_costs_by: 1.0
+
+#
+# duplicated/excluded instruments are ignored in backtests
+# we still collect price data for them in production, do rolls etc
+# this is to avoid double counting of basically the same instrument
+# anything in the 'exclude' list is ignored in backtests
+# we use the 'include section to match up for reporting when deciding which to trade
+# Be careful when swapping between instruments, a bit dangerous if a position is held...
+# You can override this by modifying the backtest config .yaml file used in either sim or production
+duplicate_instruments:
+  include:
+    kospi: 'KOSPI'
+  exclude:
+    kospi: 'KOSPI_mini'
+exclude_instrument_lists:
+  # ignore_instruments are ignored in backtests
+  # we still collect price data for them in production, do rolls etc
+  # You can override this by modifying the backtest config .yaml file used in either sim or production
+  # If you want to ignore because a duplicate market, use duplicate_instruments
+  # If you want to include in sim data, but not actually trade, use trading_restrictions
+  #
+  # BEST FOR INSTRUMENTS THAT LOOK EXPENSIVE, BUT WHERE WE HAVEN'T GOT ACCURATE DATA YET
+  #
+  # REVIEW REGULARLY AND CHECK THESE INSTRUMENTS AREN'T BETTER ELSEWHERE...
+  ignore_instruments:
+    - 'KOSPI' # not supported on IG
+  #
+  # Here we put stuff we can't trade, but for which we still want to bring in prices in sim
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # NOTE: This will be regionally biased, you will probably want to override this in private_config.yaml
+  #
+  trading_restrictions:
+    - BITCOIN_fsb
+  # These are markets that are too expensive or illiquid to actually trade
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # Run interactive controls to get a list of suggested markets here
+  # To override this list, change in sim .yaml config (sim) and private_config.yaml (production)
+  bad_markets:
+    - BOBL_fsb
+    - BTP3_fsb
+    - EURGBP_fsb
+    - FED_fsb
+    - JGB_fsb
+    - JPY_fsb
+    - MSCISING_fsb
+    - OATIES_fsb
+    - SHATZ_fsb
+    - SONIA3_fsb
+    - US2_fsb
+    - US5_fsb
+    - V2X_fsb
