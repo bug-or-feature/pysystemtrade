@@ -436,6 +436,7 @@ exclude_instrument_lists:
     - GAS_UK_fsb
     - GBPCHF_fsb
     - GBPJPY_fsb
+    - GOLD
     - JSE40_fsb
     - LUMBER_fsb
     - LUMBER-new_fsb
