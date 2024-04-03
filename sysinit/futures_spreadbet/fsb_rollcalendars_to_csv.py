@@ -5,7 +5,6 @@ from syscore.fileutils import resolve_path_and_filename_for_package
 from syscore.constants import arg_not_supplied
 from syscore.pdutils import print_full
 from syscore.text import remove_suffix
-from syscore.dateutils import Frequency
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
@@ -161,20 +160,19 @@ if __name__ == "__main__":
     # "AUDJPY_fsb"
     # "BTP3_fsb"
 
-    # "CHFJPY_fsb"
-    # "EURCAD_fsb"
-    # "EURCHF_fsb"
-    # "GAS_NL_fsb"
-    # "GAS_UK_fsb"
-    # "GBPCHF_fsb"
-    # "GBPJPY_fsb"
-    # "LUMBER-new_fsb"
-    # "NOK_fsb"
-    # "SEK_fsb"
-    # "SOFR_fsb"
-
     # XXX_fsb
-    instr_code = "JPY_fsb"
+    # CHFJPY_fsb
+    # EURCAD_fsb
+    # EURCHF_fsb
+    # GAS_NL_fsb
+    # GAS_UK_fsb
+    # GBPCHF_fsb
+    # GBPJPY_fsb
+    # LUMBER-new_fsb
+    # NOK_fsb
+    # SEK_fsb
+
+    instr_code = "CHFJPY_fsb"
 
     # run with database prices
     # prices = arcticFuturesContractPriceData()
