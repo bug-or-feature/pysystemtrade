@@ -19,7 +19,11 @@ def compare_adjusted_prices(instr, draw=False):
         )
     )
 
-    fut_data = csvFuturesSimData()
+    fut_data = csvFuturesSimData(
+        csv_data_paths=dict(
+            csvFuturesAdjustedPricesData="/Users/ageach/Dev/work/pysystemtrade-fsb/data/futures/adjusted_prices_csv",
+        )
+    )
 
     norgate_data = csvFuturesSimData(
         csv_data_paths=dict(
