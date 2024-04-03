@@ -10,6 +10,8 @@ from systems.futures_spreadbet.fsb_system import fsb_system
 from systems.provided.static_small_system_optimise.optimise_small_system import (
     find_best_ordered_set_of_instruments,
     get_correlation_matrix,
+    calculate_maximum_position,
+    minimum_position,
 )
 
 
@@ -58,7 +60,7 @@ def static_fsb_instrument_selection_report(
 
         text_to_output = body_text(
             f"\n\nFor capital of {capital}, {len(instrument_list)} instruments, "
-            f"selected order: {str(instrument_list)}"
+            f"selected order: {str(list_max_min(system, instrument_list))}"
         )
         formatted_output.append(text_to_output)
 
@@ -83,6 +85,15 @@ def static_system_results_for_capital(
         max_instrument_weight=max_instrument_weight,
         notional_starting_IDM=notional_starting_IDM,
     )
+
+
+def list_max_min(system: System, instr_list):
+    expanded = []
+    for instr_code in instr_list:
+        max_position = round(calculate_maximum_position(system, instr_code), 2)
+        min_bet = minimum_position(system, instr_code)
+        expanded.append(f"{instr_code}: {max_position=} {min_bet=}")
+    return expanded
 
 
 if __name__ == "__main__":
