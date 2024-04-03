@@ -4,13 +4,11 @@ from syscore.fileutils import resolve_path_and_filename_for_package
 from syscore.exceptions import missingInstrument
 from syscore.dateutils import Frequency, MIXED_FREQ
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
-from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
-from sysinit.futures_spreadbet.contract_prices_from_csv_to_db import (
-    init_db_with_csv_futures_prices_for_code,
-    init_db_with_csv_futures_prices_for_contract,
+from sysinit.futures.contract_prices_from_split_freq_csv_to_db import (
+    init_db_with_split_freq_csv_prices_for_code,
 )
 from sysbrokers.IG.ig_instruments_data import (
     IgFuturesInstrumentData,
@@ -86,39 +84,8 @@ if __name__ == "__main__":
     #     "HANG", None, datapath, csv_config=BARCHART_CONFIG, freq=HOURLY_FREQ
     # )
 
-    # import by instrument with MIXED frequency
-    for instr in ["NOK"]:
-        init_db_with_csv_futures_prices_for_code(
-            instr, datapath, csv_config=BARCHART_CONFIG, freq=MIXED_FREQ
+    # for instr in ["CHFJPY", "EURCAD", "EURCHF", "GAS_NL", "GAS_UK", "GBPCHF", "GBPJPY", "LUMBER-new", "NOK", "SEK"]:
+    for instr in ["CHFJPY"]:
+        init_db_with_split_freq_csv_prices_for_code(
+            instr, datapath=datapath, csv_config=BARCHART_CONFIG
         )
-
-    # import by instrument with split frequencies
-    # for instr in ["NOK"]:
-    #     init_db_with_csv_futures_prices_for_code(
-    #         instr, datapath=datapath, csv_config=BARCHART_CONFIG, freq=HOURLY_FREQ
-    #     )
-    #     init_db_with_csv_futures_prices_for_code(
-    #         instr, datapath=datapath, csv_config=BARCHART_CONFIG, freq=DAILY_PRICE_FREQ
-    #     )
-
-    # import by contract with MIXED frequency
-    # "DOW"
-    # for instr in ["HANG"]:
-    #     for contract in ["20160700", "20160800"]:
-    #         init_db_with_csv_futures_prices_for_contract(
-    #             instr, contract, datapath, freq=MIXED_FREQ
-    #         )
-
-    # import by contract with split frequencies
-    # for instr in ["NOK"]:
-    #     for contract in ["20210600"]:
-    #         init_db_with_csv_futures_prices_for_contract(
-    #             instr, contract, datapath, csv_config=BARCHART_CONFIG, freq=HOURLY_FREQ
-    #         )
-    #         init_db_with_csv_futures_prices_for_contract(
-    #             instr,
-    #             contract,
-    #             datapath,
-    #             csv_config=BARCHART_CONFIG,
-    #             freq=DAILY_PRICE_FREQ,
-    #         )
