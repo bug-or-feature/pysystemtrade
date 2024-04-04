@@ -164,28 +164,30 @@ if __name__ == "__main__":
     # CHFJPY_fsb
     # EURCAD_fsb
     # EURCHF_fsb
-    # GAS_NL_fsb
-    # GAS_UK_fsb
+
     # GBPCHF_fsb
     # GBPJPY_fsb
-    # LUMBER-new_fsb
     # NOK_fsb
     # SEK_fsb
 
-    instr_code = "CHFJPY_fsb"
+    # GAS_NL_fsb
+    # GAS_UK_fsb
+    # LUMBER-new_fsb
+
+    instr_code = "GAS_NL_fsb"
 
     # run with database prices
-    # prices = arcticFuturesContractPriceData()
+    prices = arcticFuturesContractPriceData()
 
     # run with csv prices
-    prices = csvFuturesContractPriceData(
-        datapath=resolve_path_and_filename_for_package(
-            get_production_config().get_element_or_default("barchart_path", "")
-            # get_production_config().get_element_or_missing_data("norgate_path")
-        ),
-        config=build_import_config(instr_code)
-        # config=build_norgate_import_config(instr_code)
-    )
+    # prices = csvFuturesContractPriceData(
+    #     datapath=resolve_path_and_filename_for_package(
+    #         get_production_config().get_element_or_default("barchart_path", "")
+    #         # get_production_config().get_element_or_missing_data("norgate_path")
+    #     ),
+    #     config=build_import_config(instr_code)
+    #     # config=build_norgate_import_config(instr_code)
+    # )
 
     # prices.get_prices_at_frequency_for_instrument("CHFJPY", Frequency.Day)
 

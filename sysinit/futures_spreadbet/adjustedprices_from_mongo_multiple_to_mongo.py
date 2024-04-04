@@ -69,11 +69,19 @@ def process_adjusted_prices_single_instrument(
 
 
 if __name__ == "__main__":
-    # AEX_fsb, BRENT_W_fsb
-    for instrument_code in ["JPY_fsb"]:
-        print(f"Creating adjusted prices for {instrument_code}")
+    # for instr in ["GAS_NL_fsb", "GAS_UK_fsb", "LUMBER-new_fsb"]:
+    for instr in [
+        "CHFJPY_fsb",
+        "EURCAD_fsb",
+        "EURCHF_fsb",
+        "GBPCHF_fsb",
+        "GBPJPY_fsb",
+        "NOK_fsb",
+        "SEK_fsb",
+    ]:
+        print(f"Creating adjusted prices for {instr}")
         process_adjusted_prices_single_instrument(
-            instrument_code,
+            instr,
             ADD_TO_ARCTIC=True,
             ADD_TO_CSV=True,
             csv_adj_data_path="fsb.adjusted_prices_csv",

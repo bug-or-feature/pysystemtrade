@@ -198,10 +198,18 @@ if __name__ == "__main__":
     # only change if you have written the files elsewhere
     csv_roll_data_path = "fsb.roll_calendars_csv"
 
-    # "AUDJPY_fsb", "BTP3_fsb"
-    for instrument_code in ["JPY_fsb"]:
+    # for instr in ["GAS_NL_fsb", "GAS_UK_fsb", "LUMBER-new_fsb"]:
+    for instr in [
+        "CHFJPY_fsb",
+        "EURCAD_fsb",
+        "EURCHF_fsb",
+        "GBPCHF_fsb",
+        "GBPJPY_fsb",
+        "NOK_fsb",
+        "SEK_fsb",
+    ]:
         process_multiple_prices_single_instrument(
-            instrument_code=instrument_code,
+            instrument_code=instr,
             adjust_calendar_to_prices=False,
             csv_multiple_data_path=csv_multiple_data_path,
             csv_roll_data_path=csv_roll_data_path,
