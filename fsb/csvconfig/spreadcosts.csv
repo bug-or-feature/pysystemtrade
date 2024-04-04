@@ -1,6 +1,6 @@
 Instrument,SpreadCost
-AEX_fsb,0.15
-ASX_fsb,2.0
+AEX_fsb,0.29
+ASX_fsb,1.5
 AUDJPY_fsb,4.5
 AUD_fsb,5.4
 BOBL_fsb,1.5
@@ -21,7 +21,7 @@ CORN,0.16
 CORN_fsb,0.51
 COTTON2_fsb,12.77
 CRUDE_W_fsb,3.0
-DAX_fsb,3.1
+DAX_fsb,6.4
 DOW_fsb,3.6
 DX_fsb,3.96
 EDOLLAR,0.0025
@@ -36,7 +36,7 @@ EUROSTX,0.48
 EUROSTX_fsb,1.9
 EUR_fsb,5.44
 FED_fsb,0.51
-FTSE100_fsb,2.1
+FTSE100_fsb,3.9
 GASOIL_fsb,0.52
 GASOLINE_fsb,15.0
 GAS_NL_fsb,50.0
@@ -49,7 +49,7 @@ GILT_fsb,1.0
 GOLD_fsb,0.3
 HANG_fsb,8.0
 HEATOIL_fsb,15.0
-IBXEX_fsb,5.0
+IBXEX_fsb,6.2
 JGB_fsb,2.1
 JPY_fsb,5.0
 JSE40_fsb,30.0
