@@ -16,11 +16,17 @@ def transfer_ig_prices_to_arctic_single(instr, datapath):
         instr,
         datapath,
         csv_config=ConfigCsvFuturesPrices(
-            input_date_index_name="DATETIME",
+            input_date_index_name="Date",
             input_skiprows=0,
             input_skipfooter=0,
             input_date_format="%Y-%m-%dT%H:%M:%S%z",
-        )
+        ),
+        # csv_config=ConfigCsvFuturesPrices(
+        #     input_date_index_name="DATETIME",
+        #     input_skiprows=0,
+        #     input_skipfooter=0,
+        #     input_date_format="%Y-%m-%dT%H:%M:%S%z",
+        # )
         # csv_config = ConfigCsvFuturesPrices(
         #     input_date_index_name="DATETIME",
         #     input_skiprows=0,
