@@ -34,7 +34,7 @@ def clone_data_for_instrument(
     )
 
     if write_to_csv:
-        clone_roll_calendar(instrument_from, instrument_to)
+        clone_roll_calendar(f"{instrument_from}_fsb", f"{instrument_to}_fsb")
 
     clone_multiple_prices(
         f"{instrument_from}_fsb",
