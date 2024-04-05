@@ -89,6 +89,8 @@ HEATOIL,,,,,na,,HO
 HEATOIL_fsb,EN.D.HO,GBP,10000.0,False,Month1|Month2,0.1,HO
 HANG,,,,,na,,HS
 HANG_fsb,IX.D.HANGSENG,GBP,1.0,False,NEAR|FAR|VFAR,0.1,HS
+IBEX,,,,,na,,EF
+IBEX_fsb,IX.D.IBEX,GBP,1.0,False,Month1|Month2,0.1,EF
 IBXEX,,,,,na,,EF
 IBXEX_fsb,IX.D.IBEX,GBP,1.0,False,Month1|Month2,0.1,EF
 JGB,,,,,na,,JX

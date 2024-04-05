@@ -44,6 +44,7 @@ GILT_fsb,Long Gilt,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 GOLD_fsb,Gold,1.0,GBP,Metals,0.0,0.0,0.0,US
 HANG_fsb,Hong Kong HS50,0.1,GBP,Equity,0.0,0.0,0.0,ASIA
 HEATOIL_fsb,Heating Oil,0.5,GBP,OilGas,0.0,0.0,0.0,US
+IBEX_fsb,Spain 35,0.2,GBP,Equity,0.0,0.0,0.0,EMEA
 IBXEX_fsb,Spain 35,0.2,GBP,Equity,0.0,0.0,0.0,EMEA
 JGB_fsb,Japanese Government Bond,0.5,GBP,Bond,0.0,0.0,0.0,ASIA
 JPY_fsb,USD/JPY Forward,1.0,GBP,FX,0.0,0.0,0.0,ASIA
