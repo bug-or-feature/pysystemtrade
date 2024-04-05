@@ -85,6 +85,9 @@ def init_db_with_split_freq_csv_prices_for_code(
         write_prices_for_contract_at_frequency(contract, daily, DAILY_PRICE_FREQ)
         write_prices_for_contract_at_frequency(contract, daily, MIXED_FREQ)
 
+        if len(daily) < 65:
+            problems.append(contract_date_str)
+
     print(f"Have hourly only .csv prices for: {str(hourly_only)}")
     for contract_date_str in hourly_only:
         print(f"Processing {contract_date_str}")
