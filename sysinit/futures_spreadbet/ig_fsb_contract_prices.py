@@ -1,7 +1,7 @@
 from sysdata.config.production_config import get_production_config
 from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
-from sysinit.futures_spreadbet.contract_prices_from_csv_to_db import (
+from sysinit.futures_spreadbet.fsb_contract_prices_from_csv_to_db import (
     init_db_with_csv_fsb_contract_prices_for_code,
     init_db_with_csv_fsb_contract_prices,
 )
