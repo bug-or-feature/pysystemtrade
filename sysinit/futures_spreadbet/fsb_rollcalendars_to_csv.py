@@ -174,7 +174,7 @@ if __name__ == "__main__":
     # GAS_UK_fsb
     # LUMBER-new_fsb
 
-    instr_code = "GAS_NL_fsb"
+    instr_code = "LUMBER-new_fsb"
 
     # run with database prices
     prices = arcticFuturesContractPriceData()

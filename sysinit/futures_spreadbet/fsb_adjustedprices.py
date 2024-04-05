@@ -69,16 +69,7 @@ def process_adjusted_prices_single_instrument(
 
 
 if __name__ == "__main__":
-    # for instr in ["GAS_NL_fsb", "GAS_UK_fsb", "LUMBER-new_fsb"]:
-    for instr in [
-        "CHFJPY_fsb",
-        "EURCAD_fsb",
-        "EURCHF_fsb",
-        "GBPCHF_fsb",
-        "GBPJPY_fsb",
-        "NOK_fsb",
-        "SEK_fsb",
-    ]:
+    for instr in ["GAS_NL_fsb", "GAS_UK_fsb", "LUMBER-new_fsb"]:
         print(f"Creating adjusted prices for {instr}")
         process_adjusted_prices_single_instrument(
             instr,
