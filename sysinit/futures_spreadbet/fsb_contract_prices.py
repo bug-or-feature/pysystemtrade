@@ -84,7 +84,7 @@ if __name__ == "__main__":
     #     "HANG", None, datapath, csv_config=BARCHART_CONFIG, freq=HOURLY_FREQ
     # )
 
-    for instr in ["GAS_NL", "GAS_UK", "LUMBER-new"]:
+    for instr in ["LUMBER-new"]:
         init_db_with_split_freq_csv_prices_for_code(
             instr, datapath=datapath, csv_config=BARCHART_CONFIG
         )

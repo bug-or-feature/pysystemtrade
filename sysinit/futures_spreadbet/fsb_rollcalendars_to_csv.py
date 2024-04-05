@@ -156,22 +156,7 @@ if __name__ == "__main__":
     if args is not None:
         method = sys.argv[1]
 
-    # done
-    # "AUDJPY_fsb"
-    # "BTP3_fsb"
-
     # XXX_fsb
-    # CHFJPY_fsb
-    # EURCAD_fsb
-    # EURCHF_fsb
-
-    # GBPCHF_fsb
-    # GBPJPY_fsb
-    # NOK_fsb
-    # SEK_fsb
-
-    # GAS_NL_fsb
-    # GAS_UK_fsb
     # LUMBER-new_fsb
 
     instr_code = "LUMBER-new_fsb"
