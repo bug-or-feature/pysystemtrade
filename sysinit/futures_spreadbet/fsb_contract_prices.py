@@ -3,9 +3,14 @@ from sysdata.data_blob import dataBlob
 from syscore.fileutils import resolve_path_and_filename_for_package
 from syscore.exceptions import missingInstrument
 from syscore.dateutils import Frequency, MIXED_FREQ
-from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
+from sysdata.csv.csv_futures_contract_prices import (
+    ConfigCsvFuturesPrices,
+)
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
+)
+from sysinit.futures.contract_prices_from_csv_to_arctic import (
+    init_db_with_csv_futures_contract_prices_for_code,
 )
 from sysinit.futures.contract_prices_from_split_freq_csv_to_db import (
     init_db_with_split_freq_csv_prices_for_code,
@@ -78,13 +83,17 @@ if __name__ == "__main__":
     # input("Will overwrite existing prices are you sure?! CTL-C to abort")
     datapath = resolve_path_and_filename_for_package(
         get_production_config().get_element_or_default("barchart_path", None)
+        # get_production_config().get_element_or_default("backup_path", None)
     )
 
-    # find_contracts_for_instr(
-    #     "HANG", None, datapath, csv_config=BARCHART_CONFIG, freq=HOURLY_FREQ
-    # )
+    # find_contracts_for_instr("SOFR", None, datapath, csv_config=BACKUP_CONFIG)
 
-    for instr in ["LUMBER-new"]:
-        init_db_with_split_freq_csv_prices_for_code(
-            instr, datapath=datapath, csv_config=BARCHART_CONFIG
+    for instr in ["SOFR"]:
+        init_db_with_csv_futures_contract_prices_for_code(
+            instr, datapath=datapath, csv_config=BACKUP_CONFIG
         )
+
+    # for instr in ["LUMBER-new"]:
+    #     init_db_with_split_freq_csv_prices_for_code(
+    #         instr, datapath=datapath, csv_config=BARCHART_CONFIG
+    #     )

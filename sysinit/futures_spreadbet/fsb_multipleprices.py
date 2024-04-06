@@ -198,7 +198,7 @@ if __name__ == "__main__":
     # only change if you have written the files elsewhere
     csv_roll_data_path = "fsb.roll_calendars_csv"
 
-    for instr in ["LUMBER-new_fsb"]:
+    for instr in ["SOFR_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instr,
             adjust_calendar_to_prices=False,
