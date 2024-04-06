@@ -8,7 +8,7 @@ BRENT_W_fsb,3.0
 BTP3_fsb,2.5
 BTP_fsb,2.58
 BUND_fsb,1.5
-BUXL_fsb,2.3
+BUXL_fsb,2.0
 CAC_fsb,2.0
 CAD_fsb,3.7
 CHFJPY_fsb,5.5
@@ -50,7 +50,6 @@ GOLD_fsb,0.3
 HANG_fsb,8.0
 HEATOIL_fsb,15.0
 IBEX_fsb,6.2
-IBXEX_fsb,6.2
 JGB_fsb,2.1
 JPY_fsb,5.0
 JSE40_fsb,30.0
