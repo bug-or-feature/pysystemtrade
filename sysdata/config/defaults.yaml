@@ -362,15 +362,11 @@ small_system:
 #
 # THe following example shows how you would select one instrument out of a choice of 3
 #
-#duplicate_instruments:
-#  include:
-#    things: 'thing_we_want'
-#  exclude:
-#    things: ['bad_thing', 'Another_thing']
 duplicate_instruments:
   include:
+    things: 'thing_we_want'
   exclude:
-
+    things: ['bad_thing', 'Another_thing']
 exclude_instrument_lists:
   # ignore_instruments are ignored in backtests
   # we still collect price data for them in production, do rolls etc
@@ -381,9 +377,8 @@ exclude_instrument_lists:
   # BEST FOR INSTRUMENTS THAT LOOK EXPENSIVE, BUT WHERE WE HAVEN'T GOT ACCURATE DATA YET
   #
   # REVIEW REGULARLY AND CHECK THESE INSTRUMENTS AREN'T BETTER ELSEWHERE...
-#  ignore_instruments:
-#    - 'EXAMPLE'
   ignore_instruments:
+    - 'EXAMPLE'
   #
   # Here we put stuff we can't trade, but for which we still want to bring in prices in sim
   # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
