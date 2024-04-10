@@ -123,8 +123,8 @@ def do_fsb_report(
     )
 
     # price and returns correlation for currently sampled contracts
-    formatted_output.append(ALL_CORR_HEADER_TEXT)
-    formatted_output.append(reporting_api_fsb.table_of_fsb_correlations())
+    # formatted_output.append(ALL_CORR_HEADER_TEXT)
+    # formatted_output.append(reporting_api_fsb.table_of_fsb_correlations())
 
     # fsb mappings and expiries
     formatted_output.append(reporting_api_fsb.fsb_mappings_and_expiries())
