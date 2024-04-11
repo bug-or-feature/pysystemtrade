@@ -75,9 +75,11 @@ def backup_db_to_csv():
 
 # FIXME SOMEWHAT HACKY
 # SHOULD BE A 'BACKUP X' OPTION UNDER DIAGNOSTICS OR CONTROL?
-def quick_backup_of_all_price_data_including_expired():
+def quick_backup_of_all_price_data_including_expired(instrument_list=None):
     backup_data = get_data_and_create_csv_directories("Quick backup of all price data")
-    backup_futures_contract_prices_to_csv(backup_data, ignore_long_expired=False)
+    backup_futures_contract_prices_to_csv(
+        backup_data, instrument_list, ignore_long_expired=False
+    )
 
 
 class backupDbToCsv:
@@ -194,11 +196,15 @@ def get_data_and_create_csv_directories(logname):
 
 
 # Futures contract data
-def backup_futures_contract_prices_to_csv(data, ignore_long_expired: bool = True):
-    instrument_list = (
-        data.db_futures_contract_price.get_list_of_instrument_codes_with_merged_price_data()
-    )
-    # instrument_list = ["GOLD"]
+def backup_futures_contract_prices_to_csv(
+    data, instr_list=None, ignore_long_expired: bool = True
+):
+    if instr_list:
+        instrument_list = instr_list
+    else:
+        instrument_list = (
+            data.db_futures_contract_price.get_list_of_instrument_codes_with_merged_price_data()
+        )
     for instrument_code in instrument_list:
         backup_futures_contract_prices_for_instrument_to_csv(
             data=data,
