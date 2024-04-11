@@ -6,6 +6,12 @@ csv_roll_calendar = csvRollCalendarData(datapath="fsb.roll_calendars_csv")
 csv_multiple = csvFuturesMultiplePricesData(datapath="fsb.multiple_prices_csv")
 csv_adjusted = csvFuturesAdjustedPricesData(datapath="fsb.adjusted_prices_csv")
 
+# TODO, needs
+#   - fix csv paths
+#  - epic periods
+#  - market info can't copy, maybe just edit
+#  - epic history
+
 
 def clone_data_for_instrument(
     instrument_from: str,
