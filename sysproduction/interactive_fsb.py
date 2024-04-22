@@ -206,7 +206,6 @@ def adjust_forward():
                     click.echo(
                         f"OK. Adjusting multiple prices for {instr_code} with "
                         f"{new_fwd} as forward and carry, instead of {fwd}"
-                        f"NOTE: debug mode, will only write to CSV currently"  # TODO
                     )
 
                     roll_cal.iloc[
@@ -221,8 +220,8 @@ def adjust_forward():
                         adjust_calendar_to_prices=False,
                         csv_multiple_data_path="fsb.multiple_prices_csv",
                         csv_roll_data_path="fsb.csvconfig",
-                        ADD_TO_ARCTIC=False,  # TODO
-                        ADD_TO_CSV=True,  # TODO
+                        ADD_TO_ARCTIC=True,
+                        ADD_TO_CSV=True,
                         roll_calendar=roll_cal,
                     )
 
