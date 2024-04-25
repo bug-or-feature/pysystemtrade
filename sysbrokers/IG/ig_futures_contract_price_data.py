@@ -271,7 +271,7 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         epic = order.order_info["epic"]
         self.broker_conn.streamer.stop_tick_subscription(epic)
 
-    def _get_ig_prices(self, contract_object: futuresContract) -> futuresContractPrices:
+    def _get_ig_prices(self, contract_object: futuresContract) -> FsbContractPrices:
         """
         Get historical IG prices
 
@@ -349,13 +349,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             self.log.debug("Ignoring - IG epic/history config awaiting update")
             return FsbContractPrices.create_empty()
 
-        # It's important that the data is in local time zone so that this works
-        price_data = price_data.remove_future_data()
-
-        # Some contract data is marked to model, don't want this
-        # TODO review this - dunno if applicable for fsb
-        # price_data = price_data.remove_zero_volumes()
-
         return price_data
 
     def _get_barchart_prices(
@@ -386,9 +379,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
             return futuresContractPrices.create_empty()
 
         price_data = futuresContractPrices(price_data)
-
-        # It's important that the data is in local time zone so that this works
-        price_data = price_data.remove_future_data()
 
         return price_data
 
