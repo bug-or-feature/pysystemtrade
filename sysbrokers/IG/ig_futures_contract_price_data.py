@@ -390,9 +390,6 @@ class IgFuturesContractPriceData(brokerFuturesContractPriceData):
         # It's important that the data is in local time zone so that this works
         price_data = price_data.remove_future_data()
 
-        # Some contract data is marked to model, don't want this
-        price_data = price_data.remove_zero_volumes()
-
         return price_data
 
     @staticmethod
