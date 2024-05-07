@@ -298,6 +298,13 @@ class dataContracts(productionDataLayerGeneric):
             instrument_code, areyoureallysure=are_you_sure
         )
 
+    @staticmethod
+    def instrument_has_custom_roll(instr_code):
+        custom_rolls = get_production_config().get_element_or_default(
+            "custom_rolls", None
+        )
+        return custom_rolls and instr_code in custom_rolls
+
 
 def get_valid_contract_object_from_user(
     data: dataBlob,

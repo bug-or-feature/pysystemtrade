@@ -168,6 +168,10 @@ def create_furthest_out_contract_with_roll_parameters_from_contract_date(
         contractDate(furthest_out_contract_date), roll_parameters
     )
 
+    if diag_contracts.instrument_has_custom_roll(instrument_code):
+        furthest_out_contract = furthest_out_contract.next_held_contract()
+        # furthest_out_contract = furthest_out_contract.next_held_contract()
+
     return furthest_out_contract
 
 
@@ -515,6 +519,6 @@ def get_contract_expiry_from_db(
 
 if __name__ == "__main__":
     # update_sampled_contracts()
-    update_sampled_contracts(["FED_fsb"])
+    update_sampled_contracts(["SOYBEAN_fsb"])
     # get_all_currently_sampling("BUXL_fsb")
     # mark_as_not_sampling("GOLD_fsb")
