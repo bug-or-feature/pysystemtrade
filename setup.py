@@ -113,7 +113,7 @@ setup(
     include_package_data=True,
     entry_points={
         "console_scripts": [
-            "fsb = sysproduction.interactive_fsb:show_optimals",
+            # "fsb = sysproduction.interactive_fsb:show_optimals",
             "pst = sysproduction.pst:pst",
         ],
     },
