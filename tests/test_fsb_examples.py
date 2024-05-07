@@ -333,7 +333,9 @@ class TestFsbExamples:
         print(my_system.portfolio.get_notional_position("BUXL_fsb").tail(5))
 
     def test_fsb_system_config_import(self, data):
-        my_config = Config("systems.futures_spreadbet.simple_fsb_system_config.yaml")
+        my_config = Config(
+            "systems.futures_spreadbet.config.simple_fsb_system_config.yaml"
+        )
         my_config.exclude_instrument_lists = dict(
             ignore_instruments=["MILK"],
             trading_restrictions=["BUTTER"],
