@@ -24,7 +24,7 @@ def fsb_static_system(
         # data = build_fsb_csv_sim_data()
 
     if config is arg_not_supplied:
-        config = Config("systems.futures_spreadbet.fsb_static_system_v5_2.yaml")
+        config = Config("systems.futures_spreadbet.config.fsb_static_system_v5_2.yaml")
         config.risk_overlay = arg_not_supplied
 
     rules = Rules(trading_rules)

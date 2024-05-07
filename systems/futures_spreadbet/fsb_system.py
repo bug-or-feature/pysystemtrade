@@ -16,9 +16,9 @@ from systems.accounts.accounts_stage import Account
 
 def fsb_system(
     sim_data=arg_not_supplied,
-    config_filename="systems.futures_spreadbet.fsb_static_optimisation_system.yaml",
-    # config_filename="systems.futures_spreadbet.fsb_static_optimisation_system.yaml",
-    # config_filename="systems.futures_spreadbet.fsb_static_system_full.yaml",
+    config_filename="systems.futures_spreadbet.config.fsb_static_optimisation_system.yaml",
+    # config_filename="systems.futures_spreadbet.config.fsb_static_optimisation_system.yaml",
+    # config_filename="systems.futures_spreadbet.config.fsb_static_system_full.yaml",
 ):
     """
     This only exists to provide a system for static optimisation. It's an adaptation
