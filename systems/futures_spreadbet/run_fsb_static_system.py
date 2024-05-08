@@ -10,8 +10,9 @@ from syscore.pdutils import print_full
 
 SAVED_SYSTEM = "systems.futures_spreadbet.saved-system.pck"
 # CONFIG = "systems.futures_spreadbet.config.fsb_static_system_v5_6.yaml"
-CONFIG = "systems.futures_spreadbet.config.fsb_static_minimal.yaml"
-# CONFIG = "systems.futures_spreadbet.config.fsb_static_system_full.yaml"
+# CONFIG = "systems.futures_spreadbet.config.fsb_static_minimal.yaml"
+# CONFIG = "systems.futures_spreadbet.config.fsb_static_system_full_hier.yaml"
+CONFIG = "systems.futures_spreadbet.config.fsb_static_system_full_est.yaml"
 
 log = get_logger("backtest")
 
@@ -31,23 +32,10 @@ def run_system(
         config = Config(CONFIG)
         if do_estimate:
             config.use_forecast_div_mult_estimates = True
-            config.use_instrument_div_mult_estimates = False
-            config.use_forecast_weight_estimates = False
-            config.use_instrument_weight_estimates = False
-            config.use_forecast_scale_estimates = False
-            # config.instruments = ["COCOA_fsb", "COCOA_LDN_fsb"]
-            #     "ASX_fsb",
-            #     "COFFEE_fsb",
-            #     "COPPER_fsb",
-            #     "BUND_fsb",
-            #     "HEATOIL_fsb",
-            #     "IBXEX_fsb",
-            #     "NASDAQ_fsb",
-            #     "NZD_fsb",
-            #     "SOYMEAL_fsb",
-            #     "VIX_fsb",
-            #     "WHEAT_fsb",
-            # ]
+            config.use_instrument_div_mult_estimates = True
+            config.use_forecast_weight_estimates = True
+            config.use_instrument_weight_estimates = True
+            config.use_forecast_scale_estimates = True
         system = fsb_static_system(config=config)
 
     # acc_portfolio = system.accounts.portfolio()
@@ -150,11 +138,11 @@ def write_estimate_file(system):
     )
     print(f"writing estimate params to: {output_file}")
     estimates_needed = [
-        # "instrument_div_multiplier",
-        # "forecast_div_multiplier",
-        # "forecast_scalars",
-        # "instrument_weights",
-        # "forecast_weights",
+        "instrument_div_multiplier",
+        "forecast_div_multiplier",
+        "forecast_scalars",
+        "instrument_weights",
+        "forecast_weights",
         # "forecast_mapping",
     ]
 
@@ -182,5 +170,5 @@ if __name__ == "__main__":
     # run_system()
     # run_system(do_estimate=True)
     run_system(
-        load_pickle=False, write_pickle=True, do_estimate=False, write_config=False
+        load_pickle=False, write_pickle=False, do_estimate=False, write_config=False
     )
