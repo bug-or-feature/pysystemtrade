@@ -1270,6 +1270,28 @@ class Portfolios(SystemStage):
         daily_vol = self.daily_percentage_vol100scale(instrument_code)
         return ROOT_BDAYS_INYEAR * daily_vol / 100.0
 
+    ## FSB
+
+    def get_min_bet_for_instrument(self, instrument_code: str) -> float:
+        min_bet = self.get_contract_multiplier(instrument_code)
+        return min_bet
+
+    def get_minimum_bets(self) -> portfolioWeights:
+        # returns a portfolioWeights instance, containing all FSB instruments:
+        # instrument code as key, and minimum bet as value
+        instrument_list = self.get_instrument_list()
+        values_as_dict = dict(
+            [
+                (
+                    instrument_code,
+                    self.get_min_bet_for_instrument(instrument_code),
+                )
+                for instrument_code in instrument_list
+            ]
+        )
+
+        return portfolioWeights(values_as_dict)
+
     ## INPUT
     def get_instrument_list(
         self, for_instrument_weights=False, auto_remove_bad_instruments=False

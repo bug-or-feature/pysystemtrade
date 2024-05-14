@@ -47,7 +47,10 @@ class accountForOptimisedStage(Account):
         positions = self.get_optimised_position(instrument_code)
 
         instrument_pandl = self._pandl_for_instrument_with_positions(
-            instrument_code, positions=positions, delayfill=delayfill
+            instrument_code,
+            positions=positions,
+            delayfill=delayfill,
+            roundpositions=False,
         )
 
         return instrument_pandl

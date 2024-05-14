@@ -108,6 +108,7 @@ class optimisedPositions(SystemStage):
         covariance_matrix = self.get_covariance_matrix(relevant_date=relevant_date)
 
         per_contract_value = self.get_per_contract_value(relevant_date)
+        min_bets = self.get_minimum_bets()
         contracts_optimal = self.original_position_contracts_for_relevant_date(
             relevant_date
         )
@@ -122,6 +123,7 @@ class optimisedPositions(SystemStage):
             contracts_optimal=contracts_optimal,
             covariance_matrix=covariance_matrix,
             per_contract_value=per_contract_value,
+            min_bets=min_bets,
             previous_positions=previous_positions,
             costs=costs,
             constraints=constraints,

@@ -64,6 +64,22 @@ class portfolioWeights(dict):
 
         return portfolioWeights(new_weights_as_dict)
 
+    def round_to_fsb(self, min_bets):
+        # for an instance representing FSB position sizes, rounds each to the nearest
+        # multiple of the minimum bet for that instrument, returning a new
+        # portfolioWeights instance
+        new_weights_as_dict = dict(
+            [
+                (
+                    instr_code,
+                    round(round(val / min_bets[instr_code]) * min_bets[instr_code], 2),
+                )
+                for instr_code, val in self.items()
+            ]
+        )
+
+        return portfolioWeights(new_weights_as_dict)
+
     def as_np(self) -> np.array:
         as_list = self.as_list()
         return np.array(as_list)

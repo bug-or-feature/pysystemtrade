@@ -14,6 +14,7 @@ class dataForOptimisation(object):
         self.covariance_matrix = obj_instance.covariance_matrix
         self.weights_optimal = obj_instance.weights_optimal
         self.per_contract_value = obj_instance.per_contract_value
+        self.min_bets = obj_instance.min_bets
         self.costs = obj_instance.costs
 
         if obj_instance.constraints is arg_not_supplied:
@@ -57,6 +58,10 @@ class dataForOptimisation(object):
     @property
     def per_contract_value_as_np(self) -> np.array:
         return self.get_key("per_contract_value_as_np")
+
+    @property
+    def min_bets_as_np(self) -> np.array:
+        return self.get_key("min_bets_as_np")
 
     @property
     def weights_prior_as_np(self) -> np.array:
@@ -124,6 +129,14 @@ class dataForOptimisation(object):
         )
 
         return per_contract_value_as_np
+
+    @property
+    def _min_bets_as_np(self) -> np.array:
+        min_bets_as_np = np.array(
+            self.min_bets.as_list_given_keys(self.keys_with_valid_data)
+        )
+
+        return min_bets_as_np
 
     @property
     def _weights_prior_as_np_replace_nans_with_zeros(self) -> np.array:
@@ -210,6 +223,10 @@ class dataForOptimisation(object):
     def per_contract_value_for_code(self, instrument_code: str) -> float:
         per_contract_value = self.per_contract_value
         return per_contract_value.get(instrument_code, np.isnan)
+
+    def min_bet_for_code(self, instrument_code: str) -> float:
+        min_bets = self.min_bets
+        return min_bets.get(instrument_code, np.isnan)
 
     ## not cached as not used by outside functions
     @property
