@@ -1,7 +1,7 @@
 from syscontrol.run_process import processToRun
 from sysproduction.update_historical_prices import updateHistoricalPrices
 from sysproduction.generate_fsb_updates import GenerateFsbUpdates
-from sysproduction.interactive_controls import auto_update_spread_costs
+from sysproduction.update_slippage import updateSlippage
 from sysdata.data_blob import dataBlob
 
 
@@ -23,12 +23,12 @@ def get_list_of_timer_functions_for_price_update():
     )
     historical_update_object = updateHistoricalPrices(data)
     generate_fsb_object = GenerateFsbUpdates(data)
-    update_slippage = auto_update_spread_costs(data, filter_on=5.0)
+    update_slippage = updateSlippage(data)
 
     list_of_timer_names_and_functions = [
         ("update_historical_prices", historical_update_object),
         ("generate_fsb_updates", generate_fsb_object),
-        ("auto_update_slippage", update_slippage),
+        ("update_slippage", update_slippage),
     ]
 
     return list_of_timer_names_and_functions
