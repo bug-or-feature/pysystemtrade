@@ -3,6 +3,7 @@ from copy import copy
 import numpy as np
 import pandas as pd
 
+from syscore.fileutils import resolve_path_and_filename_for_package
 from syscore.interactive.input import (
     get_input_from_user_and_convert_to_type,
     true_if_answer_is_yes,
@@ -21,6 +22,7 @@ from syscore.genutils import round_significant_figures
 from sysinit.futures.safely_modify_roll_parameters import safely_modify_roll_parameters
 
 from sysdata.data_blob import dataBlob
+from sysdata.csv.csv_spread_costs import CONFIG_FILE_NAME
 from sysobjects.contracts import futuresContract
 from sysobjects.production.override import override_dict, Override
 from sysobjects.production.process_control import processNotRunning
@@ -843,12 +845,17 @@ def finish_all_processes(data):
     data_control.check_if_pid_running_and_if_not_finish_all_processes()
 
 
-def auto_update_spread_costs(data):
+def auto_update_spread_costs(data, filter_on=None):
     slippage_comparison_pd = get_slippage_data(data)
-    changes_to_make = get_list_of_changes_to_make_to_slippage(slippage_comparison_pd)
+    changes_to_make = get_list_of_changes_to_make_to_slippage(
+        slippage_comparison_pd, filter_on=filter_on
+    )
 
-    make_changes_to_slippage_in_db(data, changes_to_make)
-    backup_slippage_from_db_to_csv()
+    if changes_to_make:
+        make_changes_to_slippage_in_db(data, changes_to_make)
+        backup_slippage_from_db_to_csv(data)
+    else:
+        print("\nNo slippage config changes to make\n")
 
 
 def get_slippage_data(data) -> pd.DataFrame:
@@ -861,8 +868,14 @@ def get_slippage_data(data) -> pd.DataFrame:
 
 def get_list_of_changes_to_make_to_slippage(
     slippage_comparison_pd: pd.DataFrame,
+    filter_on: float = None,
 ) -> dict:
-    filter = get_filter_size_for_slippage()
+    is_interactive = True
+    if filter_on is not None:
+        is_interactive = False
+        filter = filter_on
+    else:
+        filter = get_filter_size_for_slippage()
     changes_to_make = dict()
     instrument_list = slippage_comparison_pd.index
 
@@ -893,13 +906,16 @@ def get_list_of_changes_to_make_to_slippage(
 
         configured_estimate_multiplied = configured * mult_factor
 
-        estimate_to_use_with_mult = get_input_from_user_and_convert_to_type(
-            "New configured slippage value (current %f, default is estimate %f)"
-            % (configured_estimate_multiplied, suggested_estimate_multiplied),
-            type_expected=float,
-            allow_default=True,
-            default_value=suggested_estimate_multiplied,
-        )
+        if is_interactive:
+            estimate_to_use_with_mult = get_input_from_user_and_convert_to_type(
+                "New configured slippage value (current %f, default is estimate %f)"
+                % (configured_estimate_multiplied, suggested_estimate_multiplied),
+                type_expected=float,
+                allow_default=True,
+                default_value=suggested_estimate_multiplied,
+            )
+        else:
+            estimate_to_use_with_mult = suggested_estimate_multiplied
 
         if estimate_to_use_with_mult == configured_estimate_multiplied:
             print("Same as configured, do nothing...")
@@ -909,10 +925,13 @@ def get_list_of_changes_to_make_to_slippage(
                 (estimate_to_use_with_mult / suggested_estimate_multiplied) - 1.0
             )
             if difference > 0.5:
-                ans = input(
-                    "Quite a big difference from the suggested %f and yours %f, are you sure about this? (y/other)"
-                    % (suggested_estimate_multiplied, estimate_to_use_with_mult)
-                )
+                if is_interactive:
+                    ans = input(
+                        "Quite a big difference from the suggested %f and yours %f, are you sure about this? (y/other)"
+                        % (suggested_estimate_multiplied, estimate_to_use_with_mult)
+                    )
+                else:
+                    ans = "y"
                 if ans != "y":
                     continue
 
@@ -964,11 +983,15 @@ def make_changes_to_slippage_in_db(data: dataBlob, changes_to_make: dict):
         futures_data.update_spread_costs(instrument_code, new_spread_cost)
 
 
-def backup_slippage_from_db_to_csv():
+def backup_slippage_from_db_to_csv(data):
     backup_data = get_data_and_create_csv_directories("")
+    csv_data_dir = resolve_path_and_filename_for_package(
+        data.csv_data_paths["csvRollParametersData"], CONFIG_FILE_NAME
+    )
     print(
-        "Backing up slippage costs in database to .csv %s; you will need to copy to /pysystemtrade/data/futures/csvconfig/spreadcosts.csv for it to work in sim"
-        % backup_data.csv_spread_cost.config_file
+        f"\nBacking up slippage costs in database to "
+        f"{backup_data.csv_spread_cost.config_file}; you will need to copy to "
+        f"{csv_data_dir} for it to work in sim"
     )
     backup_spread_cost_data(backup_data)
 
