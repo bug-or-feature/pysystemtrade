@@ -1,10 +1,6 @@
 # YAML
-start_date: 2019-05-01
-#use_forecast_weight_estimates: False
-#use_instrument_weight_estimates: False
-#use_forecast_scale_estimates: False
-#use_forecast_div_mult_estimates: False
-#use_instrument_div_mult_estimates: False
+start_date: 1970-01-01
+
 #
 #
 #
@@ -223,12 +219,20 @@ forecast_scalars:
 # Capital correction
 #
 percentage_vol_target: 25.0
-notional_trading_capital: 1000000
+notional_trading_capital: 500000
 base_currency: "GBP"
 
 #
 # Portfolio creation
 #
+
+# Set this to 0.13 to enforce the speed limit even for fixed weights or
+#   regardless of what an estimator does
+# forecast_post_ceiling_cost_SR: 0.13
+
+#forecast_weight_estimate:
+#   ceiling_cost_SR: 0.13
+
 
 forecast_weights:
   AEX_fsb:
@@ -2108,7 +2112,7 @@ buffer_method: forecast
 buffer_size: 0.10
 buffer_trade_to_edge: True
 # costs and accounting
-use_SR_costs: True
+use_SR_costs: False
 vol_normalise_currency_costs: True
 multiply_roll_costs_by: 1.0
 
