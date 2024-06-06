@@ -35,7 +35,9 @@ class MailType(Enum):
 
 def send_mail_msg(body: str, subject: str, mail_type: MailType = MailType.plain):
     msg = MIMEMultipart()
-    msg["Subject"] = subject
+    config = get_production_config()
+    prefix = config.get_element_or_default("email_subject_prefix", "")
+    msg["Subject"] = f"{prefix}{subject}"
     msg.attach(MIMEText(body, mail_type))
     _send_msg(msg)
 
