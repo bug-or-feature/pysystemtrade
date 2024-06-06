@@ -1,7 +1,7 @@
 Instrument,SpreadCost
 AEX_fsb,0.29
 ASX_fsb,1.5
-AUDJPY_fsb,4.5
+AUDJPY_fsb,4.2
 AUD_fsb,4.5
 BOBL_fsb,1.5
 BRENT_W_fsb,3.0
@@ -55,7 +55,7 @@ JPY_fsb,5.0
 JSE40_fsb,30.0
 LEANHOG_fsb,7.19
 LIVECOW_fsb,9.94
-LUMBER-new_fsb,360.0
+LUMBER-new_fsb,380.0
 LUMBER_fsb,400.0
 MSCISING_fsb,0.13
 NASDAQ_fsb,1.5
@@ -67,7 +67,7 @@ OAT_fsb,2.57
 OJ_fsb,98.0
 OMXS30_fsb,0.73
 PALLAD_fsb,2.6
-PLAT_fsb,1.25
+PLAT_fsb,0.77
 RICE_fsb,20.0
 ROBUSTA_fsb,2.0
 RUSSELL_fsb,0.25
