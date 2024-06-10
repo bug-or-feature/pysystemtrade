@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ name }}{% endblock %}
+
+{% block content %}
+<pre>
+{% include "%s" % filename %}
+</pre>
+
+{% endblock content %}
