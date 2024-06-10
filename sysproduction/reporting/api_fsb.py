@@ -42,12 +42,12 @@ class ReportingApiFsb(reportingApi):
         super().__init__(
             data, calendar_days_back, end_date, start_date, start_period, end_period
         )
-        self._prices = diagPrices(data)
+        self._prices = diagPrices(self.data)
         self._fsb_prices = DiagFsbPrices(self.data)
         self._instruments = diagFsbInstruments(self.data)
         self._epics = DiagFsbEpics(self.data)
-        self._contracts = dataContracts(data)
-        self._positions = diagPositions(data)
+        self._contracts = dataContracts(self.data)
+        self._positions = diagPositions(self.data)
 
     @property
     def futures_prices(self) -> diagPrices:
