@@ -2,6 +2,7 @@ from syscontrol.run_process import processToRun
 
 from sysdata.data_blob import dataBlob
 
+from syscontrol.html_generation import build_report_files
 from sysproduction.data.reports import dataReports
 
 # JUST A COPY AND PASTE JOB RIGHT NOW
@@ -34,6 +35,11 @@ def get_list_of_timer_functions_for_reports(data):
         report_tuple = (report_name, report_object)
         list_of_timer_names_and_functions.append(report_tuple)
 
+    data_for_gen = dataBlob(log_name="generate_html")
+    gen_obj = generateWrappers(data_for_gen, "generate_html")
+    report_tuple = ("generate_html", gen_obj)
+    list_of_timer_names_and_functions.append(report_tuple)
+
     return list_of_timer_names_and_functions
 
 
@@ -51,6 +57,18 @@ class runReport(object):
     def run_generic_report(self):
         ## Will be renamed
         run_report(self.config, data=self.data)
+
+
+class generateWrappers(object):
+    def __init__(self, data, function):
+        self.data = data
+
+        # run process expects a method with same name as log name
+        setattr(self, function, self.run_function)
+
+    def run_function(self):
+        ## Will be renamed
+        build_report_files(self.data, {})
 
 
 if __name__ == "__main__":
