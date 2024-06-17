@@ -43,14 +43,17 @@ class totalCapitalUpdate(object):
 
         log = data.log
 
-        margin_in_base_currency = broker_data.get_margin_used_in_base_currency()
-        log.debug("Broker margin value is %f" % margin_in_base_currency)
+        try:
+            margin_in_base_currency = broker_data.get_margin_used_in_base_currency()
+            log.debug("Broker margin value is %f" % margin_in_base_currency)
 
-        # Update total capital
-        margin_data.add_total_margin_entry(margin_in_base_currency)
-        margin_series = margin_data.get_series_of_total_margin()
-
-        log.debug("Recent margin\n%s" % str(margin_series.tail(10)))
+            # Update total capital
+            margin_data.add_total_margin_entry(margin_in_base_currency)
+            margin_series = margin_data.get_series_of_total_margin()
+            log.debug("Recent margin\n%s" % str(margin_series.tail(10)))
+        except Exception as ex:
+            log.error(f"Problem attempting to update margin: {ex}")
+            log.warning(f"Ignoring latest margin update, will try again soon")
 
     def update_capital(self):
         data = self.data
