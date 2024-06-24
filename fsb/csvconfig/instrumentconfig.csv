@@ -9,7 +9,7 @@ BTP_fsb,Long-Term BTP,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 BTP3_fsb,Short-Term BTP,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 BUND_fsb,Bund,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 BUXL_fsb,Buxl,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
-CAC_fsb,France 40,1.0,GBP,Equity,0.0,0.0,0.0,EMEA
+CAC_fsb,France 40,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
 CAD_fsb,USD/CAD Forward,1.0,GBP,FX,0.0,0.0,0.0,US
 CHF_fsb,USD/CHF Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 CHFJPY_fsb,CHF/JPY Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
@@ -20,7 +20,7 @@ COPPER_fsb,High Grade Copper,0.1,GBP,Metals,0.0,0.0,0.0,US
 CORN_fsb,Corn,10.0,GBP,Ags,0.0,0.0,0.0,US
 COTTON2_fsb,NY Cotton,0.5,GBP,Ags,0.0,0.0,0.0,US
 CRUDE_W_fsb,Oil - US Crude,1.0,GBP,OilGas,0.0,0.0,0.0,US
-DAX_fsb,Germany 40,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
+DAX_fsb,Germany 40,0.2,GBP,Equity,0.0,0.0,0.0,EMEA
 DOW_fsb,Wall Street,0.2,GBP,Equity,0.0,0.0,0.0,US
 DX_fsb,US Dollar Basket,0.5,GBP,FX,0.0,0.0,0.0,US
 EUA_fsb,Carbon Emissions,0.25,GBP,OilGas,0.0,0.0,0.0,EMEA
@@ -29,7 +29,7 @@ EURCAD_fsb,EUR/CAD Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURCHF_fsb,EUR/CHF Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURGBP_fsb,EUR/GBP Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURIBOR-ICE_fsb,Euribor,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
-EUROSTX_fsb,EU Stocks 50,1.0,GBP,Equity,0.0,0.0,0.0,EMEA
+EUROSTX_fsb,EU Stocks 50,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
 FED_fsb,US 30-Day Fed Funds Rate,0.5,GBP,Bond,0.0,0.0,0.0,US
 FTSE100_fsb,FTSE 100,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
 GAS_NL_fsb,Natural Gas - EU TTF,0.25,GBP,OilGas,0.0,0.0,0.0,US
@@ -53,7 +53,7 @@ LEANHOG_fsb,Lean Hogs,0.1,GBP,Ags,0.0,0.0,0.0,US
 LIVECOW_fsb,Live Cattle,0.5,GBP,Ags,0.0,0.0,0.0,US
 LUMBER-new_fsb,Lumber Future,0.1,GBP,Ags,0.0,0.0,0.0,US
 MSCISING_fsb,Singapore Blue Chip,20.0,GBP,Equity,0.0,0.0,0.0,ASIA
-NASDAQ_fsb,US Tech 100,0.5,GBP,Equity,0.0,0.0,0.0,US
+NASDAQ_fsb,US Tech 100,0.2,GBP,Equity,0.0,0.0,0.0,US
 NIKKEI_fsb,Japan 225,0.5,GBP,Equity,0.0,0.0,0.0,ASIA
 NOK_fsb,USD/NOK Forward,0.2,GBP,FX,0.0,0.0,0.0,EMEA
 NZD_fsb,NZD/USD Forward,1.0,GBP,FX,0.0,0.0,0.0,ASIA
