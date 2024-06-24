@@ -103,13 +103,6 @@ class stackHandlerForRolls(stackHandlerCore):
         if no_roll_required:
             return None
 
-        epics_not_tradeable = not self.priced_and_forward_are_tradeable(instrument_code)
-        if epics_not_tradeable:
-            self.log.warning(
-                f"Cannot force roll {instrument_code}, both epics must be tradeable"
-            )
-            return None
-
         self.generate_force_roll_orders_for_instrument_without_checking(instrument_code)
 
     def generate_force_roll_orders_for_instrument_without_checking(
