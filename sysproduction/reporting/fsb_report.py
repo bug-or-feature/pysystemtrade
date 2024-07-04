@@ -85,7 +85,11 @@ def do_fsb_report(
 
     # instruments where epic is yet to be defined
     formatted_output.append(MISSING_EPIC_HEADER_TEXT)
-    formatted_output.append(reporting_api_fsb.table_of_missing_epics())
+    formatted_output.append(
+        reporting_api_fsb.table_of_missing_epics(
+            table_header="Missing forward epic", style="fwd"
+        )
+    )
     formatted_output.append(
         reporting_api_fsb.table_of_missing_epics(
             table_header="Missing priced epic", style="priced"
