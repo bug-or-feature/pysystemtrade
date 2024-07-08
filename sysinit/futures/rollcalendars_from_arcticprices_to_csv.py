@@ -32,6 +32,7 @@ def build_and_write_roll_calendar(
     input_prices=arg_not_supplied,
     roll_parameters_data: rollParametersData = arg_not_supplied,
     roll_parameters: rollParameters = arg_not_supplied,
+    first_contract: str = arg_not_supplied,
 ):
     if output_datapath is arg_not_supplied:
         print(
@@ -53,9 +54,17 @@ def build_and_write_roll_calendar(
 
     csv_roll_calendars = csvRollCalendarData(output_datapath)
 
-    dict_of_all_futures_contract_prices = prices.get_merged_prices_for_instrument(
-        instrument_code
-    )
+    if first_contract is arg_not_supplied:
+        dict_of_all_futures_contract_prices = prices.get_merged_prices_for_instrument(
+            instrument_code
+        )
+    else:
+        dict_of_all_futures_contract_prices = (
+            prices.get_merged_prices_for_instrument_before_date(
+                instrument_code,
+                first_contract,
+            )
+        )
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
 
     # might take a few seconds

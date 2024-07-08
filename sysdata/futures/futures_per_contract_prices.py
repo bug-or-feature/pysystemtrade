@@ -204,6 +204,36 @@ class futuresContractPriceData(baseData):
 
         return dict_of_prices
 
+    def get_merged_prices_for_instrument_before_date(
+        self,
+        instrument_code: str,
+        first_contract: str,
+    ) -> dictFuturesContractPrices:
+        """
+        Get the prices for this code where the contract is equal to or before the passed
+        date, returned as dict
+
+        :param instrument_code: str
+        :param first_contract: str
+        :return: dictFuturesContractPrices
+        """
+
+        list_of_contracts = self.contracts_with_merged_price_data_for_instrument_code(
+            instrument_code
+        )
+        dict_of_prices = dictFuturesContractPrices(
+            [
+                (
+                    contract.date_str,
+                    self.get_merged_prices_for_contract_object(contract),
+                )
+                for contract in list_of_contracts
+                if contract.date_str >= first_contract
+            ]
+        )
+
+        return dict_of_prices
+
     def get_prices_at_frequency_for_instrument(
         self, instrument_code: str, frequency: Frequency
     ) -> dictFuturesContractPrices:
