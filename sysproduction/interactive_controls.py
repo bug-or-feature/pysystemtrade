@@ -19,7 +19,9 @@ from syscore.interactive.display import (
 from syscore.dateutils import CALENDAR_DAYS_IN_YEAR, DAILY_PRICE_FREQ
 from syscore.genutils import round_significant_figures
 
-from sysinit.futures.safely_modify_roll_parameters import safely_modify_roll_parameters
+from sysinit.futures_spreadbet.safely_modify_fsb_roll_parameters import (
+    safely_modify_fsb_roll_parameters,
+)
 
 from sysdata.data_blob import dataBlob
 from sysdata.csv.csv_spread_costs import CONFIG_FILE_NAME
@@ -147,7 +149,7 @@ nested_menu_of_options = {
     },
     5: {
         50: "Auto update spread cost configuration based on sampling and trades",
-        51: "Safe modify of roll parameters configuration",
+        51: "Safe modify of FSB roll parameters configuration",
         52: "Check price multipliers are consistent",
     },
     6: {60: "Delete instrument from price tables"},
@@ -1165,7 +1167,7 @@ dict_of_functions = {
     44: finish_all_processes,
     45: view_process_config,
     50: auto_update_spread_costs,
-    51: safely_modify_roll_parameters,
+    51: safely_modify_fsb_roll_parameters,
     52: check_price_multipliers_consistent,
     60: delete_instrument_from_prices,
 }
