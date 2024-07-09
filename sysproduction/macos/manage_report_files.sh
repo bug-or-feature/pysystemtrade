@@ -2,7 +2,8 @@
 
 source ~/.zprofile
 
-REPORTS_DIR=/Users/devuser/Sites/pst/reports
+PROJ_REPORTS_DIR=/Users/devuser/pysystemtrade-fsb/reports
+SITE_REPORTS_DIR=/Users/devuser/Sites/pst/reports
 TODAY=`date "+%Y-%m-%d"`
 
 echo ""
@@ -31,7 +32,8 @@ echo ""
 #echo ""
 
 echo "`date "+%Y-%m-%d %H:%M:%S"` Starting cleanup of temp report PDF files..."
-rm -vf $REPORTS_DIR/_tempfile_*.pdf
+rm -vf PROJ_REPORTS_DIR/_tempfile_*.pdf
+rm -vf SITE_REPORTS_DIR/_tempfile_*.pdf
 echo "`date "+%Y-%m-%d %H:%M:%S"` Finished cleanup of temp report PDF files"
 echo ""
 
