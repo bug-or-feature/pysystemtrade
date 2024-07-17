@@ -64,6 +64,29 @@ class portfolioWeights(dict):
 
         return portfolioWeights(new_weights_as_dict)
 
+    def round_to_fsb(self, min_bets, prev):
+        """
+        In the context of FSBs, 'rounding' means ensuring that a position change is not
+        less than the minimum bet. This function does that to an instance of
+        portfolioWeights representing positions, given other instances representing min
+        bets and previous positions. It also rounds down to 2 decimal places
+        """
+        new_positions_as_dict = dict(
+            [
+                (
+                    instr,
+                    round(val, 2)
+                    if abs(val - prev[instr]) >= min_bets[instr]
+                    else round(prev[instr], 2),
+                )
+                for instr, val in self.items()
+            ]
+        )
+
+        result = portfolioWeights(new_positions_as_dict)
+
+        return result
+
     def as_np(self) -> np.array:
         as_list = self.as_list()
         return np.array(as_list)
@@ -121,7 +144,7 @@ class portfolioWeights(dict):
             if np.isnan(x):
                 return 0.0
             else:
-                return x
+                return round(x, 2)
 
         return portfolioWeights(
             dict([(key, _replace(self[key])) for key in all_assets])
