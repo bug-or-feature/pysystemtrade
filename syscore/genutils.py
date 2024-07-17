@@ -384,12 +384,11 @@ def intersection_intervals(intervals: list) -> list:
     return [start, end]
 
 
-def round_to_minimum(instr_code, optimal_position):
-    return optimal_position.round()
-
-
-def round_series_to_minimum(instr_code: str, positions):
-    rounded = positions.apply(lambda x: round_to_minimum(instr_code, x))
+def round_to_min_bet(value, min_bet):
+    """
+    Rounds the passed value to the nearest multiple of the passed minimum bet
+    """
+    rounded = round(round(value / min_bet) * min_bet, 2)
     return rounded
 
 
