@@ -41,3 +41,6 @@ reports/
 site/reports/_tempfile_*
 
 .DS_Store
+
+# pickle
+systems/futures_spreadbet/pickle/
