@@ -3,10 +3,7 @@ import pandas as pd
 
 from syscore.exceptions import missingData
 from sysdata.config.configdata import Config
-from systems.accounts.account_buffering_subsystem import (
-    apply_futures_buffer,
-    apply_fsb_buffer,
-)
+from systems.accounts.account_buffering_subsystem import apply_buffer
 from syscore.pandas.strategy_functions import turnover
 from systems.system_cache import diagnostic
 
@@ -95,7 +92,6 @@ class accountBufferingSystemLevel(accountInputs):
 
         buffered_position = (
             self._get_buffered_position_given_optimal_position_and_buffers(
-                instrument_code,
                 optimal_position=optimal_position,
                 pos_buffers=pos_buffers,
                 roundpositions=roundpositions,
@@ -106,7 +102,6 @@ class accountBufferingSystemLevel(accountInputs):
 
     def _get_buffered_position_given_optimal_position_and_buffers(
         self,
-        instr_code: str,
         optimal_position: pd.Series,
         pos_buffers: pd.DataFrame,
         roundpositions: bool = True,
@@ -114,25 +109,11 @@ class accountBufferingSystemLevel(accountInputs):
         self.log.debug("Calculating buffered positions")
         trade_to_edge = self.config.buffer_trade_to_edge
 
-        if instr_code.endswith("_fsb"):
-            instr_object = self.parent.data.get_instrument_object_with_meta_data(
-                instr_code
-            )
-            meta_data = instr_object.meta_data
-            min_bet = meta_data.Pointsize
-            buffered_position = apply_fsb_buffer(
-                optimal_position,
-                pos_buffers,
-                trade_to_edge=trade_to_edge,
-                roundpositions=False,
-                min_position=min_bet,
-            )
-        else:
-            buffered_position = apply_futures_buffer(
-                optimal_position,
-                pos_buffers,
-                trade_to_edge=trade_to_edge,
-                roundpositions=roundpositions,
-            )
+        buffered_position = apply_buffer(
+            optimal_position,
+            pos_buffers,
+            trade_to_edge=trade_to_edge,
+            roundpositions=roundpositions,
+        )
 
         return buffered_position
