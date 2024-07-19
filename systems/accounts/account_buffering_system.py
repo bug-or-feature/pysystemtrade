@@ -1,9 +1,6 @@
-from typing import Callable
 import pandas as pd
 
-from syscore.exceptions import missingData
-from sysdata.config.configdata import Config
-from systems.accounts.account_buffering_subsystem import apply_buffer
+from systems.buffering import get_buffered_position
 from syscore.pandas.strategy_functions import turnover
 from systems.system_cache import diagnostic
 
@@ -79,41 +76,12 @@ class accountBufferingSystemLevel(accountInputs):
         2015-12-11         1
         """
 
-        optimal_position = self.get_notional_position(instrument_code)
-
-        buffer_method = self.config.get_element_or_default("buffer_method", "none")
-        if buffer_method == "none":
-            if roundpositions:
-                return optimal_position.round()
-            else:
-                return optimal_position
-
-        pos_buffers = self.get_buffers_for_position(instrument_code)
-
-        buffered_position = (
-            self._get_buffered_position_given_optimal_position_and_buffers(
-                optimal_position=optimal_position,
-                pos_buffers=pos_buffers,
-                roundpositions=roundpositions,
-            )
-        )
-
-        return buffered_position
-
-    def _get_buffered_position_given_optimal_position_and_buffers(
-        self,
-        optimal_position: pd.Series,
-        pos_buffers: pd.DataFrame,
-        roundpositions: bool = True,
-    ) -> pd.Series:
-        self.log.debug("Calculating buffered positions")
-        trade_to_edge = self.config.buffer_trade_to_edge
-
-        buffered_position = apply_buffer(
-            optimal_position,
-            pos_buffers,
-            trade_to_edge=trade_to_edge,
+        buffered_position = get_buffered_position(
+            optimal_position=self.get_notional_position(instrument_code),
+            pos_buffers=self.get_buffers_for_position(instrument_code),
             roundpositions=roundpositions,
+            buffer_method=self.config.get_element_or_default("buffer_method", "none"),
+            trade_to_edge=self.config.buffer_trade_to_edge,
         )
 
         return buffered_position
