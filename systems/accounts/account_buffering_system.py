@@ -82,6 +82,7 @@ class accountBufferingSystemLevel(accountInputs):
             roundpositions=roundpositions,
             buffer_method=self.config.get_element_or_default("buffer_method", "none"),
             trade_to_edge=self.config.buffer_trade_to_edge,
+            log=self.log,
         )
 
         return buffered_position

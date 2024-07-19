@@ -163,7 +163,7 @@ def get_buffered_position(
         'position', 'forecast', or 'none'
     :param trade_to_edge: whether we trade to the edge of the buffer. The
         alternative is to trade to the mid (boolean)
-
+    :param log logger instance
     :return:
     """
     if buffer_method == "none":
