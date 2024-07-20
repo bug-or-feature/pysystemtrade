@@ -5,6 +5,7 @@ import numpy as np
 from sysdata.config.configdata import Config
 from syslogging.logger import *
 from syscore.constants import arg_not_supplied
+from syscore.rounding import RoundingStrategy
 
 
 def calculate_actual_buffers(
@@ -147,7 +148,7 @@ def get_buffer_if_not_buffering(position: pd.Series) -> pd.Series:
 def get_buffered_position(
     optimal_position: pd.Series,
     pos_buffers: pd.DataFrame,
-    roundpositions: bool = True,
+    rounding_strategy: RoundingStrategy,
     buffer_method: str = None,
     trade_to_edge: bool = True,
     log=get_logger(""),
@@ -156,9 +157,9 @@ def get_buffered_position(
     Get a series of buffered positions given the optimal positions and buffers. Works
     at system and subsystem levels
 
-    :param optimal_position: pd.Series of optimal postions
+    :param optimal_position: pd.Series of optimal positions
     :param pos_buffers: pd.Dataframe of buffers
-    :param roundpositions: whether to round positions (boolean)
+    :param rounding_strategy: rounding strategy (RoundingStrategy)
     :param buffer_method: str representing the configured buffer method. One of
         'position', 'forecast', or 'none'
     :param trade_to_edge: whether we trade to the edge of the buffer. The
@@ -167,10 +168,7 @@ def get_buffered_position(
     :return:
     """
     if buffer_method == "none":
-        if roundpositions:
-            return optimal_position.round()
-        else:
-            return optimal_position
+        return rounding_strategy.round_series(optimal_position)
 
     log.debug("Calculating buffered positions")
 
@@ -178,7 +176,7 @@ def get_buffered_position(
         optimal_position,
         pos_buffers,
         trade_to_edge=trade_to_edge,
-        roundpositions=roundpositions,
+        rounding_strategy=rounding_strategy,
     )
 
     return buffered_position
@@ -217,8 +215,8 @@ def _calculate_forecast_buffer_method(
 def _apply_buffer(
     optimal_position: pd.Series,
     pos_buffers: pd.DataFrame,
+    rounding_strategy: RoundingStrategy,
     trade_to_edge: bool = False,
-    roundpositions: bool = False,
 ) -> pd.Series:
     """
     Apply a buffer to a position
@@ -226,19 +224,19 @@ def _apply_buffer(
     If position is outside the buffer, we either trade to the edge of the
     buffer, or to the optimal
 
-    If we're rounding positions, then we floor and ceiling the buffers.
+    If we're rounding, then we delegate that to the rounding strategy
 
-    :param position: optimal position
-    :type position: pd.Series
+    :param optimal_position: optimal position
+    :type optimal_position: pd.Series
 
     :param pos_buffers:
     :type pos_buffers: Tx2 pd.dataframe, top_pos and bot_pos
 
+    :param rounding_strategy: how we round positions
+    :type rounding_strategy: RoundingStrategy
+
     :param trade_to_edge: Trade to the edge (TRue) or the optimal (False)
     :type trade_to_edge: bool
-
-    :param round_positions: Produce rounded positions
-    :type round_positions: bool
 
     :returns: pd.Series
     """
@@ -249,10 +247,9 @@ def _apply_buffer(
     top_pos = pos_buffers.top_pos
     bot_pos = pos_buffers.bot_pos
 
-    if roundpositions:
-        use_optimal_position = use_optimal_position.round()
-        top_pos = top_pos.round()
-        bot_pos = bot_pos.round()
+    use_optimal_position = rounding_strategy.round_series(use_optimal_position)
+    top_pos = rounding_strategy.round_series(top_pos)
+    bot_pos = rounding_strategy.round_series(bot_pos)
 
     current_position = use_optimal_position.values[0]
     if np.isnan(current_position):
