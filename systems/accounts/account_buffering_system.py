@@ -5,6 +5,7 @@ from syscore.pandas.strategy_functions import turnover
 from systems.system_cache import diagnostic
 
 from systems.accounts.account_inputs import accountInputs
+from syscore.rounding import get_rounding_strategy
 
 
 class accountBufferingSystemLevel(accountInputs):
@@ -76,10 +77,12 @@ class accountBufferingSystemLevel(accountInputs):
         2015-12-11         1
         """
 
+        self._rounding_strategy = get_rounding_strategy(roundpositions)
+
         buffered_position = get_buffered_position(
             optimal_position=self.get_notional_position(instrument_code),
             pos_buffers=self.get_buffers_for_position(instrument_code),
-            roundpositions=roundpositions,
+            rounding_strategy=self._rounding_strategy,
             buffer_method=self.config.get_element_or_default("buffer_method", "none"),
             trade_to_edge=self.config.buffer_trade_to_edge,
             log=self.log,
