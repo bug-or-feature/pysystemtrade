@@ -3,7 +3,7 @@ from systems.portfolio import Portfolios
 
 
 """
-Stage for portfolios, with some FSB specific methods
+Stage for FSB portfolios, with some FSB specific methods
 
 Gets the position, accounts for instrument weights and diversification
 multiplier

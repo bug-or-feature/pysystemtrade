@@ -1,16 +1,11 @@
-from typing import Callable
 import pandas as pd
 
-from syscore.exceptions import missingData
-from sysdata.config.configdata import Config
-from systems.accounts.account_buffering_subsystem import (
-    apply_futures_buffer,
-    apply_fsb_buffer,
-)
+from systems.buffering import get_buffered_position
 from syscore.pandas.strategy_functions import turnover
 from systems.system_cache import diagnostic
 
 from systems.accounts.account_inputs import accountInputs
+from syscore.rounding import get_rounding_strategy
 
 
 class accountBufferingSystemLevel(accountInputs):
@@ -82,57 +77,15 @@ class accountBufferingSystemLevel(accountInputs):
         2015-12-11         1
         """
 
-        optimal_position = self.get_notional_position(instrument_code)
+        self._rounding_strategy = get_rounding_strategy(roundpositions)
 
-        buffer_method = self.config.get_element_or_default("buffer_method", "none")
-        if buffer_method == "none":
-            if roundpositions:
-                return optimal_position.round()
-            else:
-                return optimal_position
-
-        pos_buffers = self.get_buffers_for_position(instrument_code)
-
-        buffered_position = (
-            self._get_buffered_position_given_optimal_position_and_buffers(
-                instrument_code,
-                optimal_position=optimal_position,
-                pos_buffers=pos_buffers,
-                roundpositions=roundpositions,
-            )
+        buffered_position = get_buffered_position(
+            optimal_position=self.get_notional_position(instrument_code),
+            pos_buffers=self.get_buffers_for_position(instrument_code),
+            rounding_strategy=self._rounding_strategy,
+            buffer_method=self.config.get_element_or_default("buffer_method", "none"),
+            trade_to_edge=self.config.buffer_trade_to_edge,
+            log=self.log,
         )
-
-        return buffered_position
-
-    def _get_buffered_position_given_optimal_position_and_buffers(
-        self,
-        instr_code: str,
-        optimal_position: pd.Series,
-        pos_buffers: pd.DataFrame,
-        roundpositions: bool = True,
-    ) -> pd.Series:
-        self.log.debug("Calculating buffered positions")
-        trade_to_edge = self.config.buffer_trade_to_edge
-
-        if instr_code.endswith("_fsb"):
-            instr_object = self.parent.data.get_instrument_object_with_meta_data(
-                instr_code
-            )
-            meta_data = instr_object.meta_data
-            min_bet = meta_data.Pointsize
-            buffered_position = apply_fsb_buffer(
-                optimal_position,
-                pos_buffers,
-                trade_to_edge=trade_to_edge,
-                roundpositions=False,
-                min_position=min_bet,
-            )
-        else:
-            buffered_position = apply_futures_buffer(
-                optimal_position,
-                pos_buffers,
-                trade_to_edge=trade_to_edge,
-                roundpositions=roundpositions,
-            )
 
         return buffered_position
