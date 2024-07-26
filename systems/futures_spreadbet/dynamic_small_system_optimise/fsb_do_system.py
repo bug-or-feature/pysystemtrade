@@ -35,6 +35,7 @@ SAVED_SYSTEM = "systems.futures_spreadbet.pickle.saved-do-system-min.pck"
 
 # CONFIG = "systems.futures_spreadbet.config.fsb_static_system_full_est.yaml"
 # SAVED_SYSTEM = "systems.futures_spreadbet.pickle.saved-do-system.pck"
+# SAVED_SYSTEM = "systems.futures_spreadbet.pickle.full-small-cap.pck"
 
 log = get_logger("backtest")
 
@@ -71,7 +72,8 @@ def run_do_system(
     if write_config:
         write_full_config_file(system)
 
-    return system
+    # plot_instrument_count_over_time(system)
+    # plot_trading_rule_pnl(system)
 
 
 def fsb_do_system(
@@ -171,13 +173,27 @@ def plot_system_performance(system: System):
     ]
     performance.plot(figsize=(15, 9))
     # performance.tail(1500).plot(figsize=(15, 9))
-    # performance["1984-09-18":].plot()
     # performance["1980-01-01":"1989-12-31"].plot()
-    # performance["1990-01-01":"1999-12-31"].plot()
-    # performance["2000-01-01":"2009-12-31"].plot()
-    # performance["2010-01-01":"2019-12-31"].plot()
     # performance["2020-01-01":].plot()
     show()
+
+
+def plot_instrument_count_over_time(system: System):
+    pos_df = system.optimisedPositions.get_optimised_position_df()
+    pos_df["instr_count"] = pos_df.notna().sum(axis=1)
+    pos_df["instr_count"].plot(
+        title="Instrument count (optimised portfolio)", figsize=(15, 9)
+    )
+    # pos_df["instr_count"][:"2015-01-01"].plot(title="Instrument count (optimised portfolio)", figsize=(15,9))
+    show()
+
+
+def plot_trading_rule_pnl(system: System):
+    for rule in system.rules.trading_rules():
+        pnl = system.accounts.pandl_for_trading_rule(rule)
+        pnl.plot(title=f"{rule}")
+        # pos.tail(1000).plot(title=f"{instr} (min bet {min_bet})")
+        show()
 
 
 def write_pickle_file(system):
@@ -221,24 +237,6 @@ def config_from_file(path_string):
 
 
 if __name__ == "__main__":
-    # run_system(load_pickle=True)
-    # run_system()
-    # run_system(do_estimate=True)
     run_do_system(
         load_pickle=False, write_pickle=True, do_estimate=False, write_config=False
     )
-
-# system = fsb_dynamic_system()
-# print(system.accounts.portfolio().percent.stats())
-
-# Yes those are before buffering and the algo
-
-# After buffering (static system):
-# system.accounts.get_buffered_position( instrument_code, roundpositions=True)
-# After greedy algo (dynamic system):
-# system.optimisedPositions.get_optimised_position_df()
-
-# Note in production I don't do this - I run the buffering and or greedy algo on the unrounded positions,
-# taking into account my actual live current positions, rather than what the backtest thought it had on yesterday
-
-#
