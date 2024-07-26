@@ -27,9 +27,8 @@ def adjust_weights_with_factor(
 def calculate_adjusting_trades_rounding_in_minimum_bet_space(
     adjusted_trades_weight_space: np.array,
     per_contract_value_as_np: np.array,
-    min_bets_as_np: np.array
+    min_bets_as_np: np.array,
 ) -> np.array:
-
     # convert weights to positions
     adj_trades = adjusted_trades_weight_space / per_contract_value_as_np
 
