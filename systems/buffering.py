@@ -151,6 +151,7 @@ def get_buffered_position(
     rounding_strategy: RoundingStrategy,
     buffer_method: str = None,
     trade_to_edge: bool = True,
+    min_bet: float = 1.0,
     log=get_logger(""),
 ) -> pd.Series:
     """
@@ -164,6 +165,7 @@ def get_buffered_position(
         'position', 'forecast', or 'none'
     :param trade_to_edge: whether we trade to the edge of the buffer. The
         alternative is to trade to the mid (boolean)
+    :param min_bet: minimum bet (float)
     :param log logger instance
     :return:
     """
@@ -177,6 +179,7 @@ def get_buffered_position(
         pos_buffers,
         trade_to_edge=trade_to_edge,
         rounding_strategy=rounding_strategy,
+        min_bet=min_bet,
     )
 
     return buffered_position
@@ -217,6 +220,7 @@ def _apply_buffer(
     pos_buffers: pd.DataFrame,
     rounding_strategy: RoundingStrategy,
     trade_to_edge: bool = False,
+    min_bet: float = 1.0,
 ) -> pd.Series:
     """
     Apply a buffer to a position
@@ -238,6 +242,9 @@ def _apply_buffer(
     :param trade_to_edge: Trade to the edge (TRue) or the optimal (False)
     :type trade_to_edge: bool
 
+    :param min_bet: minimum bet
+    :type min_bet: float
+
     :returns: pd.Series
     """
 
@@ -247,9 +254,9 @@ def _apply_buffer(
     top_pos = pos_buffers.top_pos
     bot_pos = pos_buffers.bot_pos
 
-    use_optimal_position = rounding_strategy.round_series(use_optimal_position)
-    top_pos = rounding_strategy.round_series(top_pos)
-    bot_pos = rounding_strategy.round_series(bot_pos)
+    use_optimal_position = rounding_strategy.round_series(use_optimal_position, min_bet)
+    top_pos = rounding_strategy.round_series(top_pos, min_bet)
+    bot_pos = rounding_strategy.round_series(bot_pos, min_bet)
 
     current_position = use_optimal_position.values[0]
     if np.isnan(current_position):
