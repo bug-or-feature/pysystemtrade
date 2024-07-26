@@ -365,29 +365,6 @@ def from_series_to_df_with_column_names(
     return new_df
 
 
-def round_fsb_positions(positions: pd.Series, min_bet: float):
-    """
-    Rounds a Series of positions for a futures spread bet, given the minimum bet
-
-    This works by setting any position where the diff from previous is less than the min
-    bet to NaN, and then forward filling. And then rounding to 2 places
-    """
-    too_small = abs(positions.diff()) < min_bet
-    # print(too_small)
-    positions.loc[too_small] = np.nan
-    positions.ffill(inplace=True)
-    return positions.round(2)
-
-
-def validate_fsb_position_series(pos, min_bet):
-    # diff = pos.diff()[1:]
-    valid = abs(pos.diff()[1:]) >= min_bet
-    # diff = pos.diff()
-    # all_but_first = valid[1:]
-    # result = bool(valid.all())
-    return bool(valid.all())
-
-
 if __name__ == "__main__":
     import doctest
 
