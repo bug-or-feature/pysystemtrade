@@ -224,9 +224,10 @@ class objectiveFunctionForGreedy:
 
         new_optimal_weights_as_np = adjust_weights_with_factor(
             optimised_weights_as_np=optimised_weights_as_np,
+            adj_factor=adj_factor,
+            per_contract_value_as_np=per_contract_value_as_np,
             prior_weights_as_np=prior_weights_as_np,
             min_bets_as_np=self.min_bets_as_np,
-            adj_factor=adj_factor,
         )
 
         return new_optimal_weights_as_np
