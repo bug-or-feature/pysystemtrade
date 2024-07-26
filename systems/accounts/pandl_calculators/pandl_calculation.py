@@ -4,7 +4,7 @@ import numpy as np
 from syscore.constants import arg_not_supplied
 from syscore.dateutils import from_config_frequency_pandas_resample
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
-from syscore.pandas.pdutils import round_fsb_positions
+from syscore.rounding import RoundingStrategy, get_rounding_strategy
 
 
 class pandlCalculation(object):
@@ -27,6 +27,7 @@ class pandlCalculation(object):
         self._passed_diagnostic_df = passed_diagnostic_df
         self._delayfill = delayfill
         self._roundpositions = roundpositions
+        self._rounding_strategy = get_rounding_strategy(self._roundpositions)
 
     def calculations_and_diagnostic_df(self) -> pd.DataFrame:
         diagnostic_df = self.passed_diagnostic_df
@@ -155,15 +156,9 @@ class pandlCalculation(object):
         else:
             positions_to_use = positions
 
-        # TODO round to multiple of minimum bet
-        # TODO refactor into new FSB special class?
-        if self.roundpositions:
-            # futures:
-            # positions_to_use = positions_to_use.round()
-            # FSBs:
-            positions_to_use = round_fsb_positions(
-                positions_to_use, self.value_per_point
-            )
+        positions_to_use = self.rounding_strategy.round_series(
+            positions_to_use, self.value_per_point
+        )
 
         return positions_to_use
 
@@ -179,6 +174,10 @@ class pandlCalculation(object):
     @property
     def roundpositions(self) -> bool:
         return self._roundpositions
+
+    @property
+    def rounding_strategy(self) -> RoundingStrategy:
+        return self._rounding_strategy
 
     @property
     def value_per_point(self) -> float:
