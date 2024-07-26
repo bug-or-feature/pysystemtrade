@@ -21,6 +21,19 @@ class RoundingStrategy(ABC):
         """
         pass
 
+    @abstractmethod
+    def round_weights(
+        self, weights: dict, prev: dict = None, min_bets: dict = None
+    ) -> dict:
+        """
+        Round a dict of position weights
+        :param weights: input weights (dict)
+        :param prev: previous positions (dict)
+        :param min_bets: minimum bets (dict)
+        :return: rounded weights (dict)
+        """
+        pass
+
 
 class NoRoundingStrategy(RoundingStrategy):
     """
@@ -35,6 +48,18 @@ class NoRoundingStrategy(RoundingStrategy):
         :return: rounded positions (pd.Series)
         """
         return positions
+
+    def round_weights(
+        self, weights: dict, prev: dict = None, min_bets: dict = None
+    ) -> dict:
+        """
+        Return weights unchanged
+        :param weights: input weights (dict)
+        :param prev: previous positions (dict)
+        :param min_bets: minimum bets (dict)
+        :return: weights (dict)
+        """
+        return weights
 
 
 class FuturesRoundingStrategy(RoundingStrategy):
@@ -51,6 +76,36 @@ class FuturesRoundingStrategy(RoundingStrategy):
         :return: rounded positions (pd.Series)
         """
         return positions.round()
+
+    def round_weights(
+        self, weights: dict, prev: dict = None, min_bets: dict = None
+    ) -> dict:
+        """
+        Round a series of positions
+
+        We do the rounding to avoid floating point errors even though these should be
+        integer values of float type
+
+        :param weights: input weights
+        :param prev: previous positions (dict)
+        :param min_bets: minimum bets (dict)
+        :return: rounded weights (dict)
+        """
+        new_weights_as_dict = dict(
+            [
+                (instrument_code, self._int_from_nan(np.round(value)))
+                for instrument_code, value in weights.items()
+            ]
+        )
+
+        return new_weights_as_dict
+
+    @staticmethod
+    def _int_from_nan(x: float):
+        if np.isnan(x):
+            return 0
+        else:
+            return int(x)
 
 
 class SimpleFsbRoundingStrategy(RoundingStrategy):
@@ -71,6 +126,38 @@ class SimpleFsbRoundingStrategy(RoundingStrategy):
         rounded = np.round(np.round(positions / min_bet) * min_bet, 2)
         # print(f"\n{rounded}")
         return rounded
+
+    def round_weights(self, weights: dict, prev: dict, min_bets: dict) -> dict:
+        """
+        Round a dict of position weights
+        :param weights: input weights (dict)
+        :param weights: previous positions (dict)
+        :param weights: minimum bets (dict)
+        :return: rounded weights (dict)
+        """
+
+        new_weights_as_dict = dict(
+            [
+                (instr, self.do_rounding(val, prev[instr], min_bets[instr]))
+                for instr, val in weights.items()
+            ]
+        )
+
+        return new_weights_as_dict
+
+    @staticmethod
+    def do_rounding(new_val, prev_val, min_bet):
+        diff_dir = round(new_val - prev_val, 2)
+        plus = True if diff_dir >= 0 else False
+        if abs(diff_dir) < min_bet:
+            if abs(diff_dir) >= min_bet / 2:
+                if plus:
+                    return prev_val + min_bet
+                else:
+                    return prev_val - min_bet
+            else:
+                return prev_val
+        return new_val
 
 
 class FancyFsbRoundingStrategy(RoundingStrategy):
@@ -93,7 +180,11 @@ class FancyFsbRoundingStrategy(RoundingStrategy):
         next_diff = np.abs(positions.diff(periods=-1)).round(2)
 
         # mask for positions that need to be rounded up
-        up_mask = (prev_diff.lt(min_bet)) & (prev_diff.ge(min_bet / 2)) & (next_diff > min_bet)
+        up_mask = (
+            (prev_diff.lt(min_bet))
+            & (prev_diff.ge(min_bet / 2))
+            & (next_diff > min_bet)
+        )
 
         # round up
         positions.loc[up_mask] = positions.shift() + min_bet
