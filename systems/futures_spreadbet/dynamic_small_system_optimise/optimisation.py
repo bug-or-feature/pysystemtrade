@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from syscore.constants import arg_not_supplied
-
+from syscore.rounding import RoundingStrategy, get_rounding_strategy
 from syslogging.logger import *
 
 from sysquant.estimators.covariance import covarianceEstimate
@@ -46,10 +46,8 @@ class objectiveFunctionForGreedy:
         maximum_positions: portfolioWeights = arg_not_supplied,
         log=get_logger("objectiveFunctionForGreedy"),
         constraint_function: Callable = arg_not_supplied,
+        rounding_strategy: RoundingStrategy = arg_not_supplied,
     ):
-        # if not contracts_optimal.all_weights_are_zero():
-        #    pass
-
         self.covariance_matrix = covariance_matrix
         self.per_contract_value = per_contract_value
         self.min_bets = min_bets
@@ -63,17 +61,10 @@ class objectiveFunctionForGreedy:
         self.weights_optimal = weights_optimal
         self.contracts_optimal = contracts_optimal
 
-        # what gets passed in as previous positions, is actually
-        #       "multiples of minimum bets"
-        # so, to use those values again in the next cycle - we must convert them back
-        # into weights
         if previous_positions is arg_not_supplied:
             weights_prior = arg_not_supplied
         else:
             previous_positions = previous_positions.with_zero_weights_instead_of_nan()
-            # if not previous_positions.all_weights_are_zero():
-            #     pass
-
             weights_prior = previous_positions * per_contract_value
 
         self.weights_prior = weights_prior
@@ -90,15 +81,22 @@ class objectiveFunctionForGreedy:
         self.constraint_function = constraint_function
         self.log = log
 
+        if rounding_strategy is arg_not_supplied:
+            self.rounding_strategy = get_rounding_strategy(roundpositions=True)
+
     def optimise_positions(self) -> portfolioWeights:
         optimal_weights = self.optimise_weights()
         optimal_positions = optimal_weights / self.per_contract_value
 
-        optimal_positions = optimal_positions.round_to_fsb(
-            self.min_bets, self.previous_positions
+        rounded_optimal_positions = portfolioWeights(
+            self.rounding_strategy.round_weights(
+                optimal_positions,
+                self.min_bets,
+                self.previous_positions,
+            )
         )
 
-        return optimal_positions
+        return rounded_optimal_positions
 
     def optimise_weights(self) -> portfolioWeights:
         optimal_weights_without_missing_items_as_np = self.optimise_np_for_valid_keys()
