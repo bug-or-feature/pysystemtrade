@@ -549,10 +549,12 @@ def get_optimised_positions_data_dict_given_optimisation(
     objective_function: objectiveFunctionForGreedy,
 ) -> dict:
     optimised_positions = objective_function.optimise_positions()
-    optimised_positions = optimised_positions.replace_weights_with_ints()
-
+    rounded_optimal_positions = portfolioWeights(
+        objective_function.rounding_strategy.round_weights(optimised_positions)
+    )
     optimised_position_weights = get_weights_given_positions(
-        optimised_positions, per_contract_value=data_for_objective.per_contract_value
+        rounded_optimal_positions,
+        per_contract_value=data_for_objective.per_contract_value,
     )
     instrument_list: List[str] = objective_function.keys_with_valid_data
 
@@ -590,13 +592,16 @@ def get_optimised_positions_data_dict_given_optimisation(
     return data_dict
 
 
-def get_positions_given_weights(
-    weights: portfolioWeights, per_contract_value: portfolioWeights
-) -> portfolioWeights:
-    positions = weights / per_contract_value
-    positions = positions.replace_weights_with_ints()
-
-    return positions
+# def get_positions_given_weights(
+#     weights: portfolioWeights, per_contract_value: portfolioWeights
+# ) -> portfolioWeights:
+#     positions = weights / per_contract_value
+#     # positions = positions.replace_weights_with_ints()
+#     rounded_positions = portfolioWeights(
+#         objective_function.rounding_strategy.round_weights(positions)
+#     )
+#
+#     return positions
 
 
 def get_weights_given_positions(
