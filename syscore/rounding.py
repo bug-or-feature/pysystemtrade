@@ -21,18 +21,18 @@ class RoundingStrategy(ABC):
         """
         pass
 
-    @abstractmethod
     def round_weights(
         self, weights: dict, prev: dict = None, min_bets: dict = None
     ) -> dict:
         """
-        Round a dict of position weights
+        Default implementation does no rounding
+
         :param weights: input weights (dict)
-        :param prev: previous positions (dict)
-        :param min_bets: minimum bets (dict)
+        :param prev: optional previous positions (dict)
+        :param min_bets: optional minimum bets (dict)
         :return: rounded weights (dict)
         """
-        pass
+        return weights
 
 
 class NoRoundingStrategy(RoundingStrategy):
@@ -81,14 +81,14 @@ class FuturesRoundingStrategy(RoundingStrategy):
         self, weights: dict, prev: dict = None, min_bets: dict = None
     ) -> dict:
         """
-        Round a series of positions
+        Round a dict of optimal positions to integer contracts
 
         We do the rounding to avoid floating point errors even though these should be
         integer values of float type
 
         :param weights: input weights
-        :param prev: previous positions (dict)
-        :param min_bets: minimum bets (dict)
+        :param prev: optional previous positions (dict)
+        :param min_bets: optional minimum bets (dict)
         :return: rounded weights (dict)
         """
         new_weights_as_dict = dict(
