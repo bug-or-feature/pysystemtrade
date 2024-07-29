@@ -77,12 +77,10 @@ class accountBufferingSystemLevel(accountInputs):
         2015-12-11         1
         """
 
-        self._rounding_strategy = get_rounding_strategy(roundpositions)
-
         buffered_position = get_buffered_position(
             optimal_position=self.get_notional_position(instrument_code),
             pos_buffers=self.get_buffers_for_position(instrument_code),
-            rounding_strategy=self._rounding_strategy,
+            rounding_strategy=get_rounding_strategy(self.config, roundpositions),
             buffer_method=self.config.get_element_or_default("buffer_method", "none"),
             trade_to_edge=self.config.buffer_trade_to_edge,
             log=self.log,

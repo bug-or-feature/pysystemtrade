@@ -1,6 +1,7 @@
 import pandas as pd
 
 from syscore.pandas.strategy_functions import turnover
+from syscore.rounding import get_rounding_strategy
 
 from systems.system_cache import diagnostic, dont_cache
 from systems.accounts.account_costs import accountCosts
@@ -150,7 +151,7 @@ class accountInstruments(accountCosts, accountBufferingSystemLevel):
             value_per_point=value_of_price_point,
             delayfill=delayfill,
             fx=fx,
-            roundpositions=roundpositions,
+            rounding_strategy=get_rounding_strategy(self.config, roundpositions),
         )
 
         account_curve = accountCurve(pandl_calculator, weighted=True)
@@ -196,6 +197,7 @@ class accountInstruments(accountCosts, accountBufferingSystemLevel):
         value_of_price_point = self.get_value_of_block_price_move(instrument_code)
 
         capital = self.get_notional_capital()
+        rounding_strategy = get_rounding_strategy(self.config, roundpositions)
 
         vol_normalise_currency_costs = self.config.vol_normalise_currency_costs
         rolls_per_year = self.get_rolls_per_year(instrument_code)
@@ -209,7 +211,7 @@ class accountInstruments(accountCosts, accountBufferingSystemLevel):
             value_per_point=value_of_price_point,
             delayfill=delayfill,
             fx=fx,
-            roundpositions=roundpositions,
+            rounding_strategy=rounding_strategy,
             vol_normalise_currency_costs=vol_normalise_currency_costs,
             rolls_per_year=rolls_per_year,
             multiply_roll_costs_by=multiply_roll_costs_by,

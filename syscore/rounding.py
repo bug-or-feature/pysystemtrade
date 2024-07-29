@@ -3,6 +3,8 @@ from typing import Optional
 import pandas as pd
 import numpy as np
 
+from syscore.objects import resolve_function
+
 
 class RoundingStrategy(ABC):
     """
@@ -96,14 +98,19 @@ class FuturesRoundingStrategy(RoundingStrategy):
             return int(x)
 
 
-def get_rounding_strategy(roundpositions: bool = False) -> RoundingStrategy:
+def get_rounding_strategy(config, roundpositions: bool = False) -> RoundingStrategy:
     """
-    Obtain a RoundingStrategy instance
+    Obtain a RoundingStrategy instance. If roundpositions is False, return
+    NoRoundingStrategy. Otherwise, look up the classname in config, and return an
+    instance of it. Default is FuturesRoundingStrategy
 
+    :param config: config source
     :param roundpositions: whether to round (bool)
     :return: RoundingStrategy instance
     """
     if roundpositions:
-        return FuturesRoundingStrategy()
+        class_name = config.get_element("rounding_strategy")
+        rounding_type = resolve_function(class_name)
+        return rounding_type()
 
     return NoRoundingStrategy()

@@ -40,7 +40,7 @@ class pandlCalculationWithSRCosts(pandlCalculationWithGenericCosts):
             SR_cost=self._SR_cost,
             daily_returns_volatility=self.daily_returns_volatility,
             value_per_point=self.value_per_point,
-            roundpositions=self.roundpositions,
+            rounding_strategy=self.rounding_strategy,
             delayfill=self.delayfill,
         )
 

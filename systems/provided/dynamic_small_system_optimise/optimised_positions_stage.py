@@ -3,6 +3,7 @@ from copy import copy
 
 import pandas as pd
 
+from syscore.rounding import RoundingStrategy, get_rounding_strategy
 from sysquant.estimators.stdev_estimator import stdevEstimates
 from sysquant.estimators.correlations import (
     correlationEstimate,
@@ -117,6 +118,7 @@ class optimisedPositions(SystemStage):
         )
         speed_control = self.get_speed_control()
         constraints = self.get_constraints()
+        rounding_strategy = self.rounding_strategy
 
         obj_instance = objectiveFunctionForGreedy(
             contracts_optimal=contracts_optimal,
@@ -127,6 +129,7 @@ class optimisedPositions(SystemStage):
             constraints=constraints,
             maximum_positions=maximum_positions,
             speed_control=speed_control,
+            rounding_strategy=rounding_strategy,
         )
 
         return obj_instance
@@ -356,6 +359,10 @@ class optimisedPositions(SystemStage):
 
     def get_trading_capital(self) -> float:
         return self.position_size_stage.get_notional_trading_capital()
+
+    @property
+    def rounding_strategy(self) -> RoundingStrategy:
+        return get_rounding_strategy(self.config, roundpositions=True)
 
     ## STAGE POINTERS
     def accounts_stage(self):

@@ -29,7 +29,7 @@ class pandlCalculationWithFills(pandlCalculation):
             fx=self.fx,
             capital=weighted_capital,
             value_per_point=self.value_per_point,
-            roundpositions=self.roundpositions,
+            rounding_strategy=self.rounding_strategy,
             delayfill=self.delayfill,
         )
 
