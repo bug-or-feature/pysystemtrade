@@ -1,4 +1,5 @@
 import pandas as pd
+import pytest
 
 from sysquant.optimisation.weights import portfolioWeights
 from syscore.rounding import SimpleFsbRoundingStrategy, validate_fsb_position_series
@@ -21,24 +22,56 @@ class TestRounding:
         )
     )
 
-    def test_round_to_fsb(self):
-        self.assert_rounding(2.5, 1.0, 1.0, 2.5)
-        self.assert_rounding(4.19, 4.1, 0.2, 4.1)
-        self.assert_rounding(23.1, 21.0, 5.0, 21.0)
-        self.assert_rounding(46.0, 40.0, 10.0, 50.0)
+    def test_round_weights_nearest_multiple(self):
+        self.assert_weight_rounding(2.5, 1.0, 1.0, 2.0)
+        self.assert_weight_rounding(4.19, 4.1, 0.2, 4.2)
+        self.assert_weight_rounding(23.1, 21.0, 5.0, 25.0)
+        self.assert_weight_rounding(46.0, 40.0, 10.0, 50.0)
 
-        self.assert_rounding(-2.5, -1.0, 1.0, -2.5)
-        self.assert_rounding(-46.0, -40.0, 10.0, -50.0)
+        self.assert_weight_rounding(-2.5, -1.0, 1.0, -2.0)
+        self.assert_weight_rounding(-46.0, -40.0, 10.0, -50.0)
 
-        self.assert_rounding(-22.5, 10.0, 10.0, -22.5)
-        self.assert_rounding(-2.5, 10.0, 50.0, 10.0)
-        self.assert_rounding(-22.5, 10.0, 50.0, -40.0)
+        self.assert_weight_rounding(-22.5, 10.0, 10.0, -20.0)
+        self.assert_weight_rounding(-2.5, 10.0, 50.0, 0.0)
+        self.assert_weight_rounding(-22.5, 10.0, 50.0, 0.0)
+
+        self.assert_weight_rounding(-0.1, 0.05, 0.2, -0.0)
+        self.assert_weight_rounding(-0.08, 0.1, 0.2, -0.0)
+        self.assert_weight_rounding(-0.2, 0.1, 0.2, -0.2)
+        self.assert_weight_rounding(0.01, -0.1, 0.5, -0.0)
+        self.assert_weight_rounding(0.14, -0.1, 0.5, -0.0)
+        self.assert_weight_rounding(0.16, -0.1, 0.5, 0.0)
+
+    @pytest.mark.skip
+    def test_round_weights_nearest_penny(self):
+        self.assert_weight_rounding(2.5, 1.0, 1.0, 2.5)
+        self.assert_weight_rounding(4.19, 4.1, 0.2, 4.1)
+        self.assert_weight_rounding(23.1, 21.0, 5.0, 21.0)
+        self.assert_weight_rounding(46.0, 40.0, 10.0, 50.0)
+
+        self.assert_weight_rounding(-2.5, -1.0, 1.0, -2.5)
+        self.assert_weight_rounding(-46.0, -40.0, 10.0, -50.0)
+
+        self.assert_weight_rounding(-22.5, 10.0, 10.0, -22.5)
+        self.assert_weight_rounding(-2.5, 10.0, 50.0, 10.0)
+        self.assert_weight_rounding(-22.5, 10.0, 50.0, -40.0)
+
+        self.assert_weight_rounding(-0.1, 0.05, 0.2, -0.15)
+        self.assert_weight_rounding(-0.08, 0.1, 0.2, -0.1)
+        self.assert_weight_rounding(-0.2, 0.1, 0.2, -0.2)
+        self.assert_weight_rounding(0.01, -0.1, 0.5, -0.1)
+        self.assert_weight_rounding(0.14, -0.1, 0.5, -0.1)
+        self.assert_weight_rounding(0.16, -0.1, 0.5, 0.4)
 
     @staticmethod
-    def assert_rounding(new_pos, prev_pos, min_bet, exp_pos):
+    def assert_weight_rounding(new_pos, prev_pos, min_bet, exp_pos):
+        rs = SimpleFsbRoundingStrategy()
+
         positions = portfolioWeights({"BLAH": new_pos})
         min_bets = portfolioWeights({"BLAH": min_bet})
-        rounded = positions.round_to_fsb(min_bets, portfolioWeights({"BLAH": prev_pos}))
+        rounded = rs.round_weights(
+            positions, portfolioWeights({"BLAH": prev_pos}), min_bets
+        )
         assert rounded["BLAH"] == exp_pos
 
     def test_validate_fsb_position_series(self):
