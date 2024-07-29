@@ -164,7 +164,7 @@ class SimpleFsbRoundingStrategy(RoundingStrategy):
 def get_rounding_strategy(config, roundpositions: bool = False) -> RoundingStrategy:
     """
     Obtain a RoundingStrategy instance. If roundpositions is False, return
-    NoRoundingStrategy. Otherwise look up the  classname in config, and return an
+    NoRoundingStrategy. Otherwise, look up the classname in config, and return an
     instance of it. Default is FuturesRoundingStrategy
 
     :param config: config source

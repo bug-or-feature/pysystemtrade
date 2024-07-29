@@ -118,7 +118,7 @@ class optimisedPositions(SystemStage):
         )
         speed_control = self.get_speed_control()
         constraints = self.get_constraints()
-        rounding_strategy = self.rounding_strategy()
+        rounding_strategy = self.rounding_strategy
 
         obj_instance = objectiveFunctionForGreedy(
             contracts_optimal=contracts_optimal,
