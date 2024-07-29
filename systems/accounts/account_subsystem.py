@@ -147,7 +147,7 @@ class accountSubsystem(accountBufferingSubSystemLevel):
             value_per_point=value_of_price_point,
             delayfill=delayfill,
             fx=fx,
-            rounding_strategy=get_rounding_strategy(roundpositions, instrument_code),
+            rounding_strategy=get_rounding_strategy(self.config, roundpositions),
         )
 
         return pandl_calculator
@@ -193,7 +193,7 @@ class accountSubsystem(accountBufferingSubSystemLevel):
             value_per_point=value_of_price_point,
             delayfill=delayfill,
             fx=fx,
-            rounding_strategy=get_rounding_strategy(roundpositions, instrument_code),
+            rounding_strategy=get_rounding_strategy(self.config, roundpositions),
             vol_normalise_currency_costs=vol_normalise_currency_costs,
             rolls_per_year=rolls_per_year,
         )

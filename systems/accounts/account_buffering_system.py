@@ -77,9 +77,7 @@ class accountBufferingSystemLevel(accountInputs):
         2015-12-11         1
         """
 
-        self._rounding_strategy = get_rounding_strategy(
-            roundpositions, instr_code=instrument_code
-        )
+        self._rounding_strategy = get_rounding_strategy(self.config, roundpositions)
 
         min_bet = self.parent.portfolio.get_min_bet_for_instrument(instrument_code)
 

@@ -151,7 +151,7 @@ class accountInstruments(accountCosts, accountBufferingSystemLevel):
             value_per_point=value_of_price_point,
             delayfill=delayfill,
             fx=fx,
-            rounding_strategy=get_rounding_strategy(roundpositions, instrument_code),
+            rounding_strategy=get_rounding_strategy(self.config, roundpositions),
         )
 
         account_curve = accountCurve(pandl_calculator, weighted=True)
@@ -210,7 +210,7 @@ class accountInstruments(accountCosts, accountBufferingSystemLevel):
             value_per_point=value_of_price_point,
             delayfill=delayfill,
             fx=fx,
-            rounding_strategy=get_rounding_strategy(roundpositions, instrument_code),
+            rounding_strategy=get_rounding_strategy(self.config, roundpositions),
             vol_normalise_currency_costs=vol_normalise_currency_costs,
             rolls_per_year=rolls_per_year,
             multiply_roll_costs_by=multiply_roll_costs_by,

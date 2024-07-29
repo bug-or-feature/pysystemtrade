@@ -3,6 +3,8 @@ from typing import Optional
 import pandas as pd
 import numpy as np
 
+from syscore.objects import resolve_function
+
 
 class RoundingStrategy(ABC):
     """
@@ -48,18 +50,6 @@ class NoRoundingStrategy(RoundingStrategy):
         :return: rounded positions (pd.Series)
         """
         return positions
-
-    def round_weights(
-        self, weights: dict, prev: dict = None, min_bets: dict = None
-    ) -> dict:
-        """
-        Return weights unchanged
-        :param weights: input weights (dict)
-        :param prev: previous positions (dict)
-        :param min_bets: minimum bets (dict)
-        :return: weights (dict)
-        """
-        return weights
 
 
 class FuturesRoundingStrategy(RoundingStrategy):
@@ -127,18 +117,21 @@ class SimpleFsbRoundingStrategy(RoundingStrategy):
         # print(f"\n{rounded}")
         return rounded
 
-    def round_weights(self, weights: dict, prev: dict, min_bets: dict) -> dict:
+    def round_weights(
+        self, weights: dict, prev: dict = None, min_bets: dict = None
+    ) -> dict:
         """
         Round a dict of position weights
+
         :param weights: input weights (dict)
-        :param weights: previous positions (dict)
-        :param weights: minimum bets (dict)
+        :param weights: optional previous positions (dict)
+        :param weights: optional minimum bets (dict)
         :return: rounded weights (dict)
         """
 
         new_weights_as_dict = dict(
             [
-                (instr, self.do_rounding(val, prev[instr], min_bets[instr]))
+                (instr, self._round_to_nearest_multiple(val, min_bets[instr]))
                 for instr, val in weights.items()
             ]
         )
@@ -146,92 +139,42 @@ class SimpleFsbRoundingStrategy(RoundingStrategy):
         return new_weights_as_dict
 
     @staticmethod
-    def do_rounding(new_val, prev_val, min_bet):
+    def _round_to_nearest_multiple(new_val, min_bet):
+        """
+        Rounds to nearest multiple of minimum bet
+        """
+        rounded = round(round(new_val / min_bet) * min_bet, 2)
+        return rounded
+
+    @staticmethod
+    def _round_to_nearest_penny(new_val, prev_val, min_bet):
         diff_dir = round(new_val - prev_val, 2)
         plus = True if diff_dir >= 0 else False
         if abs(diff_dir) < min_bet:
             if abs(diff_dir) >= min_bet / 2:
                 if plus:
-                    return prev_val + min_bet
+                    return round(prev_val + min_bet, 2)
                 else:
-                    return prev_val - min_bet
+                    return round(prev_val - min_bet, 2)
             else:
                 return prev_val
         return new_val
 
 
-class FancyFsbRoundingStrategy(RoundingStrategy):
+def get_rounding_strategy(config, roundpositions: bool = False) -> RoundingStrategy:
     """
-    Fancy RoundingStrategy implementation for FSBs
-    """
+    Obtain a RoundingStrategy instance. If roundpositions is False, return
+    NoRoundingStrategy. Otherwise look up the  classname in config, and return an
+    instance of it. Default is FuturesRoundingStrategy
 
-    def round_series(self, positions: pd.Series, min_bet: Optional[float] = None):
-        """
-        Round a series of FSB positions
-
-        :param positions: input positions (pd.Series)
-        :param min_bet: optional minimum bet (float)
-        :return: rounded positions (pd.Series)
-        """
-
-        positions = positions.ffill().bfill()
-
-        prev_diff = np.abs(positions.diff()).round(2)
-        next_diff = np.abs(positions.diff(periods=-1)).round(2)
-
-        # mask for positions that need to be rounded up
-        up_mask = (
-            (prev_diff.lt(min_bet))
-            & (prev_diff.ge(min_bet / 2))
-            & (next_diff > min_bet)
-        )
-
-        # round up
-        positions.loc[up_mask] = positions.shift() + min_bet
-
-        # re-evaluate for changes
-        prev_diff = np.abs(positions.diff()).round(2)
-
-        # mask for positions that need to be rounded down
-        down_mask = prev_diff.lt(min_bet)
-
-        # round down
-        positions[down_mask] = np.nan
-        positions = positions.ffill()
-
-        print(f"\n{positions}")
-
-        return positions
-
-    @staticmethod
-    def _new_custom_round(value, min_bet):
-        multiplier = 1 / min_bet
-
-        if min_bet and min_bet != 1.0:
-            value = value * 1 / min_bet
-
-        value = round(value)
-
-        if min_bet and min_bet != 1.0:
-            value = value / multiplier
-
-        return value
-
-
-def get_rounding_strategy(
-    roundpositions: bool = False, instr_code: Optional[str] = None
-) -> RoundingStrategy:
-    """
-    Obtain a RoundingStrategy instance
-
+    :param config: config source
     :param roundpositions: whether to round (bool)
-    :param instr_code: optional instrument code (str)
     :return: RoundingStrategy instance
     """
     if roundpositions:
-        if instr_code and instr_code.endswith("_fsb"):
-            return SimpleFsbRoundingStrategy()
-        return FuturesRoundingStrategy()
+        class_name = config.get_element("rounding_strategy")
+        rounding_type = resolve_function(class_name)
+        return rounding_type()
 
     return NoRoundingStrategy()
 

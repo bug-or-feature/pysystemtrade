@@ -15,7 +15,7 @@ class pandlCalculation(object):
         fx: pd.Series = arg_not_supplied,
         capital: pd.Series = arg_not_supplied,
         value_per_point: float = 1.0,
-        roundpositions=False,
+        rounding_strategy: RoundingStrategy = arg_not_supplied,
         delayfill=False,
         passed_diagnostic_df: pd.DataFrame = arg_not_supplied,
     ):
@@ -26,8 +26,7 @@ class pandlCalculation(object):
         self._value_per_point = value_per_point
         self._passed_diagnostic_df = passed_diagnostic_df
         self._delayfill = delayfill
-        self._roundpositions = roundpositions
-        self._rounding_strategy = get_rounding_strategy(self._roundpositions)
+        self._rounding_strategy = rounding_strategy
 
     def calculations_and_diagnostic_df(self) -> pd.DataFrame:
         diagnostic_df = self.passed_diagnostic_df
@@ -51,7 +50,7 @@ class pandlCalculation(object):
             fx=self.fx,
             capital=weighted_capital,
             value_per_point=self.value_per_point,
-            roundpositions=self.roundpositions,
+            rounding_strategy=self.rounding_strategy,
             delayfill=self.delayfill,
         )
 
@@ -170,10 +169,6 @@ class pandlCalculation(object):
     @property
     def delayfill(self) -> bool:
         return self._delayfill
-
-    @property
-    def roundpositions(self) -> bool:
-        return self._roundpositions
 
     @property
     def rounding_strategy(self) -> RoundingStrategy:

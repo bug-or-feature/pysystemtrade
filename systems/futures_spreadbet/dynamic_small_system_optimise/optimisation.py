@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from syscore.constants import arg_not_supplied
-from syscore.rounding import RoundingStrategy, get_rounding_strategy
+from syscore.rounding import RoundingStrategy
 from syslogging.logger import *
 
 from sysquant.estimators.covariance import covarianceEstimate
@@ -81,8 +81,8 @@ class objectiveFunctionForGreedy:
         self.constraint_function = constraint_function
         self.log = log
 
-        if rounding_strategy is arg_not_supplied:
-            self.rounding_strategy = get_rounding_strategy(roundpositions=True)
+        # TODO rounding_strategy cannot be null
+        self.rounding_strategy = rounding_strategy
 
     def optimise_positions(self) -> portfolioWeights:
         optimal_weights = self.optimise_weights()
@@ -91,8 +91,8 @@ class objectiveFunctionForGreedy:
         rounded_optimal_positions = portfolioWeights(
             self.rounding_strategy.round_weights(
                 optimal_positions,
-                self.min_bets,
                 self.previous_positions,
+                self.min_bets,
             )
         )
 
