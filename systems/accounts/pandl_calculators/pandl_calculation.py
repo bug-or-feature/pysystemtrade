@@ -155,7 +155,9 @@ class pandlCalculation(object):
         else:
             positions_to_use = positions
 
-        positions_to_use = self.rounding_strategy.round_series(positions_to_use)
+        positions_to_use = self.rounding_strategy.round_series(
+            positions_to_use, self.value_per_point
+        )
 
         return positions_to_use
 
