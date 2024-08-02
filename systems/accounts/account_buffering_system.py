@@ -77,7 +77,7 @@ class accountBufferingSystemLevel(accountInputs):
         2015-12-11         1
         """
 
-        min_bet = self.parent.portfolio.get_min_bet_for_instrument(instrument_code)
+        min_bet = self._get_min_bet(instrument_code)
 
         buffered_position = get_buffered_position(
             optimal_position=self.get_notional_position(instrument_code),
@@ -90,3 +90,11 @@ class accountBufferingSystemLevel(accountInputs):
         )
 
         return buffered_position
+
+    def _get_min_bet(self, instrument_code):
+        try:
+            min_bet = self.parent.portfolio.get_min_bet_for_instrument(instrument_code)
+        except:
+            min_bet = 1.0
+
+        return min_bet
