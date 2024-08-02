@@ -131,7 +131,10 @@ class SimpleFsbRoundingStrategy(RoundingStrategy):
 
         new_weights_as_dict = dict(
             [
-                (instr, self._round_to_nearest_multiple(val, min_bets[instr]))
+                (
+                    instr,
+                    self._round_to_nearest_multiple(val, prev[instr], min_bets[instr]),
+                )
                 for instr, val in weights.items()
             ]
         )
@@ -139,7 +142,18 @@ class SimpleFsbRoundingStrategy(RoundingStrategy):
         return new_weights_as_dict
 
     @staticmethod
-    def _round_to_nearest_multiple(new_val, min_bet):
+    def _round_down(new_val, prev_val, min_bet):
+        """
+        Return zero if new value is less than min bet
+        """
+        diff = round(new_val - prev_val, 2)
+        if diff < min_bet:
+            return 0.0
+        else:
+            return round(new_val, 2)
+
+    @staticmethod
+    def _round_to_nearest_multiple(new_val, prev_val, min_bet):
         """
         Rounds to nearest multiple of minimum bet
         """
