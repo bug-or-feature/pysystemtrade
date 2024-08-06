@@ -2116,6 +2116,9 @@ use_SR_costs: False
 vol_normalise_currency_costs: True
 multiply_roll_costs_by: 1.0
 
+# rounding strat
+rounding_strategy: syscore.rounding.SimpleFsbRoundingStrategy
+
 exclude_instrument_lists:
   # ignore_instruments are ignored in backtests
   # we still collect price data for them in production, do rolls etc
