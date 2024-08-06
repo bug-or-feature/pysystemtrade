@@ -28,7 +28,7 @@ from systems.risk import Risk
 
 
 CONFIG = "systems.futures_spreadbet.config.fsb_do_minimal.yaml"
-SAVED_SYSTEM = "systems.futures_spreadbet.pickle.saved-do-system-min.pck"
+SAVED_SYSTEM = "systems.futures_spreadbet.pickle.fsb_do_minimal.pck"
 
 # CONFIG = "systems.futures_spreadbet.config.fsb_static_system_mid_est.yaml"
 # SAVED_SYSTEM = "systems.futures_spreadbet.pickle.saved-do-system-mid.pck"
@@ -36,6 +36,10 @@ SAVED_SYSTEM = "systems.futures_spreadbet.pickle.saved-do-system-min.pck"
 # CONFIG = "systems.futures_spreadbet.config.fsb_static_system_full_est.yaml"
 # SAVED_SYSTEM = "systems.futures_spreadbet.pickle.saved-do-system.pck"
 # SAVED_SYSTEM = "systems.futures_spreadbet.pickle.full-small-cap.pck"
+
+# inc bad
+# CONFIG = "systems.futures_spreadbet.config.fsb_static_system_full_inc_bad.yaml"
+# SAVED_SYSTEM = "systems.futures_spreadbet.pickle.saved-do-system.pck"
 
 log = get_logger("backtest")
 
