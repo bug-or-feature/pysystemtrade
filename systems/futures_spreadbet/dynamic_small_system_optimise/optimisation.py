@@ -13,9 +13,11 @@ from sysquant.optimisation.weights import portfolioWeights
 from systems.provided.dynamic_small_system_optimise.buffering import (
     speedControlForDynamicOpt,
     calculate_adjustment_factor,
+)
+from systems.futures_spreadbet.dynamic_small_system_optimise.buffering import (
     adjust_weights_with_factor,
 )
-from systems.provided.dynamic_small_system_optimise.data_for_optimisation import (
+from systems.futures_spreadbet.dynamic_small_system_optimise.data_for_optimisation import (
     dataForOptimisation,
 )
 from systems.provided.dynamic_small_system_optimise.greedy_algo import (
@@ -36,6 +38,7 @@ class objectiveFunctionForGreedy:
         contracts_optimal: portfolioWeights,
         covariance_matrix: covarianceEstimate,
         per_contract_value: portfolioWeights,
+        min_bets: portfolioWeights,
         costs: meanEstimates,
         speed_control: speedControlForDynamicOpt,
         previous_positions: portfolioWeights = arg_not_supplied,
@@ -47,6 +50,7 @@ class objectiveFunctionForGreedy:
     ):
         self.covariance_matrix = covariance_matrix
         self.per_contract_value = per_contract_value
+        self.min_bets = min_bets
         self.costs = costs
 
         self.speed_control = speed_control
@@ -85,7 +89,11 @@ class objectiveFunctionForGreedy:
         optimal_positions = optimal_weights / self.per_contract_value
 
         rounded_optimal_positions = portfolioWeights(
-            self.rounding_strategy.round_weights(optimal_positions)
+            self.rounding_strategy.round_weights(
+                optimal_positions,
+                self.previous_positions,
+                self.min_bets,
+            )
         )
 
         return rounded_optimal_positions
@@ -217,6 +225,7 @@ class objectiveFunctionForGreedy:
             adj_factor=adj_factor,
             per_contract_value_as_np=per_contract_value_as_np,
             prior_weights_as_np=prior_weights_as_np,
+            min_bets_as_np=self.min_bets_as_np,
         )
 
         return new_optimal_weights_as_np
@@ -313,6 +322,14 @@ class objectiveFunctionForGreedy:
     @property
     def per_contract_value_as_np(self) -> np.array:
         return self.input_data.per_contract_value_as_np
+
+    @property
+    def min_bets_as_np(self) -> np.array:
+        return self.input_data.min_bets_as_np
+
+    @property
+    def labels_as_np(self) -> np.array:
+        return self.input_data.labels_as_np
 
     @property
     def weights_prior_as_np_replace_nans_with_zeros(self) -> np.array:

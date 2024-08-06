@@ -51,19 +51,6 @@ class portfolioWeights(dict):
     def reorder(self, asset_names: list):
         return portfolioWeights([(key, self[key]) for key in asset_names])
 
-    def replace_weights_with_ints(self):
-        ## we do the rounding to avoid floating point errors even though
-        ## these should be integer values of float type
-
-        new_weights_as_dict = dict(
-            [
-                (instrument_code, _int_from_nan(np.round(value)))
-                for instrument_code, value in self.items()
-            ]
-        )
-
-        return portfolioWeights(new_weights_as_dict)
-
     def as_np(self) -> np.array:
         as_list = self.as_list()
         return np.array(as_list)
@@ -121,7 +108,7 @@ class portfolioWeights(dict):
             if np.isnan(x):
                 return 0.0
             else:
-                return x
+                return round(x, 2)
 
         return portfolioWeights(
             dict([(key, _replace(self[key])) for key in all_assets])
@@ -178,13 +165,6 @@ class seriesOfPortfolioWeights(pd.DataFrame):
 
     def get_sum_leverage(self) -> pd.Series:
         return self.abs().sum(axis=1)
-
-
-def _int_from_nan(x: float):
-    if np.isnan(x):
-        return 0
-    else:
-        return int(x)
 
 
 @dataclass()

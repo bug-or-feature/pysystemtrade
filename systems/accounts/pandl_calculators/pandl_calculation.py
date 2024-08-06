@@ -4,7 +4,7 @@ import numpy as np
 from syscore.constants import arg_not_supplied
 from syscore.dateutils import from_config_frequency_pandas_resample
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
-from syscore.genutils import round_to_minimum
+from syscore.rounding import RoundingStrategy
 
 
 class pandlCalculation(object):
@@ -15,7 +15,7 @@ class pandlCalculation(object):
         fx: pd.Series = arg_not_supplied,
         capital: pd.Series = arg_not_supplied,
         value_per_point: float = 1.0,
-        roundpositions=False,
+        rounding_strategy: RoundingStrategy = arg_not_supplied,
         delayfill=False,
         passed_diagnostic_df: pd.DataFrame = arg_not_supplied,
     ):
@@ -26,7 +26,7 @@ class pandlCalculation(object):
         self._value_per_point = value_per_point
         self._passed_diagnostic_df = passed_diagnostic_df
         self._delayfill = delayfill
-        self._roundpositions = roundpositions
+        self._rounding_strategy = rounding_strategy
 
     def calculations_and_diagnostic_df(self) -> pd.DataFrame:
         diagnostic_df = self.passed_diagnostic_df
@@ -50,7 +50,7 @@ class pandlCalculation(object):
             fx=self.fx,
             capital=weighted_capital,
             value_per_point=self.value_per_point,
-            roundpositions=self.roundpositions,
+            rounding_strategy=self.rounding_strategy,
             delayfill=self.delayfill,
         )
 
@@ -155,9 +155,9 @@ class pandlCalculation(object):
         else:
             positions_to_use = positions
 
-        # TODO round to multiple of minimum bet
-        if self.roundpositions:
-            positions_to_use = positions_to_use.round()
+        positions_to_use = self.rounding_strategy.round_series(
+            positions_to_use, self.value_per_point
+        )
 
         return positions_to_use
 
@@ -171,8 +171,8 @@ class pandlCalculation(object):
         return self._delayfill
 
     @property
-    def roundpositions(self) -> bool:
-        return self._roundpositions
+    def rounding_strategy(self) -> RoundingStrategy:
+        return self._rounding_strategy
 
     @property
     def value_per_point(self) -> float:

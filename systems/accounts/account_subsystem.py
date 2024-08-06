@@ -1,4 +1,5 @@
 from systems.system_cache import diagnostic, dont_cache
+from syscore.rounding import get_rounding_strategy
 from systems.accounts.account_buffering_subsystem import accountBufferingSubSystemLevel
 from systems.accounts.pandl_calculators.pandl_SR_cost import pandlCalculationWithSRCosts
 from systems.accounts.pandl_calculators.pandl_cash_costs import (
@@ -135,6 +136,7 @@ class accountSubsystem(accountBufferingSubSystemLevel):
         )
 
         capital = self.get_notional_capital()
+        rounding_strategy = get_rounding_strategy(self.config, roundpositions)
 
         pandl_calculator = pandlCalculationWithSRCosts(
             price,
@@ -146,7 +148,7 @@ class accountSubsystem(accountBufferingSubSystemLevel):
             value_per_point=value_of_price_point,
             delayfill=delayfill,
             fx=fx,
-            roundpositions=roundpositions,
+            rounding_strategy=rounding_strategy,
         )
 
         return pandl_calculator
@@ -183,6 +185,7 @@ class accountSubsystem(accountBufferingSubSystemLevel):
 
         vol_normalise_currency_costs = self.config.vol_normalise_currency_costs
         rolls_per_year = self.get_rolls_per_year(instrument_code)
+        rounding_strategy = get_rounding_strategy(self.config, roundpositions)
 
         pandl_calculator = pandlCalculationWithCashCostsAndFills(
             price,
@@ -192,7 +195,7 @@ class accountSubsystem(accountBufferingSubSystemLevel):
             value_per_point=value_of_price_point,
             delayfill=delayfill,
             fx=fx,
-            roundpositions=roundpositions,
+            rounding_strategy=rounding_strategy,
             vol_normalise_currency_costs=vol_normalise_currency_costs,
             rolls_per_year=rolls_per_year,
         )

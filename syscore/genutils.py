@@ -384,15 +384,6 @@ def intersection_intervals(intervals: list) -> list:
     return [start, end]
 
 
-def round_to_minimum(instr_code, optimal_position):
-    return optimal_position.round()
-
-
-def round_series_to_minimum(instr_code: str, positions):
-    rounded = positions.apply(lambda x: round_to_minimum(instr_code, x))
-    return rounded
-
-
 if __name__ == "__main__":
     import doctest
 

@@ -351,6 +351,8 @@ small_system:
   cost_multiplier: 1.0
   tracking_error_buffer: 0.0125
   shrink_instrument_returns_correlation: 0.5
+# position rounding
+rounding_strategy: syscore.rounding.FuturesRoundingStrategy
 #
 # duplicated/excluded instruments are ignored in backtests
 # we still collect price data for them in production, do rolls etc

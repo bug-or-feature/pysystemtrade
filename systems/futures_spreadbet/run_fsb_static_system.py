@@ -6,10 +6,9 @@ from systems.diagoutput import systemDiag
 from systems.futures_spreadbet.fsb_static_system import fsb_static_system
 from syslogging.logger import get_logger
 from sysdata.config.configdata import Config
-from syscore.pdutils import print_full
 
-# SAVED_SYSTEM = "systems.futures_spreadbet.saved-system-min.pck"
 # CONFIG = "systems.futures_spreadbet.config.fsb_static_minimal.yaml"
+# SAVED_SYSTEM = "systems.futures_spreadbet.pickle.fsb_static_minimal.pck"
 
 # SAVED_SYSTEM = "systems.futures_spreadbet.saved-system.pck"
 # CONFIG = "systems.futures_spreadbet.config.fsb_static_system_full_est.yaml"

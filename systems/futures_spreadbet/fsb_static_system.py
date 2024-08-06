@@ -10,7 +10,7 @@ from systems.forecast_combine import ForecastCombine
 from systems.forecast_scale_cap import ForecastScaleCap
 from systems.rawdata import RawData
 from systems.positionsizing import PositionSizing
-from systems.portfolio import Portfolios
+from systems.portfolio_fsb import FsbPortfolios
 from systems.accounts.accounts_stage import Account
 
 
@@ -32,7 +32,7 @@ def fsb_static_system(
     system = System(
         [
             Account(),
-            Portfolios(),
+            FsbPortfolios(),
             PositionSizing(),
             RawData(),
             ForecastCombine(),
@@ -67,19 +67,3 @@ def build_fsb_db_sim_data():
             csvSpreadCostData="fsb.csvconfig",
         )
     )
-
-
-# system = fsb_dynamic_system()
-# print(system.accounts.portfolio().percent.stats())
-
-# Yes those are before buffering and the algo
-
-# After buffering (static system):
-# system.accounts.get_buffered_position( instrument_code, roundpositions=True)
-# After greedy algo (dynamic system):
-# system.optimisedPositions.get_optimised_position_df()
-
-# Note in production I don't do this - I run the buffering and or greedy algo on the unrounded positions,
-# taking into account my actual live current positions, rather than what the backtest thought it had on yesterday
-
-#

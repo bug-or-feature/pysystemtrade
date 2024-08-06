@@ -15,7 +15,7 @@ from syscore.interactive.progress_bar import progressBar
 from syscore.constants import arg_not_supplied
 from syscore.pandas.find_data import get_row_of_series
 from syscore.pandas.strategy_functions import calculate_cost_deflator
-from systems.provided.dynamic_small_system_optimise.optimisation import (
+from systems.futures_spreadbet.dynamic_small_system_optimise.optimisation import (
     objectiveFunctionForGreedy,
     constraintsForDynamicOpt,
 )
@@ -109,6 +109,7 @@ class optimisedPositions(SystemStage):
         covariance_matrix = self.get_covariance_matrix(relevant_date=relevant_date)
 
         per_contract_value = self.get_per_contract_value(relevant_date)
+        min_bets = self.get_minimum_bets()
         contracts_optimal = self.original_position_contracts_for_relevant_date(
             relevant_date
         )
@@ -124,6 +125,7 @@ class optimisedPositions(SystemStage):
             contracts_optimal=contracts_optimal,
             covariance_matrix=covariance_matrix,
             per_contract_value=per_contract_value,
+            min_bets=min_bets,
             previous_positions=previous_positions,
             costs=costs,
             constraints=constraints,
@@ -308,6 +310,9 @@ class optimisedPositions(SystemStage):
         self, relevant_date: datetime.datetime = arg_not_supplied
     ):
         return self.portfolio_stage.get_per_contract_value(relevant_date)
+
+    def get_minimum_bets(self):
+        return self.portfolio_stage.get_minimum_bets()
 
     def get_current_contract_value_as_proportion_of_capital_for_instrument(
         self, instrument_code: str
