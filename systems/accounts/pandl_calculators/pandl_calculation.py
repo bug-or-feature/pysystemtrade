@@ -4,7 +4,7 @@ import numpy as np
 from syscore.constants import arg_not_supplied
 from syscore.dateutils import from_config_frequency_pandas_resample
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
-from syscore.rounding import RoundingStrategy
+from syscore.rounding import RoundingStrategy, get_rounding_strategy
 
 
 class pandlCalculation(object):
@@ -15,7 +15,7 @@ class pandlCalculation(object):
         fx: pd.Series = arg_not_supplied,
         capital: pd.Series = arg_not_supplied,
         value_per_point: float = 1.0,
-        rounding_strategy: RoundingStrategy = arg_not_supplied,
+        rounding_strategy: RoundingStrategy = get_rounding_strategy(None, False),
         delayfill=False,
         passed_diagnostic_df: pd.DataFrame = arg_not_supplied,
     ):
