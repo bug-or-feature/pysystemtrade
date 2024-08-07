@@ -77,24 +77,14 @@ class accountBufferingSystemLevel(accountInputs):
         2015-12-11         1
         """
 
-        min_bet = self._get_min_bet(instrument_code)
-
         buffered_position = get_buffered_position(
             optimal_position=self.get_notional_position(instrument_code),
             pos_buffers=self.get_buffers_for_position(instrument_code),
             rounding_strategy=get_rounding_strategy(self.config, roundpositions),
             buffer_method=self.config.get_element_or_default("buffer_method", "none"),
             trade_to_edge=self.config.buffer_trade_to_edge,
-            min_bet=min_bet,
+            min_bet=self.get_min_bet(instrument_code),
             log=self.log,
         )
 
         return buffered_position
-
-    def _get_min_bet(self, instrument_code):
-        try:
-            min_bet = self.parent.portfolio.get_min_bet_for_instrument(instrument_code)
-        except:
-            min_bet = 1.0
-
-        return min_bet

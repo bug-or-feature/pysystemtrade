@@ -309,3 +309,11 @@ class accountInputs(SystemStage):
 
     def get_actual_buffers_for_position(self, instrument_code: str) -> pd.DataFrame:
         return self.parent.portfolio.get_actual_buffers_for_position(instrument_code)
+
+    def get_min_bet(self, instrument_code):
+        try:
+            min_bet = self.parent.portfolio.get_min_bet_for_instrument(instrument_code)
+        except:
+            min_bet = 1.0
+
+        return min_bet
