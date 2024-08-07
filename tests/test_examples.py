@@ -223,6 +223,7 @@ class TestExamples:
 
         my_config.use_instrument_weight_estimates = True
         my_config.use_instrument_div_mult_estimates = True
+        my_config.rounding_strategy = "syscore.rounding.FuturesRoundingStrategy"
         my_config.instrument_weight_estimate = dict(
             method="shrinkage", date_method="in_sample"
         )
@@ -267,6 +268,7 @@ class TestExamples:
     ):
         my_config.forecast_weights = dict(ewmac8=0.5, ewmac32=0.5)
         my_config.instrument_weights = dict(US10=0.1, SOFR=0.4, CORN=0.3, SP500=0.2)
+        my_config.rounding_strategy = "syscore.rounding.FuturesRoundingStrategy"
 
         my_system = System(
             [fcs, my_rules, combiner, possizer, portfolio, account, raw_data],

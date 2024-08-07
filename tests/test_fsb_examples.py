@@ -8,7 +8,7 @@ from systems.basesystem import System
 from systems.forecast_combine import ForecastCombine
 from systems.forecast_scale_cap import ForecastScaleCap
 from systems.forecasting import Rules
-from systems.portfolio import Portfolios
+from systems.portfolio_fsb import FsbPortfolios
 from systems.positionsizing import PositionSizing
 from systems.provided.rules.ewmac import ewmac_forecast_with_defaults as ewmac
 from systems.rawdata import RawData
@@ -86,7 +86,7 @@ def account():
 
 @pytest.fixture()
 def portfolio():
-    return Portfolios()
+    return FsbPortfolios()
 
 
 class TestFsbExamples:
@@ -227,11 +227,17 @@ class TestFsbExamples:
 
     @pytest.mark.slow  # will be skipped unless run with 'pytest --runslow'
     def test_fsb_system_portfolio_estimated(
-        self, data, raw_data, my_rules, my_config, fcs, combiner, possizer, account
+        self,
+        data,
+        raw_data,
+        my_rules,
+        my_config,
+        fcs,
+        combiner,
+        possizer,
+        account,
+        portfolio,
     ):
-        # portfolio - estimated
-        portfolio = Portfolios()
-
         my_config.use_instrument_weight_estimates = True
         my_config.use_instrument_div_mult_estimates = True
         my_config.instrument_weight_estimate = dict(
@@ -320,7 +326,7 @@ class TestFsbExamples:
         my_system = System(
             [
                 Account(),
-                Portfolios(),
+                FsbPortfolios(),
                 PositionSizing(),
                 ForecastCombine(),
                 ForecastScaleCap(),
@@ -345,7 +351,7 @@ class TestFsbExamples:
         my_system = System(
             [
                 Account(),
-                Portfolios(),
+                FsbPortfolios(),
                 PositionSizing(),
                 ForecastCombine(),
                 ForecastScaleCap(),
