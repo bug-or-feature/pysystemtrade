@@ -179,6 +179,66 @@ class optimalPositionWithDynamicCalculations(baseOptimalPosition):
         return "%d" % (self.optimised_position)
 
 
+@dataclass
+class optimalPositionWithDynamicFsbCalculations(baseOptimalPosition):
+    date: datetime.datetime
+    reference_price: float
+    reference_contract: str
+    reference_date: datetime.datetime
+    optimal_position: float
+    weight_per_contract: float
+    previous_position: float
+    previous_weight: float
+    reduce_only: bool
+    dont_trade: bool
+    position_limit_contracts: float
+    position_limit_weight: float
+    optimum_weight: float
+    minimum_weight: float
+    maximum_weight: float
+    start_weight: float
+    optimised_weight: float
+    optimised_position: float
+    min_bet: float
+
+    def verbose_repr(self):
+        ref_str = (
+            f"Reference {self.reference_contract} / {self.reference_price} "
+            f"@ {str(self.reference_date)}"
+        )
+
+        pos_str = (
+            f"Positions: Optimal {self.optimal_position:.3f} "
+            f"Previous {self.previous_position:.2f} "
+            f"Min bet {self.min_bet:.2f} "
+            f"Limit {self.position_limit_contracts} "
+            f"Optimised {self.optimised_position:.2f}, "
+        )
+
+        weight_str = (
+            f"Weights: Per contract {self.weight_per_contract:.5f} "
+            f"Previous {self.previous_weight:.3f} Optimum {self.optimum_weight:.3f} "
+            f"Limit {self.position_limit_weight:.3f} Minimum {self.minimum_weight:.3f} "
+            f"Maximum {self.maximum_weight:.3f} Start {self.start_weight:.3f} "
+            f"Optimised {self.optimised_weight:.3f}"
+        )
+
+        if self.dont_trade:
+            logic_str = "(NoTrading) "
+        elif self.reduce_only:
+            logic_str = "(ReduceOnly) "
+        else:
+            logic_str = ""
+
+        return f"{ref_str} {logic_str} {pos_str} {weight_str}"
+
+    def check_position_break(self, position: float):
+        return position != self.optimised_position
+
+    def __repr__(self):
+        return f"{self.optimised_position:.2f}"
+
+
 def from_df_row_to_optimal_position(df_row: pd.Series) -> baseOptimalPosition:
     df_row_as_dict = dict(df_row.to_dict())  ## avoid stupid pd warnings
     list_of_fields = list(df_row_as_dict.keys())
