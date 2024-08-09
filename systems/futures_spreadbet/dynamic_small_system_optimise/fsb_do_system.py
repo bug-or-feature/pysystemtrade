@@ -15,8 +15,8 @@ from systems.diagoutput import systemDiag
 from systems.forecast_combine import ForecastCombine
 from systems.forecast_scale_cap import ForecastScaleCap
 from systems.forecasting import Rules
-from systems.futures_spreadbet.dynamic_small_system_optimise.optimised_position_stage import (
-    optimisedPositions,
+from systems.futures_spreadbet.dynamic_small_system_optimise.optimised_fsb_position_stage import (
+    optimisedFsbPositions,
 )
 from systems.portfolio_fsb import FsbPortfolios
 from systems.positionsizing import PositionSizing
@@ -38,7 +38,7 @@ SAVED_SYSTEM = "systems.futures_spreadbet.pickle.fsb_do_minimal.pck"
 # SAVED_SYSTEM = "systems.futures_spreadbet.pickle.full-small-cap.pck"
 
 # inc bad
-# CONFIG = "systems.futures_spreadbet.config.fsb_static_system_full_inc_bad.yaml"
+# CONFIG = "systems.futures_spreadbet.config.fsb_dynamic_system_v1_2.yaml"
 # SAVED_SYSTEM = "systems.futures_spreadbet.pickle.saved-do-system.pck"
 
 log = get_logger("backtest")
@@ -99,13 +99,13 @@ def fsb_do_system(
         [
             Risk(),
             accountForOptimisedStage(),
+            optimisedFsbPositions(),
             FsbPortfolios(),
-            optimisedPositions(),
             PositionSizing(),
+            RawData(),
             ForecastCombine(),
             ForecastScaleCap(),
-            RawData(),
-            rules,
+            Rules(),
         ],
         data,
         config,
