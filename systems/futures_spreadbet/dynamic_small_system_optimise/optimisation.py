@@ -62,6 +62,7 @@ class objectiveFsbFunctionForGreedy(objectiveFunctionForGreedy):
     def optimise_positions(self) -> portfolioWeights:
         optimal_weights = self.optimise_weights()
         optimal_positions = optimal_weights / self.per_contract_value
+        self.log.debug(f"%%% unrounded: {self.non_zero(optimal_positions)}")
 
         rounded_optimal_positions = portfolioWeights(
             self.rounding_strategy.round_weights(
@@ -71,7 +72,13 @@ class objectiveFsbFunctionForGreedy(objectiveFunctionForGreedy):
             )
         )
 
+        self.log.debug(f"%%% rounded: {self.non_zero(rounded_optimal_positions)}")
         return rounded_optimal_positions
+
+    @staticmethod
+    def non_zero(weights):
+        non_zero_weights = {k: v for k, v in weights.items() if v < 0.0 or v > 0.0}
+        return non_zero_weights
 
     def adjust_weights_for_size_of_tracking_error(
         self, optimised_weights_as_np: np.array
