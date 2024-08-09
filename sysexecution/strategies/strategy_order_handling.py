@@ -191,7 +191,7 @@ class orderGeneratorForStrategy(object):
                 continue
             self.submit_order(order)
 
-    def submit_order(self, order: instrumentOrder):
+    def submit_order(self, order: instrumentOrder, test_mode=False):
         log_attrs = {**order.log_attributes(), "method": "temp"}
 
         try:
@@ -207,7 +207,7 @@ class orderGeneratorForStrategy(object):
                 self.log.warning(error_msg, **log_attrs)
                 raise minBetException(error_msg)
 
-            order_id = self.order_stack.put_order_on_stack(order)
+            order_id = 0 if test_mode else self.order_stack.put_order_on_stack(order)
             log_attrs[INSTRUMENT_ORDER_ID_LABEL] = order_id
         except zeroOrderException:
             # we checked for zero already, which means that there is an existing order
@@ -226,8 +226,11 @@ class orderGeneratorForStrategy(object):
             )
 
         else:
-            self.log.debug(
-                "Added order %s to instrument order stack with order id %d"
-                % (str(order), order_id),
-                **log_attrs,
-            )
+            if test_mode:
+                self.log.debug(f"TEST MODE: not submitting order {order}", **log_attrs)
+            else:
+                self.log.debug(
+                    "Added order %s to instrument order stack with order id %d"
+                    % (str(order), order_id),
+                    **log_attrs,
+                )
