@@ -519,6 +519,7 @@ def capital_strategy(data):
     except missingData:
         print("No capital for strategy need to run update_strategy_capital")
         return None
+    # TODO BUG can be a float
     print(capital_series.tail(30))
     return None
 
