@@ -39,6 +39,7 @@ class orderGeneratorForDynamicFsbPositions(orderGeneratorForDynamicPositions):
             self.calculate_write_and_return_optimised_positions_data()
         )
         current_positions = self.get_actual_positions_for_strategy()
+        self.data.log.debug("Getting minimum bets")
         min_bets = self.get_min_bets_as_dict()
 
         list_of_trades = list_of_trades_given_optimised_and_actual_positions(
@@ -70,7 +71,6 @@ class orderGeneratorForDynamicFsbPositions(orderGeneratorForDynamicPositions):
         return optimised_positions_data
 
     def get_min_bets_as_dict(self):
-        self.data.log.debug("Getting minimum bets")
         min_bets = dict(
             [
                 (
@@ -168,8 +168,6 @@ def get_data_for_objective_instance(
         data, strategy_name=strategy_name, list_of_instruments=list_of_instruments
     )
 
-    data.log.debug("Getting covariance matrix")
-
     data.log.debug("Getting per contract values")
     per_contract_value = get_per_contract_values(
         data, strategy_name=strategy_name, list_of_instruments=list_of_instruments
@@ -187,6 +185,7 @@ def get_data_for_objective_instance(
         data, strategy_name=strategy_name, list_of_instruments=list_of_instruments
     )
 
+    data.log.debug("Getting covariance matrix")
     covariance_matrix = get_covariance_matrix_for_instrument_returns_for_optimisation(
         data, list_of_instruments=list_of_instruments
     )
