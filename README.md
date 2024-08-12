@@ -31,11 +31,11 @@ See [CHANGES](CHANGES.md) for release notes
 - custom market algo
 - custom scripts for data setup / import
 
-## Status (October 2023)
+## Status (August 2024)
 My own production system
-- is sampling approx 80 instruments ([list](https://pysystemtrade-fsb.bugorfeature.net/reports/instruments.html))
+- is sampling approx 90 instruments ([list](https://pysystemtrade-fsb.bugorfeature.net/reports/instruments.html))
 - get capital data from IG
-- runs a static backtest, generating optimal positions
+- runs a dynamic backtest, generating an optimised portfolio
 - makes automated trades (market orders only)
 - produces the following reports ([examples](https://pysystemtrade-fsb.bugorfeature.net/reports/))
   - Costs report
