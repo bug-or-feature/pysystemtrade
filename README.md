@@ -58,7 +58,6 @@ My own production system
 - add setup instructions to docs
 - implement limit orders
 - implement 'best' algo
-- implement dynamic optimisation
 
 ## Support
 

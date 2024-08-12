@@ -10,13 +10,41 @@ See
 - [Issues](https://github.com/bug-or-feature/pysystemtrade-fsb/issues)
 - [Roadmap / wishlist](https://github.com/bug-or-feature/pysystemtrade-fsb#roadmap--wishlist)
 
+
+## July 2024
+- optionally consider a subset of prices when building a roll calendar
+- tool for safely modifying roll calendar options customised for FSBs
+- unified buffering for systems and subsystems
+- rounding strategies
+- dynamic optimisation for FSBs
+
+## June 2024
+- fixed EURIBOR-ICE prices
+- auto update slippage config
+- send test email from Interactive Diagnostics
+- improved forced roll orders
+
+## May 2024
+- easier contract skipping
+
+## April 2024
+- fix price cleaning config
+- tool for manually updating fwd contract improved
+- IBXEX - > IBEX
+- new instruments: GAS_NL, GAS_UK, LUMBER-new, CHFJPY, EURCAD, EURCHF, GBPCHF, GBPJPY, NOK, SEK
+
+## February 2024
+- split frequency prices
+- JPY prices rebuilt for changed multiplier
+- improved static instrument selection report
+
 ## January 2024
 - Improved Trade report
 - move to Python logging complete
 - affected deals written to db on trade completed
 
 ## December 2023
-- getter IG error handling
+- better IG error handling
 - better minimum bet handling
 - Improved interactive rolling
 
