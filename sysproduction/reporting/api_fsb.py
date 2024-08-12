@@ -49,6 +49,9 @@ class ReportingApiFsb(reportingApi):
         self._contracts = dataContracts(self.data)
         self._positions = diagPositions(self.data)
 
+    def __repr__(self):
+        return "ReportingApiFsb instance"
+
     @property
     def futures_prices(self) -> diagPrices:
         return self._prices

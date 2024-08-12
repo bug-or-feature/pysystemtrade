@@ -113,6 +113,9 @@ class reportingApi(object):
         self._start_period = start_period
         self._cache = Cache(self)
 
+    def __repr__(self):
+        return "reportingApi instance"
+
     def std_header(self, report_name: str):
         start_date = self.start_date
         end_date = self.end_date
