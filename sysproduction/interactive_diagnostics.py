@@ -5,6 +5,7 @@ from sysobjects.production.trading_hours.trading_hours import (
     tradingHours,
     listOfTradingHours,
 )
+from syscontrol.html_generation import build_report_files
 from syscore.interactive.input import (
     get_input_from_user_and_convert_to_type,
     true_if_answer_is_yes,
@@ -170,6 +171,7 @@ nested_menu_of_options = {
         80: "FSB report",
         81: "FSB Instrument List Report",
         82: "FSB Static Instrument Selection Report",
+        83: "Regenerate HTML reports",
     },
 }
 
@@ -312,6 +314,10 @@ def fsb_report(data):
 def fsb_static_instrument_selection_report(data):
     report_config = email_or_print_or_file(fsb_static_selection_report_config)
     run_report(report_config, data=data)
+
+
+def regenerate_html_reports(data):
+    build_report_files(data=data, context={})
 
 
 def all_reports(data):
@@ -929,6 +935,7 @@ dict_of_functions = {
     80: fsb_report,
     81: fsb_instrument_list_report,
     82: fsb_static_instrument_selection_report,
+    83: regenerate_html_reports,
 }
 
 
