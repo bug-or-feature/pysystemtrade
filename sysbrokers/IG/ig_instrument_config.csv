@@ -65,6 +65,10 @@ FED,,,,,na,,ZQ
 FED_fsb,IR.D.FF,GBP,100.0,False,Month1|Month2|Month3|Month5|Month6|Month7|Month8|Month9|Month10|Month11|Month12|MonthX,0.2,ZQ
 FTSE100,,,,,na,,X
 FTSE100_fsb,IX.D.FTSE,GBP,1.0,False,MONTH1|MONTH2,0.05,X
+FTSE250,,,,,na,,Y
+FTSE250_fsb,KB.D.MID250,GBP,1.0,False,MAR|JUN|SEP|DEC,0.1,Y
+FTSECHINAH,,,,,na,,HA
+FTSECHINAH_fsb,IX.D.HSCHIN,GBP,1.0,False,MONTH1|MONTH2,0.1,HA
 GAS_NL,,,,,na,,TG
 GAS_NL_fsb,EN.D.ICETTF,GBP,1000.0,False,Month1|Month2|Month3|Month4|Month5|Month6|Month7|Month8|Month9|Month10|Month11,0.1,TG
 GAS_UK,,,,,na,,NF
@@ -175,3 +179,5 @@ WHEAT,,,,,na,,ZW
 WHEAT_fsb,CO.D.W,GBP,1.0,False,Month1|Month2|Month3|MonthZ,0.1,ZW
 WHEAT_ICE,,,,,na,,LW
 WHEAT_ICE_fsb,CO.D.LWB,GBP,1.0,False,Month1|Month3|Month4,0.1,LW
+ZAR,,,,,na,,T6
+ZAR_fsb,CF.D.USDZAR,GBP,10000.0,True,MAR|JUN|SEP|DEC,0.05,T6
