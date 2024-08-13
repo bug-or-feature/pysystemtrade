@@ -38,9 +38,11 @@ My own production system
 - runs a dynamic backtest, generating an optimised portfolio
 - makes automated trades (market orders only)
 - produces the following reports ([examples](https://pysystemtrade-fsb.bugorfeature.net/reports/))
+  - Account curve report 
   - Costs report
   - FSB report (new report)
   - Instrument risk report (customised version)
+  - Instrument list report (customised version)
   - Market monitor report
   - Minimum capital report (customised version)
   - P&L report
@@ -49,6 +51,7 @@ My own production system
   - Risk report (customised version)
   - Roll report (customised version)
   - Slippage report
+  - Static Instrument Selection report (customised version)
   - Status report
   - Strategy report
   - Trade report
