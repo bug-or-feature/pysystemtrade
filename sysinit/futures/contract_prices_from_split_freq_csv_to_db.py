@@ -33,7 +33,8 @@ def init_db_with_split_freq_csv_prices_for_code(
     datapath: str,
     csv_config=arg_not_supplied,
 ):
-    problems = []
+    same_length = []
+    too_short = []
     print(f"Importing split freq csv prices for {instrument_code}")
     csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
 
@@ -72,7 +73,7 @@ def init_db_with_split_freq_csv_prices_for_code(
         write_prices_for_contract_at_frequency(contract, merged, MIXED_FREQ)
 
         if len(hourly) == len(daily):
-            problems.append(contract_date_str)
+            same_length.append(contract_date_str)
 
     print(f"Have daily only .csv prices for: {str(daily_only)}")
     for contract_date_str in daily_only:
@@ -86,7 +87,7 @@ def init_db_with_split_freq_csv_prices_for_code(
         write_prices_for_contract_at_frequency(contract, daily, MIXED_FREQ)
 
         if len(daily) < 65:
-            problems.append(contract_date_str)
+            too_short.append(contract_date_str)
 
     print(f"Have hourly only .csv prices for: {str(hourly_only)}")
     for contract_date_str in hourly_only:
@@ -99,7 +100,8 @@ def init_db_with_split_freq_csv_prices_for_code(
         write_prices_for_contract_at_frequency(contract, hourly, HOURLY_FREQ)
         write_prices_for_contract_at_frequency(contract, hourly, MIXED_FREQ)
 
-    print(f"Possible issues: {problems}")
+    print(f"These contracts have the same length for daily and hourly: {same_length}")
+    print(f"These daily contracts are short: {too_short}")
 
 
 def write_prices_for_contract_at_frequency(contract, prices, frequency):
