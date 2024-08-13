@@ -2,8 +2,9 @@ from sysdata.config.production_config import get_production_config
 from sysdata.data_blob import dataBlob
 from syscore.fileutils import resolve_path_and_filename_for_package
 from syscore.exceptions import missingInstrument
-from syscore.dateutils import Frequency, MIXED_FREQ
+from syscore.dateutils import Frequency, MIXED_FREQ, DAILY_PRICE_FREQ, HOURLY_FREQ
 from sysdata.csv.csv_futures_contract_prices import (
+    csvFuturesContractPriceData,
     ConfigCsvFuturesPrices,
 )
 from sysdata.arctic.arctic_futures_per_contract_prices import (
@@ -71,12 +72,12 @@ def find_contracts_for_instr(
     csv_config=arg_not_supplied,
     freq: Frequency = MIXED_FREQ,
 ):
-    # prices = csvFuturesContractPriceData(datapath, config=csv_config)
-    prices = arcticFuturesContractPriceData()
+    prices = csvFuturesContractPriceData(datapath, config=csv_config)
+    # prices = arcticFuturesContractPriceData()
     print(f"Getting .csv prices ({freq.name})")
     csv_price_dict = prices.get_prices_at_frequency_for_instrument(instr_code, freq)
     print(f"Have .csv prices ({freq.name}) for the following contracts:")
-    print(str(csv_price_dict.keys()))
+    print(str(sorted(csv_price_dict.keys())))
 
 
 if __name__ == "__main__":
@@ -86,14 +87,18 @@ if __name__ == "__main__":
         # get_production_config().get_element_or_default("backup_path", None)
     )
 
-    # find_contracts_for_instr("SOFR", None, datapath, csv_config=BACKUP_CONFIG)
+    # JSE40_fsb, FTSE250, FTSECHINAH, ZAR
 
-    for instr in ["SOFR"]:
-        init_db_with_csv_futures_contract_prices_for_code(
-            instr, datapath=datapath, csv_config=BACKUP_CONFIG
-        )
+    # find_contracts_for_instr(
+    #     "ZAR", None, datapath, csv_config=BARCHART_CONFIG, freq=DAILY_PRICE_FREQ
+    # )
 
-    # for instr in ["LUMBER-new"]:
-    #     init_db_with_split_freq_csv_prices_for_code(
+    # for instr in ["SOFR"]:
+    #     init_db_with_csv_futures_contract_prices_for_code(
     #         instr, datapath=datapath, csv_config=BARCHART_CONFIG
     #     )
+
+    for instr in ["JSE40", "FTSE250", "FTSECHINAH", "ZAR"]:
+        init_db_with_split_freq_csv_prices_for_code(
+            instr, datapath=datapath, csv_config=BARCHART_CONFIG
+        )

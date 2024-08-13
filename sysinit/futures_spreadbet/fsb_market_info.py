@@ -142,19 +142,10 @@ if __name__ == "__main__":
 
     import_market_info(
         [
-            "AUDJPY_fsb",
-            "BTP3_fsb",
-            "CHFJPY_fsb",
-            "EURCAD_fsb",
-            "EURCHF_fsb",
-            "GAS_NL_fsb",
-            "GAS_UK_fsb",
-            "GBPCHF_fsb",
-            "GBPJPY_fsb",
-            "LUMBER-new_fsb",
-            "NOK_fsb",
-            "SEK_fsb",
-            "SOFR_fsb",
+            "JSE40_fsb",
+            "FTSE250_fsb",
+            "FTSECHINAH_fsb",
+            "ZAR_fsb",
         ]
     )
 
