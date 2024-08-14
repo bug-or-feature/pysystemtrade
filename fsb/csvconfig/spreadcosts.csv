@@ -38,7 +38,7 @@ EUR_fsb,5.44
 FED_fsb,0.51
 FTSE100_fsb,3.9
 FTSE250_fsb,62.5
-FTSECHINAH_fsb,6.0
+FTSECHINAH_fsb,6.7
 GASOIL_fsb,0.52
 GASOLINE_fsb,15.0
 GAS_NL_fsb,50.0
@@ -96,4 +96,4 @@ V2X_fsb,0.1
 VIX_fsb,0.1
 WHEAT_ICE_fsb,0.74
 WHEAT_fsb,0.5
-ZAR_fsb,48.0
+ZAR_fsb,62.0
