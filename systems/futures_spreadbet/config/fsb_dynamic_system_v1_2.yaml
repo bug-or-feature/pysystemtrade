@@ -2726,6 +2726,7 @@ exclude_instrument_lists:
     - EURGBP_fsb
     - EURIBOR-ICE_fsb
     - FED_fsb
+    - FTSE250_fsb
     - GBPCHF_fsb
     - JGB_fsb
     - LUMBER-new_fsb
