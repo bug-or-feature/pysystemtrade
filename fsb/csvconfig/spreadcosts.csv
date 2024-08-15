@@ -38,7 +38,7 @@ EUR_fsb,5.44
 FED_fsb,0.51
 FTSE100_fsb,3.9
 FTSE250_fsb,62.5
-FTSECHINAH_fsb,6.7
+FTSECHINAH_fsb,7.7
 GASOIL_fsb,0.52
 GASOLINE_fsb,15.0
 GAS_NL_fsb,50.0
@@ -49,12 +49,12 @@ GBPJPY_fsb,9.6
 GBP_fsb,5.0
 GILT_fsb,1.0
 GOLD_fsb,0.3
-HANG_fsb,8.0
+HANG_fsb,8.7
 HEATOIL_fsb,15.0
 IBEX_fsb,8.8
 JGB_fsb,2.1
 JPY_fsb,5.0
-JSE40_fsb,9.0
+JSE40_fsb,13.0
 LEANHOG_fsb,7.19
 LIVECOW_fsb,9.94
 LUMBER-new_fsb,380.0
@@ -96,4 +96,4 @@ V2X_fsb,0.1
 VIX_fsb,0.1
 WHEAT_ICE_fsb,0.74
 WHEAT_fsb,0.5
-ZAR_fsb,62.0
+ZAR_fsb,81.0
