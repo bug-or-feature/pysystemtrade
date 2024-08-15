@@ -159,7 +159,8 @@ if __name__ == "__main__":
     # XXX_fsb
     # SGD_fsb
 
-    instr_code = "ZAR_fsb"
+    # instr_code = "SONIA3_fsb"
+    instr_code = "EURIBOR-ICE_fsb"
 
     # run with database prices
     prices = arcticFuturesContractPriceData()
