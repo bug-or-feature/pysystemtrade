@@ -189,7 +189,7 @@ class orderGeneratorForStrategy(object):
             if instrument_locked:
                 self.log.debug("Instrument locked, not submitting", **log_attrs)
                 continue
-            self.submit_order(order)
+            self.submit_order(order, test_mode=False)
 
     def submit_order(self, order: instrumentOrder, test_mode=False):
         log_attrs = {**order.log_attributes(), "method": "temp"}
