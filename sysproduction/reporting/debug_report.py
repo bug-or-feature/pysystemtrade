@@ -92,6 +92,12 @@ def run_trade_report():
 
 def run_strategy_report():
     do_report(strategy_report_config.new_config_with_modified_output("console"))
+    # do_report(
+    #     strategy_report_config.new_config_with_modified_output("console").modify_kwargs(
+    #         strategy_name="fsb_dynamic_strategy_v1_2",
+    #         timestamp="20240801_120000",
+    #     )
+    # )
 
 
 def run_risk_report():
