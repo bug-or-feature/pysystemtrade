@@ -12,7 +12,7 @@ except:
 
 from sysbrokers.IG.ig_positions import resolveBS_for_list
 from sysbrokers.IG.ig_translate_broker_order_objects import IgTradeWithContract
-from syscore.exceptions import missingContract, missingData
+from syscore.exceptions import missingContract, missingData, orderRejected
 from sysdata.config.production_config import get_production_config
 from sysexecution.trade_qty import tradeQuantity
 from syslogging.logger import *
@@ -384,6 +384,10 @@ class IGConnection(object):
         trade_result = IgTradeWithContract(result)
         self.log.debug(f"result of broker_submit_order(): {trade_result}")
 
+        if self.is_unknown_reject(trade_result):
+            reason = trade_result.get_attr("reason")
+            raise orderRejected(f"Order for {epic} rejected, reason '{reason}'")
+
         return trade_result
 
     def broker_get_orders(self, account_id: str):
@@ -394,6 +398,14 @@ class IGConnection(object):
         market_info = self.rest_service.fetch_market_by_epic(epic)
         status = market_info.snapshot.marketStatus
         return status == "TRADEABLE"
+
+    @staticmethod
+    def is_unknown_reject(trade_result):
+        return (
+            trade_result.get_attr("reason") == "UNKNOWN"
+            and trade_result.get_attr("status") is None
+            and trade_result.get_attr("dealStatus") == "REJECTED"
+        )
 
     @staticmethod
     def broker_fx_balances(account_id: str):

@@ -37,3 +37,7 @@ class orderCannotBeModified(Exception):
 
 class ContractNotFound(Exception):
     pass
+
+
+class orderRejected(Exception):
+    pass
