@@ -139,7 +139,7 @@ def report_system_classic_no_header_or_footer(
     versus_buffers_and_positions_df = pd.concat(
         [versus_buffers_df, timestamp_positions, current_positions], axis=1
     )
-    versus_buffers_and_positions_df_rounded = versus_buffers_and_positions_df.round(1)
+    versus_buffers_and_positions_df_rounded = versus_buffers_and_positions_df.round(2)
     versus_buffers_and_positions_table = table(
         "Positions vs buffers", versus_buffers_and_positions_df_rounded
     )
@@ -343,7 +343,7 @@ get_required_portfolio_position = configForMethod(
 
 get_lower_buffer = configForMethod(
     "portfolio",
-    "get_actual_buffers_for_position",
+    "get_buffers_for_position",
     "Lower buffer",
     False,
     True,
@@ -353,7 +353,7 @@ get_lower_buffer = configForMethod(
 
 get_upper_buffer = configForMethod(
     "portfolio",
-    "get_actual_buffers_for_position",
+    "get_buffers_for_position",
     "Upper buffer",
     False,
     True,
