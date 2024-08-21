@@ -69,7 +69,8 @@ def process_adjusted_prices_single_instrument(
 
 
 if __name__ == "__main__":
-    for instr in ["JSE40_fsb", "FTSE250_fsb", "FTSECHINAH_fsb", "ZAR_fsb"]:
+    # XX_fsb
+    for instr in ["SGD_fsb", "EURIBOR-ICE_fsb", "SONIA3_fsb"]:
         print(f"Creating adjusted prices for {instr}")
         process_adjusted_prices_single_instrument(
             instr,

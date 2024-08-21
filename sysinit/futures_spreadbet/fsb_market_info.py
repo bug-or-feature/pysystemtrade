@@ -140,14 +140,7 @@ def test_write_json():
 if __name__ == "__main__":
     # file_import_market_info_single("GAS_NL_fsb")
 
-    import_market_info(
-        [
-            "JSE40_fsb",
-            "FTSE250_fsb",
-            "FTSECHINAH_fsb",
-            "ZAR_fsb",
-        ]
-    )
+    import_market_info(["SGD_fsb", "EURIBOR-ICE_fsb", "SONIA3_fsb"])
 
     # import_market_info()
 

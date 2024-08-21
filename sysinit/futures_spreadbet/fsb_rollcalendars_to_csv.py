@@ -18,6 +18,7 @@ from sysinit.futures_spreadbet.fsb_contract_prices import (
     build_norgate_import_config,
 )
 from sysobjects.contracts import futuresContract as fc
+from sysobjects.dict_of_futures_per_contract_prices import dictFuturesContractPrices
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
@@ -32,6 +33,8 @@ def build_and_write_roll_calendar(
     input_prices=arg_not_supplied,
     input_config=arg_not_supplied,
     write=True,
+    use_futures=False,
+    filter_after=arg_not_supplied,
 ):
     if output_datapath is arg_not_supplied:
         print(
@@ -47,18 +50,36 @@ def build_and_write_roll_calendar(
         prices = input_prices
 
     if input_config is arg_not_supplied:
-        rollparameters = csvRollParametersData
+        rollparameters = csvRollParametersData()
     else:
         rollparameters = input_config
 
     csv_roll_calendars = csvRollCalendarData(output_datapath)
 
+    if use_futures:
+        instrument_code = remove_suffix(instrument_code, "_fsb")
+        print(f"Calculating roll calendar from futures prices: {instrument_code}")
     dict_of_all_futures_contract_prices = prices.get_merged_prices_for_instrument(
-        remove_suffix(instrument_code, "_fsb")
+        instrument_code
     )
+
+    if filter_after is not arg_not_supplied:
+        dict_of_all_futures_contract_prices = dictFuturesContractPrices(
+            [
+                (
+                    date_str,
+                    prices,
+                )
+                for date_str, prices in dict_of_all_futures_contract_prices.items()
+                if int(date_str) >= int(filter_after)
+            ]
+        )
+
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
 
-    roll_parameters_object = rollparameters.get_roll_parameters(instrument_code)
+    roll_parameters_object = rollparameters.get_roll_parameters(
+        instrument_code=instrument_code
+    )
 
     # might take a few seconds
     print("Prepping roll calendar... might take a few seconds")
@@ -128,7 +149,10 @@ def check_saved_roll_calendar(
 
 
 def show_expected_rolls_for_config(
-    instrument_code, path=arg_not_supplied, input_prices=arg_not_supplied
+    instrument_code,
+    path=arg_not_supplied,
+    input_prices=arg_not_supplied,
+    use_futures=False,
 ):
     rollparameters = csvRollParametersData(datapath=path)
     roll_parameters_object = rollparameters.get_roll_parameters(instrument_code)
@@ -136,8 +160,12 @@ def show_expected_rolls_for_config(
         prices = arcticFuturesContractPriceData()
     else:
         prices = input_prices
+
+    if use_futures:
+        instrument_code = remove_suffix(instrument_code, "_fsb")
+        print(f"Calculating roll calendar from futures prices: {instrument_code}")
     dict_of_all_futures_contract_prices = prices.get_merged_prices_for_instrument(
-        remove_suffix(instrument_code, "_fsb")
+        instrument_code
     )
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
     approx_roll_calendar = rollCalendar.create_approx_from_prices(
@@ -157,10 +185,7 @@ if __name__ == "__main__":
         method = sys.argv[1]
 
     # XXX_fsb
-    # SGD_fsb
-
-    # instr_code = "SONIA3_fsb"
-    instr_code = "EURIBOR-ICE_fsb"
+    instr_code = "SONIA3_fsb"
 
     # run with database prices
     prices = arcticFuturesContractPriceData()
@@ -190,12 +215,15 @@ if __name__ == "__main__":
             input_prices=prices,
             check_before_writing=False,
             input_config=csvRollParametersData(datapath="fsb.csvconfig"),
+            use_futures=False,
+            filter_after="20200300",
         )
     else:
         show_expected_rolls_for_config(
             instrument_code=instr_code,
             path="fsb.csvconfig",
             input_prices=prices,
+            use_futures=False,
         )
 
     # check_saved_roll_calendar("AUD",

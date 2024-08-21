@@ -74,7 +74,7 @@ def find_contracts_for_instr(
 ):
     prices = csvFuturesContractPriceData(datapath, config=csv_config)
     # prices = arcticFuturesContractPriceData()
-    print(f"Getting .csv prices ({freq.name})")
+    print(f"Getting .csv prices ({freq.name}) for {instr_code}")
     csv_price_dict = prices.get_prices_at_frequency_for_instrument(instr_code, freq)
     print(f"Have .csv prices ({freq.name}) for the following contracts:")
     print(str(sorted(csv_price_dict.keys())))
@@ -87,18 +87,22 @@ if __name__ == "__main__":
         # get_production_config().get_element_or_default("backup_path", None)
     )
 
-    # JSE40_fsb, FTSE250, FTSECHINAH, ZAR
+    # SGD, EURIBOR-ICE, SONIA3
+    instr_code = "SONIA3"
 
     # find_contracts_for_instr(
-    #     "ZAR", None, datapath, csv_config=BARCHART_CONFIG, freq=DAILY_PRICE_FREQ
+    #     instr_code, None, datapath, csv_config=BARCHART_CONFIG, freq=DAILY_PRICE_FREQ
+    # )
+    # find_contracts_for_instr(
+    #     instr_code, None, datapath, csv_config=BARCHART_CONFIG, freq=HOURLY_FREQ
     # )
 
-    # for instr in ["SOFR"]:
+    # for instr in [instr_code]:
     #     init_db_with_csv_futures_contract_prices_for_code(
     #         instr, datapath=datapath, csv_config=BARCHART_CONFIG
     #     )
 
-    for instr in ["JSE40", "FTSE250", "FTSECHINAH", "ZAR"]:
+    for instr in ["SGD", "EURIBOR-ICE", "SONIA3"]:
         init_db_with_split_freq_csv_prices_for_code(
             instr, datapath=datapath, csv_config=BARCHART_CONFIG
         )
