@@ -69,6 +69,7 @@ RICE_fsb,Rough Rice,0.5,GBP,Ags,0.0,0.0,0.0,US
 ROBUSTA_fsb,Coffee Robusta,0.5,GBP,Ags,0.0,0.0,0.0,EMEA
 RUSSELL_fsb,US Russell 2000,2.0,GBP,Equity,0.0,0.0,0.0,US
 SEK_fsb,USD/SEK Forward,0.2,GBP,FX,0.0,0.0,0.0,EMEA
+SGD_fsb,USD/SGD Forward,1.0,GBP,FX,0.0,0.0,0.0,ASIA
 SHATZ_fsb,Schatz,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 SILVER_fsb,Silver,1.0,GBP,Metals,0.0,0.0,0.0,US
 SMI_fsb,Switzerland Blue Chip,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
