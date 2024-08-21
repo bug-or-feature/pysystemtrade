@@ -73,6 +73,7 @@ class dataBacktest(productionDataLayerGeneric):
         )
         # most recent last
         timestamp_to_use = list_of_timestamps[-1]
+        self.data.log.info(f"Loading backtest with timestamp: {timestamp_to_use}")
 
         backtest = self.load_backtest(strategy_name, timestamp_to_use)
         return backtest
