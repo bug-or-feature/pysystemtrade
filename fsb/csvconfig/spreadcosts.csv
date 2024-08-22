@@ -27,7 +27,7 @@ DX_fsb,3.96
 EDOLLAR,0.0025
 EDOLLAR_fsb,0.8
 EUA_fsb,3.0
-EURCAD_fsb,8.25
+EURCAD_fsb,9.2
 EURCHF_fsb,5.3
 EURGBP_fsb,4.2
 EURIBOR-ICE_fsb,0.51
@@ -54,7 +54,7 @@ HEATOIL_fsb,15.0
 IBEX_fsb,8.8
 JGB_fsb,2.1
 JPY_fsb,5.0
-JSE40_fsb,33.0
+JSE40_fsb,38.0
 LEANHOG_fsb,7.19
 LIVECOW_fsb,9.94
 LUMBER-new_fsb,380.0
@@ -97,4 +97,4 @@ V2X_fsb,0.1
 VIX_fsb,0.1
 WHEAT_ICE_fsb,0.74
 WHEAT_fsb,0.5
-ZAR_fsb,140.0
+ZAR_fsb,150.0
