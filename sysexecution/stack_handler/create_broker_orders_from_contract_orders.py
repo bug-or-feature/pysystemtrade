@@ -8,7 +8,7 @@ from sysproduction.data.controls import dataTradeLimits
 from sysexecution.algos.allocate_algo_to_order import (
     check_and_if_required_allocate_algo_to_single_contract_order,
 )
-
+from sysobjects.contracts import futuresContract
 from sysexecution.orders.contract_orders import contractOrder, limit_order_type
 from sysexecution.orders.broker_orders import brokerOrder
 from sysexecution.order_stacks.instrument_order_stack import instrumentOrder
@@ -125,6 +125,18 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
             if instrument_locked or market_closed:
                 self.log.debug(
                     f"market is closed for order {str(original_contract_order)}"
+                )
+                return missing_order
+
+            # for FSBs we want to reject roll orders where the sibling contract order's
+            # market is closed. This prevents only one half of the trade being executed
+            both_tradeable = self.priced_and_forward_are_tradeable(
+                original_contract_order.instrument_code
+            )
+            if not both_tradeable:
+                self.log.debug(
+                    f"Both priced and forward markets need to be open for "
+                    f"{original_contract_order.instrument_code}"
                 )
                 return missing_order
 
@@ -357,3 +369,16 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
         data_trade_limits = dataTradeLimits(self.data)
 
         data_trade_limits.add_trade(executed_order)
+
+    def priced_and_forward_are_tradeable(self, instrument_code: str) -> bool:
+        priced_id = self.data_contracts.get_priced_contract_id(instrument_code)
+        priced_contract = futuresContract(instrument_code, priced_id)
+
+        forward_id = self.data_contracts.get_forward_contract_id(instrument_code)
+        forward_contract = futuresContract(instrument_code, forward_id)
+
+        both_tradeable = self.data_broker.is_contract_okay_to_trade(
+            priced_contract
+        ) and self.data_broker.is_contract_okay_to_trade(forward_contract)
+
+        return both_tradeable
