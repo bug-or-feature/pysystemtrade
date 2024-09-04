@@ -68,6 +68,8 @@ def dynamic_fsb_system(
     if base_currency is not arg_not_supplied:
         config.base_currency = base_currency
 
+    log.info(f"dynamic_fsb_system config: {config}")
+
     system = fsb_system(data=sim_data, config=config)
     system._log = log
 
