@@ -3,6 +3,7 @@ from syscore.objects import (
     resolve_function,
 )
 from sysexecution.orders.named_order_objects import missing_order
+from sysexecution.stack_handler.roll_orders import ROLL_PSEUDO_STRATEGY
 from sysproduction.data.controls import dataTradeLimits
 
 from sysexecution.algos.allocate_algo_to_order import (
@@ -130,10 +131,8 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
 
             # for FSBs we want to reject roll orders where the sibling contract order's
             # market is closed. This prevents only one half of the trade being executed
-            both_tradeable = self.priced_and_forward_are_tradeable(
-                original_contract_order.instrument_code
-            )
-            if not both_tradeable:
+            ok_to_trade = self.ok_to_roll_fsb(original_contract_order)
+            if not ok_to_trade:
                 self.log.debug(
                     f"Both priced and forward markets need to be open for "
                     f"{original_contract_order.instrument_code}"
@@ -370,7 +369,21 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
 
         data_trade_limits.add_trade(executed_order)
 
-    def priced_and_forward_are_tradeable(self, instrument_code: str) -> bool:
+    def ok_to_roll_fsb(self, contract_order: contractOrder) -> bool:
+        instrument_order = self.get_parent_of_contract_order(contract_order)
+        if (
+            instrument_order.key.startswith(ROLL_PSEUDO_STRATEGY)
+            and len(instrument_order.children) == 2
+        ):
+            # this is an FSB roll order - check tradeable
+            return self._priced_and_forward_are_tradeable(
+                contract_order.instrument_code
+            )
+
+        # not an FSB roll order, allow
+        return True
+
+    def _priced_and_forward_are_tradeable(self, instrument_code: str) -> bool:
         priced_id = self.data_contracts.get_priced_contract_id(instrument_code)
         priced_contract = futuresContract(instrument_code, priced_id)
 
