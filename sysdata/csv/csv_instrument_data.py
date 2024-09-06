@@ -13,8 +13,7 @@ from syslogging.logger import *
 import pandas as pd
 
 INSTRUMENT_CONFIG_PATH = "data.futures.csvconfig"
-# CONFIG_FILE_NAME = "instrumentconfig.csv"
-CONFIG_FILE_NAME = "instrumentconfig_demo.csv"
+CONFIG_FILE_NAME = "instrumentconfig.csv"
 
 
 class csvFuturesInstrumentData(futuresInstrumentData):

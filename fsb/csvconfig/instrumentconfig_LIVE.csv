@@ -16,14 +16,14 @@ CHFJPY_fsb,CHF/JPY Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 COCOA_fsb,New York Cocoa,1.0,GBP,Ags,0.0,0.0,0.0,US
 COCOA_LDN_fsb,London Cocoa,0.5,GBP,Ags,0.0,0.0,0.0,EMEA
 COFFEE_fsb,Coffee Arabica,0.5,GBP,Ags,0.0,0.0,0.0,US
-COPPER_fsb,High Grade Copper,0.5,GBP,Metals,0.0,0.0,0.0,US
+COPPER_fsb,High Grade Copper,0.1,GBP,Metals,0.0,0.0,0.0,US
 CORN_fsb,Corn,10.0,GBP,Ags,0.0,0.0,0.0,US
 COTTON2_fsb,NY Cotton,0.5,GBP,Ags,0.0,0.0,0.0,US
 CRUDE_W_fsb,Oil - US Crude,1.0,GBP,OilGas,0.0,0.0,0.0,US
-DAX_fsb,Germany 40,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
-DOW_fsb,Wall Street,0.5,GBP,Equity,0.0,0.0,0.0,US
+DAX_fsb,Germany 40,0.2,GBP,Equity,0.0,0.0,0.0,EMEA
+DOW_fsb,Wall Street,0.2,GBP,Equity,0.0,0.0,0.0,US
 DX_fsb,US Dollar Basket,0.5,GBP,FX,0.0,0.0,0.0,US
-EUA_fsb,Carbon Emissions,0.5,GBP,OilGas,0.0,0.0,0.0,EMEA
+EUA_fsb,Carbon Emissions,0.25,GBP,OilGas,0.0,0.0,0.0,EMEA
 EUR_fsb,EUR/USD Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURCAD_fsb,EUR/CAD Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 EURCHF_fsb,EUR/CHF Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
@@ -36,7 +36,7 @@ FTSE250_fsb,FTSE Mid 250,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
 FTSECHINAH_fsb,China H-shares,0.5,GBP,Equity,0.0,0.0,0.0,ASIA
 GAS_NL_fsb,Natural Gas - EU TTF,0.25,GBP,OilGas,0.0,0.0,0.0,US
 GAS_UK_fsb,UK Natural Gas,0.25,GBP,OilGas,0.0,0.0,0.0,US
-GAS_US_fsb,Natural Gas,1.0,GBP,OilGas,0.0,0.0,0.0,US
+GAS_US_fsb,Natural Gas,0.5,GBP,OilGas,0.0,0.0,0.0,US
 GASOIL_fsb,London Gas Oil,10.0,GBP,OilGas,0.0,0.0,0.0,EMEA
 GASOLINE_fsb,No Lead Gasoline,0.5,GBP,OilGas,0.0,0.0,0.0,US
 GBP_fsb,GBP/USD Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
@@ -44,18 +44,18 @@ GBPCHF_fsb,GBP/CHF Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 GBPJPY_fsb,GBP/JPY Forward,1.0,GBP,FX,0.0,0.0,0.0,EMEA
 GILT_fsb,Long Gilt,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 GOLD_fsb,Gold,1.0,GBP,Metals,0.0,0.0,0.0,US
-HANG_fsb,Hong Kong HS50,0.5,GBP,Equity,0.0,0.0,0.0,ASIA
+HANG_fsb,Hong Kong HS50,0.1,GBP,Equity,0.0,0.0,0.0,ASIA
 HEATOIL_fsb,Heating Oil,0.5,GBP,OilGas,0.0,0.0,0.0,US
 IBEX_fsb,Spain 35,0.2,GBP,Equity,0.0,0.0,0.0,EMEA
 IBXEX_fsb,Spain 35,0.2,GBP,Equity,0.0,0.0,0.0,EMEA
 JGB_fsb,Japanese Government Bond,0.5,GBP,Bond,0.0,0.0,0.0,ASIA
 JPY_fsb,USD/JPY Forward,1.0,GBP,FX,0.0,0.0,0.0,ASIA
 JSE40_fsb,South Africa 40,0.25,GBP,Equity,0.0,0.0,0.0,EMEA
-LEANHOG_fsb,Lean Hogs,0.5,GBP,Ags,0.0,0.0,0.0,US
+LEANHOG_fsb,Lean Hogs,0.1,GBP,Ags,0.0,0.0,0.0,US
 LIVECOW_fsb,Live Cattle,0.5,GBP,Ags,0.0,0.0,0.0,US
 LUMBER-new_fsb,Lumber Future,0.1,GBP,Ags,0.0,0.0,0.0,US
 MSCISING_fsb,Singapore Blue Chip,20.0,GBP,Equity,0.0,0.0,0.0,ASIA
-NASDAQ_fsb,US Tech 100,0.5,GBP,Equity,0.0,0.0,0.0,US
+NASDAQ_fsb,US Tech 100,0.2,GBP,Equity,0.0,0.0,0.0,US
 NIKKEI_fsb,Japan 225,0.5,GBP,Equity,0.0,0.0,0.0,ASIA
 NOK_fsb,USD/NOK Forward,0.2,GBP,FX,0.0,0.0,0.0,EMEA
 NZD_fsb,NZD/USD Forward,1.0,GBP,FX,0.0,0.0,0.0,ASIA
