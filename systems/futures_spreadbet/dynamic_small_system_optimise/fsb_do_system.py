@@ -23,23 +23,22 @@ from systems.positionsizing import PositionSizing
 from systems.provided.dynamic_small_system_optimise.accounts_stage import (
     accountForOptimisedStage,
 )
-from systems.rawdata import RawData
+from systems.provided.rob_system.rawdata import myFuturesRawData
 from systems.risk import Risk
 
+# min
+# CONFIG = "systems.futures_spreadbet.config.fsb_do_minimal.yaml"
+# SAVED_SYSTEM = "systems.futures_spreadbet.pickle.fsb_do_minimal.pck"
 
-CONFIG = "systems.futures_spreadbet.config.fsb_do_minimal.yaml"
-SAVED_SYSTEM = "systems.futures_spreadbet.pickle.fsb_do_minimal.pck"
-
+# mid
 # CONFIG = "systems.futures_spreadbet.config.fsb_static_system_mid_est.yaml"
 # SAVED_SYSTEM = "systems.futures_spreadbet.pickle.saved-do-system-mid.pck"
 
-# CONFIG = "systems.futures_spreadbet.config.fsb_static_system_full_est.yaml"
-# SAVED_SYSTEM = "systems.futures_spreadbet.pickle.saved-do-system.pck"
+# max
+CONFIG = "systems.futures_spreadbet.config.fsb_dynamic_system_v1_3.yaml"
+SAVED_SYSTEM = "systems.futures_spreadbet.pickle.fsb_dynamic_system_v1_3.pck"
 # SAVED_SYSTEM = "systems.futures_spreadbet.pickle.full-small-cap.pck"
 
-# inc bad
-# CONFIG = "systems.futures_spreadbet.config.fsb_dynamic_system_v1_2.yaml"
-# SAVED_SYSTEM = "systems.futures_spreadbet.pickle.saved-do-system.pck"
 
 log = get_logger("backtest")
 
@@ -102,7 +101,7 @@ def fsb_do_system(
             optimisedFsbPositions(),
             FsbPortfolios(),
             PositionSizing(),
-            RawData(),
+            myFuturesRawData(),
             ForecastCombine(),
             ForecastScaleCap(),
             Rules(),

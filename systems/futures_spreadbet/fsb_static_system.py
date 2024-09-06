@@ -8,7 +8,9 @@ from systems.forecasting import Rules
 from systems.basesystem import System
 from systems.forecast_combine import ForecastCombine
 from systems.forecast_scale_cap import ForecastScaleCap
-from systems.rawdata import RawData
+
+# from systems.rawdata import RawData
+from systems.provided.rob_system.rawdata import myFuturesRawData
 from systems.positionsizing import PositionSizing
 from systems.portfolio_fsb import FsbPortfolios
 from systems.accounts.accounts_stage import Account
@@ -34,7 +36,7 @@ def fsb_static_system(
             Account(),
             FsbPortfolios(),
             PositionSizing(),
-            RawData(),
+            myFuturesRawData(),
             ForecastCombine(),
             ForecastScaleCap(),
             rules,
