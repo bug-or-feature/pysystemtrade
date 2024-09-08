@@ -75,6 +75,15 @@ class Algo(object):
         """
         raise NotImplementedError
 
+    def validate(
+        self,
+        contract_order: contractOrder,
+        ticker_object: tickerObject,
+        prices: benchmarkPriceCollection,
+    ):
+        # subclasses can implement
+        pass
+
     def get_and_submit_broker_order_for_contract_order(
         self,
         contract_order: contractOrder,
@@ -104,6 +113,15 @@ class Algo(object):
 
         ## We want to preserve these otherwise there is a danger they will dynamically change
         collected_prices = copy(collected_prices)
+
+        try:
+            self.validate(contract_order, ticker_object, collected_prices)
+        except Exception as ex:
+            self.data.log.warning(
+                f"Order validation failed for contract {contract_order.key}, "
+                f"no broker order will be created: {ex}"
+            )
+            return missing_order
 
         if order_type == limit_order_type:
             limit_price = self.set_limit_price(

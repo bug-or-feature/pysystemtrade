@@ -41,3 +41,7 @@ class ContractNotFound(Exception):
 
 class orderRejected(Exception):
     pass
+
+
+class spreadTooWide(Exception):
+    pass
