@@ -70,7 +70,7 @@ class UpdateMarketInfo(productionDataLayerGeneric):
             else:
                 if "historic" in old_info:
                     new_info.historic = old_info["historic"]
-        
+
             self.db_market_info.update_market_info(instr, epic, new_info)
         except Exception as exc:
             msg = (
