@@ -58,19 +58,19 @@ class UpdateMarketInfo(productionDataLayerGeneric):
     def update_market_info_for_epic(self, instr, epic):
         now = datetime.datetime.utcnow()
         old_info = self.db_market_info.get_market_info_for_epic(epic)
-        new_info = self.data.broker_conn.get_market_info(epic)  # munch
-        if self._needs_historic_update(old_info, now):
-            historic = self._get_historic_data_for_epic(epic)
-            if historic is not None:
-                new_info.historic = historic
+        try:
+            new_info = self.data.broker_conn.get_market_info(epic)  # munch
+            if self._needs_historic_update(old_info, now):
+                historic = self._get_historic_data_for_epic(epic)
+                if historic is not None:
+                    new_info.historic = historic
+                else:
+                    if "historic" in old_info:
+                        new_info.historic = old_info["historic"]
             else:
                 if "historic" in old_info:
                     new_info.historic = old_info["historic"]
-        else:
-            if "historic" in old_info:
-                new_info.historic = old_info["historic"]
-
-        try:
+        
             self.db_market_info.update_market_info(instr, epic, new_info)
         except Exception as exc:
             msg = (
