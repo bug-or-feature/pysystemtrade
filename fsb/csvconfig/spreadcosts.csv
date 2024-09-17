@@ -10,7 +10,7 @@ BTP_fsb,2.58
 BUND_fsb,1.5
 BUXL_fsb,3.0
 CAC_fsb,3.9
-CAD_fsb,3.7
+CAD_fsb,4.0
 CHFJPY_fsb,5.5
 CHF_fsb,4.96
 COCOA_LDN_fsb,4.9
@@ -49,7 +49,7 @@ GBPJPY_fsb,9.6
 GBP_fsb,5.0
 GILT_fsb,1.0
 GOLD_fsb,0.3
-HANG_fsb,8.7
+HANG_fsb,15.0
 HEATOIL_fsb,15.0
 IBEX_fsb,8.8
 JGB_fsb,2.1
