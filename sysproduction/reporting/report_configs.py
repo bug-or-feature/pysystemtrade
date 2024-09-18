@@ -40,7 +40,7 @@ class reportConfig(object):
 
 status_report_config = reportConfig(
     title="Status report",
-    function="sysproduction.reporting.status_report.status_report",
+    function="sysproduction.reporting.status_report_fsb.status_report_fsb",
     output="email",
 )
 

@@ -276,7 +276,7 @@ if __name__ == "__main__":
     # run_trade_report()
     # run_strategy_report()
     # run_risk_report()
-    # run_status_report()
+    run_status_report()
     # run_liquidity_report()
     # run_instrument_risk_report()
     # run_min_capital_report()
@@ -293,7 +293,7 @@ if __name__ == "__main__":
     # run_fsb_roll_report()
     # run_fsb_roll_report(instr_code="LEANHOG_fsb")
     # run_fsb_risk_report()
-    run_fsb_instrument_list_report()
+    # run_fsb_instrument_list_report()
     # run_fsb_static_selection_report()
 
     # run_adhoc_tradeable_report()

@@ -1,8 +1,11 @@
 import datetime
 import pandas as pd
-from functools import cached_property
 
+from functools import cached_property
+from collections import namedtuple
 from syscore.constants import arg_not_supplied
+from syscore.genutils import transfer_object_attributes
+from syscore.pandas.pdutils import make_df_from_list_of_named_tuple
 from sysdata.arctic.arctic_fsb_per_contract_prices import ArcticFsbContractPriceData
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
@@ -13,6 +16,7 @@ from sysproduction.data.prices import diagPrices
 from sysproduction.data.fsb_instruments import diagFsbInstruments
 from sysproduction.data.fsb_prices import DiagFsbPrices
 from sysproduction.data.fsb_epics import DiagFsbEpics
+from sysproduction.data.orders import dataOrders
 from sysproduction.data.positions import diagPositions
 from sysproduction.reporting.api import reportingApi
 from sysproduction.reporting.data.fsb_correlation_data import fsb_correlation_data
@@ -48,6 +52,7 @@ class ReportingApiFsb(reportingApi):
         self._epics = DiagFsbEpics(self.data)
         self._contracts = dataContracts(self.data)
         self._positions = diagPositions(self.data)
+        self._orders = dataOrders(self.data)
 
     def __repr__(self):
         return "ReportingApiFsb instance"
@@ -79,6 +84,10 @@ class ReportingApiFsb(reportingApi):
     @property
     def broker_history(self) -> pd.DataFrame:
         return self.cache.get(self._get_broker_history)
+
+    @property
+    def instrument_stack(self):
+        return self._orders.db_instrument_stack_data
 
     def _get_broker_history(self) -> pd.DataFrame:
         broker_orders = self.get_recent_broker_history(
@@ -485,6 +494,38 @@ class ReportingApiFsb(reportingApi):
         overview_table = table("Broker orders", overview)
 
         return overview_table
+
+    def table_of_instrument_orders(self):
+        order_ids = self.instrument_stack.list_of_new_orders()
+        if len(order_ids) == 0:
+            return body_text("No instrument orders")
+
+        orders_as_list = [
+            self.get_tuple_object_from_order_id(order_id) for order_id in order_ids
+        ]
+
+        df = make_df_from_list_of_named_tuple(self.instrOrdersData, orders_as_list)
+
+        overview_table = table("Instrument orders", df)
+
+        return overview_table
+
+    def get_tuple_object_from_order_id(self, order_id):
+        order = self.instrument_stack.get_order_with_id_from_stack(order_id)
+        tuple_object = transfer_object_attributes(self.instrOrdersData, order)
+
+        return tuple_object
+
+    instrOrdersData = namedtuple(
+        "instrOrdersData",
+        [
+            "order_id",
+            "instrument_code",
+            "strategy_name",
+            "reference_contract",
+            "trade",
+        ],
+    )
 
 
 def nice_format_min_capital_table(df: pd.DataFrame) -> pd.DataFrame:
