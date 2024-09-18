@@ -217,7 +217,15 @@ class IgFuturesContractData(brokerFuturesContractData):
     def get_trading_hours_for_contract(
         self, futures_contract: futuresContract
     ) -> listOfTradingHours:
-        return self.market_info_data.get_trading_hours_for_epic(futures_contract)
+        try:
+            epic = self.market_info_data.get_epic_for_contract(futures_contract)
+            return self.market_info_data.get_trading_hours_for_epic(epic)
+        except missingData:
+            self.log.warning(
+                f"No epic found for '{futures_contract}' - perhaps it expired? "
+                f"Returning empty list of trading hours"
+            )
+            return listOfTradingHours([])
 
     def get_list_of_contract_dates_for_instrument_code(
         self, instrument_code: str, allow_expired: bool = False
