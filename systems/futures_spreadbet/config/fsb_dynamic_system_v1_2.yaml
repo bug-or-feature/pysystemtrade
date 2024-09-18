@@ -2687,6 +2687,13 @@ multiply_roll_costs_by: 1.0
 # rounding strat
 rounding_strategy: syscore.rounding.SimpleFsbRoundingStrategy
 
+# risk overlay
+#risk_overlay:
+#  max_risk_fraction_normal_risk: 1.4
+#  max_risk_fraction_stdev_risk: 3.6
+#  max_risk_limit_sum_abs_risk: 3.4
+#  max_risk_leverage: 13
+
 exclude_instrument_lists:
   # ignore_instruments are ignored in backtests
   # we still collect price data for them in production, do rolls etc
@@ -2731,6 +2738,7 @@ exclude_instrument_lists:
     - JGB_fsb
     - LUMBER-new_fsb
     - OATIES_fsb
+    - SGD_fsb
     - SHATZ_fsb
     - SOFR_fsb
     - SONIA3_fsb
