@@ -11,6 +11,7 @@ BUND_fsb,1.5
 BUXL_fsb,3.0
 CAC_fsb,3.9
 CAD_fsb,4.0
+CADJPY_fsb,7.0
 CHFJPY_fsb,5.5
 CHF_fsb,4.96
 COCOA_LDN_fsb,4.9
@@ -32,9 +33,11 @@ EURCHF_fsb,5.3
 EURGBP_fsb,4.2
 EURIBOR-ICE_fsb,0.51
 EURIBOR_fsb,2.4
+EURO600_fsb,0.2
 EUROSTX,0.48
 EUROSTX_fsb,2.0
 EUR_fsb,5.44
+EU-BANKS_fsb,0.04
 FED_fsb,0.51
 FTSE100_fsb,3.9
 FTSE250_fsb,62.5
