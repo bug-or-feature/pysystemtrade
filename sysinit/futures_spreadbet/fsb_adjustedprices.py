@@ -70,7 +70,7 @@ def process_adjusted_prices_single_instrument(
 
 if __name__ == "__main__":
     # XX_fsb
-    for instr in ["EURIBOR-ICE_fsb", "SONIA3_fsb"]:
+    for instr in ["CADJPY_fsb", "EU-BANKS_fsb", "EURO600_fsb"]:
         print(f"Creating adjusted prices for {instr}")
         process_adjusted_prices_single_instrument(
             instr,

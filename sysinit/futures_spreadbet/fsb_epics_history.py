@@ -114,7 +114,7 @@ def _build_epic_history_row(instr, market_info, row, calc_status=False):
 
 if __name__ == "__main__":
     # view_epics_history_single("SOYOIL_fsb")
-    for instr in ["SGD_fsb"]:
+    for instr in ["CADJPY_fsb", "EU-BANKS_fsb", "EURO600_fsb"]:
         import_epics_history_single(instr)
     # import_epics_history_all()
     # for instr in ["SWE30_fsb"]:

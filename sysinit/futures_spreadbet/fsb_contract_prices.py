@@ -87,8 +87,7 @@ if __name__ == "__main__":
         # get_production_config().get_element_or_default("backup_path", None)
     )
 
-    # SGD, EURIBOR-ICE, SONIA3
-    instr_code = "SONIA3"
+    instr_code = "CADJPY"
 
     # find_contracts_for_instr(
     #     instr_code, None, datapath, csv_config=BARCHART_CONFIG, freq=DAILY_PRICE_FREQ
@@ -102,7 +101,10 @@ if __name__ == "__main__":
     #         instr, datapath=datapath, csv_config=BARCHART_CONFIG
     #     )
 
-    for instr in ["SGD", "EURIBOR-ICE", "SONIA3"]:
+    for instr in ["CADJPY", "EU-BANKS", "EURO600"]:
         init_db_with_split_freq_csv_prices_for_code(
-            instr, datapath=datapath, csv_config=BARCHART_CONFIG
+            instr,
+            datapath=datapath,
+            csv_config=BARCHART_CONFIG,
+            keep_existing=False,
         )

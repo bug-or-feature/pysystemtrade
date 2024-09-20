@@ -197,8 +197,7 @@ if __name__ == "__main__":
 
     # only change if you have written the files elsewhere
     csv_roll_data_path = "fsb.roll_calendars_csv"
-
-    for instr in ["EURIBOR-ICE_fsb", "SONIA3_fsb"]:
+    for instr in ["CADJPY_fsb", "EU-BANKS_fsb", "EURO600_fsb"]:
         process_multiple_prices_single_instrument(
             instrument_code=instr,
             adjust_calendar_to_prices=False,

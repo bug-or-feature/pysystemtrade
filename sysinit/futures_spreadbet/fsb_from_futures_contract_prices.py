@@ -86,6 +86,6 @@ if __name__ == "__main__":
     # input("Will overwrite existing prices are you sure?! CTL-C to abort")
 
     # 'XXX'
-    for instr in ["SGD", "EURIBOR-ICE", "SONIA3"]:
+    for instr in ["CADJPY", "EU-BANKS", "EURO600"]:
         convert_futures_prices_to_fsb_single(instr)
         # convert_futures_prices_to_fsb_single(instr, ["20080900"])

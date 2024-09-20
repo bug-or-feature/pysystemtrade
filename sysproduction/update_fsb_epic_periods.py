@@ -217,4 +217,4 @@ if __name__ == "__main__":
     ]
     # update_periods(instr_list, test_mode=True)
     # update_periods([], test_mode=True)
-    update_periods(["EURIBOR-ICE_fsb"], test_mode=True)
+    update_periods(["CADJPY_fsb", "EU-BANKS_fsb", "EURO600_fsb"], test_mode=True)
