@@ -1,9 +1,10 @@
 from syscore.constants import arg_not_supplied
-from syscore.dateutils import MIXED_FREQ, HOURLY_FREQ, DAILY_PRICE_FREQ
+from syscore.dateutils import Frequency, MIXED_FREQ, HOURLY_FREQ, DAILY_PRICE_FREQ
 from syscore.pandas.frequency import merge_data_with_different_freq
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysproduction.data.prices import diagPrices
 from sysobjects.contracts import futuresContract
+from sysobjects.dict_of_futures_per_contract_prices import dictFuturesContractPrices
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 
 diag_prices = diagPrices()
@@ -13,6 +14,7 @@ db_prices = diag_prices.db_futures_contract_price_data
 def init_db_with_split_freq_csv_prices(
     datapath: str,
     csv_config=arg_not_supplied,
+    keep_existing: bool = True,
 ):
     csv_prices = csvFuturesContractPriceData(datapath)
     input(
@@ -24,7 +26,10 @@ def init_db_with_split_freq_csv_prices(
     instrument_codes.sort()
     for instrument_code in instrument_codes:
         init_db_with_split_freq_csv_prices_for_code(
-            instrument_code, datapath, csv_config=csv_config
+            instrument_code,
+            datapath,
+            csv_config=csv_config,
+            keep_existing=keep_existing,
         )
 
 
@@ -32,6 +37,7 @@ def init_db_with_split_freq_csv_prices_for_code(
     instrument_code: str,
     datapath: str,
     csv_config=arg_not_supplied,
+    keep_existing: bool = True,
 ):
     same_length = []
     too_short = []
@@ -63,10 +69,14 @@ def init_db_with_split_freq_csv_prices_for_code(
         contract = futuresContract(instrument_code, contract_date_str)
         print(f"Contract object is {str(contract)}")
 
-        hourly = hourly_dict[contract_date_str]
+        hourly = _get_prices_for_frequency(
+            keep_existing, contract, hourly_dict, HOURLY_FREQ
+        )
         write_prices_for_contract_at_frequency(contract, hourly, HOURLY_FREQ)
 
-        daily = daily_dict[contract_date_str]
+        daily = _get_prices_for_frequency(
+            keep_existing, contract, daily_dict, DAILY_PRICE_FREQ
+        )
         write_prices_for_contract_at_frequency(contract, daily, DAILY_PRICE_FREQ)
 
         merged = futuresContractPrices(merge_data_with_different_freq([hourly, daily]))
@@ -82,9 +92,24 @@ def init_db_with_split_freq_csv_prices_for_code(
         contract = futuresContract(instrument_code, contract_date_str)
         print(f"Contract object is {str(contract)}")
 
-        daily = daily_dict[contract_date_str]
+        daily = _get_prices_for_frequency(
+            keep_existing, contract, daily_dict, DAILY_PRICE_FREQ
+        )
         write_prices_for_contract_at_frequency(contract, daily, DAILY_PRICE_FREQ)
-        write_prices_for_contract_at_frequency(contract, daily, MIXED_FREQ)
+
+        # if we already have hourly data in the db, get it and merge with daily
+        if db_prices.has_price_data_for_contract_at_frequency(
+            contract, frequency=HOURLY_FREQ
+        ):
+            hourly = db_prices.get_prices_at_frequency_for_contract_object(
+                contract, frequency=HOURLY_FREQ
+            )
+            merged = futuresContractPrices(
+                merge_data_with_different_freq([hourly, daily])
+            )
+        else:
+            merged = daily
+        write_prices_for_contract_at_frequency(contract, merged, MIXED_FREQ)
 
         if len(daily) < 65:
             too_short.append(contract_date_str)
@@ -96,9 +121,24 @@ def init_db_with_split_freq_csv_prices_for_code(
         contract = futuresContract(instrument_code, contract_date_str)
         print(f"Contract object is {str(contract)}")
 
-        hourly = hourly_dict[contract_date_str]
+        hourly = _get_prices_for_frequency(
+            keep_existing, contract, hourly_dict, HOURLY_FREQ
+        )
         write_prices_for_contract_at_frequency(contract, hourly, HOURLY_FREQ)
-        write_prices_for_contract_at_frequency(contract, hourly, MIXED_FREQ)
+
+        # if we already have daily data in the db, get it and merge with hourly
+        if db_prices.has_price_data_for_contract_at_frequency(
+            contract, frequency=DAILY_PRICE_FREQ
+        ):
+            daily = db_prices.get_prices_at_frequency_for_contract_object(
+                contract, frequency=DAILY_PRICE_FREQ
+            )
+            merged = futuresContractPrices(
+                merge_data_with_different_freq([hourly, daily])
+            )
+        else:
+            merged = hourly
+        write_prices_for_contract_at_frequency(contract, merged, MIXED_FREQ)
 
     print(f"These contracts have the same length for daily and hourly: {same_length}")
     print(f"These daily contracts are short: {too_short}")
@@ -118,6 +158,22 @@ def write_prices_for_contract_at_frequency(contract, prices, frequency):
         contract, frequency=frequency
     )
     print(f"Read back prices ({frequency}) are \n{str(written_prices)}")
+
+
+def _get_prices_for_frequency(
+    keep_existing: bool,
+    contract: futuresContract,
+    csv_dict: dictFuturesContractPrices,
+    frequency: Frequency,
+):
+    if keep_existing and db_prices.has_price_data_for_contract_at_frequency(
+        contract, frequency=frequency
+    ):
+        return db_prices.get_prices_at_frequency_for_contract_object(
+            contract, frequency=frequency
+        )
+    else:
+        return csv_dict[contract.date_str]
 
 
 if __name__ == "__main__":
