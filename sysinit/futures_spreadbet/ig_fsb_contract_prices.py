@@ -56,7 +56,7 @@ if __name__ == "__main__":
     datapath = resolve_path_and_filename_for_package(ig_config["path"])
 
     # ["AUDJPY_fsb"]
-    for instr in ["SGD_fsb"]:
+    for instr in ["CADJPY_fsb", "EU-BANKS_fsb", "EURO600_fsb"]:
         transfer_ig_prices_to_arctic_single(instr, datapath=datapath)
 
     # all instruments
