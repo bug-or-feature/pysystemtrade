@@ -519,6 +519,6 @@ def get_contract_expiry_from_db(
 
 if __name__ == "__main__":
     # update_sampled_contracts()
-    update_sampled_contracts(["SOYBEAN_fsb"])
+    update_sampled_contracts(["CADJPY_fsb", "EU-BANKS_fsb", "EURO600_fsb"])
     # get_all_currently_sampling("BUXL_fsb")
     # mark_as_not_sampling("GOLD_fsb")
