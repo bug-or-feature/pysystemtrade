@@ -13,7 +13,7 @@ from syslogging.logger import *
 import pandas as pd
 
 INSTRUMENT_CONFIG_PATH = "data.futures.csvconfig"
-CONFIG_FILE_NAME = "instrumentconfig.csv"
+CONFIG_FILE_NAME = "instrumentconfig_DEMO.csv"
 
 
 class csvFuturesInstrumentData(futuresInstrumentData):
@@ -25,13 +25,16 @@ class csvFuturesInstrumentData(futuresInstrumentData):
     def __init__(
         self,
         datapath=arg_not_supplied,
+        filename=arg_not_supplied,
         log=get_logger("csvFuturesInstrumentData"),
     ):
         super().__init__(log=log)
 
         if datapath is arg_not_supplied:
             datapath = INSTRUMENT_CONFIG_PATH
-        config_file = resolve_path_and_filename_for_package(datapath, CONFIG_FILE_NAME)
+        if filename is arg_not_supplied:
+            filename = CONFIG_FILE_NAME
+        config_file = resolve_path_and_filename_for_package(datapath, filename)
         self._config_file = config_file
 
     def get_list_of_instruments(self) -> list:
