@@ -36,6 +36,7 @@ EUROSTX_fsb,EU Stocks 50,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
 FED_fsb,US 30-Day Fed Funds Rate,0.5,GBP,Bond,0.0,0.0,0.0,US
 FTSE100_fsb,FTSE 100,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
 FTSE250_fsb,FTSE Mid 250,0.5,GBP,Equity,0.0,0.0,0.0,EMEA
+FTSEAFRICA40_fsb,South Africa 40,0.25,GBP,Equity,0.0,0.0,0.0,EMEA
 FTSECHINAH_fsb,China H-shares,0.5,GBP,Equity,0.0,0.0,0.0,ASIA
 GAS_NL_fsb,Natural Gas - EU TTF,0.25,GBP,OilGas,0.0,0.0,0.0,US
 GAS_UK_fsb,UK Natural Gas,0.25,GBP,OilGas,0.0,0.0,0.0,US
@@ -52,7 +53,6 @@ HEATOIL_fsb,Heating Oil,0.5,GBP,OilGas,0.0,0.0,0.0,US
 IBEX_fsb,Spain 35,0.2,GBP,Equity,0.0,0.0,0.0,EMEA
 JGB_fsb,Japanese Government Bond,0.5,GBP,Bond,0.0,0.0,0.0,ASIA
 JPY_fsb,USD/JPY Forward,1.0,GBP,FX,0.0,0.0,0.0,ASIA
-JSE40_fsb,South Africa 40,0.25,GBP,Equity,0.0,0.0,0.0,EMEA
 LEANHOG_fsb,Lean Hogs,0.1,GBP,Ags,0.0,0.0,0.0,US
 LIVECOW_fsb,Live Cattle,0.5,GBP,Ags,0.0,0.0,0.0,US
 LUMBER-new_fsb,Lumber Future,0.1,GBP,Ags,0.0,0.0,0.0,US
@@ -64,6 +64,7 @@ NZD_fsb,NZD/USD Forward,1.0,GBP,FX,0.0,0.0,0.0,ASIA
 OAT_fsb,OAT French Government Bond,0.5,GBP,Bond,0.0,0.0,0.0,EMEA
 OATIES_fsb,Oats,15.0,GBP,Ags,0.0,0.0,0.0,US
 OJ_fsb,NY Orange Juice,0.25,GBP,Ags,0.0,0.0,0.0,US
+OMX-SWE_fsb,Sweden 30,3.0,GBP,Equity,0.0,0.0,0.0,EMEA
 OMXS30_fsb,Sweden 30,3.0,GBP,Equity,0.0,0.0,0.0,EMEA
 PALLAD_fsb,Palladium,2.0,GBP,Metals,0.0,0.0,0.0,US
 PLAT_fsb,Platinum,3.0,GBP,Metals,0.0,0.0,0.0,US
