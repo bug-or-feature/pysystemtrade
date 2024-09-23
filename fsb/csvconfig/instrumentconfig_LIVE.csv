@@ -53,6 +53,7 @@ HEATOIL_fsb,Heating Oil,0.5,GBP,OilGas,0.0,0.0,0.0,US
 IBEX_fsb,Spain 35,0.2,GBP,Equity,0.0,0.0,0.0,EMEA
 JGB_fsb,Japanese Government Bond,0.5,GBP,Bond,0.0,0.0,0.0,ASIA
 JPY_fsb,USD/JPY Forward,1.0,GBP,FX,0.0,0.0,0.0,ASIA
+JSE40_fsb,South Africa 40,0.25,GBP,Equity,0.0,0.0,0.0,EMEA
 LEANHOG_fsb,Lean Hogs,0.1,GBP,Ags,0.0,0.0,0.0,US
 LIVECOW_fsb,Live Cattle,0.5,GBP,Ags,0.0,0.0,0.0,US
 LUMBER-new_fsb,Lumber Future,0.1,GBP,Ags,0.0,0.0,0.0,US
