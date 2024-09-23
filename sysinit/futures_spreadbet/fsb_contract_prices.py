@@ -87,7 +87,7 @@ if __name__ == "__main__":
         # get_production_config().get_element_or_default("backup_path", None)
     )
 
-    instr_code = "CADJPY"
+    instr_code = "FTSEAFRICA40"
 
     # find_contracts_for_instr(
     #     instr_code, None, datapath, csv_config=BARCHART_CONFIG, freq=DAILY_PRICE_FREQ
@@ -101,7 +101,8 @@ if __name__ == "__main__":
     #         instr, datapath=datapath, csv_config=BARCHART_CONFIG
     #     )
 
-    for instr in ["CADJPY", "EU-BANKS", "EURO600"]:
+    for instr in ["FTSEAFRICA40"]:
+        # init_db_with_csv_futures_contract_prices_for_code(
         init_db_with_split_freq_csv_prices_for_code(
             instr,
             datapath=datapath,
