@@ -208,7 +208,7 @@ def write_estimate_file(system):
     now = datetime.datetime.now()
     sysdiag = systemDiag(system)
     output_file = resolve_path_and_filename_for_package(
-        f"systems.futures_spreadbet.estimate-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
+        f"systems.futures_spreadbet.config.estimate-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
     )
     print(f"writing estimate params to: {output_file}")
     estimates_needed = [
