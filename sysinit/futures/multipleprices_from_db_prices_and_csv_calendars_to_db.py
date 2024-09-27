@@ -17,7 +17,7 @@ from sysobjects.dict_of_futures_per_contract_prices import (
 import datetime
 import pandas as pd
 
-from sysproduction.data.prices import diagPrices
+from sysproduction.data.prices import diagPrices, get_valid_instrument_code_from_user
 from sysobjects.rolls import rollParameters, contractDateWithRollParameters
 from sysobjects.contract_dates_and_expiries import contractDate
 
@@ -27,7 +27,7 @@ from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysinit.futures.build_roll_calendars import adjust_to_price_series
 from sysobjects.multiple_prices import futuresMultiplePrices
 
-from sysdata.data_blob import dataBlob
+ALL_INSTRUMENTS = "ALL"
 
 diag_prices = diagPrices()
 
@@ -198,7 +198,18 @@ if __name__ == "__main__":
     csv_roll_data_path = arg_not_supplied
 
     # modify flags as required
-    process_multiple_prices_all_instruments(
+    # process_multiple_prices_all_instruments(
+    #     csv_multiple_data_path=csv_multiple_data_path,
+    #     csv_roll_data_path=csv_roll_data_path,
+    # )
+
+    instrument_code = get_valid_instrument_code_from_user(
+        allow_all=True, all_code=ALL_INSTRUMENTS
+    )
+
+    process_multiple_prices_single_instrument(
+        instrument_code=instrument_code,
         csv_multiple_data_path=csv_multiple_data_path,
         csv_roll_data_path=csv_roll_data_path,
+        ADD_TO_CSV=True,
     )
