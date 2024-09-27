@@ -83,6 +83,7 @@ def seed_price_data_for_contract_at_frequency(
             contract_object=contract_object, frequency=frequency, new_prices=prices
         )
 
+
 def get_instr_list():
     # full list of instruments
     # - minus those already in FSB system
@@ -460,6 +461,7 @@ def get_instr_list():
     ]
     return instr_list
 
+
 def get_instr_list2():
     # list of instruments from get_instr_list()
     # - minus those from Rob's Remove Markets report
@@ -783,25 +785,53 @@ def get_instr_list2():
 
 
 def robs_traded_instr():  # CNH
-    return ["ALUMINIUM", "BRENT-LAST", "CAD10", "CHINAA-CON", "CANOLA", "CNH",
-            "EU-AUTO", "EU-BANKS", "EU-BASIC", "EU-OIL", "EU-TECH", "FANG",
-            "FTSECHINAA", "FTSETAIWAN", "GAS-PEN", "HANGENT_mini", "HANGTECH",
-            "IRON", "KOSDAQ", "KR10", "MIB", "MILLWHEAT", "MSCIEAFA", "MSCITAIWAN",
-            "MUMMY", "MXP", "NIKKEI", "SPI200", "TOPIX", "US10U", "US20", "US3",
-            "YENEUR"
-            ]
+    return [
+        "ALUMINIUM",
+        "BRENT-LAST",
+        "CAD10",
+        "CHINAA-CON",
+        "CANOLA",
+        "CNH",
+        "EU-AUTO",
+        "EU-BANKS",
+        "EU-BASIC",
+        "EU-OIL",
+        "EU-TECH",
+        "FANG",
+        "FTSECHINAA",
+        "FTSETAIWAN",
+        "GAS-PEN",
+        "HANGENT_mini",
+        "HANGTECH",
+        "IRON",
+        "KOSDAQ",
+        "KR10",
+        "MIB",
+        "MILLWHEAT",
+        "MSCIEAFA",
+        "MSCITAIWAN",
+        "MUMMY",
+        "MXP",
+        "NIKKEI",
+        "SPI200",
+        "TOPIX",
+        "US10U",
+        "US20",
+        "US3",
+        "YENEUR",
+    ]
 
     # needs bc-utils config: CHINAA-CON, FANG, HANGENT_mini, HANGTECH, KOSDAQ, MIB,
     # MSCIEAFA, MSCITAIWAN, SPI200, US3
 
+
 if __name__ == "__main__":
     print("Get initial price data from IB")
-    #instrument_code = input("Instrument code? <return to abort> ")
+    # instrument_code = input("Instrument code? <return to abort> ")
     # if instrument_code == "":
     #     exit()
 
     instr_list = robs_traded_instr()
-    #for instr in ["KR3", "MXP", "CANOLA"]:
+    # for instr in ["KR3", "MXP", "CANOLA"]:
     for instr in instr_list:
         seed_price_data_from_IB(instr, allow_expired=True)
-

@@ -107,7 +107,7 @@ setup(
     entry_points={
         "console_scripts": [
             "pst = sysproduction.pst:pst",
-            #"pst-slippage = sysproduction.update_slippage:update_slippage",
+            # "pst-slippage = sysproduction.update_slippage:update_slippage",
             # "pst-startup = sysproduction.startup:startup",
             # "pst-stack = sysproduction.run_stack_handler:run_stack_handler",
             # "pst-capital = sysproduction.run_capital_update:run_capital_update",
