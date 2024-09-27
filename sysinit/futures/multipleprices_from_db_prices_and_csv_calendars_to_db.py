@@ -204,7 +204,7 @@ if __name__ == "__main__":
     # )
 
     instrument_code = get_valid_instrument_code_from_user(
-        allow_all=True, all_code=ALL_INSTRUMENTS
+        allow_all=True, all_code=ALL_INSTRUMENTS, source="single",
     )
 
     process_multiple_prices_single_instrument(
