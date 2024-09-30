@@ -39,22 +39,22 @@ trading_rules:
          - "rawdata.raw_carry"
      other_args:
          smooth_days: 125
-#  momentum4:
-#     function: systems.provided.rules.ewmac.ewmac
-#     data:
-#         - "rawdata.get_daily_prices"
-#         - "rawdata.daily_returns_volatility"
-#     other_args:
-#         Lfast: 4
-#         Lslow: 16
-#  momentum8:
-#     function: systems.provided.rules.ewmac.ewmac
-#     data:
-#         - "rawdata.get_daily_prices"
-#         - "rawdata.daily_returns_volatility"
-#     other_args:
-#         Lfast: 8
-#         Lslow: 32
+  momentum4:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  momentum8:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
   momentum16:
      function: systems.provided.rules.ewmac.ewmac
      data:
@@ -93,19 +93,19 @@ trading_rules:
          - "rawdata.daily_returns_volatility"
     other_args:
          Lfast: 32
-#  accel64:
-#    function: systems.provided.rules.accel.accel
-#    data:
-#         - "rawdata.get_daily_prices"
-#         - "rawdata.daily_returns_volatility"
-#    other_args:
-#         Lfast: 64
-#  breakout10:
-#    function: systems.provided.rules.breakout.breakout
-#    data:
-#      - "rawdata.get_daily_prices"
-#    other_args:
-#      lookback: 10
+  accel64:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 64
+  breakout10:
+    function: systems.provided.rules.breakout.breakout
+    data:
+      - "rawdata.get_daily_prices"
+    other_args:
+      lookback: 10
   breakout20:
     function: systems.provided.rules.breakout.breakout
     data:
@@ -136,20 +136,20 @@ trading_rules:
       - "rawdata.get_daily_prices"
     other_args:
       lookback: 320
-#  normmom2:
-#     function: systems.provided.rules.ewmac.ewmac_calc_vol
-#     data:
-#         - "rawdata.get_cumulative_daily_vol_normalised_returns"
-#     other_args:
-#         Lfast: 2
-#         Lslow: 8
-#  normmom4:
-#     function: systems.provided.rules.ewmac.ewmac_calc_vol
-#     data:
-#         - "rawdata.get_cumulative_daily_vol_normalised_returns"
-#     other_args:
-#         Lfast: 4
-#         Lslow: 16
+  normmom2:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+  normmom4:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 4
+         Lslow: 16
   normmom8:
      function: systems.provided.rules.ewmac.ewmac_calc_vol
      data:
