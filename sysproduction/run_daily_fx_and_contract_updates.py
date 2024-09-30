@@ -1,7 +1,9 @@
 from syscontrol.run_process import processToRun
 from sysproduction.update_fx_prices import updateFxPrices
 from sysproduction.update_epics import UpdateEpicHistory
-from sysproduction.update_sampled_contracts import updateSampledContracts
+from sysproduction.update_sampled_contracts_combined import (
+    updateSampledContractsCombined,
+)
 
 from sysdata.data_blob import dataBlob
 
@@ -29,12 +31,12 @@ def get_list_of_timer_functions_for_fx_and_contract_update():
 
     fx_update_object = updateFxPrices(data_fx)
     epic_update_object = UpdateEpicHistory(data_epics)
-    contracts_update_object = updateSampledContracts(data_contracts)
+    contracts_update_object_combined = updateSampledContractsCombined(data_contracts)
 
     list_of_timer_names_and_functions = [
         ("update_fx_prices", fx_update_object),
         ("update_epic_history", epic_update_object),
-        ("update_sampled_contracts", contracts_update_object),
+        ("update_sampled_contracts", contracts_update_object_combined),
     ]
 
     return list_of_timer_names_and_functions
