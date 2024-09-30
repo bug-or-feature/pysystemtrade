@@ -188,9 +188,16 @@ def backup_futures_contract_prices_to_parquet(data):
         data.arctic_futures_contract_price.get_list_of_instrument_codes_with_merged_price_data()
     )
     for instrument_code in instrument_list:
-        backup_futures_contract_prices_for_instrument_to_parquet(
-            data=data, instrument_code=instrument_code
-        )
+        if include_in_backup(instrument_code):
+            backup_futures_contract_prices_for_instrument_to_parquet(
+                data=data, instrument_code=instrument_code
+            )
+        else:
+            print(f"Ignoring {instrument_code}")
+
+
+def include_in_backup(instr_code: str):
+    return not instr_code.endswith("_fsb")
 
 
 def backup_futures_contract_prices_for_instrument_to_parquet(
