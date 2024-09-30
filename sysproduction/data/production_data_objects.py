@@ -20,6 +20,10 @@ from sysdata.arctic.arctic_capital import arcticCapitalData
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
+
+# from sysdata.futures_spreadbet.mixed_futures_per_contract_prices import (
+#     mixedFuturesContractPriceData,
+# )
 from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
 from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
 from sysdata.arctic.arctic_optimal_positions import arcticOptimalPositionData
@@ -87,6 +91,7 @@ use_production_classes = {
     FUTURES_CONTRACT_DATA: mongoFuturesContractData,
     STORED_SPREAD_DATA: mongoSpreadCostData,
     FUTURES_CONTRACT_PRICE_DATA: arcticFuturesContractPriceData,
+    # FUTURES_CONTRACT_PRICE_DATA: mixedFuturesContractPriceData,
     FUTURES_MULTIPLE_PRICE_DATA: arcticFuturesMultiplePricesData,
     FUTURES_ADJUSTED_PRICE_DATA: arcticFuturesAdjustedPricesData,
     CAPITAL_DATA: arcticCapitalData,
