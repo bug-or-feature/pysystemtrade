@@ -109,6 +109,7 @@ class dataBlob(object):
             parquet=self._add_parquet_class,
             av=self._add_alt_data_source_class,
             json=self._add_json_class,
+            mixed=self._add_mixed_class,
         )
 
         method_to_add_with = class_dict.get(prefix, None)
@@ -252,6 +253,23 @@ class dataBlob(object):
                 "Error %s couldn't evaluate %s(datapath=datapath, log=log) This might "
                 "be because import is missing or arguments don't follow pattern"
                 % (str(e), class_name)
+            )
+            self._raise_and_log_error(msg)
+
+        return resolved_instance
+
+    def _add_mixed_class(self, class_object):
+        log = self._get_specific_logger(class_object)
+        try:
+            resolved_instance = class_object(
+                mongo_db=self.mongo_db, parquet_access=self.parquet_access, log=log
+            )
+        except Exception as e:
+            cls_name = get_class_name(class_object)
+            msg = (
+                f"Error {str(e)} couldn't evaluate {cls_name}(mongo_db=self.mongo_db, "
+                f"parquet_access=self.parquet_access). This might be because import is "
+                f"missing or arguments don't follow pattern"
             )
             self._raise_and_log_error(msg)
 
@@ -401,6 +419,7 @@ source_dict = dict(
     av="broker",
     ig="broker",
     json="db",
+    mixed="db",
 )
 
 
