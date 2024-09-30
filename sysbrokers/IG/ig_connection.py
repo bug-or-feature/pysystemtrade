@@ -384,7 +384,7 @@ class IGConnection(object):
         trade_result = IgTradeWithContract(result)
         self.log.debug(f"result of broker_submit_order(): {trade_result}")
 
-        if self.is_unknown_reject(trade_result):
+        if self.is_rejected(trade_result):
             reason = trade_result.get_attr("reason")
             raise orderRejected(f"Order for {epic} rejected, reason '{reason}'")
 
@@ -400,11 +400,10 @@ class IGConnection(object):
         return status == "TRADEABLE"
 
     @staticmethod
-    def is_unknown_reject(trade_result):
+    def is_rejected(trade_result):
         return (
-            trade_result.get_attr("reason") == "UNKNOWN"
+            trade_result.get_attr("dealStatus") == "REJECTED"
             and trade_result.get_attr("status") is None
-            and trade_result.get_attr("dealStatus") == "REJECTED"
         )
 
     @staticmethod
