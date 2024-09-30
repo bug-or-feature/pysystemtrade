@@ -266,6 +266,12 @@ def run_fsb_static_selection_report():
     )
 
 
+def run_fsb_trading_rule_pnl_report():
+    do_report(
+        fsb_trading_rule_pandl_report_config.new_config_with_modified_output("file")
+    )
+
+
 if __name__ == "__main__":
     # run_slippage_report()
     # run_costs_report()
@@ -295,6 +301,7 @@ if __name__ == "__main__":
     # run_fsb_risk_report()
     # run_fsb_instrument_list_report()
     # run_fsb_static_selection_report()
+    # run_fsb_trading_rule_pnl_report()
 
     # run_adhoc_tradeable_report()
     # run_adhoc_tradeable_report(instr_code="EDOLLAR_fsb")
