@@ -7,12 +7,6 @@ from sysdata.csv.csv_futures_contract_prices import (
     csvFuturesContractPriceData,
     ConfigCsvFuturesPrices,
 )
-from sysdata.arctic.arctic_futures_per_contract_prices import (
-    arcticFuturesContractPriceData,
-)
-from sysinit.futures.contract_prices_from_csv_to_arctic import (
-    init_db_with_csv_futures_contract_prices_for_code,
-)
 from sysinit.futures.contract_prices_from_split_freq_csv_to_db import (
     init_db_with_split_freq_csv_prices_for_code,
 )
@@ -107,5 +101,5 @@ if __name__ == "__main__":
             instr,
             datapath=datapath,
             csv_config=BARCHART_CONFIG,
-            keep_existing=False,
+            ignore_duplication=True,  # if True, we overwrite existing prices
         )
