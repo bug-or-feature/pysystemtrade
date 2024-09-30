@@ -1,6 +1,5 @@
 from syscore.exceptions import missingContract
 from syscore.constants import success
-from syscore.text import remove_suffix
 
 from sysobjects.contract_dates_and_expiries import contractDate, expiryDate
 from sysobjects.contracts import futuresContract, listOfFuturesContracts
@@ -15,74 +14,75 @@ from sysproduction.data.broker import dataBroker
 ALL_INSTRUMENTS = "ALL"
 
 
-def update_sampled_contracts(instrument_list=None):
+def update_sampled_contracts():
     """
-    *** This differs from the upstream version, as we need to maintain two sets of sampled contracts, futures
-    and FSBs, which can have different expiry dates ***
+    Update the active contracts, according to what is available in IB for a given instrument
 
+    These are stored in mongoDB
 
-    :returns: None
+    The active contracts list is used to see what contracts have historical data sampled for
+
+    It does not tell you what the current priced, forward, or carry contract are - that is in multiple prices (DRY)
+
+    However we base the list of theoretical active contracts on the current priced, forward, and carry contracts
+
+    We will end up adding to this list when we roll; this will change the current priced, forward, and carry contract
+
+    When we add a new contract (because one has become available), we get the exact expiry date from IB and save this with the
+       contract data.
+
+    We do not sample contracts on the list when they have passed their expiry date
+
+    Contracts are never deleted from the database
+
     """
-    with dataBlob(
-        log_name="Update-Sampled_Contracts",
-        csv_data_paths=dict(
-            csvFuturesInstrumentData="fsb.csvconfig",
-            csvRollParametersData="fsb.csvconfig",
-        ),
-    ) as data:
-        if instrument_list is None:
-            update_contracts_object = updateSampledContracts(data)
+    with dataBlob(log_name="Update-Sampled_Contracts") as data:
+        update_contracts_object = updateSampledContracts(data)
+        instrument_code = get_valid_instrument_code_from_user(
+            allow_all=True,
+            all_code=ALL_INSTRUMENTS,
+            prompt="Futures instrument code?",
+        )
+        if instrument_code.endswith("_fsb"):
+            data.log.error(f"Expecting a futures code, not FSB. Exiting")
+            return
+
+        update_contracts_object.update_sampled_contracts(
+            instrument_code=instrument_code
+        )
+
+        if instrument_code is ALL_INSTRUMENTS:
+            return success
+
+        do_another = True
+
+        while do_another:
+            EXIT_CODE = "EXIT"
             instrument_code = get_valid_instrument_code_from_user(
-                allow_all=True, all_code=ALL_INSTRUMENTS
+                allow_exit=True, exit_code=EXIT_CODE
             )
-            update_contracts_object.update_sampled_contracts(
-                instrument_code=instrument_code
-            )
-            if instrument_code is ALL_INSTRUMENTS:
-                return success
-
-            do_another = True
-
-            while do_another:
-                EXIT_CODE = "EXIT"
-                instrument_code = get_valid_instrument_code_from_user(
-                    allow_exit=True, exit_code=EXIT_CODE
+            if instrument_code is EXIT_CODE:
+                do_another = False
+            else:
+                update_contracts_object.update_sampled_contracts(
+                    instrument_code=instrument_code
                 )
-                if instrument_code is EXIT_CODE:
-                    do_another = False
-                else:
-                    update_contracts_object.update_sampled_contracts(
-                        instrument_code=instrument_code
-                    )
-
-        else:
-            update_contracts_object = updateSampledContracts(data, instrument_list)
-            update_contracts_object.update_sampled_contracts()
 
 
 class updateSampledContracts(object):
-    def __init__(self, data, instrument_list=None):
+    def __init__(self, data):
         self.data = data
-        self._instrument_list = instrument_list
 
     def update_sampled_contracts(self, instrument_code: str = ALL_INSTRUMENTS):
-        if self._instrument_list is None:
-            update_active_contracts_with_data(
-                self.data, instrument_code=instrument_code
-            )
-        else:
-            update_active_contracts_with_data(
-                self.data, instrument_list=self._instrument_list
-            )
+        data = self.data
+        update_active_contracts_with_data(data, instrument_code=instrument_code)
 
 
 def update_active_contracts_with_data(
-    data: dataBlob, instrument_code: str = ALL_INSTRUMENTS, instrument_list=None
+    data: dataBlob, instrument_code: str = ALL_INSTRUMENTS
 ):
     diag_prices = diagPrices(data)
-    if instrument_list is not None:
-        list_of_codes = instrument_list
-    elif instrument_code is ALL_INSTRUMENTS:
+    if instrument_code is ALL_INSTRUMENTS:
         list_of_codes = diag_prices.get_list_of_instruments_in_multiple_prices()
     else:
         list_of_codes = [instrument_code]
@@ -91,36 +91,22 @@ def update_active_contracts_with_data(
         update_active_contracts_for_instrument(instrument_code, data)
 
 
-def update_active_contracts_for_instrument(fsb_code: str, data: dataBlob):
-    fut_code = remove_suffix(fsb_code, "_fsb")
-
+def update_active_contracts_for_instrument(instrument_code: str, data: dataBlob):
     # Get the list of contracts we'd want to get prices for, given current
     # roll calendar
-    required_fsb_contract_chain = get_contract_chain(data, fsb_code)
-    required_fut_contract_chain = listOfFuturesContracts(
-        [
-            futuresContract.from_two_strings(fut_code, contract.date_str)
-            for contract in required_fsb_contract_chain
-        ]
-    )
+    required_contract_chain = get_contract_chain(data, instrument_code)
 
     # Make sure contract chain and database are aligned
     update_contract_database_with_contract_chain(
-        fsb_code, required_fsb_contract_chain, data
-    )
-    update_contract_database_with_contract_chain(
-        fut_code, required_fut_contract_chain, data
+        instrument_code, required_contract_chain, data
     )
 
     # Now to check if expiry dates are matched to IB, and mark expired or unchained contracts as no longer sampling
     update_expiries_and_sampling_status_for_contracts(
-        fut_code, data, contract_chain=required_fut_contract_chain
-    )
-    update_expiries_and_sampling_status_for_contracts(
-        fsb_code, data, contract_chain=required_fsb_contract_chain
+        instrument_code, data, contract_chain=required_contract_chain
     )
 
-    check_key_contracts_have_not_expired(instrument_code=fsb_code, data=data)
+    check_key_contracts_have_not_expired(instrument_code=instrument_code, data=data)
 
 
 def get_contract_chain(data: dataBlob, instrument_code: str) -> listOfFuturesContracts:
@@ -168,10 +154,6 @@ def create_furthest_out_contract_with_roll_parameters_from_contract_date(
         contractDate(furthest_out_contract_date), roll_parameters
     )
 
-    if diag_contracts.instrument_has_custom_roll(instrument_code):
-        furthest_out_contract = furthest_out_contract.next_held_contract()
-        # furthest_out_contract = furthest_out_contract.next_held_contract()
-
     return furthest_out_contract
 
 
@@ -187,7 +169,7 @@ def create_contract_object_chain(
 
 
 def create_contract_date_chain(
-    furthest_out_contract: contractDateWithRollParameters, use_priced=True
+    furthest_out_contract: contractDateWithRollParameters,
 ) -> list:
     # To give us wiggle room, and ensure we start collecting the new forward a
     # little in advance
@@ -195,9 +177,7 @@ def create_contract_date_chain(
 
     ## this will pick up contracts from 6 months ago, to deal with any gaps
     ## however if these have expired they are marked as close sampling later
-    contract_date_chain = final_contract.get_contracts_from_recently_to_contract_date(
-        use_priced=use_priced
-    )
+    contract_date_chain = final_contract.get_contracts_from_recently_to_contract_date()
 
     return contract_date_chain
 
@@ -383,20 +363,12 @@ def update_expiry_and_sampling_status_for_contract(
                 **log_attrs,
             )
         else:
-            existing_expiry_source = contract_object.params.expiry_source
-            if existing_expiry_source == "B" and broker_expiry_date.source == "E":
-                data.log.debug(
-                    f"Not updating expiry for {contract_object.key}, "
-                    f"new date is estimated",
-                    **log_attrs,
-                )
-            else:
-                # Different!
-                update_contract_object_with_new_expiry_date(
-                    data=data,
-                    broker_expiry_date=broker_expiry_date,
-                    contract_object=contract_object,
-                )
+            # Different!
+            update_contract_object_with_new_expiry_date(
+                data=data,
+                broker_expiry_date=broker_expiry_date,
+                contract_object=contract_object,
+            )
 
     ## Now the unsampling, re-read contract as expiry maybe updated
     db_contract = data_contracts.get_contract_from_db(contract_object)
@@ -482,43 +454,5 @@ def has_contract_expired(
     return actual_contract.expired()
 
 
-# testing / debugging only
-def _get_all_currently_sampling(fsb_code):
-    with dataBlob(log_name="Test-Sampled_Contracts") as data:
-        sampling = get_list_of_currently_sampling_contracts_in_db(data, fsb_code)
-
-        fut = get_list_of_currently_sampling_contracts_in_db(
-            data, remove_suffix(fsb_code, "_fsb")
-        )
-        for instr in fut:
-            sampling.append(instr)
-        print(f"Sampling: {sampling}")
-
-        return sampling
-
-
-# testing / debugging only
-def _mark_as_not_sampling(fsb_code):
-    instr_list = _get_all_currently_sampling(fsb_code)
-    with dataBlob(log_name="Mark-Not-Sampling") as data:
-        data_contracts = dataContracts(data)
-        for contract in instr_list:
-            data_contracts.mark_contract_as_not_sampling(contract)
-
-
-# testing / debugging only
-def get_contract_expiry_from_db(
-    contract: futuresContract, data: dataBlob
-) -> expiryDate:
-    data_contracts = dataContracts(data)
-    db_contract = data_contracts.get_contract_from_db(contract)
-    db_expiry_date = db_contract.expiry_date
-
-    return db_expiry_date
-
-
 if __name__ == "__main__":
-    # update_sampled_contracts()
-    update_sampled_contracts(["CADJPY_fsb", "EU-BANKS_fsb", "EURO600_fsb"])
-    # get_all_currently_sampling("BUXL_fsb")
-    # mark_as_not_sampling("GOLD_fsb")
+    update_sampled_contracts()
