@@ -29,7 +29,7 @@ class algoMarketFsb(algoMarket):
         instr_code = contract_order.instrument_code
         slippage = self.data.db_spread_cost.get_spread_cost(instr_code)
         expected_spread = slippage * 2 * 1.05
-        actual_spread = ticker_object.last_tick_analysis.spread
+        actual_spread = round(ticker_object.last_tick_analysis.spread, 4)
         if actual_spread > expected_spread:
             msg = (
                 f"Actual spread ({actual_spread}) for {instr_code} is "
