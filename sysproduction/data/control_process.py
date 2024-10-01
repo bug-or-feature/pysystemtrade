@@ -336,11 +336,12 @@ class diagControlProcess(productionDataLayerGeneric):
         process_config_for_item = self.get_process_configuration_for_item_name(
             item_name
         )
-        config_item = process_config_for_item.get(process_name, default)
-        if use_config_default and config_item is default:
-            config_item = process_config_for_item.get("default", default)
+        if process_config_for_item:
+            config_item = process_config_for_item.get(process_name, default)
+            if use_config_default and config_item is default:
+                config_item = process_config_for_item.get("default", default)
 
-        return config_item
+            return config_item
 
     def get_process_configuration_for_item_name(self, item_name: str) -> dict:
         config = getattr(self, "_process_config_%s" % item_name, {})
