@@ -35,7 +35,9 @@ class MailType(Enum):
 
 def send_mail_msg(body: str, subject: str, mail_type: MailType = MailType.plain):
     msg = MIMEMultipart()
-    msg["Subject"] = subject
+    config = get_production_config()
+    prefix = config.get_element_or_default("email_subject_prefix", "")
+    msg["Subject"] = f"{prefix}{subject}"
     msg.attach(MIMEText(body, mail_type))
     _send_msg(msg)
 
@@ -86,19 +88,15 @@ def _send_msg(msg: MIMEMultipart):
 
     # Send the message via our own SMTP server, but don't include the
     # envelope header.
-    s: smtplib.SMTP
     try:
-        s = smtplib.SMTP_SSL(email_server, email_port)
-    except ssl.SSLError:
-        s = smtplib.SMTP(email_server, email_port)
-
-    try:
-        s.starttls()
-    except:
-        pass
-    s.login(email_address, email_pwd)
-    s.sendmail(me, [you], msg.as_string())
-    s.quit()
+        smtp = smtplib.SMTP(email_server, email_port, timeout=10)
+        smtp.starttls(context=ssl.create_default_context())
+        smtp.login(email_address, email_pwd)
+        smtp.sendmail(me, [you], msg.as_string())
+    except Exception as e:
+        print(e)
+    finally:
+        smtp.quit()
 
 
 def get_email_details():
