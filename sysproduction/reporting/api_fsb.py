@@ -28,6 +28,8 @@ from sysproduction.reporting.data.rolls_fsb import (
 from sysobjects.production.roll_state import ALL_ROLL_INSTRUMENTS
 from sysproduction.update_sampled_contracts import (
     get_furthest_out_contract_with_roll_parameters,
+)
+from sysproduction.update_sampled_fsb_contracts import (
     create_contract_date_chain,
 )
 from syscore.dateutils import contract_month_from_number
