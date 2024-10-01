@@ -276,7 +276,7 @@ def output_file_report(
 
 def resolve_report_filename(report_config, data: dataBlob):
     filename_with_spaces = report_config.title
-    filename = filename_with_spaces.replace(" ", "_")
+    filename = filename_with_spaces.replace(" ", "_") + get_report_file_extension(data)
     use_directory = get_directory_for_reporting(data)
     use_directory_resolved = get_resolved_pathname(use_directory)
     full_filename = os.path.join(use_directory_resolved, filename)
@@ -289,6 +289,10 @@ def get_directory_for_reporting(data):
     production_config = data.config
     store_directory = production_config.get_element("reporting_directory")
     return store_directory
+
+
+def get_report_file_extension(data):
+    return data.config.get_element_or_arg_not_supplied("report_file_extension")
 
 
 def write_text_report_to_file(report_text: str, full_filename: str):
