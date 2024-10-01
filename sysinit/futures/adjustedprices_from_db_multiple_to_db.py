@@ -72,6 +72,21 @@ def process_adjusted_prices_single_instrument(
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # modify flags and datapath as required
-    process_adjusted_prices_all_instruments(
-        csv_adj_data_path=arg_not_supplied, ADD_TO_DB=True, ADD_TO_CSV=True
-    )
+    # process_adjusted_prices_all_instruments(
+    #     csv_adj_data_path=arg_not_supplied, ADD_TO_DB=True, ADD_TO_CSV=True
+    # )
+
+    for instr in [
+        "AUD",
+        "BOBL",
+        "DAX",
+        "GBP",
+        "GOLD_micro",
+        "LIVECOW",
+        "MXP",
+        "PLAT",
+        "RUSSELL",
+        "US5",
+        "US10",
+    ]:
+        process_adjusted_prices_single_instrument(instr, ADD_TO_CSV=True)

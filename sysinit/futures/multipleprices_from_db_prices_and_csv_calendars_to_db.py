@@ -190,7 +190,7 @@ def add_phantom_row(
 
 
 if __name__ == "__main__":
-    input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # change if you want to write elsewhere
     csv_multiple_data_path = arg_not_supplied
 
@@ -203,13 +203,41 @@ if __name__ == "__main__":
     #     csv_roll_data_path=csv_roll_data_path,
     # )
 
-    instrument_code = get_valid_instrument_code_from_user(
-        allow_all=True, all_code=ALL_INSTRUMENTS, source="single",
-    )
+    # instrument_code = get_valid_instrument_code_from_user(
+    #     allow_all=True,
+    #     all_code=ALL_INSTRUMENTS,
+    #     source="single",
+    # )
 
-    process_multiple_prices_single_instrument(
-        instrument_code=instrument_code,
-        csv_multiple_data_path=csv_multiple_data_path,
-        csv_roll_data_path=csv_roll_data_path,
-        ADD_TO_CSV=True,
-    )
+    # BAD: CORN, MXP
+
+    # ['AEX', 'AUD', 'BITCOIN', 'BOBL', 'BONO', 'BRE', 'BRENT-LAST', 'BTP', 'BUND',
+    # 'BUXL', 'CAD', 'CHF', 'CNH', 'COPPER', 'CORN', 'DAX', 'DJSTX-SMALL', 'DOW',
+    # 'ETHEREUM', 'EU-BASIC', 'EU-DIV30', 'EU-HEALTH', 'EU-OIL', 'EU-TECH', 'EU-TRAVEL',
+    # 'EU-UTILS', 'EUR', 'EURCHF', 'FEEDCOW', 'FTSECHINAA', 'FTSECHINAH', 'FTSETAIWAN',
+    # 'GAS-LAST', 'GASOILINE', 'GAS_US_mini', 'GBP', 'GBPEUR', 'GOLD_micro', 'HEATOIL',
+    # 'IRON', 'JPY', 'KOSDAQ', 'KOSPI', 'KR10', 'LEANHOG', 'LIVECOW', 'MSCIASIA',
+    # 'MSCISING', 'MUMMY', 'MXP', 'NASDAQ_micro', 'NIFTY', 'NIKKEI', 'NZD', 'OAT',
+    # 'PALLAD', 'PLAT', 'REDWHEAT', 'RUSSELL', 'SILVER', 'SOYBEAN', 'SOYMEAL', 'SOYOIL',
+    # 'SP400', 'US10', 'US10U', 'US30', 'US5', 'USIRS10', 'USIRS5ERIS', 'V2X', 'WHEAT',
+    # 'YENEUR']
+
+    for instr in [
+        "AUD",
+        "BOBL",
+        "DAX",
+        "GBP",
+        "GOLD_micro",
+        "LIVECOW",
+        "MXP",
+        "PLAT",
+        "RUSSELL",
+        "US5",
+        "US10",
+    ]:
+        process_multiple_prices_single_instrument(
+            instrument_code=instr,
+            csv_multiple_data_path=csv_multiple_data_path,
+            csv_roll_data_path=csv_roll_data_path,
+            ADD_TO_CSV=True,
+        )
