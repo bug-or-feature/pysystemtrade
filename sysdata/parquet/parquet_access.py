@@ -33,7 +33,10 @@ class ParquetAccess(object):
         filename = self._get_filename_given_data_type_and_identifier(
             data_type=data_type, identifier=identifier
         )
-        os.remove(filename)
+        try:
+            os.remove(filename)
+        except FileNotFoundError as fnfe:
+            print(f"Problem deleting {filename}: {fnfe}")
 
     def write_data_given_data_type_and_identifier(
         self, data_to_write: pd.DataFrame, data_type: str, identifier: str
