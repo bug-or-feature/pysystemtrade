@@ -229,7 +229,7 @@ if __name__ == "__main__":
         "GBP",
         "GOLD_micro",
         "LIVECOW",
-        "MXP",
+        # "MXP",
         "PLAT",
         "RUSSELL",
         "US5",
