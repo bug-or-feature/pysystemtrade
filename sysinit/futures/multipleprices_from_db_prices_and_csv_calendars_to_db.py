@@ -209,32 +209,37 @@ if __name__ == "__main__":
     #     source="single",
     # )
 
-    # BAD: CORN, MXP
+    # BAD: CORN, MXP, NIKKEI
 
-    # ['AEX', 'AUD', 'BITCOIN', 'BOBL', 'BONO', 'BRE', 'BRENT-LAST', 'BTP', 'BUND',
-    # 'BUXL', 'CAD', 'CHF', 'CNH', 'COPPER', 'CORN', 'DAX', 'DJSTX-SMALL', 'DOW',
-    # 'ETHEREUM', 'EU-BASIC', 'EU-DIV30', 'EU-HEALTH', 'EU-OIL', 'EU-TECH', 'EU-TRAVEL',
-    # 'EU-UTILS', 'EUR', 'EURCHF', 'FEEDCOW', 'FTSECHINAA', 'FTSECHINAH', 'FTSETAIWAN',
-    # 'GAS-LAST', 'GASOILINE', 'GAS_US_mini', 'GBP', 'GBPEUR', 'GOLD_micro', 'HEATOIL',
-    # 'IRON', 'JPY', 'KOSDAQ', 'KOSPI', 'KR10', 'LEANHOG', 'LIVECOW', 'MSCIASIA',
-    # 'MSCISING', 'MUMMY', 'MXP', 'NASDAQ_micro', 'NIFTY', 'NIKKEI', 'NZD', 'OAT',
-    # 'PALLAD', 'PLAT', 'REDWHEAT', 'RUSSELL', 'SILVER', 'SOYBEAN', 'SOYMEAL', 'SOYOIL',
-    # 'SP400', 'US10', 'US10U', 'US30', 'US5', 'USIRS10', 'USIRS5ERIS', 'V2X', 'WHEAT',
-    # 'YENEUR']
+    # ['BITCOIN', 'BONO', 'BRE', 'BRENT-LAST', 'CNH', 'DJSTX-SMALL', 'ETHEREUM',
+    # 'EU-BASIC', 'EU-DIV30', 'EU-HEALTH', 'EU-OIL', 'EU-TECH', 'EU-TRAVEL',
+    # 'EU-UTILS', 'FEEDCOW', 'FTSECHINAA', 'FTSETAIWAN', 'GAS-LAST', 'GBPEUR', 'IRON',
+    # 'KOSDAQ', 'KOSPI', 'KR10', 'MSCIASIA', 'MUMMY', 'NIFTY', 'NIKKEI', 'REDWHEAT',
+    # 'SP400', 'US10U', 'USIRS10', 'USIRS5ERIS', 'YENEUR']
+
+    # ['BUXL', 'CHF', 'CORN', 'EUR_micro', 'EURCHF', 'FTSECHINAH', 'GASOILINE', 'GBPEUR',
+    # 'HEATOIL', 'MSCISING', 'OAT', 'SILVER', 'SOYMEAL', 'SOYOIL', 'US10U', 'WHEAT']
 
     for instr in [
-        "AUD",
-        "BOBL",
-        "DAX",
-        "GBP",
-        "GOLD_micro",
-        "LIVECOW",
-        # "MXP",
-        "PLAT",
-        "RUSSELL",
-        "US5",
-        "US10",
+        "AEX",
+        "BTP",
+        "BUND",
+        "CAD",
+        "COPPER-micro",
+        "DOW",
+        "GAS_US_mini",
+        "JPY",
+        "LEANHOG",
+        "MXP",
+        "NASDAQ_micro",
+        "NZD",
+        "PALLAD",
+        "SOYBEAN_mini",
+        "SP500_micro",
+        "US30",
+        "V2X",
     ]:
+        print(f"Starting multiple for {instr}")
         process_multiple_prices_single_instrument(
             instrument_code=instr,
             csv_multiple_data_path=csv_multiple_data_path,

@@ -77,16 +77,22 @@ if __name__ == "__main__":
     # )
 
     for instr in [
-        "AUD",
-        "BOBL",
-        "DAX",
-        "GBP",
-        "GOLD_micro",
-        "LIVECOW",
-        # "MXP",
-        "PLAT",
-        "RUSSELL",
-        "US5",
-        "US10",
+        "AEX",
+        "BTP",
+        "BUND",
+        "CAD",
+        "COPPER-micro",
+        "DOW",
+        "GAS_US_mini",
+        "JPY",
+        "LEANHOG",
+        "MXP",
+        "NASDAQ_micro",
+        "NZD",
+        "PALLAD",
+        "SOYBEAN_mini",
+        "SP500_micro",
+        "US30",
+        "V2X",
     ]:
         process_adjusted_prices_single_instrument(instr, ADD_TO_CSV=True)
