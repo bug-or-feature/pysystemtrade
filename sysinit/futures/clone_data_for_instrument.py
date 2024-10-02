@@ -26,31 +26,38 @@ def clone_data_for_instrument(
     inverse: bool = False,
     offset: float = 0.0,
     ignore_duplication: bool = False,
+    do_prices: bool = True,
+    do_multiple: bool = True,
+    do_adjusted: bool = True,
 ):
-    clone_prices_per_contract(
-        instrument_from,
-        instrument_to,
-        offset=offset,
-        inverse=inverse,
-        ignore_duplication=ignore_duplication,
-    )
-    if write_to_csv:
-        clone_roll_calendar(instrument_from, instrument_to)
+    if do_prices:
+        clone_prices_per_contract(
+            instrument_from,
+            instrument_to,
+            offset=offset,
+            inverse=inverse,
+            ignore_duplication=ignore_duplication,
+        )
+        if write_to_csv:
+            clone_roll_calendar(instrument_from, instrument_to)
 
-    clone_multiple_prices(
-        instrument_from,
-        instrument_to,
-        write_to_csv=write_to_csv,
-        inverse=inverse,
-        ignore_duplication=ignore_duplication,
-    )
-    clone_adjusted_prices(
-        instrument_from,
-        instrument_to,
-        write_to_csv=write_to_csv,
-        inverse=inverse,
-        ignore_duplication=ignore_duplication,
-    )
+    if do_multiple:
+        clone_multiple_prices(
+            instrument_from,
+            instrument_to,
+            write_to_csv=write_to_csv,
+            inverse=inverse,
+            ignore_duplication=ignore_duplication,
+        )
+
+    if do_adjusted:
+        clone_adjusted_prices(
+            instrument_from,
+            instrument_to,
+            write_to_csv=write_to_csv,
+            inverse=inverse,
+            ignore_duplication=ignore_duplication,
+        )
 
 
 def clone_prices_per_contract(

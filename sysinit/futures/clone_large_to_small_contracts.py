@@ -3,7 +3,7 @@ from sysinit.futures.clone_data_for_instrument import clone_data_for_instrument
 
 # format is 'from' = 'to'
 mapping_dict = dict(
-    COPPER="COPPER_micro",
+    COPPER="COPPER-micro",
     CRUDE_W="CRUDE_W_micro",
     EUR="EUR_micro",
     GAS_US="GAS_US_mini",
@@ -13,6 +13,7 @@ mapping_dict = dict(
     NASDAQ="NASDAQ_micro",
     SOYBEAN="SOYBEAN_mini",
     SP500="SP500_micro",
+    US30U="US30",
 )
 
 
