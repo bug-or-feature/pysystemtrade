@@ -79,6 +79,20 @@ class rollCalendar(pd.DataFrame):
 
         return roll_calendar_object
 
+    @classmethod
+    def create_approx_from_prices(
+        rollCalendar,
+        dict_of_futures_contract_prices: dictFuturesContractFinalPrices,
+        roll_parameters_object: rollParameters,
+    ):
+        """
+        :param dict_of_futures_contract_prices: dict, keys are contract date ids 'yyyymmdd'
+        :param roll_parameters_object: roll parameters specific to this instrument
+        """
+        return generate_approximate_calendar(
+            roll_parameters_object, dict_of_futures_contract_prices
+        )
+
     def check_if_date_index_monotonic(self) -> bool:
         if not self.index._is_strictly_monotonic_increasing:
             print(
