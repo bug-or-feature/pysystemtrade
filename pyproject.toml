@@ -107,6 +107,6 @@ pst-orders = "sysproduction.run_strategy_order_generator:run_strategy_order_gene
 pst-clean = "sysproduction.run_cleaners:run_cleaners"
 pst-backup = "sysproduction.run_backups:run_backups"
 pst-reports = "sysproduction.run_reports:run_reports"
-pst-ighandler = "sysproduction.ig_handler:run_ig_handler_weekday"
+pst-ighandler = "sysproduction.ig_handlers:run_ig_handler_weekday"
 # pst-slippage = "sysproduction.update_slippage:update_slippage"
 # "pst-startup = sysproduction.startup:startup"
