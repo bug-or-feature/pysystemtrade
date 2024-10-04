@@ -19,6 +19,7 @@ from syscore.fileutils import write_list_of_lists_as_html_table_in_file
 from syscore.dateutils import (
     SECONDS_PER_DAY,
     date_as_short_pattern_or_question_if_missing,
+    ISO_DATE_FORMAT,
 )
 
 from syscore.constants import (
@@ -335,10 +336,14 @@ class controlProcess(object):
     def as_printable_dict(self) -> dict:
         run_string = self.running_mode_str
         return dict(
-            start=date_as_short_pattern_or_question_if_missing(self.last_start_time),
-            end=date_as_short_pattern_or_question_if_missing(self.last_end_time),
+            start=date_as_short_pattern_or_question_if_missing(
+                self.last_start_time, date_format=ISO_DATE_FORMAT
+            ),
+            end=date_as_short_pattern_or_question_if_missing(
+                self.last_end_time, date_format=ISO_DATE_FORMAT
+            ),
             status=self.status,
-            PID=self.process_id,
+            PID=int(self.process_id),
             running=run_string,
         )
 

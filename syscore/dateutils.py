@@ -495,6 +495,7 @@ def contract_month_from_number(month_number: int) -> str:
 Convert date into a decimal, and back again
 """
 LONG_DATE_FORMAT = "%Y%m%d%H%M%S.%f"
+ISO_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 CONVERSION_FACTOR = 10000
 
 
@@ -542,7 +543,7 @@ MISSING_STRING_PATTERN = "     ???      "
 
 
 def date_as_short_pattern_or_question_if_missing(
-    last_run_or_heartbeat: datetime.datetime,
+    last_run_or_heartbeat: datetime.datetime, date_format=SHORT_DATE_PATTERN
 ) -> str:
     """
     Check time matches at one second resolution (good enough)
@@ -553,7 +554,7 @@ def date_as_short_pattern_or_question_if_missing(
     '     ???      '
     """
     if isinstance(last_run_or_heartbeat, datetime.datetime):
-        last_run_or_heartbeat = last_run_or_heartbeat.strftime(SHORT_DATE_PATTERN)
+        last_run_or_heartbeat = last_run_or_heartbeat.strftime(date_format)
     else:
         last_run_or_heartbeat = MISSING_STRING_PATTERN
 
