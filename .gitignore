@@ -18,13 +18,25 @@ restats
 .idea
 .project
 .pydevproject
+notes/
 
-# pyenv
+# env
 .python-version
-
-# venv
 env/
 venv/
+.venv/
+.env
+
 
 # libreoffice
 .~lock.*
+
+# reports
+reports/
+site/reports/_tempfile_*
+
+.DS_Store
+
+# backups
+data/backups_csv/
+data/mongo_dump/
