@@ -4,7 +4,7 @@ import pandas as pd
 from syscore.exceptions import missingData
 from syscore.pandas.pdutils import check_df_equals, check_ts_equals
 from syscore.dateutils import CALENDAR_DAYS_IN_YEAR
-from syscore.dateutils import DAILY_PRICE_FREQ, HOURLY_FREQ
+from syscore.dateutils import DAILY_PRICE_FREQ, HOURLY_FREQ, MIXED_FREQ, Frequency
 from syscore.interactive.input import true_if_answer_is_yes
 
 from sysdata.data_blob import dataBlob
@@ -544,5 +544,25 @@ def backup_csv_dump(data):
     os.system("rsync -av %s %s" % (source_path, destination_path))
 
 
+def backup_arctic_to_parquet_single_instrument(instr_code):
+    data = get_data_blob("backup_arctic_to_parquet")
+    for instrument_code in [instr_code]:
+        backup_futures_contract_prices_for_instrument_to_parquet(
+            data=data, instrument_code=instrument_code
+        )
+
+
+def backup_arctic_to_parquet_single_contract(instr_code, date_str):
+    data = get_data_blob("backup_arctic_to_parquet")
+    contract = futuresContract(instr_code, date_str)
+    backup_futures_contract_prices_for_contract_to_parquet(
+        data=data,
+        futures_contract=contract,
+    )
+
+
 if __name__ == "__main__":
     backup_arctic_to_parquet()
+
+    # backup_arctic_to_parquet_single_instrument("GOLD")
+    # backup_arctic_to_parquet_single_contract("GOLD", "20231000")
