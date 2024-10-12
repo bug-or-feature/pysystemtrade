@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<h2 class="mt-5">Reports</h2>
+<ul>
+    {% for report in reports %}
+        <li><a href="reports/{{ report[1] }}">{{ report [0] }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
