@@ -1,0 +1,470 @@
+#YAML
+#start_date: 2000-10-01
+#
+# Raw data
+#
+#
+# Trading rules
+#
+volatility_calculation:
+  func: "sysquant.estimators.vol.mixed_vol_calc"
+  days: 35
+  min_periods: 10
+  vol_abs_min: 0.0000000001
+  slow_vol_years: 20
+  proportion_of_slow_vol: 0.35
+  backfill: True
+#
+trading_rules:
+  breakout10:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 10
+  breakout20:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 20
+  breakout40:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 40
+  breakout80:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 80
+  breakout160:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 160
+  breakout320:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 320
+  relmomentum10:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 10
+  relmomentum20:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 20
+  relmomentum40:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 40
+  relmomentum80:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 80
+  mrinasset1000:
+     function: systems.provided.rules.cs_mr.cross_sectional_mean_reversion
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 1000
+  carry10:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 10
+  carry30:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 30
+  carry60:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 60
+  carry125:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 125
+  assettrend2:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+  assettrend4:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  assettrend8:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  assettrend16:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  assettrend32:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  assettrend64:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+  normmom2:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+  normmom4:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  normmom8:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  normmom16:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  normmom32:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  normmom64:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+  momentum4:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  momentum8:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  momentum16:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  momentum32:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  momentum64:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+  relcarry:
+     function: systems.provided.rules.carry.relative_carry
+     data:
+          - "rawdata.smoothed_carry"
+          - "rawdata.median_carry_for_asset_class"
+#  skewabs365:
+#     function: systems.provided.rules.factors.factor_trading_rule
+#     data:
+#          - 'rawdata.get_demeanded_factor_value'
+#     other_args:
+#          smooth: 90
+#          _factor_name: 'neg_skew'
+#          _demean_method: 'historic_average_factor_value_all_assets'
+#          _lookback_days: 365
+#  skewabs180:
+#     function: systems.provided.rules.factors.factor_trading_rule
+#     data:
+#          - 'rawdata.get_demeanded_factor_value'
+#     other_args:
+#          smooth: 45
+#          _factor_name: 'neg_skew'
+#          _demean_method: 'historic_average_factor_value_all_assets'
+#          _lookback_days: 180
+#  skewrv365:
+#     function: systems.provided.rules.factors.factor_trading_rule
+#     data:
+#          - 'rawdata.get_demeanded_factor_value'
+#     other_args:
+#          smooth: 90
+#          _factor_name: 'neg_skew'
+#          _demean_method: 'average_factor_value_in_asset_class_for_instrument'
+#          _lookback_days: 365
+#  skewrv180:
+#     function: systems.provided.rules.factors.factor_trading_rule
+#     data:
+#          - 'rawdata.get_demeanded_factor_value'
+#     other_args:
+#          smooth: 45
+#          _factor_name: 'neg_skew'
+#          _demean_method: 'average_factor_value_in_asset_class_for_instrument'
+#          _lookback_days: 180
+  accel16:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 16
+  accel32:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 32
+  accel64:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 64
+#
+forecast_cap: 20.0
+#
+forecast_scalars:
+  accel16: 7.86802102573748
+  accel32: 5.547484922520971
+  accel64: 3.887147148674881
+  assettrend16: 12.835521498901914
+  assettrend2: 38.514331706420066
+  assettrend32: 8.097209931590616
+  assettrend4: 27.442727008760095
+  assettrend64: 5.074369560505943
+  assettrend8: 19.169346177114967
+  breakout10: 0.7036454848651447
+  breakout160: 0.8560686998653229
+  breakout20: 0.7912104916660275
+  breakout320: 0.8470607606658422
+  breakout40: 0.8228827089130223
+  breakout80: 0.8428621358750049
+  carry10: 25.684532200115743
+  carry125: 28.95612745977779
+  carry30: 26.33530495725045
+  carry60: 27.142665417401588
+  momentum16: 4.996420670869479
+  momentum32: 3.379567212094285
+  momentum4: 10.489940087311673
+  momentum64: 2.308321458685331
+  momentum8: 7.273849637166648
+  mrinasset1000: 618.9200414150732
+  normmom16: 13.01826407748301
+  normmom2: 41.990080578559194
+  normmom32: 9.024668697129375
+  normmom4: 28.395601619236555
+  normmom64: 6.2147639208553285
+  normmom8: 19.212335026905972
+  relcarry: 39.20418410226728
+  relmomentum10: 71.01259612508551
+  relmomentum20: 100.07584203154569
+  relmomentum40: 136.61960891767671
+  relmomentum80: 185.44722649539338
+#
+# forecast combination
+#
+# Capital correction
+#
+percentage_vol_target: 25.0
+notional_trading_capital: 100000
+base_currency: "USD"
+#
+# Portfolio creation
+#
+
+forecast_weights:
+  auto_weight_from_grouping:
+    parameters:
+      use_approx_DM: False
+      apply_forecast_post_ceiling_cost_SR_before_weighting: True
+    groups:
+      convergent:
+        weight: 0.4
+        mean_reversion:
+          weight: 0.5
+          mrinasset1000: 1.0
+#        skew:
+#          weight:  0.3333
+#          skewabs180: 0.25
+#          skewabs365: 0.25
+#          skewrv180: 0.25
+#          skewrv365: 0.25
+        carry:
+          weight: 0.5
+          purecarry:
+            weight: 0.6
+            carry10: 0.25
+            carry125: 0.25
+            carry30: 0.25
+            carry60: 0.25
+          relcarry:
+            weight: 0.4
+            relcarry: 1.0
+      divergent:
+        weight: 0.6
+        speed1:
+          weight: 0.1
+          relmomentum:
+            weight: 0.4
+            relmomentum10: 1.0
+          trend:
+            weight: 0.6
+            breakout10: 0.25
+            assettrend2: 0.25
+            normmom2: 0.25
+            momentum4: 0.25
+        speed2:
+          weight: 0.18
+          accel:
+            weight: 0.3
+            accel16: 1.0
+          relmomentum:
+            weight: 0.3
+            relmomentum20: 1.0
+          trend:
+            weight: 0.4
+            breakout20: 0.25
+            assettrend4: 0.25
+            normmom4: 0.25
+            momentum8: 0.25
+        speed3:
+          weight: 0.18
+          accel:
+            weight: 0.3
+            accel32: 1.0
+          relmomentum:
+            weight: 0.3
+            relmomentum40: 1.0
+          trend:
+            weight: 0.4
+            breakout40: 0.25
+            assettrend8: 0.25
+            normmom8: 0.25
+            momentum16: 0.25
+        speed4:
+          weight: 0.18
+          accel:
+            weight: 0.3
+            accel64: 1.0
+          relmomentum:
+            weight: 0.3
+            relmomentum80: 1.0
+          trend:
+            weight: 0.4
+            breakout80: 0.25
+            assettrend16: 0.25
+            normmom16: 0.25
+            momentum32: 0.25
+        speed5:
+          weight: 0.18
+          trend:
+            weight: 1.0
+            breakout160: 0.25
+            assettrend32: 0.25
+            normmom32: 0.25
+            momentum64: 0.25
+        speed6:
+          weight: 0.18
+          trend:
+            weight: 1.0
+            normmom64: 0.3333
+            assettrend64: 0.3333
+            breakout320: 0.3333
+
+forecast_div_multiplier: 1.90
+
+instrument_div_multiplier: 2.3
+
+#instrument_weights: TODO
+
+#
+risk_overlay:
+  max_risk_fraction_normal_risk: 1.4
+  max_risk_fraction_stdev_risk: 3.6
+  max_risk_limit_sum_abs_risk: 3.4
+  max_risk_leverage: 13.0
+
+# Set this to 0.13 to enforce the speed limit even for fixed weights or
+#   regardless of what an estimator does
+forecast_post_ceiling_cost_SR: 0.13
+
+
+
+
