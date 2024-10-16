@@ -452,37 +452,52 @@ forecast_div_multiplier: 1.90
 
 instrument_div_multiplier: 2.3
 
-#instrument_weights: TODO
-
-instruments:
-  - AEX
-  - AUD_micro
-  - BOBL
-  - BTP
-  - BUND
-  - CAD
-  - COPPER-micro
-  - DAX
-  - DOW
-  - GAS_US_mini
-  - GBP
-  - GOLD_micro
-  - JPY_mini
-  - LEANHOG
-  - LIVECOW
-  - MXP
-  - NASDAQ_micro
-  - NZD
-  - PALLAD
-  - PLAT
-  - RUSSELL
-  - SOYBEAN_mini
-  - SP500_micro
-  - US10
-  - US30
-  - US5
-  - V2X
-
+instrument_weights:
+  auto_weight_from_grouping:
+    parameters:
+      use_approx_DM: True
+    groups:
+      ags:
+        weight: 0.143
+        LEANHOG: 0.333
+        LIVECOW: 0.333
+        SOYBEAN_mini: 0.333
+      rates:
+        weight: 0.143
+        BOBL: 0.1667
+        BTP: 0.1667
+        BUND: 0.1667
+        US10: 0.1667
+        US30: 0.1667
+        US5: 0.1667
+      equity:
+        weight: 0.143
+        AEX: 0.2
+        DAX: 0.2
+        DOW: 0.2
+        NASDAQ_micro: 0.2
+        RUSSELL: 0.2
+        SP500_micro: 0.2
+      fx:
+        weight: 0.143
+        AUD_micro: 0.2
+        CAD: 0.2
+        GBP: 0.2
+        JPY_mini: 0.2
+        MXP: 0.2
+        NZD: 0.2
+      metals:
+        weight: 0.143
+        COPPER-micro: 0.25
+        GOLD_micro: 0.25
+        PALLAD: 0.25
+        PLAT: 0.25
+      energies:
+        weight: 0.143
+        GAS_US_mini: 1.0
+      vol:
+        weight: 0.143
+        V2X: 1.0
 
 #
 risk_overlay:
