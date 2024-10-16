@@ -561,8 +561,33 @@ def backup_arctic_to_parquet_single_contract(instr_code, date_str):
     )
 
 
+def align_parquet_contracts():
+    data = get_data_blob("backup_arctic_to_parquet")
+    valid_instruments = data.parquet_futures_adjusted_prices.get_list_of_instruments()
+
+    all_instruments = (
+        data.parquet_futures_contract_price.get_list_of_instrument_codes_with_merged_price_data()
+    )
+    # data.parquet_futures_contract_price.get_list_of_instrument_codes_with_price_data_at_frequency(
+    #     DAILY_PRICE_FREQ
+    # )
+
+    for instr in all_instruments:
+        if instr in valid_instruments:
+            print(f"Ignoring {instr} - we want it")
+            continue
+        else:
+            for freq in [DAILY_PRICE_FREQ, HOURLY_FREQ, MIXED_FREQ]:
+                print(f"Attempting to delete prices for {instr} at frequency {freq}")
+                data.parquet_futures_contract_price.delete_prices_at_frequency_for_instrument_code(
+                    instr, frequency=freq, areyousure=True
+                )
+
+
 if __name__ == "__main__":
-    backup_arctic_to_parquet()
+    # backup_arctic_to_parquet()
 
     # backup_arctic_to_parquet_single_instrument("GOLD")
     # backup_arctic_to_parquet_single_contract("GOLD", "20231000")
+
+    align_parquet_contracts()
