@@ -454,6 +454,36 @@ instrument_div_multiplier: 2.3
 
 #instrument_weights: TODO
 
+instruments:
+  - AEX
+  - AUD_micro
+  - BOBL
+  - BTP
+  - BUND
+  - CAD
+  - COPPER-micro
+  - DAX
+  - DOW
+  - GAS_US_mini
+  - GBP
+  - GOLD_micro
+  - JPY_mini
+  - LEANHOG
+  - LIVECOW
+  - MXP
+  - NASDAQ_micro
+  - NZD
+  - PALLAD
+  - PLAT
+  - RUSSELL
+  - SOYBEAN_mini
+  - SP500_micro
+  - US10
+  - US30
+  - US5
+  - V2X
+
+
 #
 risk_overlay:
   max_risk_fraction_normal_risk: 1.4
