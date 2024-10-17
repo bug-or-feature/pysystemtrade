@@ -450,7 +450,7 @@ forecast_weights:
 
 forecast_div_multiplier: 1.90
 
-instrument_div_multiplier: 2.3
+instrument_div_multiplier: 2.5
 
 instrument_weights:
   auto_weight_from_grouping:
@@ -459,45 +459,104 @@ instrument_weights:
     groups:
       ags:
         weight: 0.143
-        LEANHOG: 0.333
-        LIVECOW: 0.333
-        SOYBEAN_mini: 0.333
+        grain:
+          weight: 0.333
+          COCOA: 0.09
+          COFFEE: 0.09
+          CANOLA: 0.09
+          CORN: 0.09
+          OATIES: 0.09
+          REDWHEAT: 0.09
+          RICE: 0.09
+          SOYBEAN_mini: 0.09
+          SOYMEAL: 0.09
+          SOYOIL: 0.09
+          WHEAT:  0.09
+        meat:
+          weight: 0.333
+          FEEDCOW: 0.333
+          LEANHOG: 0.333
+          LIVECOW: 0.333
+        soft:
+          weight: 0.333
+          COTTON2: 0.1667
+          LUMBER-new: 0.1667
+          MILK: 0.1667
+          OJ: 0.1667
+          ROBUSTA: 0.1667
+          SUGAR11: 0.1667
       rates:
         weight: 0.143
-        BOBL: 0.1667
-        BTP: 0.1667
-        BUND: 0.1667
-        US10: 0.1667
-        US30: 0.1667
-        US5: 0.1667
+        Americas:
+          weight: 0.4
+          SOFR: 0.143
+          US10U: 0.143
+          US2: 0.143
+          US20: 0.143
+          US10: 0.143
+          US30: 0.143
+          US5: 0.143
+        Asia:
+          weight: 0.2
+          JGB-SGX-mini: 1.0
+        EMEA:
+          weight: 0.4
+          BOBL: 0.143
+          BTP: 0.143
+          BUND: 0.143
+          BUXL: 0.143
+          EURIBOR-ICE: 0.143
+          OAT: 0.143
+          SHATZ: 0.143
       equity:
         weight: 0.143
-        AEX: 0.2
-        DAX: 0.2
-        DOW: 0.2
-        NASDAQ_micro: 0.2
-        RUSSELL: 0.2
-        SP500_micro: 0.2
+        AEX: 0.09
+        EUROSTX: 0.09
+        CAC: 0.09
+        DAX: 0.09
+        DOW: 0.09
+        NASDAQ_micro: 0.09
+        NIKKEI: 0.09
+        RUSSELL: 0.09
+        SMI: 0.09
+        SP400: 0.09
+        SP500_micro: 0.09
       fx:
         weight: 0.143
-        AUD_micro: 0.2
-        CAD: 0.2
-        GBP: 0.2
-        JPY_mini: 0.2
-        MXP: 0.2
-        NZD: 0.2
+        AUD_micro: 0.111
+        CAD: 0.111
+        CHF: 0.111
+        DX: 0.111
+        EUR_micro: 0.111
+        GBP: 0.111
+        JPY_mini: 0.111
+        MXP: 0.111
+        NZD: 0.111
       metals:
         weight: 0.143
-        COPPER-micro: 0.25
-        GOLD_micro: 0.25
-        PALLAD: 0.25
-        PLAT: 0.25
+        BITCOIN: 0.1667
+        COPPER-micro: 0.1667
+        GOLD_micro: 0.1667
+        PALLAD: 0.1667
+        PLAT: 0.1667
+        SILVER: 0.1667
       energies:
         weight: 0.143
-        GAS_US_mini: 1.0
+        CRUDE_W_micro: 0.2
+        GASOIL: 0.2
+        GASOLINE: 0.2
+        GAS_US_mini: 0.2
+        HEATOIL: 0.2
       vol:
         weight: 0.143
-        V2X: 1.0
+        V2X: 0.5
+        VIX_mini: 0.5
+
+# Total: 53
+# 1/6: 0.1667
+# 1/7: 0.143
+# 1/9: 0.111
+# 1/11: 0.09
 
 #
 risk_overlay:
