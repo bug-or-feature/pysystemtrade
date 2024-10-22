@@ -8,6 +8,7 @@ from sysdata.mongodb.mongo_spread_costs import mongoSpreadCostData
 from sysdata.csv.csv_spread_costs import csvSpreadCostData
 from sysdata.futures.spread_costs import spreadCostData
 from sysdata.data_blob import dataBlob
+from sysdata.csv.csv_adjusted_prices import csvFuturesAdjustedPricesData
 
 
 def copy_spread_costs_from_csv_to_mongo(data: dataBlob):
@@ -120,7 +121,19 @@ def process_deleted_instruments(data_out: spreadCostData, deleted_instruments: l
         data_out.delete_spread_cost(instrument_code)
 
 
+def check_spreads():
+    adj = csvFuturesAdjustedPricesData()
+    spreads = csvSpreadCostData()
+    for instr in adj.get_list_of_instruments():
+        try:
+            spread = spreads.get_spread_cost(instr)
+        except:
+            print(f"Spread missing for {instr}")
+        # print(f"Spread for {instr}: {spread}")
+
+
 if __name__ == "__main__":
-    print("Transfer instrument config from csv to mongo DB")
+    # print("Transfer instrument config from csv to mongo DB")
     # modify flags as required
-    copy_spread_costs_from_csv_to_mongo(dataBlob())
+    # copy_spread_costs_from_csv_to_mongo(dataBlob())
+    check_spreads()

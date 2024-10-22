@@ -21,6 +21,7 @@ BARCHART_CONFIG = ConfigCsvFuturesPrices(
         OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
     ),
 )
+BACKUP_CONFIG = ConfigCsvFuturesPrices(input_skiprows=0, input_skipfooter=1)
 
 
 def init_db_with_split_freq_csv_prices(
@@ -162,6 +163,61 @@ def init_db_with_split_freq_csv_prices_for_code(
     print(f"These daily contracts are short: {too_short}")
 
 
+def init_db_with_daily_csv_prices_for_contract(
+    instrument_code: str,
+    contract_date_str: str,
+    datapath: str,
+    csv_config=arg_not_supplied,
+    ignore_duplication: bool = True,
+):
+    print(f"Importing split freq csv prices for {instrument_code}/{contract_date_str}")
+    csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
+
+    print(f"Getting daily split freq .csv prices may take some time")
+    daily_dict = csv_prices.get_prices_at_frequency_for_instrument(
+        instrument_code,
+        frequency=DAILY_PRICE_FREQ,
+    )
+
+    contract = futuresContract(instrument_code, contract_date_str)
+    print(f"Contract object is {str(contract)}")
+
+    daily = daily_dict[contract_date_str]
+    if len(daily):
+        write_prices_for_contract_at_frequency(
+            contract, daily, DAILY_PRICE_FREQ, ignore_duplication=ignore_duplication
+        )
+        write_prices_for_contract_at_frequency(
+            contract, daily, MIXED_FREQ, ignore_duplication=ignore_duplication
+        )
+
+
+def init_db_with_mixed_csv_prices_for_contract(
+    instrument_code: str,
+    contract_date_str: str,
+    datapath: str,
+    csv_config=arg_not_supplied,
+    ignore_duplication: bool = True,
+):
+    print(f"Importing split freq csv prices for {instrument_code}/{contract_date_str}")
+    csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
+
+    print(f"Getting daily split freq .csv prices may take some time")
+    mixed_dict = csv_prices.get_prices_at_frequency_for_instrument(
+        instrument_code,
+        frequency=MIXED_FREQ,
+    )
+
+    contract = futuresContract(instrument_code, contract_date_str)
+    print(f"Contract object is {str(contract)}")
+
+    mixed = mixed_dict[contract_date_str]
+    if len(mixed):
+        write_prices_for_contract_at_frequency(
+            contract, mixed, MIXED_FREQ, ignore_duplication=ignore_duplication
+        )
+
+
 def write_prices_for_contract_at_frequency(
     contract, prices, frequency, ignore_duplication=False
 ):
@@ -181,15 +237,27 @@ def write_prices_for_contract_at_frequency(
 
 
 if __name__ == "__main__":
-    input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # modify flags as required
     # datapath = "*** NEED TO DEFINE A DATAPATH***"
     # init_db_with_split_freq_csv_prices(datapath)
+
+    # path to prod FSB off-site backup
+    # /Volumes/backup_share/pst_prod/csv/backups_csv/contract_prices
 
     datapath = resolve_path_and_filename_for_package(
         get_production_config().get_element_or_default("barchart_path", None)
     )
 
-    init_db_with_split_freq_csv_prices_for_code(
-        "MXP", datapath, csv_config=BARCHART_CONFIG
+    datapath = "/Users/ageach/Documents/backups_csv/contract_prices"
+
+    # init_db_with_split_freq_csv_prices_for_code(
+    #     "MXP", datapath, csv_config=BARCHART_CONFIG
+    # )
+
+    init_db_with_daily_csv_prices_for_contract(
+        "EURIBOR-ICE", "20261200", datapath, csv_config=BARCHART_CONFIG
     )
+    # init_db_with_mixed_csv_prices_for_contract(
+    #     "EURIBOR-ICE", "20261200", datapath, csv_config=BACKUP_CONFIG
+    # )

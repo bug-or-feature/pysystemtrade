@@ -1,5 +1,6 @@
 from collections import namedtuple
 from copy import copy
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -67,6 +68,12 @@ class _rollCalendarRow(dict):
             self["next_contract"] = next_contract
             self["carry_contract"] = carry_contract
 
+    def __repr__(self) -> str:
+        return (
+            f"{self[INDEX_NAME]},{self['current_contract']},{self['next_contract']},"
+            f"{self['carry_contract']}"
+        )
+
     @property
     def roll_date(self):
         return self[INDEX_NAME]
@@ -107,7 +114,7 @@ def _create_approx_calendar_from_earliest_contract(
 
         roll_calendar_as_list.append(new_row)
         current_contract = copy(next_contract)
-        print(current_contract)
+        # print(current_contract)
 
     roll_calendar = roll_calendar_as_list.to_pd_df()
 
@@ -282,7 +289,8 @@ def _adjust_row_of_approx_roll_calendar(
             set_of_prices,
             avoid_date=date_to_avoid,
         )
-    except LookupError:
+    except LookupError as le:
+        print(le)
         return _bad_row
 
     adjusted_row = _get_adjusted_row(local_row_data, adjusted_roll_date)
@@ -430,9 +438,18 @@ def _find_best_matching_roll_date(
     paired_prices = _required_paired_prices(set_of_prices)
     valid_dates = _valid_dates_from_paired_prices(paired_prices, avoid_date)
 
+    # TODO report approx roll date, and which series is missing price(s)
     if len(valid_dates) == 0:
         # no matching prices
-        raise LookupError("No date with a matching price")
+
+        before = roll_date - datetime.timedelta(days=5)
+        after = roll_date + datetime.timedelta(days=5)
+        around = paired_prices[before:after]
+
+        raise LookupError(
+            f"Expecting to find matching prices around {roll_date}, "
+            f"but none found. Nearby data:\n{around}"
+        )
 
     adjusted_date = _find_closest_valid_date_to_approx_roll_date(valid_dates, roll_date)
 
@@ -525,11 +542,11 @@ def _print_adjustment_message(
     local_row_data: localRowData, adjusted_row: _rollCalendarRow
 ):
     print(
-        "Changed date from %s to %s for row with contracts %s"
+        "Changed date from %s to %s for '%s'"
         % (
             str(local_row_data.current_row.name),
             str(adjusted_row.roll_date),
-            str(adjusted_row.items()),
+            str(adjusted_row),
         )
     )
 

@@ -209,35 +209,9 @@ if __name__ == "__main__":
     #     source="single",
     # )
 
-    # BAD: CORN, MXP, NIKKEI
-
-    # ['BITCOIN', 'BONO', 'BRE', 'BRENT-LAST', 'CNH', 'DJSTX-SMALL', 'ETHEREUM',
-    # 'EU-BASIC', 'EU-DIV30', 'EU-HEALTH', 'EU-OIL', 'EU-TECH', 'EU-TRAVEL',
-    # 'EU-UTILS', 'FEEDCOW', 'FTSECHINAA', 'FTSETAIWAN', 'GAS-LAST', 'GBPEUR', 'IRON',
-    # 'KOSDAQ', 'KOSPI', 'KR10', 'MSCIASIA', 'MUMMY', 'NIFTY', 'NIKKEI', 'REDWHEAT',
-    # 'SP400', 'US10U', 'USIRS10', 'USIRS5ERIS', 'YENEUR']
-
-    # ['BUXL', 'CHF', 'CORN', 'EUR_micro', 'EURCHF', 'FTSECHINAH', 'GASOILINE', 'GBPEUR',
-    # 'HEATOIL', 'MSCISING', 'OAT', 'SILVER', 'SOYMEAL', 'SOYOIL', 'US10U', 'WHEAT']
-
+    # "EURIBOR-ICE",
     for instr in [
-        "AEX",
-        "BTP",
-        "BUND",
-        "CAD",
-        "COPPER-micro",
-        "DOW",
-        "GAS_US_mini",
-        "JPY",
-        "LEANHOG",
-        "MXP",
-        "NASDAQ_micro",
-        "NZD",
-        "PALLAD",
-        "SOYBEAN_mini",
-        "SP500_micro",
-        "US30",
-        "V2X",
+        "CRUDE_W_micro",
     ]:
         print(f"Starting multiple for {instr}")
         process_multiple_prices_single_instrument(
