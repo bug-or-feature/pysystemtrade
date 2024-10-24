@@ -479,75 +479,108 @@ instrument_weights:
           LIVECOW: 0.333
         soft:
           weight: 0.333
-          COTTON2: 0.1667
-          LUMBER-new: 0.1667
-          MILK: 0.1667
-          OJ: 0.1667
-          ROBUSTA: 0.1667
-          SUGAR11: 0.1667
+          COTTON2: 0.143
+          LUMBER-new: 0.143
+          MILK: 0.143
+          OJ: 0.143
+          ROBUSTA: 0.143
+          SUGAR11: 0.143
+          SUGAR_WHITE: 0.143
       rates:
         weight: 0.143
         Americas:
           weight: 0.4
-          SOFR: 0.143
-          US10U: 0.143
-          US2: 0.143
-          US20: 0.143
-          US10: 0.143
-          US30: 0.143
-          US5: 0.143
+          govvie:
+            weight: 0.6
+            US10U: 0.143
+            US2: 0.143
+            US20: 0.143
+            US10: 0.143
+            US30: 0.143
+            US5: 0.143
+          STIR:
+            weight: 0.4
+            FED: 0.5
+            SOFR: 0.5
         Asia:
           weight: 0.2
           JGB-SGX-mini: 1.0
         EMEA:
           weight: 0.4
-          BOBL: 0.143
-          BTP: 0.143
-          BUND: 0.143
-          BUXL: 0.143
-          EURIBOR-ICE: 0.143
-          OAT: 0.143
-          SHATZ: 0.143
+          BOBL: 0.125
+          BTP: 0.125
+          BUND: 0.125
+          BUXL: 0.125
+          EURIBOR-ICE: 0.125
+          GILT: 0.125
+          OAT: 0.125
+          SHATZ: 0.125
       equity:
         weight: 0.143
-        AEX: 0.09
-        EUROSTX: 0.09
-        CAC: 0.09
-        DAX: 0.09
-        DOW: 0.09
-        NASDAQ_micro: 0.09
-        NIKKEI: 0.09
-        RUSSELL: 0.09
-        SMI: 0.09
-        SP400: 0.09
-        SP500_micro: 0.09
+        Americas:
+          weight: 0.333
+          DOW: 0.2
+          NASDAQ_micro: 0.2
+          RUSSELL: 0.2
+          SP400: 0.2
+          SP500_micro: 0.2
+        Asia:
+          weight: 0.333
+          FTSECHINAH: 0.1667
+          FTSETAIWAN: 0.1667
+          KOSPI_mini: 0.1667
+          MSCISING: 0.1667
+          NIKKEI: 0.1667
+          SPI200: 0.1667
+        EMEA:
+          weight: 0.333
+          AEX: 0.1667
+          EUROSTX: 0.1667
+          CAC: 0.1667
+          DAX: 0.1667
+          FTSE100: 0.1667
+          SMI: 0.1667
       fx:
         weight: 0.143
-        AUD_micro: 0.111
-        CAD: 0.111
-        CHF: 0.111
-        DX: 0.111
-        EUR_micro: 0.111
-        GBP: 0.111
-        JPY_mini: 0.111
-        MXP: 0.111
-        NZD: 0.111
+        cross:
+          weight: 0.333
+          GBPEUR: 1.0
+        developed:
+          weight: 0.333
+          AUD_micro: 0.125
+          CAD: 0.125
+          CHF: 0.125
+          DX: 0.125
+          EUR_micro: 0.125
+          GBP: 0.125
+          JPY_mini: 0.125
+          NZD: 0.125
+        em:
+          weight: 0.333
+          BRE: 0.25
+          CNH: 0.25
+          MXP: 0.25
+          ZAR: 0.25
       metals:
         weight: 0.143
-
-        BITCOIN: 0.1667
-        COPPER-micro: 0.1667
-        GOLD_micro: 0.1667
-        PALLAD: 0.1667
-        PLAT: 0.1667
-        SILVER: 0.1667
+        ALUMINIUM: 0.125
+        BITCOIN: 0.125
+        COPPER-micro: 0.125
+        GOLD_micro: 0.125
+        IRON: 0.125
+        PALLAD: 0.125
+        PLAT: 0.125
+        SILVER: 0.125
       energies:
         weight: 0.143
-        CRUDE_W_micro: 0.2
-        GASOIL: 0.2
-        GASOLINE: 0.2
-        GAS_US_mini: 0.2
-        HEATOIL: 0.2
+        BRENT-LAST: 0.125
+        CRUDE_W_micro: 0.125
+        EUA: 0.125
+        GASOIL: 0.125
+        GASOLINE: 0.125
+        GAS-PEN: 0.125
+        GAS_US_mini: 0.125
+        HEATOIL: 0.125
       vol:
         weight: 0.143
         V2X: 0.5
