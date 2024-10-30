@@ -22,7 +22,7 @@ def seed_price_data_from_IB(instrument_code, allow_expired=True):
     ## This returns yyyymmdd strings, where we have the actual expiry date
 
     for contract_date in list_of_contracts:
-        ## We do this slightly tortorous thing because there are energy contracts
+        ## We do this slightly tortuous thing because there are energy contracts
         ## which don't expire in the month they are labelled with
         ## So for example, CRUDE_W 202106 actually expires on 20210528
 
