@@ -466,9 +466,9 @@ def report_price_spike(data: dataBlob, contract_object: futuresContract):
         send_production_mail_msg(
             data, msg, "Price Spike %s" % contract_object.instrument_code
         )
-    except BaseException:
+    except BaseException as be:
         data.log.warning(
-            "Couldn't send email about price spike for %s" % str(contract_object)
+            f"Problem sending price spike email for {contract_object}: {be}"
         )
 
 
