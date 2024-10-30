@@ -1,3 +1,5 @@
+import datetime
+
 from syscore.dateutils import SECONDS_PER_HOUR
 from sysobjects.production.trading_hours.trading_hours import (
     tradingHours,
@@ -15,6 +17,7 @@ from syscore.interactive.menus import (
 )
 from syscore.interactive.display import set_pd_print_options
 from syscore.constants import arg_not_supplied, user_exit
+from syslogdiag.email_via_db_interface import send_production_mail_msg
 from sysobjects.production.roll_state import ALL_ROLL_INSTRUMENTS
 from syscore.exceptions import missingContract, missingData
 from sysexecution.orders.list_of_orders import listOfOrders
@@ -96,7 +99,10 @@ nested_menu_of_options = {
         11: "View contract configuration data",
         12: "View trading hours for all instruments",
     },
-    2: {20: "View stored emails"},
+    2: {
+        20: "View stored emails",
+        21: "Send test email",
+    },
     3: {
         30: "Individual futures contract prices",
         31: "Multiple prices",
@@ -318,6 +324,13 @@ def email_or_print_or_file(report_config):
 def retrieve_emails(data):
     messages = retrieve_and_delete_stored_messages(data)
     print(messages)
+
+
+def send_test_email(data):
+    date_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    send_production_mail_msg(
+        data, "pysystemtrade test email", f"pysystemtrade test email - {date_str}"
+    )
 
 
 # prices
@@ -723,6 +736,7 @@ dict_of_functions = {
     11: view_contract_config,
     12: print_trading_hours_for_all_instruments,
     20: retrieve_emails,
+    21: send_test_email,
     30: individual_prices,
     31: multiple_prices,
     32: adjusted_prices,
