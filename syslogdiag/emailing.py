@@ -20,7 +20,7 @@ def send_mail_file(textfile: str, subject: str):
     msg = MIMEText(fp.read())
     fp.close()
 
-    msg["Subject"] = subject
+    msg["Subject"] = _build_subject(subject)
 
     _send_msg(msg)
 
@@ -35,9 +35,7 @@ class MailType(Enum):
 
 def send_mail_msg(body: str, subject: str, mail_type: MailType = MailType.plain):
     msg = MIMEMultipart()
-    config = get_production_config()
-    prefix = config.get_element_or_default("email_subject_prefix", "")
-    msg["Subject"] = f"{prefix}{subject}"
+    msg["Subject"] = _build_subject(subject)
     msg.attach(MIMEText(body, mail_type))
     _send_msg(msg)
 
@@ -62,7 +60,7 @@ def send_mail_pdfs(preamble: str, filelist: List[str], subject: str):
 
     # Create a text/plain message
     msg = MIMEMultipart()
-    msg["Subject"] = subject
+    msg["Subject"] = _build_subject(subject)
     msg.preamble = preamble
 
     for _file in filelist:
@@ -97,6 +95,12 @@ def _send_msg(msg: MIMEMultipart):
         print(e)
     finally:
         smtp.quit()
+
+
+def _build_subject(subject: str):
+    config = get_production_config()
+    prefix = config.get_element_or_default("email_subject_prefix", "PST")
+    return f"{prefix}: {subject}"
 
 
 def get_email_details():
