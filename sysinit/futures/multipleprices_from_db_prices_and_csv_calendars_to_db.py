@@ -209,9 +209,25 @@ if __name__ == "__main__":
     #     source="single",
     # )
 
-    # "EURIBOR-ICE",
+    # "AUDJPY", "BTP3", "CADJPY", "CHFJPY", "EU-BANKS", "EURCAD", "EURCHF", "EURO600", "FTSE250", "GBPCHF", "GBPJPY", "HANG", "IBEX", "NOK", "OMX-SWE", "SEK", "SONIA3"
     for instr in [
-        "CRUDE_W_micro",
+        "AUDJPY",
+        "BTP3",
+        "CADJPY",
+        "CHFJPY",
+        "EU-BANKS",
+        "EURCAD",
+        "EURCHF",
+        "EURO600",
+        "FTSE250",
+        "GBPCHF",
+        "GBPJPY",
+        "HANG",
+        "IBEX",
+        "NOK",
+        "OMX-SWE",
+        "SEK",
+        "SONIA3",
     ]:
         print(f"Starting multiple for {instr}")
         process_multiple_prices_single_instrument(

@@ -130,8 +130,11 @@ if __name__ == "__main__":
     ## MODIFY DATAPATH IF REQUIRED
     # build_and_write_roll_calendar(instrument_code, output_datapath=arg_not_supplied)
 
-    instrument_code = "CRUDE_W_micro"
+    # AUDJPY BTP3 CADJPY CHFJPY EU-BANKS EURCAD EURCHF EURO600 FTSE250 GBPCHF GBPJPY HANG IBEX NOK OMX-SWE SEK SONIA3
+    instrument_code = "SONIA3"
 
     build_and_write_roll_calendar(
-        instrument_code, output_datapath="data.futures.db_roll_calendars"
+        instrument_code,
+        output_datapath="data.futures.roll_calendars_csv",
+        check_before_writing=False,
     )
