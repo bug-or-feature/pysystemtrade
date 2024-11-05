@@ -8,7 +8,8 @@ from syscore.constants import arg_not_supplied
 from sysdata.csv.csv_adjusted_prices import csvFuturesAdjustedPricesData
 
 from sysobjects.adjusted_prices import futuresAdjustedPrices
-
+from sysproduction.data.prices import get_valid_instrument_code_from_user
+from sysproduction.update_multiple_adjusted_prices import ALL_INSTRUMENTS
 from sysproduction.data.prices import diagPrices
 
 diag_prices = diagPrices()
@@ -71,28 +72,20 @@ def process_adjusted_prices_single_instrument(
 
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    # modify flags and datapath as required
-    # process_adjusted_prices_all_instruments(
-    #     csv_adj_data_path=arg_not_supplied, ADD_TO_DB=True, ADD_TO_CSV=True
-    # )
+    instrument_code = get_valid_instrument_code_from_user(
+        all_code=ALL_INSTRUMENTS, allow_all=True
+    )
 
-    for instr in [
-        "AUDJPY",
-        "BTP3",
-        "CADJPY",
-        "CHFJPY",
-        "EU-BANKS",
-        "EURCAD",
-        "EURCHF",
-        "EURO600",
-        "FTSE250",
-        "GBPCHF",
-        "GBPJPY",
-        "HANG",
-        "IBEX",
-        "NOK",
-        "OMX-SWE",
-        "SEK",
-        "SONIA3",
-    ]:
-        process_adjusted_prices_single_instrument(instr, ADD_TO_CSV=True)
+    if instrument_code == ALL_INSTRUMENTS:
+        # modify flags and datapath as required
+        process_adjusted_prices_all_instruments(
+            ADD_TO_DB=True, ADD_TO_CSV=False, csv_adj_data_path=arg_not_supplied
+        )
+    else:
+        # modify flags and datapath as required
+        process_adjusted_prices_single_instrument(
+            instrument_code,
+            ADD_TO_DB=True,
+            ADD_TO_CSV=False,
+            csv_adj_data_path=arg_not_supplied,
+        )
