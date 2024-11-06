@@ -827,11 +827,8 @@ def robs_traded_instr():  # CNH
 
 if __name__ == "__main__":
     print("Get initial price data from IB")
-    # instrument_code = input("Instrument code? <return to abort> ")
-    # if instrument_code == "":
-    #     exit()
+    instrument_code = input("Instrument code? <return to abort> ")
+    if instrument_code == "":
+        exit()
 
-    instr_list = robs_traded_instr()
-    # for instr in ["KR3", "MXP", "CANOLA"]:
-    for instr in instr_list:
-        seed_price_data_from_IB(instr, allow_expired=True)
+    seed_price_data_from_IB(instrument_code)
