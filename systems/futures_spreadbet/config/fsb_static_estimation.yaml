@@ -15,6 +15,77 @@ volatility_calculation:
 #
 # Trading rules
 trading_rules:
+  breakout10:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 10
+  breakout20:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 20
+  breakout40:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 40
+  breakout80:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 80
+  breakout160:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 160
+  breakout320:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 320
+  relmomentum10:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 10
+  relmomentum20:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 20
+  relmomentum40:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 40
+  relmomentum80:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 80
+  mrinasset1000:
+     function: systems.provided.rules.cs_mr.cross_sectional_mean_reversion
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 1000
   carry10:
      function: systems.provided.rules.carry.carry
      data:
@@ -39,103 +110,48 @@ trading_rules:
          - "rawdata.raw_carry"
      other_args:
          smooth_days: 125
-  momentum4:
-     function: systems.provided.rules.ewmac.ewmac
+  assettrend2:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
      data:
-         - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+  assettrend4:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
      other_args:
          Lfast: 4
          Lslow: 16
-  momentum8:
-     function: systems.provided.rules.ewmac.ewmac
+  assettrend8:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
      data:
-         - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
+         - "rawdata.normalised_price_for_asset_class"
      other_args:
          Lfast: 8
          Lslow: 32
-  momentum16:
-     function: systems.provided.rules.ewmac.ewmac
+  assettrend16:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
      data:
-         - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
+         - "rawdata.normalised_price_for_asset_class"
      other_args:
          Lfast: 16
          Lslow: 64
-  momentum32:
-     function: systems.provided.rules.ewmac.ewmac
+  assettrend32:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
      data:
-         - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
+         - "rawdata.normalised_price_for_asset_class"
      other_args:
          Lfast: 32
          Lslow: 128
-  momentum64:
-     function: systems.provided.rules.ewmac.ewmac
+  assettrend64:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
      data:
-         - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
+         - "rawdata.normalised_price_for_asset_class"
      other_args:
          Lfast: 64
          Lslow: 256
-  accel16:
-    function: systems.provided.rules.accel.accel
-    data:
-         - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-    other_args:
-         Lfast: 16
-  accel32:
-    function: systems.provided.rules.accel.accel
-    data:
-         - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-    other_args:
-         Lfast: 32
-  accel64:
-    function: systems.provided.rules.accel.accel
-    data:
-         - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-    other_args:
-         Lfast: 64
-  breakout10:
-    function: systems.provided.rules.breakout.breakout
-    data:
-      - "rawdata.get_daily_prices"
-    other_args:
-      lookback: 10
-  breakout20:
-    function: systems.provided.rules.breakout.breakout
-    data:
-      - "rawdata.get_daily_prices"
-    other_args:
-      lookback: 20
-  breakout40:
-    function: systems.provided.rules.breakout.breakout
-    data:
-      - "rawdata.get_daily_prices"
-    other_args:
-      lookback: 40
-  breakout80:
-    function: systems.provided.rules.breakout.breakout
-    data:
-      - "rawdata.get_daily_prices"
-    other_args:
-      lookback: 80
-  breakout160:
-    function: systems.provided.rules.breakout.breakout
-    data:
-      - "rawdata.get_daily_prices"
-    other_args:
-      lookback: 160
-  breakout320:
-    function: systems.provided.rules.breakout.breakout
-    data:
-      - "rawdata.get_daily_prices"
-    other_args:
-      lookback: 320
   normmom2:
      function: systems.provided.rules.ewmac.ewmac_calc_vol
      data:
@@ -178,6 +194,108 @@ trading_rules:
      other_args:
          Lfast: 64
          Lslow: 256
+  momentum4:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  momentum8:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  momentum16:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  momentum32:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  momentum64:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+  relcarry:
+     function: systems.provided.rules.carry.relative_carry
+     data:
+          - "rawdata.smoothed_carry"
+          - "rawdata.median_carry_for_asset_class"
+#  skewabs365:
+#     function: systems.provided.rules.factors.factor_trading_rule
+#     data:
+#          - 'rawdata.get_demeanded_factor_value'
+#     other_args:
+#          smooth: 90
+#          _factor_name: 'neg_skew'
+#          _demean_method: 'historic_average_factor_value_all_assets'
+#          _lookback_days: 365
+#  skewabs180:
+#     function: systems.provided.rules.factors.factor_trading_rule
+#     data:
+#          - 'rawdata.get_demeanded_factor_value'
+#     other_args:
+#          smooth: 45
+#          _factor_name: 'neg_skew'
+#          _demean_method: 'historic_average_factor_value_all_assets'
+#          _lookback_days: 180
+#  skewrv365:
+#     function: systems.provided.rules.factors.factor_trading_rule
+#     data:
+#          - 'rawdata.get_demeanded_factor_value'
+#     other_args:
+#          smooth: 90
+#          _factor_name: 'neg_skew'
+#          _demean_method: 'average_factor_value_in_asset_class_for_instrument'
+#          _lookback_days: 365
+#  skewrv180:
+#     function: systems.provided.rules.factors.factor_trading_rule
+#     data:
+#          - 'rawdata.get_demeanded_factor_value'
+#     other_args:
+#          smooth: 45
+#          _factor_name: 'neg_skew'
+#          _demean_method: 'average_factor_value_in_asset_class_for_instrument'
+#          _lookback_days: 180
+  accel16:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 16
+  accel32:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 32
+  accel64:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 64
 #
 forecast_cap: 20.0
 #
@@ -188,7 +306,7 @@ forecast_cap: 20.0
 # Capital correction
 #
 percentage_vol_target: 25.0
-notional_trading_capital: 50000
+notional_trading_capital: 500000
 base_currency: "GBP"
 #
 # Portfolio creation
@@ -207,48 +325,3 @@ risk_overlay:
   max_risk_fraction_stdev_risk: 4.0
   max_risk_limit_sum_abs_risk: 4.0
   max_risk_leverage: 20.0
-#
-# costs and accounting
-multiply_roll_costs_by: 1.0
-#
-# rounding strat
-rounding_strategy: syscore.rounding.SimpleFsbRoundingStrategy
-
-
-exclude_instrument_lists:
-  # ignore_instruments are ignored in backtests
-  # we still collect price data for them in production, do rolls etc
-  # You can override this by modifying the backtest config .yaml file used in either sim or production
-  # If you want to ignore because a duplicate market, use duplicate_instruments
-  # If you want to include in sim data, but not actually trade, use trading_restrictions
-  #
-  # BEST FOR INSTRUMENTS THAT LOOK EXPENSIVE, BUT WHERE WE HAVEN'T GOT ACCURATE DATA YET
-  #
-  # REVIEW REGULARLY AND CHECK THESE INSTRUMENTS AREN'T BETTER ELSEWHERE...
-  ignore_instruments:
-    - EURO600_fsb
-    - JSE40_fsb
-    - LUMBER_fsb
-    - OMXS30_fsb
-    - FTSEAFRICA40_fsb
-    - OMX-SWE_fsb
-
-
-  #
-  # Here we put stuff we can't trade, but for which we still want to bring in prices in sim
-  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
-  # For static strategies, you will probably want to set these to zero instrument weights
-  # In production, things here will be added to the 'reduce_only' list of instruments
-  # NOTE: This will be regionally biased, you will probably want to override this in private_config.yaml
-  #
-  trading_restrictions:
-    - BITCOIN_fsb
-
-  # These are markets that are too expensive or illiquid to actually trade
-  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
-  # For static strategies, you will probably want to set these to zero instrument weights
-  # In production, things here will be added to the 'reduce_only' list of instruments
-  # Run interactive controls to get a list of suggested markets here
-  # To override this list, change in sim .yaml config (sim) and private_config.yaml (production)
-  bad_markets: []
-
