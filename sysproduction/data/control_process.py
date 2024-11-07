@@ -341,6 +341,8 @@ class diagControlProcess(productionDataLayerGeneric):
         process_config_for_item = self.get_process_configuration_for_item_name(
             item_name
         )
+        if process_config_for_item is None:
+            return None
         config_item = process_config_for_item.get(process_name, default)
         if use_config_default and config_item is default:
             config_item = process_config_for_item.get("default", default)
