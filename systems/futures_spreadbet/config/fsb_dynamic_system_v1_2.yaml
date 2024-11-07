@@ -1,12 +1,8 @@
 # YAML
-#start_date: 1990-01-01
+start_date: 2000-01-01
 
 #
-#
-#
-#
 # Raw data
-#
 #
 # Trading rules
 #
@@ -183,7 +179,6 @@ trading_rules:
      other_args:
          Lfast: 64
          Lslow: 256
-
 #
 forecast_cap: 20.0
 #
@@ -219,19 +214,12 @@ forecast_scalars:
 # Capital correction
 #
 percentage_vol_target: 25.0
-notional_trading_capital: 50000
+notional_trading_capital: 60000
 base_currency: "GBP"
 
 #
 # Portfolio creation
 #
-
-# Set this to 0.13 to enforce the speed limit even for fixed weights or
-#   regardless of what an estimator does
-# forecast_post_ceiling_cost_SR: 0.13
-
-#forecast_weight_estimate:
-#   ceiling_cost_SR: 0.13
 
 
 forecast_weights:
@@ -2675,80 +2663,10 @@ forecast_div_multiplier:
 instrument_div_multiplier: 2.47
 #
 
-# risk overlay
-#risk_overlay:
-#  max_risk_fraction_normal_risk: 1.4
-#  max_risk_fraction_stdev_risk: 3.6
-#  max_risk_limit_sum_abs_risk: 3.4
-#  max_risk_leverage: 13
-
-# buffering / position inertia
-buffer_method: forecast
-buffer_size: 0.10
-buffer_trade_to_edge: True
-# costs and accounting
-use_SR_costs: False
-vol_normalise_currency_costs: True
-multiply_roll_costs_by: 1.0
-
-# rounding strat
-rounding_strategy: syscore.rounding.SimpleFsbRoundingStrategy
 
 # risk overlay
-#risk_overlay:
-#  max_risk_fraction_normal_risk: 1.4
-#  max_risk_fraction_stdev_risk: 3.6
-#  max_risk_limit_sum_abs_risk: 3.4
-#  max_risk_leverage: 13
-
-exclude_instrument_lists:
-  # ignore_instruments are ignored in backtests
-  # we still collect price data for them in production, do rolls etc
-  # You can override this by modifying the backtest config .yaml file used in either sim or production
-  # If you want to ignore because a duplicate market, use duplicate_instruments
-  # If you want to include in sim data, but not actually trade, use trading_restrictions
-  #
-  # BEST FOR INSTRUMENTS THAT LOOK EXPENSIVE, BUT WHERE WE HAVEN'T GOT ACCURATE DATA YET
-  #
-  # REVIEW REGULARLY AND CHECK THESE INSTRUMENTS AREN'T BETTER ELSEWHERE...
-  ignore_instruments:
-#    - BOBL_fsb
-#    - BTP3_fsb
-#    - EURCAD_fsb
-#    - EURCHF_fsb
-#    - EURGBP_fsb
-#    - EURIBOR-ICE_fsb
-#    - FED_fsb
-#    - GBPCHF_fsb
-#    - JGB_fsb
-#    - JSE40_fsb
-#    - LUMBER-new_fsb
-#    - OATIES_fsb
-#    - SHATZ_fsb
-#    - SOFR_fsb
-#    - SONIA3_fsb
-#    - US2_fsb
-#    - US5_fsb
-#    - WHEAT_ICE_fsb
-
-  bad_markets:
-    - BOBL_fsb
-    - BTP3_fsb
-    - CAD_fsb
-    - EURCAD_fsb
-    - EURCHF_fsb
-    - EURGBP_fsb
-    - EURIBOR-ICE_fsb
-    - FED_fsb
-    - FTSE250_fsb
-    - GBPCHF_fsb
-    - JGB_fsb
-    - LUMBER-new_fsb
-    - OATIES_fsb
-    - SGD_fsb
-    - SHATZ_fsb
-    - SOFR_fsb
-    - SONIA3_fsb
-    - US2_fsb
-    - US5_fsb
-    - WHEAT_ICE_fsb
+risk_overlay:
+  max_risk_fraction_normal_risk: 1.4
+  max_risk_fraction_stdev_risk: 3.6
+  max_risk_limit_sum_abs_risk: 3.4
+  max_risk_leverage: 13
