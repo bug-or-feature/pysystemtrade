@@ -13,6 +13,7 @@ from sysproduction.data.production_data_objects import (
 )
 
 from sysdata.data_blob import dataBlob
+from sysobjects.dict_of_futures_per_contract_prices import dictFuturesContractPrices
 
 diag_prices = diagPrices()
 
@@ -32,6 +33,7 @@ def build_and_write_roll_calendar(
     input_prices=arg_not_supplied,
     roll_parameters_data: rollParametersData = arg_not_supplied,
     roll_parameters: rollParameters = arg_not_supplied,
+    filter_after=arg_not_supplied,
 ):
     if output_datapath is arg_not_supplied:
         print(
@@ -55,6 +57,19 @@ def build_and_write_roll_calendar(
     dict_of_all_futures_contract_prices = prices.get_merged_prices_for_instrument(
         instrument_code
     )
+
+    if filter_after is not arg_not_supplied:
+        dict_of_all_futures_contract_prices = dictFuturesContractPrices(
+            [
+                (
+                    date_str,
+                    prices,
+                )
+                for date_str, prices in dict_of_all_futures_contract_prices.items()
+                if int(date_str) >= int(filter_after)
+            ]
+        )
+
     dict_of_futures_contract_prices = dict_of_all_futures_contract_prices.final_prices()
 
     # might take a few seconds
@@ -130,11 +145,13 @@ if __name__ == "__main__":
     ## MODIFY DATAPATH IF REQUIRED
     # build_and_write_roll_calendar(instrument_code, output_datapath=arg_not_supplied)
 
-    # AUDJPY BTP3 CADJPY CHFJPY EU-BANKS EURCAD EURCHF EURO600 FTSE250 GBPCHF GBPJPY HANG IBEX NOK OMX-SWE SEK SONIA3
-    instrument_code = "SONIA3"
+    # ['CAD10', 'EU-AUTO', 'EU-BASIC', 'EU-HEALTH', 'EU-OIL', 'EU-TECH', 'EU-UTILS', 'FTSECHINAA', 'HANGENT_mini', 'KRWUSD_mini', 'MSCISING', 'MUMMY', 'YENEUR' ]
+    instrument_code = "MILLWHEAT"
 
     build_and_write_roll_calendar(
         instrument_code,
         output_datapath="data.futures.roll_calendars_csv",
+        # output_datapath="data.futures.roll_calendars_from_db",
         check_before_writing=False,
+        # filter_after=20221200,
     )
