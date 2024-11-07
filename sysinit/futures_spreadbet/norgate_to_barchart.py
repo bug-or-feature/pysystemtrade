@@ -10,7 +10,7 @@ from sysdata.config.production_config import get_production_config
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
-from sysinit.futures.contract_prices_from_csv_to_arctic import (
+from sysinit.futures.contract_prices_from_csv_to_db import (
     init_db_with_csv_futures_contract_prices,
     init_db_with_csv_futures_contract_prices_for_code,
 )

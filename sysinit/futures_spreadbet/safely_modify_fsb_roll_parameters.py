@@ -4,7 +4,7 @@ from syscore.interactive.input import (
     true_if_answer_is_yes,
 )
 from sysdata.data_blob import dataBlob
-from sysinit.futures.rollcalendars_from_arcticprices_to_csv import (
+from sysinit.futures.rollcalendars_from_db_prices_to_csv import (
     build_and_write_roll_calendar,
 )
 from sysinit.futures.multipleprices_from_db_prices_and_csv_calendars_to_db import (

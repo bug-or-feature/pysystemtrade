@@ -11,7 +11,7 @@ Import IG FSB contract price CSV files into system
 """
 
 
-def transfer_ig_prices_to_arctic_single(instr, datapath):
+def transfer_ig_prices_to_db_single(instr, datapath):
     init_db_with_csv_fsb_contract_prices_for_code(
         instr,
         datapath,
@@ -38,7 +38,7 @@ def transfer_ig_prices_to_arctic_single(instr, datapath):
     )
 
 
-def transfer_ig_prices_to_arctic(datapath):
+def transfer_ig_prices_to_db(datapath):
     init_db_with_csv_fsb_contract_prices(
         datapath,
         csv_config=ConfigCsvFuturesPrices(
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     # ["AUDJPY_fsb"]
     for instr in ["CADJPY_fsb", "EU-BANKS_fsb", "EURO600_fsb"]:
-        transfer_ig_prices_to_arctic_single(instr, datapath=datapath)
+        transfer_ig_prices_to_db_single(instr, datapath=datapath)
 
     # all instruments
     # transfer_ig_prices_to_arctic(datapath)

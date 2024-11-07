@@ -6,7 +6,7 @@ from syscore.fileutils import (
 )
 from syscore.dateutils import month_from_contract_letter
 
-from sysinit.futures.contract_prices_from_csv_to_arctic import (
+from sysinit.futures.contract_prices_from_csv_to_db import (
     init_db_with_csv_futures_contract_prices,
 )
 
