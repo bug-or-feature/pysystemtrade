@@ -721,6 +721,7 @@ class Portfolios(SystemStage):
 
         return returns_pre_processor
 
+    # TODO mixed index dataframe bug
     def _add_zero_weights_to_instrument_weights_df(
         self, instrument_weights: pd.DataFrame
     ) -> pd.DataFrame:
@@ -734,9 +735,15 @@ class Portfolios(SystemStage):
                 for instrument_code in instrument_list_to_add
             ]
         )
+        # this frame SHOULD have the same index as instrument_weights,  but instead
+        # has ints 0 - 64
         new_pd = pd.DataFrame(new_pd_as_dict)
+        # new_pd = pd.DataFrame(new_pd_as_dict, index=instrument_weights.index)
 
         padded_instrument_weights = pd.concat([instrument_weights, new_pd], axis=1)
+
+        # for zero_instr in self.allocate_zero_instrument_weights_to_these_instruments():
+        #     instrument_weights[zero_instr] = 0.0
 
         return padded_instrument_weights
 
