@@ -22,13 +22,13 @@ def get_list_of_timer_functions_for_price_update():
         ),
     )
     historical_update_object = updateHistoricalPrices(data)
-    generate_fsb_object = GenerateFsbUpdates(data)
-    update_slippage = updateSlippage(data)
+    # generate_fsb_object = GenerateFsbUpdates(data)
+    # update_slippage = updateSlippage(data)
 
     list_of_timer_names_and_functions = [
         ("update_historical_prices", historical_update_object),
-        ("generate_fsb_updates", generate_fsb_object),
-        ("update_slippage", update_slippage),
+        # ("generate_fsb_updates", generate_fsb_object),
+        # ("update_slippage", update_slippage),
     ]
 
     return list_of_timer_names_and_functions
