@@ -239,25 +239,12 @@ def write_prices_for_contract_at_frequency(
 if __name__ == "__main__":
     # input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # modify flags as required
-    # datapath = "*** NEED TO DEFINE A DATAPATH***"
-    # init_db_with_split_freq_csv_prices(datapath)
-
-    # path to prod FSB off-site backup
-    # /Volumes/backup_share/pst_prod/csv/backups_csv/contract_prices
-
     datapath = resolve_path_and_filename_for_package(
         get_production_config().get_element_or_default("barchart_path", None)
     )
+    # init_db_with_split_freq_csv_prices(datapath)
 
-    datapath = "/Users/ageach/Documents/backups_csv/contract_prices"
-
-    # init_db_with_split_freq_csv_prices_for_code(
-    #     "MXP", datapath, csv_config=BARCHART_CONFIG
-    # )
-
-    init_db_with_daily_csv_prices_for_contract(
-        "EURIBOR-ICE", "20261200", datapath, csv_config=BARCHART_CONFIG
-    )
-    # init_db_with_mixed_csv_prices_for_contract(
-    #     "EURIBOR-ICE", "20261200", datapath, csv_config=BACKUP_CONFIG
-    # )
+    for instr in ["XXX"]:
+        init_db_with_split_freq_csv_prices_for_code(
+            instr, datapath, csv_config=BARCHART_CONFIG
+        )

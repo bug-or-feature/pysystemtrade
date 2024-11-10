@@ -140,18 +140,13 @@ def check_saved_roll_calendar(
 
 
 if __name__ == "__main__":
-    # input("Will overwrite existing roll calendar are you sure?! CTL-C to abort")
-    # instrument_code = get_valid_instrument_code_from_user(source="single")
+    input("Will overwrite existing roll calendar are you sure?! CTL-C to abort")
+    instrument_code = get_valid_instrument_code_from_user(source="single")
     ## MODIFY DATAPATH IF REQUIRED
     # build_and_write_roll_calendar(instrument_code, output_datapath=arg_not_supplied)
-
-    # ['CAD10', 'EU-AUTO', 'EU-BASIC', 'EU-HEALTH', 'EU-OIL', 'EU-TECH', 'EU-UTILS', 'FTSECHINAA', 'HANGENT_mini', 'KRWUSD_mini', 'MSCISING', 'MUMMY', 'YENEUR' ]
-    instrument_code = "MILLWHEAT"
-
     build_and_write_roll_calendar(
         instrument_code,
         output_datapath="data.futures.roll_calendars_csv",
-        # output_datapath="data.futures.roll_calendars_from_db",
         check_before_writing=False,
         # filter_after=20221200,
     )
