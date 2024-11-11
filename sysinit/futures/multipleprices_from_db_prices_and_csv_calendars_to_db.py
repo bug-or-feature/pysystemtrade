@@ -198,16 +198,16 @@ if __name__ == "__main__":
     csv_roll_data_path = arg_not_supplied
 
     # modify flags as required
-    process_multiple_prices_all_instruments(
-        csv_multiple_data_path=csv_multiple_data_path,
-        csv_roll_data_path=csv_roll_data_path,
-    )
+    # process_multiple_prices_all_instruments(
+    #     csv_multiple_data_path=csv_multiple_data_path,
+    #     csv_roll_data_path=csv_roll_data_path,
+    # )
 
-    # for instr in ["XXX"]:
-    #     print(f"Starting multiple for {instr}")
-    #     process_multiple_prices_single_instrument(
-    #         instrument_code=instr,
-    #         csv_multiple_data_path=csv_multiple_data_path,
-    #         csv_roll_data_path=csv_roll_data_path,
-    #         ADD_TO_CSV=True,
-    #     )
+    for instr in ["XXX"]:
+        print(f"Starting multiple for {instr}")
+        process_multiple_prices_single_instrument(
+            instrument_code=instr,
+            csv_multiple_data_path=csv_multiple_data_path,
+            csv_roll_data_path=csv_roll_data_path,
+            ADD_TO_CSV=True,
+        )
