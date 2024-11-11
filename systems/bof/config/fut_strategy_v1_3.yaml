@@ -484,6 +484,7 @@ instrument_weights:
           MILK: 0.143
           OJ: 0.143
           ROBUSTA: 0.143
+          RUBBER: 0.0
           SUGAR11: 0.143
           SUGAR_WHITE: 0.143
       rates:
@@ -492,6 +493,7 @@ instrument_weights:
           weight: 0.4
           govvie:
             weight: 0.6
+            CAD10: 0.0
             US10U: 0.143
             US2: 0.143
             US20: 0.143
@@ -502,13 +504,17 @@ instrument_weights:
             weight: 0.4
             FED: 0.5
             SOFR: 0.5
+            SONIA3: 0.0
         Asia:
           weight: 0.2
           JGB-SGX-mini: 1.0
+          KR3: 0.0
+          KR10: 0.0
         EMEA:
           weight: 0.4
           BOBL: 0.125
           BTP: 0.125
+          BTP3: 0.0
           BUND: 0.125
           BUXL: 0.125
           EURIBOR-ICE: 0.125
@@ -526,12 +532,19 @@ instrument_weights:
           SP500_micro: 0.2
         Asia:
           weight: 0.333
+          FTSECHINAA: 0.0
           FTSECHINAH: 0.1667
           FTSETAIWAN: 0.1667
+          HANG: 0.0
+          HANGENT_mini: 0.0
+          KOSDAQ: 0.0
           KOSPI_mini: 0.1667
           MSCISING: 0.1667
+          MUMMY: 0.0
           NIKKEI: 0.1667
           SPI200: 0.1667
+        EM:
+
         EMEA:
           weight: 0.333
           AEX: 0.1667
@@ -544,7 +557,14 @@ instrument_weights:
         weight: 0.143
         cross:
           weight: 0.333
+          AUDJPY: 0.1
+          CADJPY: 0.1
+          CHFJPY: 0.1
+          EURCAD: 0.1
+          EURCHF: 0.1
           GBPEUR: 1.0
+          GBPCHF: 0.1
+          GBPJPY: 0.1
         developed:
           weight: 0.333
           AUD_micro: 0.125
@@ -555,6 +575,9 @@ instrument_weights:
           GBP: 0.125
           JPY_mini: 0.125
           NZD: 0.125
+          SEK: 0.125
+          SGD_mini: 0.0
+          NOK: 0.125
         em:
           weight: 0.333
           BRE: 0.25
@@ -586,26 +609,21 @@ instrument_weights:
         V2X: 0.5
         VIX_mini: 0.5
 
-#"AUDJPY",
-#"BTP3",
-#"CADJPY",
-#"CHFJPY",
-#"EU-BANKS",
-#"EURCAD",
-#"EURCHF",
-#"EURO600",
-#"FTSE250",
-#"GBPCHF",
-#"GBPJPY",
-#"HANG",
-#"IBEX",
-# KOSDAQ
-# KR3
-# KR10
-#"NOK",
-#"OMX-SWE",
-#"SEK",
-#"SONIA3",
+
+#EU-BANKS
+#EURO600
+#FTSE250
+#IBEX
+#OMX-SWE
+#TOPIX
+#
+#EU-AUTO
+#EU-BASIC
+#EU-HEALTH
+#EU-OIL
+#EU-TECH
+#EU-UTILS
+
 
 
 # Total: 53
