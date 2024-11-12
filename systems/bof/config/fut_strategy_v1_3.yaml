@@ -479,17 +479,17 @@ instrument_weights:
           LIVECOW: 0.333
         soft:
           weight: 0.333
-          BUTTER: 0.111
-          COTTON2: 0.111
-          LUMBER-new: 0.111
-          MILK: 0.111
+          #BUTTER: 0.125
+          COTTON2: 0.125
+          LUMBER-new: 0.125
+          MILK: 0.125
           #MILKDRY: 0.111
           #MILKWET: 0.111
-          OJ: 0.111
-          ROBUSTA: 0.111
-          RUBBER: 0.111
-          SUGAR11: 0.111
-          SUGAR_WHITE: 0.111
+          OJ: 0.125
+          ROBUSTA: 0.125
+          RUBBER: 0.125
+          SUGAR11: 0.125
+          SUGAR_WHITE: 0.125
           #WHEY: 0.111
       rates:
         weight: 0.143
@@ -553,7 +553,7 @@ instrument_weights:
         EMEA:
           weight: 0.25
           index:
-            weight: 0.5
+            weight: 0.7
             AEX: 0.1
             CAC: 0.1
             DAX: 0.1
@@ -565,7 +565,7 @@ instrument_weights:
             OMX-SWE: 0.1
             SMI: 0.1
           sector:
-            weight: 0.5
+            weight: 0.3
             EU-AUTO: 0.143
             EU-BANKS: 0.143
             EU-BASIC: 0.143
@@ -608,28 +608,28 @@ instrument_weights:
           ZAR: 0.2
       metals:
         weight: 0.143
-        ALUMINIUM: 0.1
-        BITCOIN: 0.1
-        COPPER-micro: 0.1
-        ETHEREUM: 0.1
-        GOLD_micro: 0.1
-        IRON: 0.1
-        PALLAD: 0.1
-        PLAT: 0.1
-        SILVER: 0.1
-        STEEL: 0.1
+        ALUMINIUM: 0.125
+        BITCOIN: 0.125
+        COPPER-micro: 0.125
+        #ETHEREUM: 0.1
+        GOLD_micro: 0.125
+        IRON: 0.125
+        PALLAD: 0.125
+        PLAT: 0.125
+        SILVER: 0.125
+        #STEEL: 0.1
       energies:
         weight: 0.143
-        BRENT-LAST: 0.1
-        CRUDE_W_micro: 0.1
-        ETHANOL: 0.1
-        EUA: 0.1
-        GASOIL: 0.1
-        GASOLINE: 0.1
-        GAS-LAST: 0.1
-        GAS-PEN: 0.1
-        GAS_US_mini: 0.1
-        HEATOIL: 0.1
+        BRENT-LAST: 0.111
+        CRUDE_W_micro: 0.111
+        #ETHANOL: 0.1
+        EUA: 0.111
+        GASOIL: 0.111
+        GASOLINE: 0.111
+        GAS-LAST: 0.111
+        GAS-PEN: 0.111
+        GAS_US_mini: 0.111
+        HEATOIL: 0.111
       vol:
         weight: 0.143
         V2X: 0.5
