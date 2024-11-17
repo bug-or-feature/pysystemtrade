@@ -251,10 +251,6 @@ class correlationEstimate(Estimate):
             dtype="float64",
         )
         bottom_row = pd.concat([l2, r2], axis=1)
-        # FutureWarning: The behavior of DataFrame concatenation with empty or all-NA
-        # entries is deprecated. In a future version, this will no longer exclude empty
-        # or all-NA columns when determining the result dtypes. To retain the old
-        # behavior, exclude the relevant entries before the concat operation.
         both_rows = pd.concat([top_row, bottom_row], axis=0)
 
         new_cmatrix = correlationEstimate(
