@@ -491,11 +491,11 @@ def write_merged_prices_for_contract(
         if len(prices) > 0:
             list_of_data.append(prices)
 
-    merged_prices = merge_data_with_different_freq(list_of_data)
-
-    price_updater.overwrite_merged_prices_for_contract(
-        contract_object=contract_object, new_prices=merged_prices
-    )
+    if list_of_data:
+        merged_prices = merge_data_with_different_freq(list_of_data)
+        price_updater.overwrite_merged_prices_for_contract(
+            contract_object=contract_object, new_prices=merged_prices
+        )
 
 
 if __name__ == "__main__":
