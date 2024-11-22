@@ -90,9 +90,10 @@ if __name__ == "__main__":
             csv_adj_data_path=arg_not_supplied,
         )
 
-    # for instrument_code in ["XXX"]:
+    # for instr in ["XXX"]:
+    #     print(f"Starting adjusted for {instr}")
     #     process_adjusted_prices_single_instrument(
-    #         instrument_code,
+    #         instr,
     #         ADD_TO_DB=True,
     #         ADD_TO_CSV=False,
     #         csv_adj_data_path=arg_not_supplied,
