@@ -71,30 +71,38 @@ def process_adjusted_prices_single_instrument(
 
 
 if __name__ == "__main__":
-    input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    instrument_code = get_valid_instrument_code_from_user(
-        all_code=ALL_INSTRUMENTS, allow_all=True
-    )
-
-    if instrument_code == ALL_INSTRUMENTS:
-        # modify flags and datapath as required
-        process_adjusted_prices_all_instruments(
-            ADD_TO_DB=True, ADD_TO_CSV=False, csv_adj_data_path=arg_not_supplied
-        )
-    else:
-        # modify flags and datapath as required
-        process_adjusted_prices_single_instrument(
-            instrument_code,
-            ADD_TO_DB=True,
-            ADD_TO_CSV=False,
-            csv_adj_data_path=arg_not_supplied,
-        )
-
-    # for instr in ["XXX"]:
-    #     print(f"Starting adjusted for {instr}")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # instrument_code = get_valid_instrument_code_from_user(
+    #     all_code=ALL_INSTRUMENTS, allow_all=True
+    # )
+    #
+    # if instrument_code == ALL_INSTRUMENTS:
+    #     # modify flags and datapath as required
+    #     process_adjusted_prices_all_instruments(
+    #         ADD_TO_DB=True, ADD_TO_CSV=False, csv_adj_data_path=arg_not_supplied
+    #     )
+    # else:
+    #     # modify flags and datapath as required
     #     process_adjusted_prices_single_instrument(
-    #         instr,
+    #         instrument_code,
     #         ADD_TO_DB=True,
     #         ADD_TO_CSV=False,
     #         csv_adj_data_path=arg_not_supplied,
     #     )
+
+    for instr in [
+        "BOVESPA",
+        "MILLWHEAT",
+        "RAPESEED",
+        "RUBBER",
+        "R1000",
+        "SGD_mini",
+        "TOPIX",
+    ]:
+        print(f"Starting adjusted for {instr}")
+        process_adjusted_prices_single_instrument(
+            instr,
+            ADD_TO_DB=True,
+            ADD_TO_CSV=False,
+            csv_adj_data_path=arg_not_supplied,
+        )

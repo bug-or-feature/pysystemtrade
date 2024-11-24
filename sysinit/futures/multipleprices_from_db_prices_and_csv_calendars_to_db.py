@@ -190,7 +190,7 @@ def add_phantom_row(
 
 
 if __name__ == "__main__":
-    input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # change if you want to write elsewhere
     csv_multiple_data_path = arg_not_supplied
 
@@ -203,7 +203,15 @@ if __name__ == "__main__":
     #     csv_roll_data_path=csv_roll_data_path,
     # )
 
-    for instr in ["XXX"]:
+    for instr in [
+        "BOVESPA",
+        "MILLWHEAT",
+        "RAPESEED",
+        "RUBBER",
+        "R1000",
+        "SGD_mini",
+        "TOPIX",
+    ]:
         print(f"Starting multiple for {instr}")
         process_multiple_prices_single_instrument(
             instrument_code=instr,
