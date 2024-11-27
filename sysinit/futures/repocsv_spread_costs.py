@@ -133,7 +133,7 @@ def check_spreads():
 
 
 if __name__ == "__main__":
-    # print("Transfer instrument config from csv to mongo DB")
+    print("Transfer instrument config from csv to mongo DB")
     # modify flags as required
-    # copy_spread_costs_from_csv_to_mongo(dataBlob())
-    check_spreads()
+    copy_spread_costs_from_csv_to_mongo(dataBlob())
+    # check_spreads()
