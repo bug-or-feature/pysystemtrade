@@ -352,8 +352,8 @@ base_currency: "GBP"
 forecast_weights:
   auto_weight_from_grouping:
     parameters:
-      use_approx_DM: False
-      apply_forecast_post_ceiling_cost_SR_before_weighting: True
+      use_approx_DM: True
+      apply_forecast_post_ceiling_cost_SR_before_weighting: False
     groups:
       convergent:
         weight: 0.4
