@@ -445,6 +445,7 @@ class ForecastCombine(SystemStage):
             for rule_variation_name in rule_variation_list
         ]
 
+        # TODO #1467 auto group weights crash
         forecasts = pd.concat(forecasts, axis=1)
 
         forecasts.columns = rule_variation_list

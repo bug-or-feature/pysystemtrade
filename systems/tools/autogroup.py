@@ -67,7 +67,7 @@ class autoGroupPortfolioWeight(dict):
                 keys_to_exclude
             )
 
-        ## Need to deal with completely empty dicts
+        # TODO #1467 Need to deal with completely empty dicts
 
     def resolve_weights(self, level: int = 1, cumulative_multiplier: float = 1.0):
         if self.already_weighted:
