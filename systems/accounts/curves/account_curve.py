@@ -318,6 +318,8 @@ class accountCurve(pd.Series):
     def hitrate(self):
         no_gains = float(self.gains().shape[0])
         no_losses = float(self.losses().shape[0])
+        if (no_losses + no_gains) == 0.0:
+            return 0.0
         return no_gains / (no_losses + no_gains)
 
     def rolling_ann_std(self, window=40):
