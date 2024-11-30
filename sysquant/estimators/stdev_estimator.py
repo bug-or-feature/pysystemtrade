@@ -42,14 +42,13 @@ class stdevEstimates(dict, Estimate):
 class seriesOfStdevEstimates(pd.DataFrame):
     def get_stdev_on_date(self, relevant_date: datetime.datetime) -> stdevEstimates:
         if relevant_date < self.index[0]:
-            stdev_as_dict = get_row_of_df_aligned_to_weights_as_dict(
-                df=self, relevant_date=self.index[0]
-            )
+            relevant_date = self.index[0]
+        if relevant_date > self.index[-1]:
+            relevant_date = self.index[-1]
 
-        else:
-            stdev_as_dict = get_row_of_df_aligned_to_weights_as_dict(
-                df=self, relevant_date=relevant_date
-            )
+        stdev_as_dict = get_row_of_df_aligned_to_weights_as_dict(
+            df=self, relevant_date=relevant_date
+        )
         return stdevEstimates(stdev_as_dict)
 
     def shocked(self, shock_quantile=0.99, roll_years=10, bfill=True):
