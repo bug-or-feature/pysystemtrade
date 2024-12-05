@@ -352,7 +352,7 @@ base_currency: "GBP"
 forecast_weights:
   auto_weight_from_grouping:
     parameters:
-      use_approx_DM: False
+      use_approx_DM: True
       apply_forecast_post_ceiling_cost_SR_before_weighting: True
     groups:
       convergent:
@@ -460,7 +460,7 @@ instrument_weights:
       ags:
         weight: 0.143
         grain:
-          weight: 0.333
+          weight: 0.25
           canola:
             weight: 0.125
             CANOLA: 1.0
@@ -487,42 +487,62 @@ instrument_weights:
             SOYOIL: 0.3333
           wheat:
             weight: 0.125
-            REDWHEAT: 0.5
-            WHEAT: 0.5
-
+            MILLWHEAT: 0.333
+            REDWHEAT: 0.333
+            WHEAT: 0.333
+        index:
+          weight: 0.25
+          BBCOMM: 0.5
+          GICS: 0.5
         meat:
-          weight: 0.333
+          weight: 0.25
           FEEDCOW: 0.333
           LEANHOG: 0.333
           LIVECOW: 0.333
         soft:
-          weight: 0.333
-          #BUTTER: 0.125
-          COFFEE: 0.111
-          COTTON2: 0.111
-          LUMBER-new: 0.111
-          MILK: 0.111
-          #MILKDRY: 0.111
-          #MILKWET: 0.111
-          OJ: 0.111
-          ROBUSTA: 0.111
-          RUBBER: 0.111
-          SUGAR11: 0.111
-          SUGAR_WHITE: 0.111
-          #WHEY: 0.111
+          weight: 0.25
+          cotton:
+            weight: 0.143
+            COTTON2: 1.0
+          coffee:
+            weight: 0.143
+            COFFEE: 0.5
+            ROBUSTA: 0.5
+          milk:
+            weight: 0.143
+            BUTTER: 0.1667
+            CHEESE: 0.1667
+            MILK: 0.1667
+            MILKDRY: 0.1667
+            MILKWET: 0.1667
+            WHEY: 0.1667
+          oj:
+            weight: 0.143
+            OJ: 1.0
+          rubber:
+            weight: 0.143
+            RUBBER: 1.0
+          sugar:
+            weight: 0.143
+            SUGAR11: 0.5
+            SUGAR_WHITE: 0.5
+          wood:
+            weight: 0.143
+            LUMBER-new: 1.0
       rates:
         weight: 0.143
         Americas:
           weight: 0.4
           govvie:
             weight: 0.6
-            CAD10: 0.143
-            US10U: 0.143
-            US2: 0.143
-            US20: 0.143
-            US10: 0.143
-            US30: 0.143
-            US5: 0.143
+            CAD10: 0.125
+            US10U: 0.125
+            US2: 0.125
+            US3: 0.125
+            US20: 0.125
+            US10: 0.125
+            US30: 0.125
+            US5: 0.125
           STIR:
             weight: 0.4
             FED: 0.333
@@ -535,71 +555,170 @@ instrument_weights:
           KR10: 0.333
         EMEA:
           weight: 0.4
-          BOBL: 0.111
-          BTP: 0.111
-          BTP3: 0.111
-          BUND: 0.111
-          BUXL: 0.111
-          EURIBOR-ICE: 0.111
-          GILT: 0.111
-          OAT: 0.111
-          SHATZ: 0.111
+          eu:
+            weight: 0.143
+            EURIBOR-ICE: 1.0
+          france:
+            weight: 0.143
+            OAT: 1.0
+          italy:
+            weight: 0.143
+            BTP: 0.5
+            BTP3: 0.5
+          germany:
+            weight: 0.143
+            BOBL: 0.25
+            BUND: 0.25
+            BUXL: 0.25
+            SHATZ: 0.25
+          spain:
+            weight: 0.143
+            BONO: 1.0
+          switzerland:
+            weight: 0.16667
+            CH10: 1.0
+          uk:
+            weight: 0.143
+            GILT: 0.0
       equity:
         weight: 0.143
         Americas:
           weight: 0.25
-          DOW: 0.143
-          FANG: 0.143
-          NASDAQ_micro: 0.143
-          R1000: 0.143
-          RUSSELL: 0.143
-          SP400: 0.143
-          SP500_micro: 0.143
-        Asia:
+          index:
+            weight: 0.6
+            largecap:
+              weight: 0.6
+              DOW: 0.2
+              FANG: 0.2
+              NASDAQ_micro: 0.2
+              R1000: 0.2
+              SP500_micro: 0.2
+            midcap:
+              weight: 0.4
+              RUSSELL: 0.5
+              SP400: 0.5
+          sector:
+            weight: 0.4
+            US-MATERIAL: 0.5
+            US-PROPERTY: 0.5
+#            US-DISCRETE: 0.1
+#            US-ENERGY: 0.1
+#            US-FINANCE: 0.1
+#            US-HEALTH: 0.1
+#            US-INDUSTRY: 0.1
+#            HOUSE-US: 0.0333
+#            US-REALESTATE: 0.0333
+#            US-STAPLES: 0.1
+#            US-TECH: 0.1
+#            US-UTILS: 0.1
+        Oceania:
           weight: 0.25
-          HANG: 0.0.111
-          HANGENT_mini: 0.111
-          HANGTECH: 0.111
-          MSCISING: 0.111
-          MUMMY: 0.111
-          NIKKEI: 0.111
-          NIKKEI400: 0.111
-          SPI200: 0.111
-          TOPIX: 0.111
+          japan:
+            weight: 0.25
+            JP-REALESTATE: 0.2
+            MUMMY: 0.2
+            NIKKEI: 0.2
+            NIKKEI400: 0.2
+            TOPIX: 0.2
+          australia:
+            weight: 0.25
+            SPI200: 1.0
+          hongkong:
+            weight: 0.25
+            HANG: 0.333
+            HANGENT_mini: 0.333
+            HANGTECH: 0.333
+          singapore:
+            weight: 0.25
+            MSCISING: 1.0
         EM:
           weight: 0.25
-          BOVESPA: 0.1667
-          FTSECHINAA: 0.1667
-          FTSECHINAH: 0.1667
-          FTSETAIWAN: 0.1667
-          KOSDAQ: 0.1667
-          KOSPI_mini: 0.1667
+          brazil:
+            weight: 0.1667
+            BOVESPA: 1.0
+          china:
+            weight: 0.1667
+            FTSECHINAA: 0.5
+            FTSECHINAH: 0.5
+          indonesia:
+            weight: 0.1667
+            FTSEINDO: 1.0
+          korea:
+            weight: 0.1667
+            KOSDAQ: 0.5
+            KOSPI_mini: 0.5
+          taiwan:
+            weight: 0.1667
+            FTSETAIWAN: 1.0
+          vietnam:
+            weight: 0.1667
+            FTSEVIET: 1.0
         EMEA:
           weight: 0.25
-          index:
-            weight: 0.7
-            AEX: 0.09
-            CAC: 0.09
-            DAX: 0.09
-            DJSTX-SMALL: 0.09
-            EUROSTX: 0.09
-            EURO600: 0.09
-            FTSE100: 0.09
-            FTSE250: 0.09
-            IBEX: 0.09
-            OMX-SWE: 0.09
-            SMI: 0.09
-          sector:
-            weight: 0.3
-            EU-AUTO: 0.111
-            EU-BANKS: 0.111
-            EU-BASIC: 0.111
-            EU-DIV30: 0.111
-            EU-HEALTH: 0.111
-            EU-OIL: 0.111
-            EU-REALESTATE: 0.111
-            EU-TECH: 0.111
-            EU-UTILS: 0.111
+          eu:
+            weight: 0.111
+            index:
+              weight: 0.6
+              largecap:
+                weight: 0.333
+                EURO600: 0.2
+                EUROSTX: 0.2
+                EUROSTX-LARGE: 0.2
+                EUROSTX200-LARGE: 0.2
+                EU-DIV30: 0.2
+              midcap:
+                weight: 0.333
+                EU-MID: 1.0
+              smallcap:
+                weight: 0.333
+                DJSTX-SMALL: 0.5
+                EUROSTX-SMALL: 0.5
+            sector:
+              weight: 0.4
+              EPRA-EUROPE: 0.0625
+              EU-AUTO: 0.0625
+              EU-BANKS: 0.0625
+              EU-BASIC: 0.0625
+              EU-CONSTRUCTION: 0.0625
+              EU-DJ-TELECOM: 0.0625
+              EU-FOOD: 0.0625
+              EU-HEALTH: 0.0625
+              EU-HOUSE: 0.0625
+              EU-INSURE: 0.0625
+              EU-MEDIA: 0.0625
+              EU-OIL: 0.0625
+              EU-REALESTATE: 0.0625
+              EU-RETAIL: 0.0625
+              EU-TECH: 0.0625
+              EU-UTILS: 0.0625
+#              EU-CHEM: 0.05556
+#              EU-TRAVEL: 0.05556
+          finland:
+            weight: 0.111
+            OMX: 1.0
+          france:
+            weight: 0.111
+            CAC: 1.0
+          germany:
+            weight: 0.111
+            DAX: 1.0
+          netherlands:
+            weight: 0.111
+            AEX: 1.0
+          spain:
+            weight: 0.111
+            IBEX: 1.0
+          sweden:
+            weight: 0.111
+            OMX-SWE: 1.0
+          switzerland:
+            weight: 0.111
+            SMI: 0.5
+            SMI-MID: 0.5
+          uk:
+            weight: 0.111
+            FTSE100: 0.5
+            FTSE250: 0.5
       fx:
         weight: 0.143
         cross:
@@ -628,51 +747,64 @@ instrument_weights:
           NOK: 0.09
         em:
           weight: 0.333
-          BRE: 0.2
-          CNH: 0.2
-          KRWUSD_mini: 0.2
-          MXP: 0.2
-          ZAR: 0.2
+          BRE: 0.09
+          CLP: 0.09
+          CNH: 0.09
+          CZK: 0.09
+          IRS: 0.09
+          KRWUSD_mini: 0.09
+          MXP: 0.09
+          PLN: 0.09
+          RUR: 0.09
+          TWD: 0.09
+          ZAR: 0.09
       metals:
         weight: 0.143
-        ALUMINIUM: 0.125
-        BITCOIN: 0.125
-        COPPER-micro: 0.125
-        #ETHEREUM: 0.1
-        GOLD_micro: 0.125
-        IRON: 0.125
-        PALLAD: 0.125
-        PLAT: 0.125
-        SILVER: 0.125
-        #STEEL: 0.1
+        crypto:
+          weight: 0.333
+          BITCOIN: 0.5
+          ETHER-micro: 0.5
+        industrial:
+          weight: 0.333
+          ALUMINIUM: 0.25
+          COPPER-micro: 0.25
+          IRON: 0.25
+          STEEL: 0.25
+        precious:
+          weight: 0.333
+          GOLD_micro: 0.25
+          PALLAD: 0.25
+          PLAT: 0.25
+          SILVER: 0.25
       energies:
         weight: 0.143
         carbon:
-          weight: 0.25
+          weight: 0.1
           EUA: 1.0
         gas:
-          weight: 0.25
+          weight: 0.3
           GAS-LAST: 0.25
           GAS-PEN: 0.25
           GAS_UK: 0.25
           GAS_US_mini: 0.25
         oil:
-          weight: 0.25
+          weight: 0.3
           BRENT-LAST: 0.25
           BRENT_W: 0.25
           CRUDE_ICE: 0.25
           CRUDE_W: 0.25
         products:
-          weight: 0.25
-          #ETHANOL: 0.333
-          GASOIL: 0.25
-          GASOLINE: 0.25
-          HEATOIL: 0.25
-          HEATOIL-ICE: 0.25
+          weight: 0.3
+          ETHANOL: 0.2
+          GASOIL: 0.2
+          GASOLINE: 0.2
+          HEATOIL: 0.2
+          HEATOIL-ICE: 0.2
       vol:
         weight: 0.143
-        V2X: 0.5
-        VIX_mini: 0.5
+        V2X: 0.4
+        VIX: 0.4
+        VNKI: 0.2
 
 # Total: 53
 # 1/6: 0.1667
