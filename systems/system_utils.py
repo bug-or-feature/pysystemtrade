@@ -23,16 +23,21 @@ def write_estimate_file(log, system, save_dir: str):
         f"{save_dir}.estimate-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
     )
     log.info(f"writing estimate params to: {output_file}")
-    estimates_needed = [
-        "instrument_div_multiplier",
-        "forecast_div_multiplier",
-        "forecast_scalars",
-        "instrument_weights",
-        "forecast_weights",
-        # "forecast_mapping",
-    ]
+    estimates_needed = []
+    if system.config.use_forecast_scale_estimates:
+        estimates_needed.append("forecast_scalars")
+    if system.config.use_forecast_weight_estimates:
+        estimates_needed.append("forecast_weights")
+    if system.config.use_forecast_div_mult_estimates:
+        estimates_needed.append("forecast_div_multiplier")
+    if system.config.use_instrument_div_mult_estimates:
+        estimates_needed.append("instrument_div_multiplier")
+    if system.config.use_instrument_weight_estimates:
+        estimates_needed.append("instrument_weights")
 
-    sysdiag.yaml_config_with_estimated_parameters(output_file, estimates_needed)
+    sysdiag.yaml_config_with_estimated_parameters(
+        output_file, attr_names=estimates_needed
+    )
 
 
 def write_full_config_file(log, system, save_dir: str):
