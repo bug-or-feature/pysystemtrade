@@ -721,22 +721,20 @@ class Portfolios(SystemStage):
 
         return returns_pre_processor
 
+    # TODO mixed index dataframe bug:
+    # TODO TypeError: '<' not supported between instances of 'int' and 'Timestamp'
+    # TODO needs use_forecast_weight_estimates = True
+    # TODO needs forecast_post_ceiling_cost_SR turned on
     def _add_zero_weights_to_instrument_weights_df(
         self, instrument_weights: pd.DataFrame
     ) -> pd.DataFrame:
         instrument_list_to_add = (
             self.allocate_zero_instrument_weights_to_these_instruments()
         )
-        weight_index = instrument_weights.index
-        new_pd_as_dict = dict(
-            [
-                (instrument_code, pd.Series([0.0] * len(weight_index)))
-                for instrument_code in instrument_list_to_add
-            ]
-        )
-        new_pd = pd.DataFrame(new_pd_as_dict)
 
-        padded_instrument_weights = pd.concat([instrument_weights, new_pd], axis=1)
+        padded_instrument_weights = copy(instrument_weights)
+        for zero_instr in instrument_list_to_add:
+            padded_instrument_weights[zero_instr] = 0.0
 
         return padded_instrument_weights
 
