@@ -721,10 +721,6 @@ class Portfolios(SystemStage):
 
         return returns_pre_processor
 
-    # TODO mixed index dataframe bug:
-    # TODO TypeError: '<' not supported between instances of 'int' and 'Timestamp'
-    # TODO needs use_forecast_weight_estimates = True
-    # TODO needs forecast_post_ceiling_cost_SR turned on
     def _add_zero_weights_to_instrument_weights_df(
         self, instrument_weights: pd.DataFrame
     ) -> pd.DataFrame:
