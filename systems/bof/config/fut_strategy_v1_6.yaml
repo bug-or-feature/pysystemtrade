@@ -792,30 +792,30 @@ instrument_weights:
         ZAR: 0.0322
       metals:
         weight: 0.143
-        BITCOIN: 0.09
-        ETHER-micro: 0.09
         ALUMINIUM: 0.09
+        BITCOIN: 0.09
         COPPER-micro: 0.09
-        IRON: 0.09
-        STEEL: 0.09
+        ETHER-micro: 0.09
         GOLD_micro: 0.09
+        IRON: 0.09
         PALLAD: 0.09
         PLAT: 0.09
         SILVER: 0.09
+        STEEL: 0.09
       energies:
         weight: 0.143
-        EUA: 0.0833
-        GAS_US_mini: 0.143
         BRENT_W: 0.143
         CRUDE_W: 0.143
         #ETHANOL: 0.077
+        EUA: 0.0833
         GASOIL: 0.143
         GASOLINE: 0.143
+        GAS_US_mini: 0.143
         HEATOIL: 0.143
       vol:
         weight: 0.143
-        V2X: 0.5
         VIX_mini: 0.5
+        V2X: 0.5
 
 # Total: 53
 # 1/6: 0.1667
