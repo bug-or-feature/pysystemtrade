@@ -702,64 +702,61 @@ instrument_weights:
         GILT: 0.042
       equity:
         weight: 0.143
-        DOW: 0.0175
-        FANG: 0.0175
-        NASDAQ_micro: 0.0175
-        R1000: 0.0175
-        SP500_micro: 0.0175
-        RUSSELL: 0.0175
-        SP400: 0.0175
-        JP-REALESTATE: 0.0175
-        MUMMY: 0.0175
-        NIKKEI: 0.0175
-        NIKKEI400: 0.0175
-        TOPIX: 0.0175
-        SPI200: 0.0175
-        HANG: 0.0175
-        HANGENT_mini: 0.0175
-        HANGTECH: 0.0175
-        MSCISING: 0.0175
-        BOVESPA: 0.0175
-        FTSECHINAA: 0.0175
-        FTSECHINAH: 0.0175
-        #FTSEINDO: 0.0175
-        KOSDAQ: 0.0175
-        KOSPI_mini: 0.0175
-        FTSETAIWAN: 0.0175
-        FTSEVIET: 0.0175
-        EURO600: 0.0175
-        EUROSTX: 0.0175
-        EUROSTX-LARGE: 0.0175
-        EUROSTX200-LARGE: 0.0175
-        EU-DIV30: 0.0175
-        EU-MID: 0.0175
-        DJSTX-SMALL: 0.0175
-        EUROSTX-SMALL: 0.0175
-        EPRA-EUROPE: 0.0175
-        EU-AUTO: 0.0175
-        EU-BANKS: 0.0175
-        EU-BASIC: 0.0175
-        EU-CONSTRUCTION: 0.0175
-        EU-DJ-TELECOM: 0.0175
-        EU-FOOD: 0.0175
-        EU-HEALTH: 0.0175
-        EU-HOUSE: 0.0175
-        EU-INSURE: 0.0175
-        EU-MEDIA: 0.0175
-        EU-OIL: 0.0175
-        EU-REALESTATE: 0.0175
-        EU-RETAIL: 0.0175
-        EU-TECH: 0.0175
-        EU-UTILS: 0.0175
-        CAC: 0.0175
-        DAX: 0.0175
-        AEX: 0.0175
-        IBEX: 0.0175
-        OMX-SWE: 0.0175
-        SMI: 0.0175
-        SMI-MID: 0.0175
-        FTSE100: 0.0175
-        FTSE250: 0.0175
+        DOW: 0.0185
+        FANG: 0.0185
+        NASDAQ_micro: 0.0185
+        R1000: 0.0185
+        SP500_micro: 0.0185
+        RUSSELL: 0.0185
+        SP400: 0.0185
+        JP-REALESTATE: 0.0185
+        MUMMY: 0.0185
+        NIKKEI: 0.0185
+        NIKKEI400: 0.0185
+        SPI200: 0.0185
+        HANG: 0.0185
+        HANGENT_mini: 0.0185
+        HANGTECH: 0.0185
+        MSCISING: 0.0185
+        BOVESPA: 0.0185
+        FTSECHINAA: 0.0185
+        FTSECHINAH: 0.0185
+        #FTSEINDO: 0.0185
+        KOSDAQ: 0.0185
+        KOSPI_mini: 0.0185
+        FTSETAIWAN: 0.0185
+        FTSEVIET: 0.0185
+        EURO600: 0.0185
+        EUROSTX: 0.0185
+        EU-DIV30: 0.0185
+        EU-MID: 0.0185
+        DJSTX-SMALL: 0.0185
+        EUROSTX-SMALL: 0.0185
+        EPRA-EUROPE: 0.0185
+        EU-AUTO: 0.0185
+        EU-BANKS: 0.0185
+        EU-BASIC: 0.0185
+        EU-CONSTRUCTION: 0.0185
+        EU-DJ-TELECOM: 0.0185
+        EU-FOOD: 0.0185
+        EU-HEALTH: 0.0185
+        EU-HOUSE: 0.0185
+        EU-INSURE: 0.0185
+        EU-MEDIA: 0.0185
+        EU-OIL: 0.0185
+        EU-REALESTATE: 0.0185
+        EU-RETAIL: 0.0185
+        EU-TECH: 0.0185
+        EU-UTILS: 0.0185
+        CAC: 0.0185
+        DAX: 0.0185
+        AEX: 0.0185
+        IBEX: 0.0185
+        OMX-SWE: 0.0185
+        SMI: 0.0185
+        SMI-MID: 0.0185
+        FTSE100: 0.0185
+        FTSE250: 0.0185
       fx:
         weight: 0.143
         AUDJPY: 0.0322
@@ -808,18 +805,13 @@ instrument_weights:
       energies:
         weight: 0.143
         EUA: 0.0833
-        GAS-LAST: 0.0833
-        GAS-PEN: 0.0833
-        GAS_US_mini: 0.0833
-        BRENT-LAST: 0.0833
-        BRENT_W: 0.0833
-        CRUDE_ICE: 0.0833
-        CRUDE_W: 0.0833
+        GAS_US_mini: 0.143
+        BRENT_W: 0.143
+        CRUDE_W: 0.143
         #ETHANOL: 0.077
-        GASOIL: 0.0833
-        GASOLINE: 0.0833
-        HEATOIL: 0.0833
-        HEATOIL-ICE: 0.0833
+        GASOIL: 0.143
+        GASOLINE: 0.143
+        HEATOIL: 0.143
       vol:
         weight: 0.143
         V2X: 0.5
