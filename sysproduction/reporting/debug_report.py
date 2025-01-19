@@ -119,7 +119,9 @@ def run_market_monitor_report():
 
 
 def run_account_curve_report():
-    pass
+    report_config = account_curve_report_config.new_config_with_modified_output("file")
+    report_config.suffix = ".pdf"
+    do_report(report_config)
 
 
 if __name__ == "__main__":
