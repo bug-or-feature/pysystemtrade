@@ -206,6 +206,9 @@ def output_report(
 ):
     output = report_config.output
 
+    if parsed_report.contains_pdf:
+        report_config.suffix = ".pdf"
+
     # We either print or email or send to file or ...
     if output == "console":
         display_report(parsed_report)
