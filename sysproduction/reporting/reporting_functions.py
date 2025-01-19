@@ -261,11 +261,10 @@ def email_report(
 def output_file_report(
     parsed_report: ParsedReport, report_config: reportConfig, data: dataBlob
 ):
-    full_filename = resolve_report_filename(report_config=report_config, data=data)
+    full_filename = resolve_report_filepath(report_config=report_config, data=data)
     if parsed_report.contains_pdf:
         ## Already a file so just rename temp file name to final one
-        pdf_full_filename = "%s.pdf" % full_filename
-        shutil.copyfile(parsed_report.pdf_filename, pdf_full_filename)
+        shutil.copyfile(parsed_report.pdf_filename, full_filename)
     else:
         write_text_report_to_file(
             report_text=parsed_report.text, full_filename=full_filename
@@ -274,14 +273,32 @@ def output_file_report(
     data.log.debug("Written report to %s" % full_filename)
 
 
-def resolve_report_filename(report_config, data: dataBlob):
+def resolve_report_filename(
+    report_config, data: dataBlob, suffix: str = arg_not_supplied
+):
     filename_with_spaces = report_config.title
-    filename = filename_with_spaces.replace(" ", "_") + get_report_file_extension(data)
+    if suffix is arg_not_supplied:
+        suffix = get_report_file_suffix(report_config, data)
+    filename = filename_with_spaces.replace(" ", "_") + suffix
+
+    return filename
+
+
+def resolve_report_filepath(report_config, data: dataBlob):
     use_directory = get_directory_for_reporting(data)
     use_directory_resolved = get_resolved_pathname(use_directory)
-    full_filename = os.path.join(use_directory_resolved, filename)
+    report_filepath = os.path.join(
+        use_directory_resolved, resolve_report_filename(report_config, data)
+    )
 
-    return full_filename
+    return report_filepath
+
+
+def get_report_file_suffix(report_config, data: dataBlob):
+    default_ext = data.config.get_element_or_arg_not_supplied("report_file_extension")
+    suffix = getattr(report_config, "suffix", default_ext)
+
+    return suffix
 
 
 def get_directory_for_reporting(data):
@@ -289,10 +306,6 @@ def get_directory_for_reporting(data):
     production_config = data.config
     store_directory = production_config.get_element("reporting_directory")
     return store_directory
-
-
-def get_report_file_extension(data):
-    return data.config.get_element_or_arg_not_supplied("report_file_extension")
 
 
 def write_text_report_to_file(report_text: str, full_filename: str):
