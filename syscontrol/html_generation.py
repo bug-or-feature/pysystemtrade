@@ -37,8 +37,10 @@ def build_report_files(data: dataBlob, context: dict):
         raw_report_path = Path(resolve_report_filepath(report_config, data))
 
         if raw_report_path.name.endswith("pdf"):
-            shutil.copy(raw_report_path, rep_path)
-            pass
+            if raw_report_path.exists():
+                shutil.copy(raw_report_path, rep_path)
+            else:
+                data.log.info(f"{report_name}: no file, skipping")
         else:
             if raw_report_path.exists():
                 data.log.info(f"{report_name}: generating HTML wrapper")
