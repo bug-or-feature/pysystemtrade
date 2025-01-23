@@ -28,8 +28,8 @@ class backupStateFiles(object):
 def backup_state_files_with_data_object(data):
     source_path = get_statefile_directory()
     destination_path = get_statefile_backup_directory()
-    data.log.debug("Copy from %s to %s" % (source_path, destination_path))
-    os.system("rsync -av %s %s" % (source_path, destination_path))
+    data.log.debug(f"Off system copy from {source_path} to {destination_path}")
+    os.system(f"rsync -av -e ssh {source_path} {destination_path}")
 
 
 if __name__ == "__main__":
