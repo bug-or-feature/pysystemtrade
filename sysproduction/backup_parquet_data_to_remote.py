@@ -7,7 +7,7 @@ from sysdata.data_blob import dataBlob
 
 
 def backup_parquet_data_to_remote():
-    data = dataBlob(log_name="backup_mongo_data_as_dump")
+    data = dataBlob(log_name="backup_parquet_data_to_remote")
     backup_object = backupParquet(data)
     backup_object.backup_parquet()
 
@@ -25,15 +25,16 @@ class backupParquet(object):
     def backup_parquet(self):
         data = self.data
         log = data.log
-        log.debug("Copying data to backup destination")
+        log.debug("Copying data to offsystem backup destination")
         backup_parquet_data_to_remote_with_data(data)
 
 
 def backup_parquet_data_to_remote_with_data(data):
     source_path = get_parquet_directory(data)
     destination_path = get_parquet_backup_directory()
-    data.log.debug(f"Off system copy from {source_path} to {destination_path}")
-    os.system(f"rsync -av -e ssh {source_path} {destination_path}")
+    data.log.debug("Copy from %s to %s" % (source_path, destination_path))
+    options = get_production_config().get_element("offsystem_backup_options")
+    os.system(f"rsync {options} {source_path} {destination_path}")
 
 
 if __name__ == "__main__":

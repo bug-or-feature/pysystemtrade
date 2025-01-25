@@ -26,7 +26,7 @@ class backupMongo(object):
         log = data.log
         log.debug("Exporting mongo data")
         dump_mongo_data(data)
-        log.debug("Copying data to backup destination")
+        log.debug("Copying data to offsystem backup destination")
         backup_mongo_dump(data)
 
 
@@ -45,8 +45,9 @@ def dump_mongo_data(data: dataBlob):
 def backup_mongo_dump(data):
     source_path = get_mongo_dump_directory()
     destination_path = get_mongo_backup_directory()
-    data.log.debug(f"Off system copy from {source_path} to {destination_path}")
-    os.system(f"rsync -av -e ssh {source_path} {destination_path}")
+    data.log.debug("Copy from %s to %s" % (source_path, destination_path))
+    options = get_production_config().get_element("offsystem_backup_options")
+    os.system(f"rsync {options} {source_path} {destination_path}")
 
 
 if __name__ == "__main__":
