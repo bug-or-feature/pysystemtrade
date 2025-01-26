@@ -172,7 +172,7 @@ def get_resolved_pathname(pathname: str) -> str:
         # special case when already a Path
         pathname = str(pathname.absolute())
 
-    if "@" in pathname:
+    if "@" in pathname or "::" in pathname:
         # This is an ssh address for rsync - don't change
         return pathname
 
