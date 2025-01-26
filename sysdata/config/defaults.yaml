@@ -22,11 +22,13 @@ strategy_capital_allocation:
 #
 ## Where do we save backtests
 backtest_store_directory: 'private.backtests'
+backtest_max_age: 30
 #
 # And backups
 csv_backup_directory: 'data.backups_csv'
 mongo_dump_directory: 'data.mongo_dump'
 echo_directory: 'data.echos'
+offsystem_backup_options: '-av'
 #
 # Interactive brokers
 ib_ipaddress: 127.0.0.1
