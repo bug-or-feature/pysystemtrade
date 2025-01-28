@@ -14,11 +14,7 @@ from dataclasses import dataclass
 
 from sysdata.data_blob import dataBlob
 
-from sysexecution.orders.instrument_orders import (
-    instrumentOrder,
-    best_order_type,
-    market_order_type,
-)
+from sysexecution.orders.instrument_orders import instrumentOrder, best_order_type
 from sysexecution.orders.list_of_orders import listOfOrders
 from sysexecution.strategies.strategy_order_handling import orderGeneratorForStrategy
 from sysobjects.production.tradeable_object import instrumentStrategy
@@ -721,7 +717,7 @@ def trade_given_optimal_and_actual_positions(
         strategy_name,
         instrument_code,
         trade_required,
-        order_type=market_order_type,
+        order_type=best_order_type,
         reference_price=reference_price,
         reference_contract=reference_contract,
         reference_datetime=reference_date,
