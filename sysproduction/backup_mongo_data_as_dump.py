@@ -50,6 +50,7 @@ def dump_mongo_data(data: dataBlob):
             f"Dumping mongo data from {db_name} to {path} (NOT TESTED IN WINDOWS)"
         )
         os.system(f"mongodump --{source}='{host}' -o={path} --db={db_name}")
+        # will silently fail if arctic db does not exist
         os.system(f"mongodump --{source}='{host}' -o={path} --db=arctic_{db_name}")
 
     data.log.debug("Dumped")
