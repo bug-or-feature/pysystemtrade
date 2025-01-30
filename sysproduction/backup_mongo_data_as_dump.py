@@ -39,8 +39,8 @@ def dump_mongo_data(data: dataBlob):
     else:
         source = "host"
 
-    all = config.get_element_or_default("mongo_dump_all", True)
-    if all:
+    dump_all = config.get_element_or_default("mongo_dump_all", True)
+    if dump_all:
         data.log.debug(f"Dumping ALL mongo data to {path} (NOT TESTED IN WINDOWS)")
         os.system(f"mongodump --{source}='{host}' -o={path}")
 
