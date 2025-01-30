@@ -27,6 +27,8 @@ backtest_max_age: 30
 # And backups
 csv_backup_directory: 'data.backups_csv'
 mongo_dump_directory: 'data.mongo_dump'
+# if mongo_dump_all is True, we dump all databases, otherwise just PST dbs
+mongo_dump_all: True
 echo_directory: 'data.echos'
 offsystem_backup_options: '-av'
 #

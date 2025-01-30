@@ -34,11 +34,24 @@ def dump_mongo_data(data: dataBlob):
     config = data.config
     host = config.get_element_or_arg_not_supplied("mongo_host")
     path = get_mongo_dump_directory()
-    data.log.debug("Dumping mongo data to %s NOT TESTED IN WINDOWS" % path)
     if host.startswith("mongodb://"):
-        os.system("mongodump --uri='%s' -o=%s" % (host, path))
+        source = "uri"
     else:
-        os.system("mongodump --host='%s' -o=%s" % (host, path))
+        source = "host"
+
+    all = config.get_element_or_default("mongo_dump_all", True)
+    if all:
+        data.log.debug(f"Dumping ALL mongo data to {path} (NOT TESTED IN WINDOWS)")
+        os.system(f"mongodump --{source}='{host}' -o={path}")
+
+    else:
+        db_name = config.get_element("mongo_db")
+        data.log.debug(
+            f"Dumping mongo data from {db_name} to {path} (NOT TESTED IN WINDOWS)"
+        )
+        os.system(f"mongodump --{source}='{host}' -o={path} --db={db_name}")
+        os.system(f"mongodump --{source}='{host}' -o={path} --db=arctic_{db_name}")
+
     data.log.debug("Dumped")
 
 
