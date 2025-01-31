@@ -33,7 +33,7 @@ mongorestore --nsInclude="$DB_SOURCE.*" --nsFrom="$DB_SOURCE.*" --nsTo="$DB_TARG
 echo "Restoring remote data to local database COMPLETE"
 
 echo "Restoring remote data to local parquet store..."
-rsync -chavzP --stats --progress $PARQUET_SOURCE $PARQUET_TARGET
+rsync -chavzP --stats --progress --delete $PARQUET_SOURCE $PARQUET_TARGET
 echo "Restoring remote data to local parquet store COMPLETE"
 
 echo "Replication of PROD data to DEV environment COMPLETE"

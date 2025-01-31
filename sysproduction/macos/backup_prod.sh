@@ -26,9 +26,9 @@ PARQUET_TARGET=/Users/ageach/Documents/backup/pst-futures
 echo "Starting backup of PROD data to DEV environment..."
 
 echo "Starting rsync of remote files to local..."
-rsync -chavzP --stats --progress $MONGO_SOURCE $MONGO_TARGET
-rsync -chavzP --stats --progress $CSV_SOURCE $CSV_TARGET
-rsync -chavzP --stats --progress $PARQUET_SOURCE $PARQUET_TARGET
+rsync -chavzP --stats --progress --delete $MONGO_SOURCE $MONGO_TARGET
+rsync -chavzP --stats --progress --delete $CSV_SOURCE $CSV_TARGET
+rsync -chavzP --stats --progress --delete $PARQUET_SOURCE $PARQUET_TARGET
 echo "rsync of remote files to local COMPLETE"
 
 echo "Backup of PROD data to DEV environment COMPLETE"
