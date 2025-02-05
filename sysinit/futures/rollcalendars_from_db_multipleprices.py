@@ -20,7 +20,8 @@ if __name__ == "__main__":
     csv_rollparameters = csvRollParametersData()
     db_multiple_prices = diag_prices.db_futures_multiple_prices_data
 
-    instrument_list = db_multiple_prices.get_list_of_instruments()
+    # instrument_list = db_multiple_prices.get_list_of_instruments()
+    instrument_list = ["VIX", "JPY", "COPPER", "IBEX_mini", "CAD_micro"]
 
     for instrument_code in instrument_list:
         print(instrument_code)

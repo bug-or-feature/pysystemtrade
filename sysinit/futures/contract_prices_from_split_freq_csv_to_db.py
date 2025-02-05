@@ -244,15 +244,8 @@ if __name__ == "__main__":
     )
     # init_db_with_split_freq_csv_prices(datapath)
 
-    # ['BOVESPA', ''EU-DIV50', 'EU-INSURE', 'MILLWHEAT', 'RAPESEED', 'RUBBER', 'R1000', 'SGD_mini', 'TOPIX']
     for instr in [
-        "BOVESPA",
-        "MILLWHEAT",
-        "RAPESEED",
-        "RUBBER",
-        "R1000",
-        "SGD_mini",
-        "TOPIX",
+        "JGB",
     ]:
         init_db_with_split_freq_csv_prices_for_code(
             instr, datapath, csv_config=BARCHART_CONFIG

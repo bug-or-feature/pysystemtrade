@@ -1,23 +1,12 @@
 from sysinit.futures.clone_data_for_instrument import clone_data_for_instrument
 
-
 # format is 'from' = 'to'
 mapping_dict = {
-    # AUD="AUD_micro",
-    # COPPER="COPPER-micro",
-    "CRUDE_W": "CRUDE_W_micro",
-    "EUR": "EUR_micro",
-    # GAS_US="GAS_US_mini",
-    # GOLD="GOLD_micro",
-    # HANG="HANG_mini",
-    # JPY="JPY_mini",
-    # KOSPI="KOSPI_mini",
-    # NASDAQ="NASDAQ_micro",
-    "SILVER-mini": "SILVER",
-    # SOYBEAN="SOYBEAN_mini",
-    # SP500="SP500_micro",
-    # US30U="US30",
-    "VIX": "VIX_mini",
+    "VIX_mini": "VIX",
+    "JPY_mini": "JPY",
+    "COPPER-micro": "COPPER",
+    "IBEX": "IBEX_mini",
+    "CAD": "CAD_micro",
 }
 
 

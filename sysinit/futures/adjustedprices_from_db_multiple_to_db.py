@@ -91,13 +91,12 @@ if __name__ == "__main__":
     #     )
 
     for instr in [
-        "BOVESPA",
-        "MILLWHEAT",
-        "RAPESEED",
-        "RUBBER",
-        "R1000",
-        "SGD_mini",
-        "TOPIX",
+        "CAD_micro",
+        "COPPER",
+        "IBEX_mini",
+        "JGB",
+        "JPY",
+        "VIX",
     ]:
         print(f"Starting adjusted for {instr}")
         process_adjusted_prices_single_instrument(
