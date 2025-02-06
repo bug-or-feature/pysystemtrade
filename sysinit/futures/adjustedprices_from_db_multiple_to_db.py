@@ -91,11 +91,7 @@ if __name__ == "__main__":
     #     )
 
     for instr in [
-        "CAD_micro",
         "COPPER",
-        "IBEX_mini",
-        "JGB",
-        "JPY",
         "VIX",
     ]:
         print(f"Starting adjusted for {instr}")
