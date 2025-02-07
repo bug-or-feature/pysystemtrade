@@ -1,0 +1,874 @@
+#YAML
+start_date: 1970-01-01
+#
+# Raw data
+#
+#
+# Trading rules
+#
+volatility_calculation:
+  func: "sysquant.estimators.vol.mixed_vol_calc"
+  days: 35
+  min_periods: 10
+  vol_abs_min: 0.0000000001
+  slow_vol_years: 20
+  proportion_of_slow_vol: 0.35
+  backfill: True
+
+#
+use_attenuation:
+   - 'breakout10'
+   - 'breakout20'
+   - 'breakout40'
+   - 'breakout80'
+   - 'breakout160'
+   - 'breakout320'
+   - 'relmomentum10'
+   - 'relmomentum20'
+   - 'relmomentum40'
+   - 'relmomentum80'
+   - 'mrinasset1000'
+   - 'assettrend2'
+   - 'assettrend4'
+   - 'assettrend8'
+   - 'assettrend16'
+   - 'assettrend32'
+   - 'assettrend64'
+   - 'normmom2'
+   - 'normmom4'
+   - 'normmom8'
+   - 'normmom16'
+   - 'normmom32'
+   - 'normmom64'
+   - 'momentum4'
+   - 'momentum8'
+   - 'momentum16'
+   - 'momentum32'
+   - 'momentum64'
+#
+trading_rules:
+  breakout10:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 10
+  breakout20:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 20
+  breakout40:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 40
+  breakout80:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 80
+  breakout160:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 160
+  breakout320:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 320
+  relmomentum10:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 10
+  relmomentum20:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 20
+  relmomentum40:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 40
+  relmomentum80:
+     function: systems.provided.rules.rel_mom.relative_momentum
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 80
+  mrinasset1000:
+     function: systems.provided.rules.cs_mr.cross_sectional_mean_reversion
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+       horizon: 1000
+  carry10:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 10
+  carry30:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 30
+  carry60:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 60
+  carry125:
+     function: systems.provided.rules.carry.carry
+     data:
+         - "rawdata.raw_carry"
+     other_args:
+         smooth_days: 125
+  assettrend2:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+  assettrend4:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  assettrend8:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  assettrend16:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  assettrend32:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  assettrend64:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.normalised_price_for_asset_class"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+  normmom2:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 2
+         Lslow: 8
+  normmom4:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  normmom8:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  normmom16:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  normmom32:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  normmom64:
+     function: systems.provided.rules.ewmac.ewmac_calc_vol
+     data:
+         - "rawdata.get_cumulative_daily_vol_normalised_returns"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+  momentum4:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+  momentum8:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
+  momentum16:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 16
+         Lslow: 64
+  momentum32:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 32
+         Lslow: 128
+  momentum64:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 64
+         Lslow: 256
+  relcarry:
+     function: systems.provided.rules.carry.relative_carry
+     data:
+          - "rawdata.smoothed_carry"
+          - "rawdata.median_carry_for_asset_class"
+  skewabs365:
+     function: systems.provided.rules.factors.factor_trading_rule
+     data:
+          - 'rawdata.get_demeanded_factor_value'
+     other_args:
+          smooth: 90
+          _factor_name: 'neg_skew'
+          _demean_method: 'historic_average_factor_value_all_assets'
+          _lookback_days: 365
+  skewabs180:
+     function: systems.provided.rules.factors.factor_trading_rule
+     data:
+          - 'rawdata.get_demeanded_factor_value'
+     other_args:
+          smooth: 45
+          _factor_name: 'neg_skew'
+          _demean_method: 'historic_average_factor_value_all_assets'
+          _lookback_days: 180
+  skewrv365:
+     function: systems.provided.rules.factors.factor_trading_rule
+     data:
+          - 'rawdata.get_demeanded_factor_value'
+     other_args:
+          smooth: 90
+          _factor_name: 'neg_skew'
+          _demean_method: 'average_factor_value_in_asset_class_for_instrument'
+          _lookback_days: 365
+  skewrv180:
+     function: systems.provided.rules.factors.factor_trading_rule
+     data:
+          - 'rawdata.get_demeanded_factor_value'
+     other_args:
+          smooth: 45
+          _factor_name: 'neg_skew'
+          _demean_method: 'average_factor_value_in_asset_class_for_instrument'
+          _lookback_days: 180
+  accel16:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 16
+  accel32:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 32
+  accel64:
+    function: systems.provided.rules.accel.accel
+    data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+    other_args:
+         Lfast: 64
+#
+forecast_cap: 20.0
+#
+# estimate from past data
+forecast_scalars:
+  accel16: 7.982026809349641
+  accel32: 5.684502608184304
+  accel64: 3.971289741095803
+  assettrend2: 38.05819650113913
+  assettrend4: 27.240380188968263
+  assettrend8: 19.355674951241358
+  assettrend16: 13.21480493057774
+  assettrend32: 8.432381756041488
+  assettrend64: 5.3125672473247345
+  breakout10: 0.706538908136104
+  breakout20: 0.7976564810691872
+  breakout40: 0.8329096369305757
+  breakout80: 0.8541878874300258
+  breakout160: 0.8565548647577084
+  breakout320: 0.840033722848961
+  carry10: 30.58338890728694
+  carry30: 31.149328261829087
+  carry60: 32.113825303651616
+  carry125: 33.56186267855286
+  momentum4: 10.634701010752847
+  momentum8: 7.414806626068647
+  momentum16: 5.083763440172366
+  momentum32: 3.4309492630269824
+  momentum64: 2.358321548868674
+  mrinasset1000: 640.1536502583633
+  normmom2: 41.25864550331071
+  normmom4: 28.159995616669896
+  normmom8: 19.254047908967653
+  normmom16: 13.152153001670218
+  normmom32: 9.08990033395219
+  normmom64: 6.385027115877421
+  relcarry: 52.597640769952505
+  relmomentum10: 73.2324697038226
+  relmomentum20: 103.8498181319242
+  relmomentum40: 143.6851491252789
+  relmomentum80: 198.15227106949385
+  skewabs180: 4.685332232262262
+  skewabs365: 2.576990325188842
+  skewrv180: 4.891746208300584
+  skewrv365: 2.929371473529061
+#
+# forecast combination
+#
+# Capital correction
+#
+percentage_vol_target: 25.0
+notional_trading_capital: 190000
+base_currency: "GBP"
+#
+# Portfolio creation
+#
+
+forecast_weights:
+  auto_weight_from_grouping:
+    parameters:
+      use_approx_DM: True
+      apply_forecast_post_ceiling_cost_SR_before_weighting: True
+    groups:
+      divergent:
+        weight: 0.69
+        accel:
+          weight: 0.13
+          accel16: 0.333
+          accel32: 0.333
+          accel64: 0.333
+        assettrend2:
+          weight: 0.145
+          assettrend2: 0.1
+          assettrend4: 0.1
+          assettrend8: 0.2
+          assettrend16: 0.2
+          assettrend32: 0.2
+          assettrend64: 0.2
+        breakout:
+          weight: 0.29
+          breakout10: 0.05
+          breakout20: 0.05
+          breakout40: 0.2
+          breakout80: 0.2
+          breakout160: 0.25
+          breakout320: 0.25
+        momentum:
+          weight: 0.145
+          momentum4: 0.05
+          momentum8: 0.15
+          momentum16: 0.2
+          momentum32: 0.3
+          momentum64: 0.3
+        normmom:
+          weight: 0.145
+          normmom2: 0.1
+          normmom4: 0.1
+          normmom8: 0.2
+          normmom16: 0.2
+          normmom32: 0.2
+          normmom64: 0.2
+        relmomentum:
+          weight: 0.145
+          relmomentum10: 0.1
+          relmomentum20: 0.2
+          relmomentum40: 0.3
+          relmomentum80: 0.4
+      convergent:
+        weight: 0.21
+        carry:
+          weight: 0.524
+          carry10: 0.227
+          carry30: 0.227
+          carry60: 0.273
+          carry125: 0.273
+        mrinasset:
+          weight: 0.238
+          mrinasset1000: 1.0
+        relcarry:
+          weight: 0.238
+          relcarry: 1.0
+      skew:
+        weight: 0.1
+        skewabs:
+          weight: 0.5
+          skewabs180: 0.5
+          skewabs365: 0.5
+        skewrv:
+          weight: 0.5
+          skewrv180: 0.5
+          skewrv365: 0.5
+
+# estimate from past data
+forecast_div_multiplier:
+  AEX: 1.7606873981100064
+  ALUMINIUM: 1.76  # TODO
+  AUDJPY: 1.7606873981100064
+  AUD_micro: 1.7606873981100064
+  BB3M: 1.70400301905947
+  BBCOMM: 1.7606873981100064
+  BITCOIN: 1.7606754925814445
+  BOBL: 1.7606873981100064
+  BONO: 1.7606873881544223
+  BOVESPA: 1.7606930994736094
+  BRE: 1.7606873981100064
+  BRENT_W: 1.7606873981100064
+  BTP: 1.7606873981100064
+  BTP3: 1.7606873981100044
+  BUND: 1.7606873981100064
+  BUTTER: 1.7606873981100064
+  BUXL: 1.7606873981100064
+  CAC: 1.7606873981100064
+  CAD10: 1.7606873981100064
+  CADJPY: 1.760693099473629
+  CAD_micro: 1.7606873981100064
+  CANOLA: 1.7606873981100064
+  CH10: 1.7606873981100064
+  CHEESE: 1.7606873981100064
+  CHF: 1.7606873981100064
+  CHFJPY: 1.760693099473629
+  CLP: 1.7606930993788257
+  CNH: 1.7606873981098885
+  COCOA: 1.7606873981100064
+  COCOA_LDN: 1.7606873981100064
+  COFFEE: 1.7606873981100064
+  COPPER-micro: 1.7606873981100064
+  CORN: 1.7606873981100064
+  COTTON2: 1.7606873981100064
+  CRUDE_W_micro: 1.7606873981100064
+  CZK: 1.760693099473629
+  DAX: 1.7606873981100064
+  DJSTX-SMALL: 1.760687398109937
+  DOW: 1.7606873981100064
+  DX: 1.7606873981100064
+  ETHANOL: 1.760693099473629
+  ETHER-micro: 1.702708415778401
+  EU-AUTO: 1.7606873975728368
+  EU-BANKS: 1.7606873981100064
+  EU-BASIC: 1.7606592050430663
+  EU-CONSTRUCTION: 1.7025457163496172
+  EU-DIV30: 1.7606873981100064
+  EU-DJ-TELECOM: 1.760687398099833
+  EU-FOOD: 1.7025429257909452
+  EU-HEALTH: 1.7606873975728374
+  EU-HOUSE: 1.7025459597278547
+  EU-INSURE: 1.7025436633891549
+  EU-MEDIA: 1.760619615704944
+  EU-MID: 1.760687398109936
+  EU-OIL: 1.7606592050430663
+  EU-REALESTATE: 1.7606873975407509
+  EU-RETAIL: 1.702543035964662
+  EU-TECH: 1.7606592050430663
+  EU-UTILS: 1.7606873981064
+  EUA: 1.707678218554825
+  EURCAD: 1.7606873981100064
+  EURCHF: 1.7606873981100064
+  EURIBOR-ICE: 1.7606873981100064
+  EURO600: 1.7606873981100064
+  EUROSTX: 1.7606873981100064
+  EUROSTX-SMALL: 1.760687398109936
+  EUR_micro: 1.7606873981100064
+  FANG: 1.7606772299529603
+  FED: 1.7606873981100064
+  FEEDCOW: 1.7606873981100064
+  FTSE100: 1.7606873981100064
+  FTSE250: 1.7606873981100064
+  FTSECHINAA: 1.7606873981100062
+  FTSECHINAH: 1.7025501294173138
+  FTSETAIWAN: 1.7025451063698964
+  FTSEVIET: 1.7037251600866914
+  GASOIL: 1.7606873981100064
+  GASOLINE: 1.7606873981100064
+  GAS_NL: 1.7612571266640922
+  GAS_UK: 1.7611333101485374
+  GAS_US_mini: 1.7606873981100064
+  GBP: 1.7606873981100064
+  GBPCHF: 1.760693099473629
+  GBPEUR: 1.7606873981100064
+  GBPJPY: 1.7606873981100064
+  GICS: 1.7606873981100064
+  GILT: 1.7606873981100064
+  GOLD_micro: 1.7606873981100064
+  HANG: 1.76  # TODO
+  HANGENT_mini: 1.760687396545576
+  HANGTECH: 1.7025472048397876
+  HEATOIL: 1.7606873981100064
+  IBEX_mini: 1.7606873981100064
+  IRON: 1.7606873981083042
+  IRS: 1.760693099473629
+  JGB: 1.7606873981100064
+  JP-REALESTATE: 1.7606221091752687
+  JPY: 1.7606873981100064
+  KOSDAQ: 1.702543868086963
+  KOSPI_mini: 1.7606873981100064
+  KR10: 1.760687398106043
+  KR3: 1.760687398106043
+  KRWUSD_mini: 1.7025528318686998
+  LEANHOG: 1.7606873981100064
+  LIVECOW: 1.7606873981100064
+  LUMBER-new: 1.7043219828114236
+  MILK: 1.7606873981100064
+  MILKDRY: 1.760687398107955
+  MILKWET: 1.7606873981100064
+  MILLWHEAT: 1.7606873981100064
+  MSCIEAFA: 1.7606873981100064
+  MSCISING: 1.7606873981099944
+  MUMMY: 1.7605244935919038
+  MXP: 1.7606873981100064
+  NASDAQ_micro: 1.7606873981100064
+  NIKKEI: 1.7606873981100064
+  NIKKEI400: 1.760687397580541
+  NOK: 1.7606873981100064
+  NZD: 1.7606873981100064
+  OAT: 1.7606873981100026
+  OATIES: 1.7606873981100064
+  OJ: 1.7606873981100064
+  OMX: 1.760693099473629
+  OMX-SWE: 1.7606873981100042
+  PALLAD: 1.7606873981100064
+  PLAT: 1.7606873981100064
+  PLN: 1.7606873981100064
+  R1000: 1.7606873942245955
+  RAPESEED: 1.7606873981100064
+  REDWHEAT: 1.7606873981100064
+  RICE: 1.7606873981100064
+  ROBUSTA: 1.7606873981100064
+  RUBBER: 1.5729752066032276
+  RUR: 1.760693099473629
+  RUSSELL: 1.7606873981100064
+  SEK: 1.7606873981100064
+  SGD_mini: 1.76  # TODO
+  SHATZ: 1.7606873981100064
+  SILVER: 1.7606873981100064
+  SMI: 1.7606873981100064
+  SMI-MID: 1.760693099473629
+  SOFR: 1.7606873981100064
+  SONIA3: 1.760487125184476
+  SOYBEAN_mini: 1.7606873981100064
+  SOYMEAL: 1.7606873981100064
+  SOYOIL: 1.7606873981100064
+  SP400: 1.7606873981100064
+  SP500_micro: 1.7606873981100064
+  SPI200: 1.7606873981100064
+  STEEL: 1.7606873981100064
+  SUGAR11: 1.7606873981100064
+  SUGAR_WHITE: 1.7606873981100064
+  TWD: 1.7027596958357019
+  US-MATERIAL: 1.7606873981100062
+  US-PROPERTY: 1.7606873218583006
+  US10: 1.7606873981100064
+  US10U: 1.760687388773186
+  US2: 1.7606873981100064
+  US20: 1.7606873981100064
+  US3: 1.7025435543899177
+  US30: 1.7606873981100064
+  US5: 1.7606873981100064
+  V2X: 1.7606873981099802
+  VIX: 1.7606873981100064
+  VNKI: 1.70315491903125
+  WHEAT: 1.7606873981100064
+  WHEY: 1.7606873981100064
+  YENEUR: 1.7606873981100064
+  ZAR: 1.7606873981100064
+
+instrument_div_multiplier: 2.5
+
+instrument_weights:
+  auto_weight_from_grouping:
+    parameters:
+      use_approx_DM: True
+    groups:
+      ags:
+        weight: 0.143
+        grain:
+          weight: 0.333
+          CANOLA: 0.09
+          CORN: 0.09
+          MILLWHEAT: 0.09
+          OATIES: 0.09
+          RAPESEED: 0.09
+          REDWHEAT: 0.09
+          RICE: 0.09
+          SOYBEAN_mini: 0.09
+          SOYMEAL: 0.09
+          SOYOIL: 0.09
+          WHEAT: 0.09
+        meats:
+          weight: 0.333
+          FEEDCOW: 0.333
+          LEANHOG: 0.333
+          LIVECOW: 0.333
+        softs:
+          weight: 0.333
+          COCOA: 0.083
+          COCOA_LDN: 0.083
+          COTTON2: 0.083
+          COFFEE: 0.083
+          MILK: 0.083
+          OJ: 0.083
+          LUMBER-new: 0.083
+          ROBUSTA: 0.083
+          RUBBER: 0.083
+          SUGAR11: 0.083
+          SUGAR_WHITE: 0.083
+          WHEY: 0.083
+      rates:
+        weight: 0.143
+        Americas:
+          weight: 0.4
+          CAD10: 0.1
+          FED: 0.1
+          US10: 0.1
+          US10U: 0.1
+          US2: 0.1
+          US20: 0.1
+          US3: 0.1
+          US30: 0.1
+          US5: 0.1
+          SOFR: 0.1
+        Asia:
+          weight: 0.2
+          JGB: 0.333
+          KR3: 0.333
+          KR10: 0.333
+        Europe:
+          weight: 0.4
+          BTP: 0.083
+          BTP3: 0.083
+          BOBL: 0.083
+          BONO: 0.083
+          BUND: 0.083
+          BUXL: 0.083
+          CH10: 0.083
+          EURIBOR-ICE: 0.083
+          GILT: 0.083
+          OAT: 0.083
+          SHATZ: 0.083
+          SONIA3: 0.083
+      equity:
+        weight: 0.143
+        Americas:
+          weight: 0.25
+          DOW: 0.143
+          FANG: 0.143
+          NASDAQ_micro: 0.143
+          R1000: 0.143
+          SP500_micro: 0.143
+          RUSSELL: 0.143
+          SP400: 0.143
+        Asia:
+          weight: 0.25
+          JP-REALESTATE: 0.111
+          MUMMY: 0.111
+          NIKKEI: 0.111
+          NIKKEI400: 0.111
+          SPI200: 0.111
+          HANG: 0.111
+          HANGENT_mini: 0.111
+          HANGTECH: 0.111
+          MSCISING: 0.111
+        EMEA:
+          weight: 0.25
+          index:
+            weight: 0.6
+            AEX: 0.0625
+            CAC: 0.0625
+            DAX: 0.0625
+            DJSTX-SMALL: 0.0625
+            EURO600: 0.0625
+            EUROSTX: 0.0625
+            EU-DIV30: 0.0625
+            EU-MID: 0.0625
+            EUROSTX-SMALL: 0.0625
+            EPRA-EUROPE: 0.0625
+            FTSE100: 0.0625
+            FTSE250: 0.0625
+            IBEX_mini: 0.0625
+            OMX-SWE: 0.0625
+            SMI: 0.0625
+            SMI-MID: 0.0625
+          sector:
+            weight: 0.4
+            EU-AUTO: 0.0666
+            EU-BANKS: 0.0666
+            EU-BASIC: 0.0666
+            EU-CONSTRUCTION: 0.0666
+            EU-DJ-TELECOM: 0.0666
+            EU-FOOD: 0.0666
+            EU-HEALTH: 0.0666
+            EU-HOUSE: 0.0666
+            EU-INSURE: 0.0666
+            EU-MEDIA: 0.0666
+            EU-OIL: 0.0666
+            EU-REALESTATE: 0.0666
+            EU-RETAIL: 0.0666
+            EU-TECH: 0.0666
+            EU-UTILS: 0.0666
+        Emerging:
+          weight: 0.25
+          BOVESPA: 0.143
+          FTSECHINAA: 0.143
+          FTSECHINAH: 0.143
+          #FTSEINDO: 0.143
+          KOSDAQ: 0.143
+          KOSPI_mini: 0.143
+          FTSETAIWAN: 0.143
+          FTSEVIET: 0.143
+      fx:
+        weight: 0.143
+        cross:
+          weight: 0.3333
+          AUDJPY: 0.111
+          CADJPY: 0.111
+          CHFJPY: 0.111
+          EURCAD: 0.111
+          EURCHF: 0.111
+          GBPEUR: 0.111
+          GBPCHF: 0.111
+          GBPJPY: 0.111
+          YENEUR: 0.111
+        developed:
+          weight: 0.3333
+          AUD_micro: 0.083
+          CAD_micro: 0.083
+          CHF: 0.083
+          DX: 0.083
+          EUR_micro: 0.083
+          GBP: 0.083
+          JPY: 0.083
+          NZD: 0.083
+          SEK: 0.083
+          SGD_mini: 0.083
+          NOK: 0.083
+          TWD: 0.083
+        emerging:
+          weight: 0.3333
+          BRE: 0.1
+          CLP: 0.1
+          CNH: 0.1
+          CZK: 0.1
+          IRS: 0.1
+          KRWUSD_mini: 0.1
+          MXP: 0.1
+          PLN: 0.1
+          RUR: 0.1
+          ZAR: 0.1
+      metals:
+        weight: 0.143
+        base:
+          weight: 0.333
+          ALUMINIUM: 0.25
+          COPPER-micro: 0.25
+          IRON: 0.25
+          STEEL: 0.25
+        crypto:
+          weight: 0.333
+          BITCOIN: 0.5
+          ETHER-micro: 0.5
+        precious:
+          weight: 0.333
+          GOLD_micro: 0.25
+          PALLAD: 0.25
+          PLAT: 0.25
+          SILVER: 0.25
+      energies:
+        weight: 0.143
+        BRENT_W: 0.143
+        CRUDE_W_micro: 0.143
+        #ETHANOL: 0.143
+        EUA: 0.143
+        GASOIL: 0.143
+        GASOLINE: 0.143
+        GAS_US_mini: 0.143
+        HEATOIL: 0.143
+      vol:
+        weight: 0.143
+        VIX: 0.5
+        V2X: 0.5
+
+# Total: 53
+# 1/6: 0.1667
+# 1/7: 0.143
+# 1/8: 0.125
+# 1/9: 0.111
+# 1/11: 0.09
+# 1/12: 0.083
+# 1/15: 0.0666
+# 1/16: 0.0625
+
+
+#
+risk_overlay:
+  max_risk_fraction_normal_risk: 1.4
+  max_risk_fraction_stdev_risk: 3.6
+  max_risk_limit_sum_abs_risk: 3.4
+  max_risk_leverage: 13.0
+
+# Set this to 0.13 to enforce the speed limit even for fixed weights or
+#   regardless of what an estimator does
+forecast_post_ceiling_cost_SR: 0.13
+
+
+
+
