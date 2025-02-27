@@ -204,8 +204,7 @@ if __name__ == "__main__":
     # )
 
     for instr in [
-        "COPPER",
-        "VIX",
+        "ALUMINIUM_LME",
     ]:
         print(f"Starting multiple for {instr}")
         process_multiple_prices_single_instrument(

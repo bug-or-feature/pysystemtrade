@@ -91,8 +91,7 @@ if __name__ == "__main__":
     #     )
 
     for instr in [
-        "COPPER",
-        "VIX",
+        "ALUMINIUM_LME",
     ]:
         print(f"Starting adjusted for {instr}")
         process_adjusted_prices_single_instrument(

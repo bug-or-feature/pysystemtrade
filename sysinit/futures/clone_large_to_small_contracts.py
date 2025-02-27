@@ -2,11 +2,8 @@ from sysinit.futures.clone_data_for_instrument import clone_data_for_instrument
 
 # format is 'from' = 'to'
 mapping_dict = {
-    "VIX_mini": "VIX",
-    "JPY_mini": "JPY",
-    "COPPER-micro": "COPPER",
-    "IBEX": "IBEX_mini",
-    "CAD": "CAD_micro",
+    "SGD_mini": "SGD",
+    "HANG": "HANG-mini",
 }
 
 
