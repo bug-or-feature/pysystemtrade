@@ -463,7 +463,7 @@ forecast_weights:
 # estimate from past data
 forecast_div_multiplier:
   AEX: 1.7606873981100064
-  ALUMINIUM: 1.76  # TODO
+  ALUMINIUM_LME: 1.76  # TODO
   AUDJPY: 1.7606873981100064
   AUD_micro: 1.7606873981100064
   BB3M: 1.70400301905947
@@ -473,7 +473,7 @@ forecast_div_multiplier:
   BONO: 1.7606873881544223
   BOVESPA: 1.7606930994736094
   BRE: 1.7606873981100064
-  BRENT_W: 1.7606873981100064
+  BRENT-LAST: 1.7606873981100064
   BTP: 1.7606873981100064
   BTP3: 1.7606873981100044
   BUND: 1.7606873981100064
@@ -554,7 +554,7 @@ forecast_div_multiplier:
   HANGENT_mini: 1.760687396545576
   HANGTECH: 1.7025472048397876
   HEATOIL: 1.7606873981100064
-  IBEX_mini: 1.7606873981100064
+  IBEX: 1.7606873981100064
   IRON: 1.7606873981083042
   IRS: 1.760693099473629
   JGB: 1.7606873981100064
@@ -744,7 +744,7 @@ instrument_weights:
             EPRA-EUROPE: 0.0625
             FTSE100: 0.0625
             FTSE250: 0.0625
-            IBEX_mini: 0.0625
+            IBEX: 0.0625
             OMX-SWE: 0.0625
             SMI: 0.0625
             SMI-MID: 0.0625
@@ -818,7 +818,7 @@ instrument_weights:
         weight: 0.143
         base:
           weight: 0.333
-          ALUMINIUM: 0.25
+          ALUMINIUM_LME: 0.25
           COPPER-micro: 0.25
           IRON: 0.25
           STEEL: 0.25
@@ -834,7 +834,7 @@ instrument_weights:
           SILVER: 0.25
       energies:
         weight: 0.143
-        BRENT_W: 0.143
+        BRENT-LAST: 0.143
         CRUDE_W_micro: 0.143
         #ETHANOL: 0.143
         EUA: 0.143
