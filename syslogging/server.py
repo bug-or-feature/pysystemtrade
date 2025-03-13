@@ -120,5 +120,9 @@ def logging_server():
     return 0
 
 
-if __name__ == "__main__":
+def run():
     sys.exit(logging_server())
+
+
+if __name__ == "__main__":
+    run()
