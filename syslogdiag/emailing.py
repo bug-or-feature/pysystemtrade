@@ -87,7 +87,7 @@ def _send_msg(msg: MIMEMultipart):
         msg["To"] = ", ".join(email_to)
     else:
         you = [email_to]
-        msg["To"] = you
+        msg["To"] = email_to
 
     # Send the message via our own SMTP server, but don't include the
     # envelope header.
