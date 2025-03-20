@@ -80,9 +80,14 @@ def _send_msg(msg: MIMEMultipart):
     email_server, email_address, email_pwd, email_to, email_port = get_email_details()
 
     me = email_address
-    you = email_to
     msg["From"] = me
-    msg["To"] = you
+
+    if type(email_to) is list:
+        you = email_to
+        msg["To"] = ", ".join(email_to)
+    else:
+        you = [email_to]
+        msg["To"] = you
 
     # Send the message via our own SMTP server, but don't include the
     # envelope header.
@@ -90,7 +95,7 @@ def _send_msg(msg: MIMEMultipart):
         smtp = smtplib.SMTP(email_server, email_port, timeout=10)
         smtp.starttls(context=ssl.create_default_context())
         smtp.login(email_address, email_pwd)
-        smtp.sendmail(me, [you], msg.as_string())
+        smtp.sendmail(me, you, msg.as_string())
     except Exception as e:
         print(e)
     finally:
