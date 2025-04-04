@@ -860,10 +860,10 @@ instrument_weights:
 
 #
 risk_overlay:
-  max_risk_fraction_normal_risk: 1.4
-  max_risk_fraction_stdev_risk: 3.6
-  max_risk_limit_sum_abs_risk: 3.4
-  max_risk_leverage: 13.0
+  max_risk_fraction_normal_risk: 2.0
+  max_risk_fraction_stdev_risk: 4.0
+  max_risk_limit_sum_abs_risk: 4.0
+  max_risk_leverage: 15.0
 
 # Set this to 0.13 to enforce the speed limit even for fixed weights or
 #   regardless of what an estimator does
