@@ -1,15 +1,5 @@
-import pickle
-import pandas as pd
-
-from syscore.fileutils import resolve_path_and_filename_for_package
-from syscore.interactive.progress_bar import progressBar
-
-# from syscore.pandas.pdutils import print_full
 from sysdata.data_blob import dataBlob
 
-from sysproduction.data.prices import get_list_of_instruments
-
-from sysproduction.reporting.data.risk import get_risk_data_for_instrument
 from sysproduction.reporting.report_configs import *
 from sysproduction.reporting.reporting_functions import (
     run_report_with_data_blob,
@@ -37,7 +27,7 @@ from sysproduction.reporting.reporting_functions import (
 def do_report(config: reportConfig):
     pandas_display_for_reports()
     with dataBlob(
-        log_name=f"Test_Report",
+        log_name=f"{config.title}",
         csv_data_paths=dict(
             csvFuturesInstrumentData="/Users/ageach/Dev/work/pst-futures/data/futures/csvconfig",
         ),
@@ -78,12 +68,10 @@ def run_trade_report():
 
 def run_strategy_report():
     do_report(strategy_report_config.new_config_with_modified_output("console"))
-    # do_report(
-    #     strategy_report_config.new_config_with_modified_output("console").modify_kwargs(
-    #         strategy_name="fsb_dynamic_strategy_v1_2",
-    #         timestamp="20240801_120000",
-    #     )
-    # )
+
+
+def run_fsb_trend_report():
+    do_report(fsb_trend_report_config.new_config_with_modified_output("console"))
 
 
 def run_risk_report():
@@ -95,7 +83,7 @@ def run_status_report():
 
 
 def run_liquidity_report():
-    pass
+    do_report(liquidity_report_config.new_config_with_modified_output("console"))
 
 
 def run_instrument_risk_report():
@@ -107,7 +95,7 @@ def run_min_capital_report():
 
 
 def run_duplicate_market_report():
-    pass
+    do_report(duplicate_market_report_config.new_config_with_modified_output("console"))
 
 
 def run_remove_markets_report():
@@ -124,12 +112,16 @@ def run_account_curve_report():
     do_report(report_config)
 
 
+def run_commission_report():
+    do_report(commission_report_config.new_config_with_modified_output("console"))
+
+
 if __name__ == "__main__":
     # run_slippage_report()
     # run_costs_report()
     # run_roll_report()
     # run_roll_report(instr_code="LEANHOG_fsb")
-    run_daily_pandl_report()
+    # run_daily_pandl_report()
     # run_reconcile_report()
     # run_trade_report()
     # run_strategy_report()
@@ -138,11 +130,13 @@ if __name__ == "__main__":
     # run_liquidity_report()
     # run_instrument_risk_report()
     # run_min_capital_report()
-    # run_duplicate_market_report()
+    run_duplicate_market_report()
     # run_remove_markets_report()
     # run_market_monitor_report()
     # run_account_curve_report()
     # run_slippage_report()
+    # run_commission_report()
+    # run_fsb_trend_report()
 
     # run_fsb_report()
     # run_min_capital_fsb_report()
