@@ -48,8 +48,13 @@ class ibFuturesContractCommissionData(brokerFuturesContractCommissionData):
         instrument_code = futures_contract.instrument_code
         contract_date = futures_contract.contract_date.list_of_date_str[0]
 
+        broker_account = self.data.config.get_element("broker_account")
         broker_order = brokerOrder(
-            test_commission_strategy, instrument_code, contract_date, size_of_test_trade
+            test_commission_strategy,
+            instrument_code,
+            contract_date,
+            size_of_test_trade,
+            broker_account=broker_account,
         )
 
         order = self.execution_stack.what_if_order(broker_order)
@@ -75,4 +80,4 @@ def get_commission_and_currency_from_ib_order(
 
 
 test_commission_strategy = "testCommmission"  ## whatever not put on stack
-size_of_test_trade = 10  ## arbitrary
+size_of_test_trade = 1  ## arbitrary
