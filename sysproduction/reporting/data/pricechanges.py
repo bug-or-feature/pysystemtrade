@@ -39,7 +39,7 @@ class marketMovers(object):
         return all_moves_as_df
 
     def get_market_move_for_instrument_and_dates(self, instrument_code: str) -> dict:
-        print(instrument_code)
+        self.data.log.info(instrument_code)
         start_date = self.start_date
         end_date = self.end_date
 
@@ -64,7 +64,7 @@ class marketMovers(object):
     def get_market_moves_for_period(self, period: str) -> pd.DataFrame:
         self._end_date = datetime.datetime.now()
 
-        print("Getting data for %s" % period)
+        self.data.log.info("Getting data for %s" % period)
         # ['name', 'change', 'vol_adjusted']
         list_of_instruments = get_list_of_instruments(self.data, source="multiple")
         all_moves: List[Dict[str, Any]] = []
@@ -86,7 +86,7 @@ class marketMovers(object):
     def get_market_move_for_instrument_and_period(
         self, instrument_code: str, period: str
     ) -> dict:
-        print(instrument_code)
+        self.data.log.info(instrument_code)
         start_date = self.start_date_for_period(period)
         end_date = self.end_date
 
