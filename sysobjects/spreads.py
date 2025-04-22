@@ -6,7 +6,8 @@ from syscore.exceptions import missingData
 
 
 class spreadsForInstrument(pd.Series):
-    def add_spread(self, spread: float, current_time=datetime.datetime.now()):
+    def add_spread(self, spread: float):
+        current_time = datetime.datetime.now()
         new_row = pd.Series(spread, index=[current_time])
 
         return spreadsForInstrument(pd.concat([self, new_row], axis=0))
