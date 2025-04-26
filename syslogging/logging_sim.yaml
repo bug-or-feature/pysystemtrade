@@ -12,7 +12,7 @@ handlers:
     stream: ext://sys.stdout
 loggers:
   ib_insync:
-    level: WARNING
+    level: INFO
   arctic:
     level: INFO
   matplotlib:
