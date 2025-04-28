@@ -624,7 +624,7 @@ def get_roll_state_required(
             )
             print("")
             if okay_to_change is None:
-                return no_change_required
+                return roll_data.original_roll_status
 
             if okay_to_change:
                 # happy
@@ -635,7 +635,8 @@ def get_roll_state_required(
                 continue
         else:
             print("No change")
-            return no_change_required
+            return roll_data.original_roll_status
+    return None
 
 
 def setup_roll_data_with_state_reporting(
@@ -690,10 +691,7 @@ def modify_roll_state(
     roll_state_required: RollState,
     confirm_adjusted_price_change: bool = True,
 ):
-    roll_state_is_unchanged = (roll_state_required is no_change_required) or (
-        roll_state_required is original_roll_state
-    )
-    if roll_state_is_unchanged:
+    if roll_state_required == original_roll_state:
         return
 
     if original_roll_state is no_open_state:
