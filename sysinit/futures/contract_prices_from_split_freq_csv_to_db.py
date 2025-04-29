@@ -245,7 +245,7 @@ if __name__ == "__main__":
     # init_db_with_split_freq_csv_prices(datapath)
 
     for instr in [
-        "ALUMINIUM_LME",
+        "CRUDE_W",
     ]:
         init_db_with_split_freq_csv_prices_for_code(
             instr, datapath, csv_config=BARCHART_CONFIG
