@@ -97,14 +97,14 @@ def nice_format_roll_table(roll_table: pd.DataFrame) -> pd.DataFrame:
 
 def nice_format_slippage_table(slippage_table: pd.DataFrame) -> pd.DataFrame:
     slippage_table.Difference = slippage_table.Difference.round(1)
-    slippage_table.bid_ask_trades = slippage_table.bid_ask_trades.round(4)
-    slippage_table.total_trades = slippage_table.total_trades.round(4)
-    slippage_table.bid_ask_sampled = slippage_table.bid_ask_sampled.round(4)
+    slippage_table.bid_ask_trades = slippage_table.bid_ask_trades.round(5)
+    slippage_table.total_trades = slippage_table.total_trades.round(5)
+    slippage_table.bid_ask_sampled = slippage_table.bid_ask_sampled.round(5)
     slippage_table.weight_trades = slippage_table.weight_trades.round(2)
     slippage_table.weight_samples = slippage_table.weight_samples.round(2)
     slippage_table.weight_config = slippage_table.weight_config.round(2)
-    slippage_table.estimate = slippage_table.estimate.round(4)
-    slippage_table.Configured = slippage_table.Configured.round(4)
+    slippage_table.estimate = slippage_table.estimate.round(5)
+    slippage_table.Configured = slippage_table.Configured.round(5)
 
     return slippage_table
 
