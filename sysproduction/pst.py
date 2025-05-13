@@ -13,6 +13,7 @@ from sysproduction.interactive_order_stack import interactive_order_stack
 from sysproduction.interactive_manual_check_fx_prices import (
     interactive_manual_check_fx_prices,
 )
+from sysproduction.interactive_status import interactive_status
 
 
 @click.group()
@@ -56,10 +57,16 @@ def orders():
     interactive_order_stack()
 
 
-@pst.command(name="f")
+@click.command(name="f")
 def fx():
     """Interactive update historical fx prices"""
     interactive_manual_check_fx_prices()
+
+
+@click.command(name="t")
+def status():
+    """Interactive status"""
+    interactive_status()
 
 
 pst.add_command(controls)
@@ -69,6 +76,7 @@ pst.add_command(historic)
 pst.add_command(capital)
 pst.add_command(orders)
 pst.add_command(fx)
+pst.add_command(status)
 
 
 if __name__ == "__main__":
