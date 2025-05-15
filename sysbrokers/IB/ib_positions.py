@@ -86,6 +86,20 @@ def from_ib_positions_to_dict(
     return resolved_positions_dict
 
 
+def from_ib_portfolio_items_to_list(raw_positions, account_id=arg_not_supplied) -> list:
+    portfolio_items = []
+
+    for position in raw_positions:
+        if account_id is not arg_not_supplied:
+            if position.account != account_id:
+                continue
+
+        resolved_position = resolve_ib_portfolio_item(position)
+        portfolio_items.append(resolved_position)
+
+    return portfolio_items
+
+
 def resolve_ib_stock_position(position):
     return dict(
         account=position.account,
@@ -108,6 +122,23 @@ def resolve_ib_future_position(position):
         currency=position.contract.currency,
         position=position.position,
         ib_contract=position.contract,  ## persist to find exchanges later
+    )
+
+
+def resolve_ib_portfolio_item(position):
+    return dict(
+        account=position.account,
+        symbol=position.contract.symbol,
+        expiry=position.contract.lastTradeDateOrContractMonth,
+        multiplier=float(position.contract.multiplier),
+        currency=position.contract.currency,
+        ib_contract=position.contract,
+        average_cost=position.averageCost,
+        market_price=position.marketPrice,
+        market_value=position.marketValue,
+        position=position.position,
+        realized_pnl=position.realizedPNL,
+        unrealized_pnl=position.unrealizedPNL,
     )
 
 

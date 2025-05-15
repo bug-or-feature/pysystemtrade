@@ -19,6 +19,11 @@ class brokerContractPositionData(contractPositionData):
     ) -> listOfContractPositions:
         raise NotImplementedError
 
+    def get_all_portfolio_items_as_list_with_contract_objects(
+        self, account_id=arg_not_supplied
+    ) -> list:
+        raise NotImplementedError
+
     def get_position_as_df_for_contract_object(self, *args, **kwargs):
         raise Exception("Only current position data available from broker")
 

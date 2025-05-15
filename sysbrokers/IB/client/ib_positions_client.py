@@ -2,10 +2,9 @@ from syscore.constants import arg_not_supplied
 from sysbrokers.IB.client.ib_client import ibClient
 from sysbrokers.IB.ib_positions import (
     from_ib_positions_to_dict,
+    from_ib_portfolio_items_to_list,
     positionsFromIB,
-    IBPositionWithExtendedAttr,
 )
-from ib_insync.ib import Position
 
 
 class ibPositionsClient(ibClient):
@@ -23,3 +22,12 @@ class ibPositionsClient(ibClient):
         )
 
         return dict_of_positions
+
+    def broker_get_portfolio(self, account_id: str = arg_not_supplied) -> list:
+        # Get all portfolio items
+        list_of_portfolio_items = self.ib.portfolio()
+        portfolio_items = from_ib_portfolio_items_to_list(
+            list_of_portfolio_items, account_id=account_id
+        )
+
+        return portfolio_items

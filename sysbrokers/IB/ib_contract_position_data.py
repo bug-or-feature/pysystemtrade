@@ -105,6 +105,28 @@ class ibContractPositionData(brokerContractPositionData):
 
         return positions
 
+    def get_all_portfolio_items_as_list_with_contract_objects(
+        self, account_id=arg_not_supplied
+    ) -> list:
+        all_portfolio_items = self._get_all_futures_portfolio_items(
+            account_id=account_id
+        )
+        for portfolio_item in all_portfolio_items:
+            instrument_code = self._get_instrument_code_from_ib_position_entry(
+                portfolio_item
+            )
+            portfolio_item["instrument_code"] = instrument_code
+
+        return all_portfolio_items
+
+    def _get_all_futures_portfolio_items(
+        self, account_id: str = arg_not_supplied
+    ) -> list:
+        self.ib_client.refresh()
+        portfolio_items = self.ib_client.broker_get_portfolio(account_id=account_id)
+
+        return portfolio_items
+
     def get_position_as_df_for_contract_object(self, *args, **kwargs):
         raise Exception("Only current position data available from IB")
 

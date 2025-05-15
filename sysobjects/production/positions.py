@@ -180,7 +180,9 @@ class listOfPositions(list):
         return list_of_positions
 
     def as_pd_df(self) -> pd.DataFrame:
-        return pd.DataFrame(self._as_set_of_dicts())
+        df = pd.DataFrame(self._as_set_of_dicts())
+        df = df.astype({"position": "int32"})
+        return df
 
     def _as_set_of_dicts(self) -> dict:
         # start with

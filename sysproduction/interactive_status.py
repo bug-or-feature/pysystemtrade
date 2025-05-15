@@ -1,3 +1,5 @@
+import pandas as pd
+import logging
 from syscore.constants import arg_not_supplied
 from syscore.exceptions import missingData
 from syscore.interactive.display import set_pd_print_options
@@ -34,18 +36,19 @@ def view_capital(data):
 
 
 def view_positions(data):
+    logging.getLogger("ib_insync").setLevel(logging.WARNING)
     data_broker = dataBroker(data)
-    ans3 = data_broker.get_all_current_contract_positions()
+    positions = data_broker.get_all_current_contract_positions()
+    positions = positions.as_pd_df()
+
     print("\nBROKER POSITIONS")
-    print(ans3.as_pd_df().sort_values(["instrument_code", "contract_date"]))
-    breaks = data_broker.get_list_of_breaks_between_broker_and_db_contract_positions()
-    if len(breaks) > 0:
-        print(
-            "\nBREAKS between broker and DB stored contract positions: %s\n"
-            % str(breaks)
-        )
-    else:
-        print("(No breaks positions consistent)")
+    print(positions.sort_values(["instrument_code", "contract_date"]))
+
+    portfolio_items = data_broker.get_all_portfolio_items()
+    full = positions.merge(portfolio_items, on="instrument_code")
+    print("\nPORTFOLIO ITEMS")
+    print(f"{full.sort_values(['instrument_code', 'contract_date'])}\n")
+
     return None
 
 
