@@ -1,4 +1,3 @@
-import pandas as pd
 import logging
 from syscore.constants import arg_not_supplied
 from syscore.exceptions import missingData
