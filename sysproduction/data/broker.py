@@ -267,12 +267,21 @@ class dataBroker(productionDataLayerGeneric):
 
         cols = [
             "instrument_code",
+            "expiry",
             "currency",
             "realized_pnl_base",
             "unrealized_pnl_base",
         ]
         df = pd.DataFrame.from_records(list_of_portfolio_items, columns=cols)
+        df = df.astype(
+            {
+                "instrument_code": "string",
+                "expiry": "string",
+                "currency": "string",
+            }
+        )
         df = df.round({"realized_pnl_base": 2, "unrealized_pnl_base": 2})
+        df = df.rename(columns={"expiry": "contract_date"})
 
         return df
 
