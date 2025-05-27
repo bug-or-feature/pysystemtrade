@@ -12,8 +12,9 @@ from sysproduction.interactive_order_stack import view_generic_stack
 def interactive_status():
     with dataBlob(log_name="Interactive-Order-Stack", ib_conn=arg_not_supplied) as data:
         set_pd_print_options()
-        view_instrument_stack(data)
         view_capital(data)
+        view_instrument_stack(data)
+        view_contract_stack(data)
         view_positions(data)
 
 
@@ -21,6 +22,12 @@ def view_instrument_stack(data):
     stack_handler = stackHandler(data)
     print("\nINSTRUMENT STACK \n")
     view_generic_stack(stack_handler.instrument_stack)
+
+
+def view_contract_stack(data):
+    stack_handler = stackHandler(data)
+    print("\nCONTRACT STACK \n")
+    view_generic_stack(stack_handler.contract_stack)
 
 
 def view_capital(data):
@@ -31,7 +38,7 @@ def view_capital(data):
     except missingData:
         print("No capital setup yet")
     else:
-        print(all_calcs.tail(5))
+        print(f"{all_calcs.tail(5)}\n")
 
 
 def view_positions(data):
@@ -39,12 +46,19 @@ def view_positions(data):
     data_broker = dataBroker(data)
     positions = data_broker.get_all_current_contract_positions()
     positions = positions.as_pd_df()
+    positions = positions.astype(
+        {
+            "instrument_code": "string",
+            "contract_date": "string",
+            "expiry_date": "datetime64[ns]",
+        }
+    )
 
     print("\nBROKER POSITIONS")
     print(positions.sort_values(["instrument_code", "contract_date"]))
 
     portfolio_items = data_broker.get_all_portfolio_items()
-    full = positions.merge(portfolio_items, on="instrument_code")
+    full = positions.merge(portfolio_items, on=["instrument_code", "contract_date"])
     print("\nPORTFOLIO ITEMS")
     print(f"{full.sort_values(['instrument_code', 'contract_date'])}\n")
 
