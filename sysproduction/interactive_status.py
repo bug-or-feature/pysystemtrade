@@ -28,6 +28,7 @@ def view_contract_stack(data):
     stack_handler = stackHandler(data)
     print("\nCONTRACT STACK \n")
     view_generic_stack(stack_handler.contract_stack)
+    print("")
 
 
 def view_capital(data):
