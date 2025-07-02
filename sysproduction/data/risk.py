@@ -150,11 +150,13 @@ def get_perc_of_strategy_capital_for_instrument_per_contract(
     data, strategy_name, instrument_code
 ):
     capital_base_fx = capital_for_strategy(data, strategy_name)
-    exposure_per_contract = get_exposure_per_contract_base_currency(
-        data, instrument_code
-    )
-
-    return exposure_per_contract / capital_base_fx
+    if capital_base_fx == 0.0:
+        return 0.0
+    else:
+        exposure_per_contract = get_exposure_per_contract_base_currency(
+            data, instrument_code
+        )
+        return exposure_per_contract / capital_base_fx
 
 
 def get_current_ann_stdev_of_prices(data, instrument_code):

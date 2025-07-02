@@ -388,10 +388,12 @@ def calculate_cost_per_notional_weight_as_proportion_of_capital(
     capital: float,
     cost_multiplier: float = 1.0,
 ) -> float:
-    dollar_cost = (
-        cost_multiplier
-        * cost_per_contract
-        / notional_value_per_contract_as_proportion_of_capital
-    )
-
-    return dollar_cost / capital
+    if capital == 0.0:
+        return 0.0
+    else:
+        dollar_cost = (
+            cost_multiplier
+            * cost_per_contract
+            / notional_value_per_contract_as_proportion_of_capital
+        )
+        return dollar_cost / capital
