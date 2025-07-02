@@ -225,7 +225,7 @@ def get_days_ahead_to_consider_when_auto_cycling() -> int:
 
 
 def get_list_of_instruments_to_auto_cycle(data: dataBlob, days_ahead: int = 10) -> list:
-    diag_prices = diagPrices()
+    diag_prices = diagPrices(data)
     list_of_potential_instruments = (
         diag_prices.get_list_of_instruments_in_multiple_prices()
     )
@@ -462,18 +462,17 @@ def suggest_roll_state_for_instrument(
         return RollState.Roll_Adjusted
 
     if forward_liquid:
-        if no_position_held:
-            ## liquid forward, with no position
-            return RollState.Roll_Adjusted
-        else:
-            ## liquid forward, with position held
-            if getting_close_to_desired_roll_date:
-                ## liquid forward, with position, close to expiry
-                ##   Up to the user to decide
-                return auto_parameters.default_roll_state_if_undecided
+        if getting_close_to_desired_roll_date:
+            # forward liquid, close to roll date
+            if no_position_held:
+                # no position
+                return RollState.Roll_Adjusted
             else:
-                ## liquid forward, with position held, not close to expiring
-                return RollState.Passive
+                # holding position - up to the user to decide
+                return auto_parameters.default_roll_state_if_undecided
+        else:
+            # liquid forward, not close to roll date
+            return RollState.Passive
     else:
         # forward illiquid
         if getting_close_to_desired_roll_date:
