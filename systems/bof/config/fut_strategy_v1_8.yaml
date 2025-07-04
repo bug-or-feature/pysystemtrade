@@ -549,7 +549,7 @@ forecast_div_multiplier:
   HANGTECH: 1.6940802564985535
   HANG_mini: 1.7517728038288878
   HEATOIL: 1.7517728038288878
-  IBEX_mini: 1.7517728038288878
+  IBEX: 1.7517728038288878
   IRON: 1.7517728038285498
   IRS: 1.7517803803564003
   JGB: 1.7517728038288878
@@ -751,7 +751,7 @@ instrument_weights:
             EUROSTX-SMALL: 0.0625
             FTSE100: 0.0625
             FTSE250: 0.0625
-            IBEX_mini: 0.0625
+            IBEX: 0.0625
             OMX: 0.0625
             OMX-SWE: 0.0625
             SMI: 0.0625
