@@ -19,7 +19,7 @@ dependencies = [
     "PyYAML==6.0.1",
     "numpy>=1.24.0",
     "scipy>=1.0.0",
-    "pymongo==3.11.3",
+    "pymongo==3.12.3",
     "ib-insync==0.9.86",
     "psutil==5.6.7",
     "Flask>=2.0.1",
@@ -33,7 +33,7 @@ dependencies = [
 
 [project.optional-dependencies]
 arctic = ["arctic @ git+https://github.com/man-group/arctic.git"]
-dev = ["pytest>6.2", "black==23.11.0"]
+dev = ["pytest>6.2", "black[d]==23.11.0"]
 
 [project.urls]
 "Homepage" = "https://github.com/robcarver17/pysystemtrade"
