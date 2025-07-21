@@ -2818,7 +2818,7 @@ Personally I prefer looking at statistics in percentage terms. This is easy. Jus
 ```python
 import syscore.pandas.strategy_functions
 
-acc_curve.capital  ## tells me the capital I will use to calculate %
+acc_curve.current_capital  ## tells me the capital I will use to calculate %
 acc_curve.percent
 acc_curve.gross.daily.percent
 acc_curve.net.daily.percent
