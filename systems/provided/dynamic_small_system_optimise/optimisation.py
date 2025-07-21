@@ -337,3 +337,7 @@ class objectiveFunctionForGreedy:
             self._input_data = input_data
 
         return input_data
+
+    @property
+    def labels_as_np(self) -> np.array:
+        return self.input_data.labels_as_np
