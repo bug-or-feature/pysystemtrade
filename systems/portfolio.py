@@ -1278,7 +1278,8 @@ class Portfolios(SystemStage):
             for (
                 instrument_code_to_remove
             ) in allocate_zero_instrument_weights_to_these_instruments:
-                instrument_list.remove(instrument_code_to_remove)
+                if instrument_code_to_remove in instrument_list:
+                    instrument_list.remove(instrument_code_to_remove)
 
         return instrument_list
 
