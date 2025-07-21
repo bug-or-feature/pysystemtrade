@@ -250,3 +250,12 @@ class dataForOptimisation(object):
         valid_keys = valid_keys.intersection(valid_per_contract_keys_set)
 
         return list(valid_keys)
+
+    @property
+    def labels_as_np(self) -> np.array:
+        return self.get_key("labels_as_np")
+
+    @property
+    def _labels_as_np(self) -> np.array:
+        labels_as_np = np.array(self.keys_with_valid_data)
+        return labels_as_np
