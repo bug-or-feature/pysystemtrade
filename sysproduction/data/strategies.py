@@ -89,6 +89,7 @@ def get_valid_strategy_name_from_user(
     source: str = "config",
 ):
     all_strategies = get_list_of_strategies(data=data, source=source)
+    # TODO print error if no strategies found
     if allow_all:
         default_strategy = all_code
     else:
