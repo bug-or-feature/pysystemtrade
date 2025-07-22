@@ -22,10 +22,12 @@ from sysproduction.data.strategies import (
 
 
 PICKLE_EXT = ".pck"
+COMPRESSED_PICKLE_EXT = ".pckz"
 CONFIG_EXT = ".yaml"
 PICKLE_FILE_SUFFIX = "_backtest"
 CONFIG_FILE_SUFFIX = "_config"
 PICKLE_SUFFIX = PICKLE_FILE_SUFFIX + PICKLE_EXT
+COMPRESSED_PICKLE_SUFFIX = PICKLE_FILE_SUFFIX + COMPRESSED_PICKLE_EXT
 CONFIG_SUFFIX = CONFIG_FILE_SUFFIX + CONFIG_EXT
 
 
@@ -177,7 +179,10 @@ def load_backtest_state(system, strategy_name, date_time_signature):
 
     :return: system with cache filled from pickled backtest state file
     """
-    filename = get_backtest_pickle_filename(strategy_name, date_time_signature)
+    compress = system.config.get_element("backtest_compress")
+    filename = get_backtest_pickle_filename(
+        strategy_name, date_time_signature, compress
+    )
     system.cache.unpickle(filename)
 
     return system
@@ -199,7 +204,10 @@ def store_backtest_state(data, system, strategy_name="default_strategy"):
 
     datetime_marker = create_datetime_marker_string()
 
-    pickle_filename = get_backtest_pickle_filename(strategy_name, datetime_marker)
+    compress = system.config.get_element("backtest_compress")
+    pickle_filename = get_backtest_pickle_filename(
+        strategy_name, datetime_marker, compress
+    )
     pickle_state(data, system, pickle_filename)
 
     config_save_filename = get_backtest_config_filename(strategy_name, datetime_marker)
@@ -229,11 +237,15 @@ def get_list_of_pickle_files_for_strategy(strategy_name):
     return list_of_files
 
 
-def get_backtest_pickle_filename(strategy_name, datetime_marker):
+def get_backtest_pickle_filename(
+    strategy_name,
+    datetime_marker,
+    compress=False,
+):
     # eg
     # '/home/rob/data/backtests/medium_speed_TF_carry/20200616_122543_backtest.pck'
     prefix = get_backtest_filename_prefix(strategy_name, datetime_marker)
-    suffix = PICKLE_SUFFIX
+    suffix = COMPRESSED_PICKLE_SUFFIX if compress else PICKLE_SUFFIX
 
     return prefix + suffix
 

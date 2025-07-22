@@ -14,6 +14,7 @@ There are 3 kinds of things in a cache with different levels of persistence:
 
 from syscore.fileutils import resolve_path_and_filename_for_package
 import pickle
+import bz2
 from functools import wraps
 
 """
@@ -212,8 +213,12 @@ class systemCache(dict):
         cache_to_pickle = self.partial_cache(pickable_cache_refs)
         cache_to_pickle_as_dict = cache_to_pickle.as_dict()
 
-        with open(filename, "wb+") as fhandle:
-            pickle.dump(cache_to_pickle_as_dict, fhandle)
+        if self._parent.config.get_element("backtest_compress"):
+            with bz2.open(filename, "wb") as fhandle:
+                pickle.dump(cache_to_pickle_as_dict, fhandle)
+        else:
+            with open(filename, "wb+") as fhandle:
+                pickle.dump(cache_to_pickle_as_dict, fhandle)
 
     def as_dict(self):
         self_as_dict = {}
@@ -246,8 +251,12 @@ class systemCache(dict):
 
         filename = resolve_path_and_filename_for_package(relativefilename)
 
-        with open(filename, "rb") as fhandle:
-            cache_from_pickled = pickle.load(fhandle)
+        if self._parent.config.get_element("backtest_compress"):
+            with bz2.open(filename, "rb") as fhandle:
+                cache_from_pickled = pickle.load(fhandle)
+        else:
+            with open(filename, "rb") as fhandle:
+                cache_from_pickled = pickle.load(fhandle)
 
         if clearcache:
             self.clear()

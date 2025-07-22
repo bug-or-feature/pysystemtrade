@@ -1517,7 +1517,21 @@ system.cache.get_items_with_data() ## Cache is now populated. Any existing data 
 system.get_itemnames_for_stage("accounts") ## now doesn't include ('accounts', 'portfolio', 'percentageTdelayfillTroundpositionsT')
 
 system.accounts.portfolio().sharpe() ## Not coming from the cache, but this will run much faster and reuse many previous calculations
+```
 
+The pickle files are large. Turn on backtest compression to save space
+
+```python
+from systems.provided.futures_chapter15.basesystem import futures_system
+
+system = futures_system()
+system.config.backtest_compress = True 
+system.cache.pickle("private.this_system_name.system.pckz") 
+
+# Now in a new session
+system = futures_system()
+system.cache.get_items_with_data()
+system.cache.unpickle("private.this_system_name.system.pckz")
 ```
 
 See [here](#file-names) for how to specify filenames in pysystemtrade.
