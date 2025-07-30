@@ -232,7 +232,7 @@ def rchop(s, suffix):
 
 def get_list_of_pickle_files_for_strategy(strategy_name):
     full_directory = get_backtest_directory_for_strategy(strategy_name)
-    list_of_files = files_with_extension_in_pathname(full_directory, PICKLE_EXT)
+    list_of_files = files_with_extension_in_pathname(full_directory, ".pck*")
 
     return list_of_files
 
