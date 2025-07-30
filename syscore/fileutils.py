@@ -366,7 +366,9 @@ def files_with_extension_in_resolved_pathname(
     Find all the files with a particular extension in a directory
     """
 
-    file_list = glob.glob(f"{resolved_pathname}/*{extension}")
+    file_list = [
+        os.path.basename(f) for f in glob.glob(f"{resolved_pathname}/*{extension}")
+    ]
     file_list_no_extension = [filename.split(".")[0] for filename in file_list]
 
     return file_list_no_extension
