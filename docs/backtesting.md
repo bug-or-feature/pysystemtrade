@@ -657,7 +657,7 @@ system=futures_system(config=config)
 
 ## How do I....Use different data or instruments
 
-The default data used for the simulation is CSV files for futures stitched prices, FX and contract related data. It's my intention to update this and try to keep it reasonably current with each release. The data is stored in the [data/futures directory](/data/futures)
+The default data used for the simulation is CSV files for futures stitched prices, FX and contract related data. It's my intention to update this and try to keep it reasonably current with each release. The data is stored in the [data/futures directory](/data/futures). See [update Sep 2025](/docs/data.md#note-on-outdated-shipped-csv-data)
 
 You can update that data, if you wish. Be careful to save it as a CSV with the right formatting, or pandas will complain. Check that a file is correctly formatted like so:
 
