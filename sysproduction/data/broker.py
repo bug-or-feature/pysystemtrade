@@ -286,9 +286,7 @@ class dataBroker(productionDataLayerGeneric):
         return df
 
     def get_list_of_breaks_between_broker_and_db_contract_positions(self) -> list:
-        db_contract_positions = (
-            self.get_all_current_contract_positions_with_db_expiries()
-        )
+        db_contract_positions = self.get_all_current_contract_positions()
         broker_contract_positions = self.get_all_current_contract_positions()
 
         break_list = db_contract_positions.return_list_of_breaks(
