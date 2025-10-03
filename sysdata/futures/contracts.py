@@ -135,3 +135,8 @@ class futuresContractData(baseData):
         self, contract_object: futuresContract
     ):
         raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+
+    def find_contract_for_instrument_code_and_expiry(
+        self, instrument_code: str, expiry_date: str
+    ) -> futuresContract:
+        raise NotImplementedError(USE_CHILD_CLASS_ERROR)
