@@ -43,7 +43,6 @@ def view_capital(data):
 
 
 def view_positions(data):
-    logging.getLogger("ib_insync").setLevel(logging.WARNING)
     data_broker = dataBroker(data)
     positions = data_broker.get_all_current_contract_positions()
     positions = positions.as_pd_df()
@@ -55,15 +54,10 @@ def view_positions(data):
         }
     )
 
-    print("\nBROKER POSITIONS")
-    print(positions.sort_values(["instrument_code", "contract_date"]))
-
     portfolio_items = data_broker.get_all_portfolio_items()
     full = positions.merge(portfolio_items, on=["instrument_code", "contract_date"])
-    print("\nPORTFOLIO ITEMS")
+    print("\nBROKER POSITIONS")
     print(f"{full.sort_values(['instrument_code', 'contract_date'])}\n")
-
-    return None
 
 
 if __name__ == "__main__":
