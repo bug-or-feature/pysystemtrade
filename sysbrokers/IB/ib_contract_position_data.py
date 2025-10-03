@@ -67,11 +67,13 @@ class ibContractPositionData(brokerContractPositionData):
 
         list_of_contract_positions = listOfContractPositions(current_positions)
 
-        list_of_contract_positions_no_duplicates = (
-            list_of_contract_positions.sum_for_contract()
-        )
+        # TODO - is this really needed?
+        # list_of_contract_positions_no_duplicates = (
+        #     list_of_contract_positions.sum_for_contract()
+        # )
 
-        return list_of_contract_positions_no_duplicates
+        # return list_of_contract_positions_no_duplicates
+        return list_of_contract_positions
 
     def _get_contract_position_for_raw_entry(self, position_entry) -> contractPosition:
         position = position_entry["position"]
@@ -82,7 +84,16 @@ class ibContractPositionData(brokerContractPositionData):
         instrument_code = self._get_instrument_code_from_ib_position_entry(
             position_entry
         )
-        contract = futuresContract(instrument_code, expiry)
+
+        # look up contract object by code and expiry from db - we want the key
+        try:
+            contract_doc = self.data.db_futures_contract.find_contract_for_instrument_code_and_expiry(
+                instrument_code, expiry
+            )
+            contract = futuresContract.create_from_dict(contract_doc)
+        except:
+            # failover - the old way
+            contract = futuresContract(instrument_code, expiry)
 
         contract_position_object = contractPosition(position, contract)
 
