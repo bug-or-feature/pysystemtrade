@@ -19,7 +19,7 @@ MONGO_TARGET=/Users/ageach/Documents/backup/pst-futures
 PARQUET_SOURCE=/Users/ageach/Documents/backup/pst-futures/parquet/
 PARQUET_TARGET=/Users/ageach/Dev/work/pst-futures/parquet
 
-DB_SOURCE=futures_production
+DB_SOURCE=futures_production_v5
 DB_TARGET=futures_development
 
 echo "Starting replication of PROD data to DEV environment..."
