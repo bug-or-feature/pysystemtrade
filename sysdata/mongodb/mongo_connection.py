@@ -65,7 +65,17 @@ class MongoClientFactory(object):
         if key in self.mongo_clients:
             return self.mongo_clients.get(key)
         else:
-            client = MongoClient(host=host, port=port)
+            if host.startswith("mongodb"):
+                # we are using uri format
+                try:
+                    from pymongo.server_api import ServerApi
+
+                    # we have pymongo 3.12 or higher
+                    client = MongoClient(host, server_api=ServerApi("1"))
+                except:
+                    client = MongoClient(host)
+            else:
+                client = MongoClient(host=host, port=port)
             self.mongo_clients[key] = client
             return client
 
