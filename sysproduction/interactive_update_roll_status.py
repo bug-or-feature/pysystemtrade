@@ -120,6 +120,7 @@ class RollDataWithStateReporting(object):
 
 
 def update_roll_status_manual_cycle(api: reportingApi, data: dataBlob):
+    # TODO source of auto_parameters
     auto_parameters = get_auto_roll_parameters_potentially_using_default(
         data=data, use_default=True
     )
@@ -132,6 +133,7 @@ def update_roll_status_manual_cycle(api: reportingApi, data: dataBlob):
             # belt and braces
             do_another = False
         else:
+            # TODO source of roll_data
             roll_data = setup_roll_data_with_state_reporting(api.data, instrument_code)
             manually_report_and_update_roll_state_for_code(
                 api=api,
