@@ -39,3 +39,8 @@ class TestMongoDB:
         clean_sharded = clean_mongo_host(sharded)
         print(clean_sharded)
         assert "D1fficultP%40ssw0rd" not in clean_sharded
+
+        server = "mongodb+srv://myDBReader:D1fficultP%40ssw0rd@mongodb0.example.com:27017/?authSource=admin"
+        clean_server = clean_mongo_host(server)
+        print(clean_server)
+        assert "D1fficultP%40ssw0rd" not in clean_server
