@@ -67,6 +67,7 @@ def get_roll_data_for_instrument(instrument_code, data):
         position_priced=position_priced,
         relative_volume_fwd=relative_volume_fwd,
         contract_volume_fwd=contract_volume_fwd,
+        # TODO show fwd_is_liquid here
     )
 
     return results_dict_code
