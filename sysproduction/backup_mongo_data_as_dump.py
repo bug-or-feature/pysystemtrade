@@ -34,7 +34,7 @@ def dump_mongo_data(data: dataBlob):
     config = data.config
     host = config.get_element_or_arg_not_supplied("mongo_host")
     path = get_mongo_dump_directory()
-    if host.startswith("mongodb://"):
+    if host.startswith("mongodb"):
         source = "uri"
     else:
         source = "host"
