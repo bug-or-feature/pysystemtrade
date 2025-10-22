@@ -22,7 +22,6 @@ from syslogging.logger import *
 
 from sysobjects.contracts import futuresContract
 from sysexecution.trade_qty import tradeQuantity
-from sysexecution.tick_data import get_next_n_ticks_from_ticker_object
 
 TIMEOUT_SECONDS_ON_HISTORICAL_DATA = 20
 

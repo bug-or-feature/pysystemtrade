@@ -1,4 +1,3 @@
-from copy import copy
 from matplotlib.pyplot import title
 import datetime
 

@@ -1,4 +1,3 @@
-from typing import List
 from dataclasses import dataclass
 
 from syscore.exceptions import missingData
@@ -26,7 +25,6 @@ from sysproduction.data.config import (
 from sysdata.production.locks import lockData
 from sysdata.production.trade_limits import (
     tradeLimitData,
-    tradeLimit,
     listOfTradeLimits,
 )
 from sysdata.production.override import overrideData
@@ -53,7 +51,7 @@ from sysobjects.production.tradeable_object import (
     listOfInstrumentStrategies,
     instrumentStrategy,
 )
-from sysobjects.production.override import Override, override_no_trading
+from sysobjects.production.override import Override
 from sysobjects.production.position_limits import (
     positionLimitAndPosition,
 )

@@ -1,5 +1,4 @@
 import numpy as np
-from copy import copy
 from syscore.constants import arg_not_supplied
 from syscore.genutils import flatten_list
 from dataclasses import dataclass

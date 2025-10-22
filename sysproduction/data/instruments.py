@@ -1,5 +1,3 @@
-import pandas as pd
-
 from sysdata.data_blob import dataBlob
 from sysdata.futures.instruments import futuresInstrumentData
 from sysdata.futures.spread_costs import spreadCostData

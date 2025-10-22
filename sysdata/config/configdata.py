@@ -14,7 +14,6 @@ trading_rules - a specification of the trading rules for a system
 
 from pathlib import Path
 import os
-from typing import Any
 
 import yaml
 

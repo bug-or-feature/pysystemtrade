@@ -1,5 +1,3 @@
-import dataclasses
-
 from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.futures.spread_costs import spreadCostData
 from sysdata.csv.csv_instrument_data import INSTRUMENT_CONFIG_PATH

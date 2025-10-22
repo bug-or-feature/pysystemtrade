@@ -1,9 +1,5 @@
 from sysdata.mongodb.mongo_generic import mongoDataWithMultipleKeys
 from sysdata.production.position_limits import positionLimitData
-from sysobjects.production.position_limits import (
-    positionLimitForInstrument,
-    positionLimitForStrategyInstrument,
-)
 from sysobjects.production.tradeable_object import (
     listOfInstrumentStrategies,
     instrumentStrategy,

@@ -1,4 +1,3 @@
-import os
 import unittest
 from _pytest.monkeypatch import MonkeyPatch
 from sysdata.config.private_directory import PRIVATE_CONFIG_DIR_ENV_VAR

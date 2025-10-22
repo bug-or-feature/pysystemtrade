@@ -6,11 +6,8 @@ from syslogging.logger import *
 
 class brokerFuturesInstrumentData(futuresInstrumentData):
     """
-    Extends the baseData object to a data source that reads in and writes prices for specific futures contracts
-
-    This gets HISTORIC data from interactive brokers. It is blocking code
-    In a live production system it is suitable for running on a daily basis to get end of day prices
-
+    Extends futuresInstrumentData to a data source for broker futures instrument data.
+    Could be extended to implement a data source for a specific broker
     """
 
     def __init__(self, data: dataBlob, log=get_logger("brokerFuturesInstrumentData")):

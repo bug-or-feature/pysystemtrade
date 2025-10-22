@@ -16,7 +16,7 @@ Version 1.8.2
 
 ## Release notes
 
-See [DONE_TO_DO](CHANGELOG.md) for release notes, and future plans.
+See [CHANGELOG](CHANGELOG.md) for release notes, and future plans.
 
 
 ## Description

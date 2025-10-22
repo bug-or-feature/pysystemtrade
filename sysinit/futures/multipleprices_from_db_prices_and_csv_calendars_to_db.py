@@ -17,7 +17,7 @@ from sysobjects.dict_of_futures_per_contract_prices import (
 import datetime
 import pandas as pd
 
-from sysproduction.data.prices import diagPrices, get_valid_instrument_code_from_user
+from sysproduction.data.prices import diagPrices
 from sysobjects.rolls import rollParameters, contractDateWithRollParameters
 from sysobjects.contract_dates_and_expiries import contractDate
 

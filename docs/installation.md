@@ -241,7 +241,7 @@ Creating virtual environment at: .venv
 Activate with: source .venv/bin/activate
 ```
 
-Now activate the virtual envrionment as instructed.
+Now activate the virtual environment as instructed.
 ```
 source .venv/bin/activate
 ```

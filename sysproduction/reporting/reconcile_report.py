@@ -5,7 +5,6 @@ We can also check: when last adjusted prices were updated, when FX was last upda
    last updated
 """
 
-import datetime
 
 from syscore.constants import arg_not_supplied
 

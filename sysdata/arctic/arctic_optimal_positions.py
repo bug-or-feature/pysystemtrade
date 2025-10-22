@@ -2,7 +2,6 @@
 Read and write data from mongodb for individual futures contracts
 
 """
-from typing import Union
 
 from syscore.exceptions import missingData
 from sysdata.arctic.arctic_connection import arcticData

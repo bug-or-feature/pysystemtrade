@@ -1,9 +1,7 @@
 import datetime
-import numpy as np
 from syscore.exceptions import fillExceedsTrade
 from sysexecution.orders.named_order_objects import (
     missing_order,
-    no_order_id,
     no_children,
     no_parent,
 )

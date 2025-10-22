@@ -27,7 +27,6 @@ from systems.provided.scalper.components import (
     action_given_current_state,
     ActionFromState,
     FillAndOrder,
-    Fill,
 )
 from sysexecution.orders.named_order_objects import missing_order
 from sysproduction.data.currency_data import dataCurrency

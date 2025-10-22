@@ -1,9 +1,8 @@
 ## Generate list of instruments ranked by liquidity: # of contracts per day and
 
-import datetime
 
 from syscore.constants import arg_not_supplied
-from sysproduction.reporting.reporting_functions import table, header, body_text
+from sysproduction.reporting.reporting_functions import body_text
 
 from sysdata.data_blob import dataBlob
 

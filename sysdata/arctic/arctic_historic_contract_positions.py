@@ -1,4 +1,3 @@
-import datetime
 import pandas as pd
 
 from sysobjects.contracts import futuresContract, listOfFuturesContracts

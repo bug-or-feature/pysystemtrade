@@ -706,7 +706,7 @@ def resolve_kwargs_to_str(kwargs, use_arg_names: bool = True):
     return ", ".join(long_flag_string)
 
 
-# null decorator doesn't do antyihng
+# null decorator doesn't do anything
 def null_decorator(func):
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
@@ -785,7 +785,7 @@ def base_system_cache(protected=False, not_pickable=False):
     return decorate
 
 
-# actual decoraters used, snappier names for 'stage wiring'
+# actual decorators used, snappier names for 'stage wiring'
 input = null_decorator
 dont_cache = null_decorator
 diagnostic = stage_access_cache_decorator

@@ -1,4 +1,3 @@
-from syscore.constants import arg_not_supplied
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
 from sysquant.estimators.vol import robust_vol_calc
 from systems.provided.rules.ewmac import ewmac_forecast_with_defaults as ewmac

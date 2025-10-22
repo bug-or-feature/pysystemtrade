@@ -1,5 +1,4 @@
 import datetime
-import socket
 
 from syscore.dateutils import SECONDS_PER_HOUR
 from syscore.exceptions import missingData

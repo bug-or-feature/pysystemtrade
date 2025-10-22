@@ -4,7 +4,7 @@ from typing import Tuple, Callable
 import numpy as np
 
 
-from sysobjects.fills import Fill, empty_fill
+from sysobjects.fills import Fill
 from systems.accounts.order_simulator.fills_and_orders import (
     fill_list_of_simple_orders,
     empty_list_of_orders_with_no_fills,

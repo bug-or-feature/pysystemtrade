@@ -1,6 +1,5 @@
 # functions used by multiple algos
 import time
-from syscore.exceptions import orderCannotBeModified
 from sysdata.data_blob import dataBlob
 from sysproduction.data.broker import dataBroker
 from syscore.genutils import quickTimer

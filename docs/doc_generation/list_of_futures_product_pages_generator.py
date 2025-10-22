@@ -14,7 +14,7 @@ symbols_list = list(symbol_product_page_map.keys())
 symbols_list.sort()
 
 with open(str(write_path / "list_of_futures_product_pages.md"), "w") as f:
-    f.writelines(f"# List of futures product pages")
+    f.writelines("# List of futures product pages")
     f.writelines("\n")
     f.writelines(
         "Below is an incomplete mapping of instrument symbols to their corresponding futures product webpages. List will get updated in the future \n"

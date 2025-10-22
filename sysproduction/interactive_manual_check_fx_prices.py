@@ -70,7 +70,7 @@ def update_manual_check_fx_prices_for_code(fx_code: str, data: dataBlob):
     # Will break manual price checking code if not equal
     old_fx_prices.name = new_fx_prices.name = ""
 
-    print("\n\n Manually checking prices for %s \n\n" % fx_code)
+    print("\n\nManually checking prices for %s\n\n" % fx_code)
     new_prices_checked = manual_price_checker(
         old_fx_prices, new_fx_prices, type_new_data=fxPrices.from_data_frame
     )

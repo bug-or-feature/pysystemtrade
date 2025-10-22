@@ -1,4 +1,4 @@
-from sysexecution.orders.named_order_objects import missing_order, no_children
+from sysexecution.orders.named_order_objects import no_children
 
 from sysexecution.stack_handler.stackHandlerCore import stackHandlerCore, orderFamily
 from sysproduction.data.orders import dataOrders

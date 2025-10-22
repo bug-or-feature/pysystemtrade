@@ -40,8 +40,9 @@ def roll_report(
     formatted_output.append(reporting_api.table_of_roll_data(instrument_code))
     formatted_output.append(
         body_text(
-            "Roll_exp is days until preferred roll set by roll parameters. Prc_exp is days until price contract expires, "
-            "Crry_exp is days until carry contract expires"
+            "roll_expiry is days until preferred roll set by roll parameters, "
+            "price_expiry is days until price contract expires, "
+            "carry_expiry is days until carry contract expires"
         )
     )
     formatted_output.append(body_text("Contract suffix: p=price, f=forward, c=carry"))

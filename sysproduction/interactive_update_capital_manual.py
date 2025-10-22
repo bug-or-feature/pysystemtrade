@@ -262,7 +262,7 @@ def delete_all_capital(data: dataBlob):
 
         except BaseException:
             print(
-                "Something went wrong: You may have to manually drop collection in mongo DB and corruption may have occured"
+                "Something went wrong: You may have to manually drop collection in mongo DB and corruption may have occurred"
             )
     else:
         print("OK you decided not to do it")

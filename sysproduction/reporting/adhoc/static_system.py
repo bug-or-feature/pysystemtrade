@@ -1,5 +1,4 @@
 from systems.provided.rob_system.run_system import futures_system, System
-from copy import copy
 from systems.provided.static_small_system_optimise.optimise_small_system import (
     find_best_ordered_set_of_instruments,
     get_correlation_matrix,

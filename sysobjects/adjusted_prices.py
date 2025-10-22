@@ -90,11 +90,11 @@ def _panama_stitch(
         current_row = multiple_prices.loc[dateindex, :]
 
         if current_row.PRICE_CONTRACT == previous_row.PRICE_CONTRACT:
-            # no roll has occured
+            # no roll has occurred
             # we just append the price
             adjusted_prices_values.append(current_row.PRICE)
         else:
-            # A roll has occured
+            # A roll has occurred
             adjusted_prices_values = _roll_in_panama(
                 adjusted_prices_values, previous_row, current_row
             )
@@ -135,7 +135,7 @@ def _roll_in_panama(adjusted_prices_values, previous_row, current_row):
     return adjusted_prices_values
 
 
-no_update_roll_has_occured = futuresAdjustedPrices.create_empty()
+no_update_roll_has_occurred = futuresAdjustedPrices.create_empty()
 
 
 def _update_adjusted_prices_from_multiple_no_roll(
@@ -153,12 +153,12 @@ def _update_adjusted_prices_from_multiple_no_roll(
         existing_adjusted_prices, updated_multiple_prices
     )
 
-    no_roll_has_occured = new_multiple_price_data.check_all_contracts_equal_to(
+    no_roll_has_occurred = new_multiple_price_data.check_all_contracts_equal_to(
         last_contract_in_price_data
     )
 
-    if not no_roll_has_occured:
-        return no_update_roll_has_occured
+    if not no_roll_has_occurred:
+        return no_update_roll_has_occurred
 
     new_adjusted_prices = new_multiple_price_data[price_name]
     new_adjusted_prices = new_adjusted_prices.dropna()

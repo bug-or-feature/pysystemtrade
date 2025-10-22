@@ -1,7 +1,6 @@
 """
 Functions to do calculations just from percentage returns
 """
-from typing import Union
 import pandas as pd
 from systems.accounts.curves.account_curve import accountCurve
 

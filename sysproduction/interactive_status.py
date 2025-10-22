@@ -1,4 +1,3 @@
-import logging
 from syscore.constants import arg_not_supplied
 from syscore.exceptions import missingData
 from syscore.interactive.display import set_pd_print_options

@@ -27,7 +27,6 @@ cancelPnLSingle
 
 """
 
-from sysproduction.data.capital import dataCapital
 from sysdata.data_blob import dataBlob
 from syscore.constants import arg_not_supplied
 from sysproduction.data.strategies import get_list_of_strategies_from_config

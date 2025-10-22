@@ -1,10 +1,7 @@
 ## Plots account curves
 
-import datetime
-import datetime
 
 from syscore.constants import arg_not_supplied
-from sysproduction.reporting.reporting_functions import table, header, body_text
 
 from sysdata.data_blob import dataBlob
 

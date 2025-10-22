@@ -5,7 +5,6 @@ from syscore.fileutils import (
     files_with_extension_in_pathname,
     resolve_path_and_filename_for_package,
     get_resolved_pathname,
-    delete_file_if_too_old,
 )
 from pathlib import Path
 

@@ -31,8 +31,6 @@ from sysproduction.data.optimal_positions import dataOptimalPositions
 from sysquant.estimators.stdev_estimator import stdevEstimates
 from sysquant.optimisation.weights import portfolioWeights
 
-from sysdata.config.production_config import get_production_config
-
 
 def get_notional_risk_target():
     ## might be overridden by strategy but we don't have the backtest .yaml here

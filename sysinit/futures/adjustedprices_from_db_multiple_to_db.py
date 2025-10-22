@@ -8,8 +8,6 @@ from syscore.constants import arg_not_supplied
 from sysdata.csv.csv_adjusted_prices import csvFuturesAdjustedPricesData
 
 from sysobjects.adjusted_prices import futuresAdjustedPrices
-from sysproduction.data.prices import get_valid_instrument_code_from_user
-from sysproduction.update_multiple_adjusted_prices import ALL_INSTRUMENTS
 from sysproduction.data.prices import diagPrices
 
 diag_prices = diagPrices()

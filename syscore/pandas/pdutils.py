@@ -4,7 +4,7 @@ Utilities to help with pandas
 import pandas as pd
 import datetime
 
-from collections import namedtuple
+from collections import namedtuple  # noqa F401
 from typing import Union, List
 import numpy as np
 

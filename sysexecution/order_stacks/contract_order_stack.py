@@ -1,9 +1,7 @@
-import datetime
 from copy import copy
 
 from sysexecution.orders.named_order_objects import missing_order
 from sysexecution.order_stacks.order_stack import orderStackData, missingOrder
-from sysexecution.trade_qty import tradeQuantity
 
 from sysexecution.orders.contract_orders import contractOrder
 

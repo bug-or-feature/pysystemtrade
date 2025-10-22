@@ -5,24 +5,20 @@ from sysdata.futures.futures_per_contract_prices import (
 )
 from sysdata.data_blob import dataBlob
 
-from sysexecution.tick_data import tickerObject, dataFrameOfRecentTicks
+from sysexecution.tick_data import tickerObject
 from sysexecution.orders.contract_orders import contractOrder
 from sysexecution.orders.broker_orders import brokerOrder
-from sysexecution.trade_qty import tradeQuantity
 
 from sysobjects.futures_per_contract_prices import futuresContractPrices
-from sysobjects.contracts import futuresContract, listOfFuturesContracts
+from sysobjects.contracts import futuresContract
 
 from syslogging.logger import *
 
 
 class brokerFuturesContractPriceData(futuresContractPriceData):
     """
-    Extends the baseData object to a data source that reads in and writes prices for specific futures contracts
-
-    This gets HISTORIC data from interactive brokers. It is blocking code
-    In a live production system it is suitable for running on a daily basis to get end of day prices
-
+    Extends futuresContractPriceData to a base class for broker futures contract prices.
+    Could be extended for a specific broker
     """
 
     def __init__(

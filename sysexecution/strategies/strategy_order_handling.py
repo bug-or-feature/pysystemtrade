@@ -5,7 +5,6 @@ It then passes these to the 'virtual' order queue
 So called because it deals with instrument level trades, not contract implementation
 """
 
-from sysexecution.orders.named_order_objects import zero_order
 from sysdata.data_blob import dataBlob
 
 from sysexecution.orders.list_of_orders import listOfOrders
@@ -134,8 +133,8 @@ class orderGeneratorForStrategy(object):
                 "%s trade change from %s to %s because of override %s"
                 % (
                     instrument_strategy.key,
-                    str(revised_order.trade),
                     str(proposed_order.trade),
+                    str(revised_order.trade),
                     str(override),
                 ),
                 **proposed_order.log_attributes(),

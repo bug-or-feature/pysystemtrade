@@ -1,5 +1,5 @@
 from syscore.constants import arg_not_supplied
-from sysdata.production.locks import lockData, lock_off, lock_on
+from sysdata.production.locks import lockData, lock_on
 from sysdata.mongodb.mongo_generic import mongoDataWithSingleKey
 from syslogging.logger import *
 

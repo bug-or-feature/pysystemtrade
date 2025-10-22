@@ -1,7 +1,7 @@
 from syscore.constants import arg_not_supplied
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysobjects.roll_calendars import rollCalendar
-from sysproduction.data.prices import get_valid_instrument_code_from_user, diagPrices
+from sysproduction.data.prices import diagPrices
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts

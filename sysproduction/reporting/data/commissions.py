@@ -1,7 +1,6 @@
 from typing import List, Dict
 
 import pandas as pd
-import numpy as np
 from sysobjects.spot_fx_prices import currencyValue
 from sysproduction.data.instruments import diagInstruments
 from sysproduction.data.broker import dataBroker

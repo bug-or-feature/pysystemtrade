@@ -17,7 +17,6 @@ from syscore.exceptions import missingContract
 
 from syslogging.logger import *
 
-from sysobjects.contracts import futuresContract
 
 # IB state that pacing violations only occur for bar sizes of less than 1 minute
 # See footnote at bottom of
@@ -28,7 +27,7 @@ PACING_INTERVAL_SECONDS = 0.5
 STALE_SECONDS_ALLOWED_ACCOUNT_SUMMARY = 600
 
 IB_ERROR_TYPES = {
-    200: "ambgious_contract",
+    200: "ambiguous contract",
     501: "already connected",
     502: "can't connect",
     503: "TWS need upgrading",

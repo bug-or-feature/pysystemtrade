@@ -1,4 +1,4 @@
-from syscore.dateutils import Frequency, DAILY_PRICE_FREQ, MIXED_FREQ
+from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from syscore.exceptions import missingContract, missingData
 from sysdata.data_blob import dataBlob
 
@@ -9,7 +9,7 @@ from sysbrokers.IB.ib_connection import connectionIB
 from sysbrokers.IB.client.ib_price_client import tickerWithBS, ibPriceClient
 from sysbrokers.broker_futures_contract_price_data import brokerFuturesContractPriceData
 
-from sysexecution.tick_data import tickerObject, dataFrameOfRecentTicks
+from sysexecution.tick_data import tickerObject
 from sysexecution.orders.contract_orders import contractOrder
 from sysexecution.trade_qty import tradeQuantity
 
@@ -47,11 +47,7 @@ class ibTickerObject(tickerObject):
 
 class ibFuturesContractPriceData(brokerFuturesContractPriceData):
     """
-    Extends the baseData object to a data source that reads in and writes prices for specific futures contracts
-
-    This gets HISTORIC data from interactive brokers. It is blocking code
-    In a live production system it is suitable for running on a daily basis to get end of day prices
-
+    Implementation of a data source for IB futures contract prices
     """
 
     def __init__(

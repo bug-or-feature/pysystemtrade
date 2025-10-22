@@ -376,7 +376,7 @@ def get_and_add_prices_for_frequency(
             )
         )
     except missingData:
-        print(
+        data.log.warning(
             "Something went wrong with getting prices for %s to check"
             % str(contract_object)
         )
@@ -387,7 +387,7 @@ def get_and_add_prices_for_frequency(
         return success
 
     if interactive_mode:
-        print("\n\n Manually checking prices for %s \n\n" % str(contract_object))
+        print("\n\nManually checking prices for %s\n\n" % str(contract_object))
         max_price_spike = cleaning_config.max_price_spike
 
         price_data = diagPrices(data)

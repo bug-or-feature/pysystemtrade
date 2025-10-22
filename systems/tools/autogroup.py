@@ -1,6 +1,5 @@
 from syscore.genutils import list_intersection
 from syscore.constants import arg_not_supplied
-from typing import Union
 from copy import copy
 
 WEIGHT_FLAG = "weight"

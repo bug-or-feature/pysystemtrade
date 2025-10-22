@@ -1,14 +1,7 @@
-import datetime
-import itertools
-
-from syscore.constants import arg_not_supplied
-from syscore.exceptions import missingData
 from sysdata.base_data import baseData
-from syslogdiag.pst_logger import pst_logger, DEFAULT_LOG_LEVEL
-from syslogdiag.log_entry import INVERSE_MAP, LEVEL_ID, logEntry
+from syslogdiag.pst_logger import pst_logger
 from syslogdiag.log_to_screen import logtoscreen
 
-from syslogdiag.email_via_db_interface import send_production_mail_msg
 
 LOG_COLLECTION_NAME = "Logs"
 EMAIL_ON_LOG_LEVEL = [4]

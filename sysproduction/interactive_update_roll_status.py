@@ -478,7 +478,7 @@ def suggest_roll_state_for_instrument(
     else:
         # forward illiquid
         if getting_close_to_desired_roll_date:
-            ## forward illiqud and getting close
+            ## forward illiquid and getting close
             # We don't want to trade the forward - it's not liquid yet.
             # And we don't want to open a position or increase it in the current
             #   priced contract, since we will only have to close it again soon.
@@ -518,7 +518,7 @@ def check_if_getting_close_to_desired_roll_date(
     roll_data: RollDataWithStateReporting,
     auto_parameters: autoRollParameters,
 ):
-    ## close to desired roll date, not technnically 'expiry'
+    ## close to desired roll date, not technically 'expiry'
     return roll_data.days_until_roll < auto_parameters.near_expiry_days
 
 

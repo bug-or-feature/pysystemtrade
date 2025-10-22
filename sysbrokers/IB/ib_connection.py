@@ -70,7 +70,7 @@ class connectionIB(object):
             # Under the default production setup this should send an email.
             # Error is reraised as we can't really continue and user intervention is required
             self.log.critical(
-                f"IB connection falied with exception - {e}, connection aborted."
+                f"IB connection failed with exception - {e}, connection aborted."
             )
             raise
 
@@ -89,7 +89,7 @@ class connectionIB(object):
             )
             ib.connect(ipaddress, port, clientId=client_id)
         else:
-            ## conncect using account
+            ## connect using account
             ib.connect(ipaddress, port, clientId=client_id, account=account)
 
         # Sometimes takes a few seconds to resolve... only have to do this once per process so no biggie

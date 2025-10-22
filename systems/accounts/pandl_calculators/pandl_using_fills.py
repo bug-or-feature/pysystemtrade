@@ -7,7 +7,7 @@ from systems.accounts.pandl_calculators.pandl_calculation import (
     apply_weighting,
 )
 
-from sysobjects.fills import ListOfFills, Fill
+from sysobjects.fills import ListOfFills
 
 
 class pandlCalculationWithFills(pandlCalculation):

@@ -7,12 +7,7 @@ from sysdata.csv.csv_roll_calendars import csvRollCalendarData
 from sysdata.csv.csv_roll_parameters import csvRollParametersData
 from sysdata.futures.rolls_parameters import rollParametersData
 from sysproduction.data.prices import get_valid_instrument_code_from_user, diagPrices
-from sysproduction.data.production_data_objects import (
-    get_class_for_data_type,
-    FUTURES_CONTRACT_PRICE_DATA,
-)
 
-from sysdata.data_blob import dataBlob
 from sysobjects.dict_of_futures_per_contract_prices import dictFuturesContractPrices
 
 diag_prices = diagPrices()

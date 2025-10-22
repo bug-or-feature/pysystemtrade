@@ -16,7 +16,6 @@ from sysexecution.order_stacks.broker_order_stack import orderWithControls
 from sysexecution.algos.algo import Algo
 from sysexecution.stack_handler.fills import stackHandlerForFills
 from sysproduction.data.controls import dataLocks
-from sysproduction.data.broker import dataBroker
 
 
 class stackHandlerCreateBrokerOrders(stackHandlerForFills):
@@ -202,7 +201,7 @@ class stackHandlerCreateBrokerOrders(stackHandlerForFills):
         if liquid_qty != contract_order_after_trade_limits.trade:
             self.log.debug(
                 "Cut down order from size %s to %s because of liquidity"
-                % (str(liquid_qty), str(contract_order_after_trade_limits.trade)),
+                % (str(contract_order_after_trade_limits.trade), str(liquid_qty)),
                 **contract_order_after_trade_limits.log_attributes(),
                 method="temp",
             )

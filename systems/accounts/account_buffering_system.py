@@ -1,8 +1,5 @@
-from typing import Callable
 import pandas as pd
 
-from syscore.exceptions import missingData
-from sysdata.config.configdata import Config
 from systems.accounts.account_buffering_subsystem import apply_buffer
 from syscore.pandas.strategy_functions import turnover
 from systems.system_cache import diagnostic

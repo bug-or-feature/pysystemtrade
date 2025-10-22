@@ -1,4 +1,3 @@
-import pytest
 from sysinit.futures.rollcalendars_from_db_prices_to_csv import (
     build_and_write_roll_calendar,
     check_saved_roll_calendar,

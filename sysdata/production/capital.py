@@ -1,6 +1,5 @@
 # FIXME RENAME 'capital.py' when original capital no longer needed for transfer purposes
 
-from copy import copy
 import datetime
 import pandas as pd
 import numpy as np

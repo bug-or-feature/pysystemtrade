@@ -6,7 +6,6 @@ from syscore.genutils import quickTimer
 from sysexecution.stack_handler.stackHandlerCore import stackHandlerCore
 from sysexecution.orders.list_of_orders import listOfOrders
 from sysexecution.orders.broker_orders import brokerOrder
-from sysproduction.data.broker import dataBroker
 
 
 class stackHandlerCancelAndModify(stackHandlerCore):

@@ -662,7 +662,7 @@ def update_strategy_override(data):
     view_overrides(data)
     update_overrides = updateOverrides(data)
     strategy_name = get_valid_strategy_name_from_user(data=data, source="positions")
-    new_override = get_overide_object_from_user()
+    new_override = get_override_object_from_user()
     ans = input("Are you sure? (y/other)")
     if ans == "y":
         update_overrides.update_override_for_strategy(strategy_name, new_override)
@@ -672,7 +672,7 @@ def update_instrument_override(data):
     view_overrides(data)
     update_overrides = updateOverrides(data)
     instrument_code = get_valid_instrument_code_from_user(data)
-    new_override = get_overide_object_from_user()
+    new_override = get_override_object_from_user()
     ans = input("Are you sure? (y/other)")
     if ans == "y":
         update_overrides.update_override_for_instrument(instrument_code, new_override)
@@ -686,7 +686,7 @@ def update_strategy_instrument_override(data):
     instrument_strategy = instrumentStrategy(
         instrument_code=instrument_code, strategy_name=strategy_name
     )
-    new_override = get_overide_object_from_user()
+    new_override = get_override_object_from_user()
     ans = input("Are you sure? (y/other)")
     if ans == "y":
         update_overrides.update_override_for_instrument_strategy(
@@ -694,7 +694,7 @@ def update_strategy_instrument_override(data):
         )
 
 
-def get_overide_object_from_user():
+def get_override_object_from_user():
     invalid_input = True
     while invalid_input:
         print(

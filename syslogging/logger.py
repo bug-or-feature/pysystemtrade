@@ -80,7 +80,7 @@ def _configure_logging():
 
 
 def _configure_sim():
-    print(f"Configuring sim logging")
+    print("Configuring sim logging")
     handler = logging.StreamHandler(stream=sys.stdout)
     handler.setLevel(logging.DEBUG)
     logging.getLogger("ib_insync").setLevel(logging.WARNING)

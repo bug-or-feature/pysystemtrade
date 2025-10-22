@@ -11,7 +11,7 @@ from sysdata.futures.futures_per_contract_prices import (
     futuresContractPriceData,
 )
 from sysobjects.futures_per_contract_prices import futuresContractPrices
-from sysobjects.contracts import futuresContract, get_code_and_id_from_contract_key
+from sysobjects.contracts import futuresContract
 from syslogging.logger import *
 
 import pandas as pd

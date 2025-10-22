@@ -2,9 +2,7 @@ import os
 import pandas as pd
 
 from syscore.exceptions import missingData
-from syscore.pandas.pdutils import check_df_equals, check_ts_equals
-from syscore.dateutils import CALENDAR_DAYS_IN_YEAR
-from syscore.dateutils import DAILY_PRICE_FREQ, HOURLY_FREQ, MIXED_FREQ, Frequency
+from syscore.dateutils import DAILY_PRICE_FREQ, HOURLY_FREQ, MIXED_FREQ
 from syscore.interactive.input import true_if_answer_is_yes
 
 from sysdata.data_blob import dataBlob
@@ -25,17 +23,6 @@ from sysdata.parquet.parquet_historic_strategy_positions import (
     parquetStrategyPositionData,
 )
 
-from sysdata.csv.csv_futures_contracts import csvFuturesContractData
-from sysdata.csv.csv_contract_position_data import csvContractPositionData
-from sysdata.csv.csv_strategy_position_data import csvStrategyPositionData
-from sysdata.csv.csv_historic_orders import (
-    csvStrategyHistoricOrdersData,
-    csvContractHistoricOrdersData,
-    csvBrokerHistoricOrdersData,
-)
-from sysdata.csv.csv_optimal_position import csvOptimalPositionData
-from sysdata.csv.csv_spread_costs import csvSpreadCostData
-from sysdata.csv.csv_roll_state_storage import csvRollStateData
 
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,

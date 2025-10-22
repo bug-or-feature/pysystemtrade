@@ -1,4 +1,3 @@
-from systems.accounts.curves.account_curve import accountCurve
 from systems.accounts.pandl_calculators.pandl_calculation_dict import (
     dictOfPandlCalculatorsWithGenericCosts,
     pandlCalculationWithoutPositions,

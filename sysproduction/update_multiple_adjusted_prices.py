@@ -17,7 +17,10 @@ from sysobjects.dict_of_named_futures_per_contract_prices import (
     dictFuturesNamedContractFinalPricesWithContractID,
 )
 
-from sysobjects.adjusted_prices import no_update_roll_has_occured, futuresAdjustedPrices
+from sysobjects.adjusted_prices import (
+    no_update_roll_has_occurred,
+    futuresAdjustedPrices,
+)
 from sysobjects.multiple_prices import futuresMultiplePrices, setOfNamedContracts
 from sysobjects.contracts import futuresContract
 
@@ -160,9 +163,9 @@ def calc_update_adjusted_prices(
         )
     )
 
-    if updated_adjusted_prices is no_update_roll_has_occured:
+    if updated_adjusted_prices is no_update_roll_has_occurred:
         msg = (
-            "Can't update adjusted prices for %s as roll has occured but not registered properly"
+            "Can't update adjusted prices for %s as roll has occurred but not registered properly"
             % instrument_code
         )
         data.log.critical(msg)

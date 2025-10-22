@@ -47,7 +47,7 @@ class brokerClientIdData(baseData):
 
     def _is_clientid_used(self, clientid: int) -> bool:
         """
-        Checks if a clientis is in use
+        Checks if a client id is in use
         :param clientid: int
         :return: bool
         """

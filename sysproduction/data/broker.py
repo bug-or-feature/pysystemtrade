@@ -1,4 +1,3 @@
-from copy import copy
 
 import pandas as pd
 
@@ -18,7 +17,6 @@ from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 from syscore.exceptions import missingData
 
 from syscore.constants import arg_not_supplied
-from syscore.exceptions import orderCannotBeModified
 from sysexecution.orders.named_order_objects import missing_order
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
@@ -40,7 +38,7 @@ from sysexecution.order_stacks.broker_order_stack import orderWithControls
 from sysobjects.contract_dates_and_expiries import expiryDate
 from sysobjects.contracts import futuresContract
 from sysobjects.instruments import futuresInstrumentWithMetaData
-from sysobjects.production.positions import contractPosition, listOfContractPositions
+from sysobjects.production.positions import listOfContractPositions
 from sysobjects.spot_fx_prices import fxPrices, currencyValue
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 from sysproduction.data.positions import diagPositions

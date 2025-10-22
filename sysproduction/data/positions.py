@@ -29,7 +29,6 @@ from sysobjects.production.tradeable_object import (
 from sysobjects.production.roll_state import (
     RollState,
     is_roll_state_requiring_order_generation,
-    is_type_of_active_rolling_roll_state,
     is_double_sided_trade_roll_state,
     passive_roll_state,
 )

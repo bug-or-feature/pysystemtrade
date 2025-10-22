@@ -21,29 +21,6 @@ BARCHART_CONFIG = ConfigCsvFuturesPrices(
         OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
     ),
 )
-BACKUP_CONFIG = ConfigCsvFuturesPrices(input_skiprows=0, input_skipfooter=1)
-
-
-def init_db_with_split_freq_csv_prices(
-    datapath: str,
-    csv_config=arg_not_supplied,
-    ignore_duplication: bool = True,  # if True, we overwrite existing prices
-):
-    csv_prices = csvFuturesContractPriceData(datapath)
-    input(
-        "WARNING THIS WILL ERASE ANY EXISTING DATABASE PRICES WITH DATA FROM %s ARE YOU SURE?! (CTRL-C TO STOP)"
-        % csv_prices.datapath
-    )
-
-    instrument_codes = csv_prices.get_list_of_instrument_codes_with_merged_price_data()
-    instrument_codes.sort()
-    for instrument_code in instrument_codes:
-        init_db_with_split_freq_csv_prices_for_code(
-            instrument_code,
-            datapath,
-            csv_config=csv_config,
-            ignore_duplication=ignore_duplication,
-        )
 
 
 def init_db_with_split_freq_csv_prices_for_code(
@@ -57,7 +34,7 @@ def init_db_with_split_freq_csv_prices_for_code(
     print(f"Importing split freq csv prices for {instrument_code}")
     csv_prices = csvFuturesContractPriceData(datapath, config=csv_config)
 
-    print(f"Getting split freq .csv prices may take some time")
+    print("Getting split freq .csv prices may take some time")
     hourly_dict = csv_prices.get_prices_at_frequency_for_instrument(
         instrument_code,
         frequency=HOURLY_FREQ,
