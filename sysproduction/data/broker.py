@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 from sysbrokers.broker_contract_commission_data import (
