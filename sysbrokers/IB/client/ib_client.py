@@ -1,9 +1,8 @@
-import datetime
-from typing import Union, List
-from ib_insync import IB
+from typing import List
+from ib_insync import IB, ContractDetails as ibContractDetails
 
 from sysbrokers.IB.ib_connection import connectionIB
-from sysbrokers.IB.ib_contracts import ibContract, ibContractDetails
+from sysbrokers.IB.ib_contracts import ibContract
 from sysbrokers.IB.config.ib_instrument_config import (
     IBconfig,
     read_ib_config_from_file,
