@@ -38,7 +38,7 @@ if not multiple_prices_from_db.exists():
 if not spliced_multiple_prices.exists():
     spliced_multiple_prices.mkdir()
 
-instrument_code = get_valid_instrument_code_from_user(source="multiple")
+instrument_code = get_valid_instrument_code_from_user(source="config")
 build_and_write_roll_calendar(
     instrument_code, output_datapath=str(roll_calendars_from_db)
 )
