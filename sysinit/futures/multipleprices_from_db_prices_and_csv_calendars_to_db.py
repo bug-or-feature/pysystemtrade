@@ -17,7 +17,7 @@ from sysobjects.dict_of_futures_per_contract_prices import (
 import datetime
 import pandas as pd
 
-from sysproduction.data.prices import diagPrices
+from sysproduction.data.prices import diagPrices, get_valid_instrument_code_from_user
 from sysobjects.rolls import rollParameters, contractDateWithRollParameters
 from sysobjects.contract_dates_and_expiries import contractDate
 
@@ -190,26 +190,20 @@ def add_phantom_row(
 
 
 if __name__ == "__main__":
-    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
-    # change if you want to write elsewhere
-    csv_multiple_data_path = arg_not_supplied
-
-    # only change if you have written the files elsewhere
-    csv_roll_data_path = arg_not_supplied
-
-    # modify flags as required
-    # process_multiple_prices_all_instruments(
-    #     csv_multiple_data_path=csv_multiple_data_path,
-    #     csv_roll_data_path=csv_roll_data_path,
-    # )
-
-    for instr in [
-        "CRUDE_W_micro",
-    ]:
-        print(f"Starting multiple for {instr}")
+    input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    instrument_code = get_valid_instrument_code_from_user(
+        all_code=ALL_INSTRUMENTS, allow_all=True
+    )
+    # modify flags and datapath as required
+    if instrument_code == ALL_INSTRUMENTS:
+        process_multiple_prices_all_instruments(
+            csv_multiple_data_path=arg_not_supplied,
+            csv_roll_data_path=arg_not_supplied,
+        )
+    else:
         process_multiple_prices_single_instrument(
-            instrument_code=instr,
-            csv_multiple_data_path=csv_multiple_data_path,
-            csv_roll_data_path=csv_roll_data_path,
+            instrument_code=instrument_code,
+            csv_multiple_data_path=arg_not_supplied,
+            csv_roll_data_path=arg_not_supplied,
             ADD_TO_CSV=True,
         )
