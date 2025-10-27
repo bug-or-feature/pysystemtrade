@@ -13,6 +13,7 @@ EXTENSION = "parquet"
 
 class ParquetAccess(object):
     def __init__(self, parquet_store_path: str):
+        print("%%% ParquetAccess %%%")
         self.parquet_store = get_resolved_pathname(parquet_store_path)
 
     def get_all_identifiers_with_data_type(self, data_type: str):
