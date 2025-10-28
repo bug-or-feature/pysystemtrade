@@ -25,34 +25,6 @@ PACING_INTERVAL_SECONDS = 0.5
 
 STALE_SECONDS_ALLOWED_ACCOUNT_SUMMARY = 600
 
-IB_ERROR_TYPES = {
-    200: "ambiguous contract",
-    501: "already connected",
-    502: "can't connect",
-    503: "TWS need upgrading",
-    100: "Max messages exceeded",
-    102: "Duplicate ticker",
-    103: "Duplicate orderid",
-    104: "can't modify filled order",
-    105: "trying to modify different order",
-    106: "can't transmit orderid",
-    107: "can't transmit incomplete order",
-    109: "price out of range",
-    110: "tick size wrong for price",
-    122: "No request tag has been found for order",
-    123: "invalid conid",
-    133: "submit order failed",
-    134: "modify order failed",
-    135: "cant find order",
-    136: "order cant be cancelled",
-    140: "size should be an integer",
-    141: "price should be a double",
-    201: "order rejected",
-    202: "order cancelled",
-}
-
-IB_IS_ERROR = list(IB_ERROR_TYPES.keys())
-
 
 class ibClient(object):
     """
@@ -68,9 +40,6 @@ class ibClient(object):
             datetime.datetime.now()
             - datetime.timedelta(seconds=PACING_INTERVAL_SECONDS)
         )
-
-        # Add error handler
-        ibconnection.ib.errorEvent += self.error_handler
 
         self._ib_connnection = ibconnection
         self._log = log
@@ -95,43 +64,6 @@ class ibClient(object):
     @property
     def log(self):
         return self._log
-
-    def error_handler(
-        self, reqid: int, error_code: int, error_string: str, ib_contract: ibContract
-    ):
-        """
-        Error handler called from server
-        Needs to be attached to ib connection
-
-        :param reqid: IB reqid
-        :param error_code: IB error code
-        :param error_string: IB error string
-        :param contract: IB contract or None
-        :return: success
-        """
-
-        msg = "Reqid %d: %d %s for %s" % (
-            reqid,
-            error_code,
-            error_string,
-            str(ib_contract),
-        )
-
-        iserror = error_code in IB_IS_ERROR
-        if iserror:
-            # Serious requires some action
-            myerror_type = IB_ERROR_TYPES.get(error_code, "generic")
-            self.broker_error(msg=msg, myerror_type=myerror_type, log=self.log)
-
-        else:
-            # just a general message
-            self.broker_message(msg=msg, log=self.log)
-
-    def broker_error(self, msg, log, myerror_type):
-        log.warning(msg)
-
-    def broker_message(self, log, msg):
-        log.debug(msg)
 
     def refresh(self):
         self.ib.sleep(0.00001)
