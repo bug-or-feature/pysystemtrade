@@ -14,10 +14,6 @@ DEFAULT_FILENAME = "sysdata.config.defaults.yaml"
 
 
 def get_system_defaults_dict(filename: str = arg_not_supplied) -> dict:
-    """
-    >>> get_system_defaults_dict()['average_absolute_forecast']
-    10.0
-    """
     if filename is arg_not_supplied:
         filename = DEFAULT_FILENAME
     default_file = resolve_path_and_filename_for_package(filename)

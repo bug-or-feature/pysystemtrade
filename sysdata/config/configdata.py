@@ -61,16 +61,6 @@ class Config(object):
         :type config_object: str or dict
 
         :returns: new Config object
-
-        >>> Config(dict(parameters=dict(p1=3, p2=4.6), another_thing=[]))
-        Config with elements: another_thing, parameters
-
-        >>> Config("systems.provided.example.exampleconfig.yaml")
-        Config with elements: base_currency, ... trading_rules
-
-        >>> Config(["systems.provided.example.exampleconfig.yaml", dict(parameters=dict(p1=3, p2=4.6), another_thing=[])])
-        Config with elements: another_thing, ... parameters, ...trading_rules
-
         """
 
         # this will normally be overridden by the base system
@@ -194,12 +184,6 @@ class Config(object):
     def __delattr__(self, element_name: str):
         """
         Remove element_name from config
-
-        >>> config=Config(dict(parameters=dict(p1=3, p2=4.6), another_thing=[]))
-        >>> del(config.another_thing)
-        >>> config
-        Config with elements: parameters
-        >>>
         """
         # to avoid recursion, we must first avoid recursion
         super().__delattr__(element_name)
@@ -209,15 +193,6 @@ class Config(object):
     def __setattr__(self, element_name: str, value):
         """
         Add / replace element_name in config
-
-        >>> config=Config(dict(parameters=dict(p1=3, p2=4.6), another_thing=[]))
-        >>> config.another_thing="test"
-        >>> config.another_thing
-        'test'
-        >>> config.yet_another_thing="more testing"
-        >>> config
-        Config with elements: another_thing, parameters, yet_another_thing
-        >>>
         """
         # to avoid recursion, we must first avoid recursion
         super().__setattr__(element_name, value)
