@@ -8,6 +8,8 @@ TRAPZERR() {
 }
 
 echo "`date "+%Y-%m-%d %H:%M:%S"` starting sync of monitor site files to httpd home..."
+echo "`date "+%Y-%m-%d %H:%M:%S"` source: $PYSYS_SITE_DIR"
+echo "`date "+%Y-%m-%d %H:%M:%S"` dest: $PYSYS_HTTPD_DIR"
 
 /usr/local/bin/rsync -av --exclude=.DS_Store -e "ssh -p 2222" $PYSYS_SITE_DIR $PYSYS_HTTPD_DIR
 
