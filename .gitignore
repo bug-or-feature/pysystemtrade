@@ -40,3 +40,6 @@ site/reports/_tempfile_*
 # backups
 data/backups_csv/
 data/mongo_dump/
+
+# logs
+*.log
