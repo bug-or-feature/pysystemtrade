@@ -5,7 +5,6 @@ from importlib import import_module
 import os
 from pathlib import Path
 from typing import List, Tuple
-from copy import copy
 
 from syscore.dateutils import SECONDS_PER_DAY
 
@@ -135,9 +134,6 @@ def resolve_path_and_filename_for_package(
 
     """
 
-    source_path = copy(path_and_filename)
-    source_file = copy(separate_filename)
-
     path_and_filename_as_list = transform_path_into_list(path_and_filename)
     if separate_filename is None:
         (
@@ -153,10 +149,6 @@ def resolve_path_and_filename_for_package(
 
     resolved_path_and_filename = os.path.join(resolved_pathname, separate_filename)
 
-    print(
-        f"** fu ** resolve_path_and_filename_for_package(): source={source_path}, "
-        f"file={source_file}, resolved_path_and_filename={resolved_path_and_filename}"
-    )
     return resolved_path_and_filename
 
 
@@ -176,8 +168,6 @@ def get_resolved_pathname(pathname: str) -> str:
 
     """
 
-    source_pathname = copy(pathname)
-
     if isinstance(pathname, Path):
         # special case when already a Path
         pathname = str(pathname.absolute())
@@ -189,11 +179,6 @@ def get_resolved_pathname(pathname: str) -> str:
     # Turn /,\ into . so system independent
     path_as_list = transform_path_into_list(pathname)
     resolved_pathname = get_pathname_from_list(path_as_list)
-
-    print(
-        f"** fu ** get_resolved_pathname(): source={source_pathname}, "
-        f"get_resolved_pathname={resolved_pathname}"
-    )
 
     return resolved_pathname
 
