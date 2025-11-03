@@ -155,7 +155,7 @@ class stackHandlerForRolls(stackHandlerCore):
         ## Check other strategies for orders
         ##  (note this will return True if it's a roll order so we'd get an email if we hadn't already exited)
         any_order_for_instrument_already_on_stack = (
-            self.check_and_warn_if_order_for_instrument_already_on_contract_stack(
+            self.check_and_warn_if_order_for_instrument_already_on_stack(
                 instrument_code
             )
         )
@@ -172,11 +172,11 @@ class stackHandlerForRolls(stackHandlerCore):
 
         return order_already_on_stack
 
-    def check_and_warn_if_order_for_instrument_already_on_contract_stack(
+    def check_and_warn_if_order_for_instrument_already_on_stack(
         self, instrument_code: str
     ) -> bool:
         orders_already_on_stack = (
-            self.contract_stack.does_stack_have_orders_for_instrument_code(
+            self.instrument_stack.does_stack_have_orders_for_instrument_code(
                 instrument_code
             )
         )
@@ -185,7 +185,7 @@ class stackHandlerForRolls(stackHandlerCore):
             ## Need to warn user so they can take action if required
 
             self.log.critical(
-                "Cannot force roll %s as already other orders on contract stack"
+                "Cannot force roll %s as already other orders on stack"
                 % (instrument_code),
                 instrument_code=instrument_code,
             )
