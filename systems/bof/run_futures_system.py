@@ -34,7 +34,7 @@ from systems.system_utils import (
 # CONFIG = "systems.bof.config.fut_simple_test.yaml"
 CONFIG = "systems.bof.config.fut_strategy_v1_8.yaml"
 
-#SAVED_SYSTEM = "systems.bof.config.fut_simple_test.pck"
+# SAVED_SYSTEM = "systems.bof.config.fut_simple_test.pck"
 SAVED_SYSTEM = "systems.bof.config.fut_strategy_v1_8.pck"
 
 # CONFIG = "systems.bof.config.futures_static_estimation_min.yaml"
