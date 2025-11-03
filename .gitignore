@@ -43,3 +43,15 @@ data/mongo_dump/
 
 # logs
 *.log
+
+/parquet
+
+/.vscode/*
+
+/data/futures/db_roll_calendars
+/data/futures/multiple_from_db
+/data/futures/multiple_prices_csv_spliced
+/data/futures/roll_calendars_from_csv_multiple
+/data/futures/roll_calendars_from_db
+
+/reports_backup
