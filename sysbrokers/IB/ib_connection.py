@@ -153,7 +153,6 @@ class connectionIB(object):
     ):
         """
         Error handler called from server
-        Needs to be attached to ib connection
 
         :param reqid: IB reqid
         :param error_code: IB error code
@@ -162,11 +161,16 @@ class connectionIB(object):
         :return: success
         """
 
-        if error_code in IB_IS_ERROR and ib_contract is not None:
+        contract = f"Contract: {str(ib_contract)}" if ib_contract else ""
+        if error_code in IB_IS_ERROR :
             # Serious requires some action
             myerror_type = IB_ERROR_TYPES.get(error_code, "generic")
             self.log.warning(
-                f"Reqid {reqid}: {error_code} ({myerror_type}) {error_string} for {str(ib_contract)}"
+                f"Reqid {reqid}: {error_code} ({myerror_type}) {error_string} {contract}"
+            )
+        else:
+            self.log.info(
+                f"Reqid {reqid}: {error_code} {error_string} {contract}"
             )
 
     def close_connection(self):
