@@ -161,7 +161,7 @@ class connectionIB(object):
         :return: success
         """
 
-        contract = f"Contract: {str(ib_contract)}" if ib_contract else ""
+        contract = f"{str(ib_contract)}" if ib_contract else ""
         if error_code in IB_IS_ERROR:
             # Serious requires some action
             myerror_type = IB_ERROR_TYPES.get(error_code, "generic")
