@@ -161,17 +161,15 @@ class connectionIB(object):
         :return: success
         """
 
-        contract = f"Contract: {str(ib_contract)}" if ib_contract else ""
-        if error_code in IB_IS_ERROR :
+        contract = f"{str(ib_contract)}" if ib_contract else ""
+        if error_code in IB_IS_ERROR:
             # Serious requires some action
             myerror_type = IB_ERROR_TYPES.get(error_code, "generic")
             self.log.warning(
                 f"Reqid {reqid}: {error_code} ({myerror_type}) {error_string} {contract}"
             )
         else:
-            self.log.info(
-                f"Reqid {reqid}: {error_code} {error_string} {contract}"
-            )
+            self.log.info(f"Reqid {reqid}: {error_code} {error_string} {contract}")
 
     def close_connection(self):
         self.log.debug("Terminating %s" % str(self._ib_connection_config))
