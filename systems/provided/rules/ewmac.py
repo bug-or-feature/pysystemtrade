@@ -166,7 +166,7 @@ def ewmac_calc_vol(price, Lfast, Lslow, vol_days=35):
     # We don't need to calculate the decay parameter, just use the span
     # directly
 
-    vol = robust_vol_calc(price, vol_days)
+    vol = robust_vol_calc(price.diff(), vol_days)
     forecast = ewmac(price, vol, Lfast, Lslow)
 
     return forecast

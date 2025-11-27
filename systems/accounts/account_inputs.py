@@ -53,7 +53,9 @@ class accountInputs(SystemStage):
             )
             hourly_prices = self.get_hourly_prices(instrument_code)
 
-            instrument_prices = hourly_prices.reindex(position_or_forecast.index)
+            instrument_prices = hourly_prices.reindex(
+                position_or_forecast.index, method="ffill"
+            )
 
         return instrument_prices
 

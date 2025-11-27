@@ -1394,10 +1394,12 @@ system.data.get_raw_price("SOFR")
 ```
 
 For a list of all the methods in a system and its stages see [stage methods](#table-of-standard-systemdata-and-systemstage-methods). Alternatively:
+
 ```python
-system ## lists all the stages
-system.accounts.methods() ## lists all the methods in a particular stage
-system.data.methods() ## also works for data
+
+system  ## lists all the stages
+system.stage_name.methods()  ## lists all the methods in a particular stage
+system.data.methods()  ## also works for data
 ```
 
 We can also access or change elements of the config object:
@@ -3916,7 +3918,9 @@ All other methods in pysystemtrade use fixed capital.
 The tables in this section list all the public methods that can be used to get data out of a system and its 'child' stages. You can also use the methods() method:
 
 ```python
-system.rawdata.methods() ## works for any stage or data
+import private.projects.artandscience.methods
+
+private.projects.artandscience.methods.methods()  ## works for any stage or data
 ```
 
 ### Explanation of columns

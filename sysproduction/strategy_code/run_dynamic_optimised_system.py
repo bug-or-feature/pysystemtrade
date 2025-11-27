@@ -112,7 +112,16 @@ def updated_optimal_positions_for_dynamic_system(
 
     data_optimal_positions = dataOptimalPositions(data)
 
-    list_of_instruments = system.get_instrument_list()
+    instruments_in_system = system.get_instrument_list()
+
+    # Instruments with existing optimal positions
+    # If not included in the system, they need to be assigned a weight of zero
+    instruments_with_positions = data_optimal_positions.get_list_of_instruments_for_strategy_with_optimal_position(
+        strategy_name, raw_positions=True
+    )
+
+    list_of_instruments = set(instruments_in_system).union(instruments_with_positions)
+
     for instrument_code in list_of_instruments:
         position_entry = construct_optimal_position_entry(
             data=data,
@@ -134,13 +143,24 @@ def updated_optimal_positions_for_dynamic_system(
 def construct_optimal_position_entry(
     data: dataBlob, system: System, instrument_code: str
 ) -> optimalPositionWithReference:
+    log = data.log
     diag_contracts = dataContracts(data)
 
-    optimal_position = get_optimal_position_from_system(system, instrument_code)
+    if instrument_code in system.get_instrument_list():
+        optimal_position = get_optimal_position_from_system(system, instrument_code)
+    else:
+        optimal_position = 0.0
 
-    reference_price = system.rawdata.get_daily_prices(instrument_code).iloc[-1]
-    reference_date = system.rawdata.get_daily_prices(instrument_code).index[-1]
-    reference_contract = diag_contracts.get_priced_contract_id(instrument_code)
+    try:
+        reference_price = system.rawdata.get_daily_prices(instrument_code).iloc[-1]
+        reference_date = system.rawdata.get_daily_prices(instrument_code).index[-1]
+        reference_contract = diag_contracts.get_priced_contract_id(instrument_code)
+    except Exception:
+        log.warning(f"{instrument_code} has optimal position, but no price data")
+        reference_price = 0.0
+        reference_date = datetime.datetime.now()
+        reference_contract = reference_date.strftime("%Y%m00")
+
     position_entry = optimalPositionWithReference(
         date=datetime.datetime.now(),
         optimal_position=optimal_position,
