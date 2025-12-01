@@ -15,34 +15,6 @@ from syslogging.logger import *
 
 from sysdata.config.production_config import get_production_config
 
-IB_ERROR_TYPES = {
-    100: "Max messages exceeded",
-    102: "Duplicate ticker",
-    103: "Duplicate orderid",
-    104: "can't modify filled order",
-    105: "trying to modify different order",
-    106: "can't transmit orderid",
-    107: "can't transmit incomplete order",
-    109: "price out of range",
-    110: "tick size wrong for price",
-    122: "No request tag has been found for order",
-    123: "invalid conid",
-    133: "submit order failed",
-    134: "modify order failed",
-    135: "cant find order",
-    136: "order cant be cancelled",
-    140: "size should be an integer",
-    141: "price should be a double",
-    200: "ambiguous contract",
-    201: "order rejected",
-    202: "order cancelled",
-    501: "already connected",
-    502: "can't connect",
-    503: "TWS need upgrading",
-}
-
-IB_IS_ERROR = list(IB_ERROR_TYPES.keys())
-
 
 class connectionIB(object):
     """
@@ -124,9 +96,6 @@ class connectionIB(object):
         # Sometimes takes a few seconds to resolve... only have to do this once per process so no biggie
         time.sleep(5)
 
-        # Add error handler
-        ib.errorEvent += self.error_handler
-
         self._ib = ib
         self._account = account
 
@@ -147,29 +116,6 @@ class connectionIB(object):
     @property
     def account(self):
         return self._account
-
-    def error_handler(
-        self, reqid: int, error_code: int, error_string: str, ib_contract: ibContract
-    ):
-        """
-        Error handler called from server
-
-        :param reqid: IB reqid
-        :param error_code: IB error code
-        :param error_string: IB error string
-        :param ib_contract: IB contract or None
-        :return: success
-        """
-
-        contract = f"{str(ib_contract)}" if ib_contract else ""
-        if error_code in IB_IS_ERROR:
-            # Serious requires some action
-            myerror_type = IB_ERROR_TYPES.get(error_code, "generic")
-            self.log.warning(
-                f"Reqid {reqid}: {error_code} ({myerror_type}) {error_string} {contract}"
-            )
-        else:
-            self.log.info(f"Reqid {reqid}: {error_code} {error_string} {contract}")
 
     def close_connection(self):
         self.log.debug("Terminating %s" % str(self._ib_connection_config))
