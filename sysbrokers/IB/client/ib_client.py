@@ -1,3 +1,4 @@
+import logging
 from typing import List
 from ib_insync import IB, ContractDetails as ibContractDetails
 
@@ -25,6 +26,34 @@ PACING_INTERVAL_SECONDS = 0.5
 
 STALE_SECONDS_ALLOWED_ACCOUNT_SUMMARY = 600
 
+IB_ERROR_TYPES = {
+    200: "ambiguous contract",
+    501: "already connected",
+    502: "can't connect",
+    503: "TWS need upgrading",
+    100: "Max messages exceeded",
+    102: "Duplicate ticker",
+    103: "Duplicate orderid",
+    104: "can't modify filled order",
+    105: "trying to modify different order",
+    106: "can't transmit orderid",
+    107: "can't transmit incomplete order",
+    109: "price out of range",
+    110: "tick size wrong for price",
+    122: "No request tag has been found for order",
+    123: "invalid conid",
+    133: "submit order failed",
+    134: "modify order failed",
+    135: "cant find order",
+    136: "order cant be cancelled",
+    140: "size should be an integer",
+    141: "price should be a double",
+    201: "order rejected",
+    202: "order cancelled",
+}
+
+IB_IS_ERROR = list(IB_ERROR_TYPES.keys())
+
 
 class ibClient(object):
     """
@@ -40,6 +69,10 @@ class ibClient(object):
             datetime.datetime.now()
             - datetime.timedelta(seconds=PACING_INTERVAL_SECONDS)
         )
+
+        # Add error handler only if not already added
+        if self.error_handler not in ibconnection.ib.errorEvent:
+            ibconnection.ib.errorEvent += self.error_handler
 
         self._ib_connnection = ibconnection
         self._log = log
@@ -64,6 +97,44 @@ class ibClient(object):
     @property
     def log(self):
         return self._log
+
+    def error_handler(
+        self, reqid: int, error_code: int, error_string: str, ib_contract: ibContract
+    ):
+        """
+        Error handler called from server
+
+        :param reqid: IB reqid
+        :param error_code: IB error code
+        :param error_string: IB error string
+        :param ib_contract: IB contract or None
+        :return: success
+        """
+
+        if error_code in IB_IS_ERROR:
+            # Serious requires some action
+            level = logging.WARNING
+            type_str = f" ({IB_ERROR_TYPES.get(error_code, 'generic')}) "
+        else:
+            level = logging.INFO
+            type_str = " "
+
+        if ib_contract:
+            contract = f" {str(ib_contract)}"
+            instrument_code = self.get_instrument_code_from_broker_contract_object(
+                ib_contract
+            )
+            self.log.log(
+                level,
+                f"Reqid {reqid}: {error_code}{type_str}{error_string}{contract}",
+                method="temp",
+                INSTRUMENT_CODE_LOG_LABEL=instrument_code,
+            )
+        else:
+            self.log.log(
+                level,
+                f"Reqid {reqid}: {error_code}{type_str}{error_string}",
+            )
 
     def refresh(self):
         self.ib.sleep(0.00001)
