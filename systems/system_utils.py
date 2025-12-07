@@ -43,7 +43,7 @@ def write_estimate_file(log, system, save_dir: str):
 def write_full_config_file(log, system, save_dir: str):
     now = datetime.datetime.now()
     output_file = resolve_path_and_filename_for_package(
-        f"systems.futures_spreadbet.full_config-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
+        f"private.config-{now.strftime('%Y-%m-%d_%H%M%S')}.yaml"
     )
     log.info(f"writing config to: {output_file}")
     system.config.save(output_file)
