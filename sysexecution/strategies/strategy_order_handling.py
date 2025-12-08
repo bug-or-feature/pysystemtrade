@@ -12,6 +12,7 @@ from sysexecution.orders.instrument_orders import instrumentOrder
 from sysexecution.order_stacks.instrument_order_stack import zeroOrderException
 from syslogging.logger import *
 from sysproduction.data.positions import diagPositions
+from sysproduction.data.instruments import diagInstruments
 from sysproduction.data.orders import dataOrders
 from sysproduction.data.controls import diagOverrides, dataLocks, dataPositionLimits
 
@@ -203,3 +204,23 @@ class orderGeneratorForStrategy(object):
                 % (str(order), order_id),
                 **log_attrs,
             )
+
+    def issue_force_warnings(self, list_of_trades: listOfOrders):
+        # Check for Force/Force_Outright roll status
+        diag_positions = diagPositions(self.data)
+        diag_instruments = diagInstruments(self.data)
+        warn_regions = self.data.config.get_element_or_default(
+            "regions_with_warn_on_force_orders", []
+        )
+
+        for trade in list_of_trades:
+            instr_code = trade.instrument_code
+            instr_region = diag_instruments.get_region(instr_code)
+            if (
+                instr_region in warn_regions
+                and diag_positions.is_double_sided_trade_roll_state(instr_code)
+            ):
+                roll_state = diag_positions.get_name_of_roll_state(instr_code)
+                self.log.critical(
+                    f"Optimal order created for {instr_code} with status {roll_state}"
+                )

@@ -43,6 +43,8 @@ class orderGeneratorForBufferedPositions(orderGeneratorForStrategy):
             self.data, strategy_name, optimal_positions, actual_positions
         )
 
+        self.issue_force_warnings(list_of_trades)
+
         return list_of_trades
 
     def get_optimal_positions(self) -> optimalPositions:
