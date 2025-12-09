@@ -170,6 +170,12 @@ class orderGeneratorForStrategy(object):
 
     def submit_order_list(self, order_list: listOfOrders):
         data_lock = dataLocks(self.data)
+        diag_positions = diagPositions(self.data)
+        diag_instruments = diagInstruments(self.data)
+        force_warn_regions = self.data.config.get_element_or_default(
+            "regions_with_warn_on_force_orders", []
+        )
+
         for order in order_list:
             # try:
             # we allow existing orders to be modified
@@ -180,6 +186,23 @@ class orderGeneratorForStrategy(object):
             if instrument_locked:
                 self.log.debug("Instrument locked, not submitting", **log_attrs)
                 continue
+
+            # if configured for the instrument region, issue a warning for double
+            # sided roll orders
+            instr_region = diag_instruments.get_region(order.instrument_code)
+            if (
+                instr_region in force_warn_regions
+                and diag_positions.is_double_sided_trade_roll_state(
+                    order.instrument_code
+                )
+            ):
+                roll_state = diag_positions.get_name_of_roll_state(
+                    order.instrument_code
+                )
+                self.log.critical(
+                    f"Instrument order submitted with roll status {roll_state}",
+                    **log_attrs,
+                )
             self.submit_order(order)
 
     def submit_order(self, order: instrumentOrder):
