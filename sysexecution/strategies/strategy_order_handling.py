@@ -29,9 +29,18 @@ class orderGeneratorForStrategy(object):
     def __init__(self, data: dataBlob, strategy_name: str):
         self._strategy_name = strategy_name
         self._data = data
-        data_orders = dataOrders(data)
         self._log = data.log
-        self._data_orders = data_orders
+
+        self._data_orders = dataOrders(data)
+        self._diag_positions = diagPositions(data)
+        self._diag_overrides = diagOverrides(data)
+        self._data_position_limits = dataPositionLimits(data)
+        self._data_lock = dataLocks(data)
+        self._diag_instruments = diagInstruments(data)
+
+        self.warn_regions = data.config.get_element_or_default(
+            "regions_with_warn_on_force_orders", []
+        )
 
     @property
     def data(self) -> dataBlob:
@@ -48,6 +57,26 @@ class orderGeneratorForStrategy(object):
     @property
     def data_orders(self):
         return self._data_orders
+
+    @property
+    def diag_positions(self):
+        return self._diag_positions
+
+    @property
+    def diag_overrides(self):
+        return self._diag_overrides
+
+    @property
+    def data_position_limits(self):
+        return self._data_position_limits
+
+    @property
+    def data_lock(self):
+        return self._data_lock
+
+    @property
+    def diag_instruments(self):
+        return self._diag_instruments
 
     @property
     def order_stack(self):
@@ -72,12 +101,10 @@ class orderGeneratorForStrategy(object):
 
         :return: dict, keys are instrument codes, values are positions
         """
-        data = self.data
         strategy_name = self.strategy_name
 
-        diag_positions = diagPositions(data)
-        actual_positions = diag_positions.get_dict_of_actual_positions_for_strategy(
-            strategy_name
+        actual_positions = (
+            self.diag_positions.get_dict_of_actual_positions_for_strategy(strategy_name)
         )
 
         return actual_positions
@@ -114,16 +141,15 @@ class orderGeneratorForStrategy(object):
         :return: int, updated position
         """
 
-        diag_overrides = diagOverrides(self.data)
-        diag_positions = diagPositions(self.data)
-
         instrument_strategy = proposed_order.instrument_strategy
 
-        original_position = diag_positions.get_current_position_for_instrument_strategy(
-            instrument_strategy
+        original_position = (
+            self.diag_positions.get_current_position_for_instrument_strategy(
+                instrument_strategy
+            )
         )
 
-        override = diag_overrides.get_cumulative_override_for_instrument_strategy(
+        override = self.diag_overrides.get_cumulative_override_for_instrument_strategy(
             instrument_strategy
         )
 
@@ -149,8 +175,7 @@ class orderGeneratorForStrategy(object):
     ) -> instrumentOrder:
         log_attrs = {**order.log_attributes(), "method": "temp"}
 
-        data_position_limits = dataPositionLimits(self.data)
-        new_order = data_position_limits.apply_position_limit_to_order(order)
+        new_order = self.data_position_limits.apply_position_limit_to_order(order)
 
         if new_order.trade != order.trade:
             if new_order.is_zero_trade():
@@ -169,40 +194,18 @@ class orderGeneratorForStrategy(object):
         return new_order
 
     def submit_order_list(self, order_list: listOfOrders):
-        data_lock = dataLocks(self.data)
-        diag_positions = diagPositions(self.data)
-        diag_instruments = diagInstruments(self.data)
-        force_warn_regions = self.data.config.get_element_or_default(
-            "regions_with_warn_on_force_orders", []
-        )
-
         for order in order_list:
             # try:
             # we allow existing orders to be modified
             log_attrs = {**order.log_attributes(), "method": "temp"}
             self.log.debug("Required order %s" % str(order), **log_attrs)
 
-            instrument_locked = data_lock.is_instrument_locked(order.instrument_code)
+            instrument_locked = self.data_lock.is_instrument_locked(
+                order.instrument_code
+            )
             if instrument_locked:
                 self.log.debug("Instrument locked, not submitting", **log_attrs)
                 continue
-
-            # if configured for the instrument region, issue a warning for double
-            # sided roll orders
-            instr_region = diag_instruments.get_region(order.instrument_code)
-            if (
-                instr_region in force_warn_regions
-                and diag_positions.is_double_sided_trade_roll_state(
-                    order.instrument_code
-                )
-            ):
-                roll_state = diag_positions.get_name_of_roll_state(
-                    order.instrument_code
-                )
-                self.log.critical(
-                    f"Instrument order submitted with roll status {roll_state}",
-                    **log_attrs,
-                )
             self.submit_order(order)
 
     def submit_order(self, order: instrumentOrder):
@@ -227,23 +230,22 @@ class orderGeneratorForStrategy(object):
                 % (str(order), order_id),
                 **log_attrs,
             )
-
-    def issue_force_warnings(self, list_of_trades: listOfOrders):
-        # Check for Force/Force_Outright roll status
-        diag_positions = diagPositions(self.data)
-        diag_instruments = diagInstruments(self.data)
-        warn_regions = self.data.config.get_element_or_default(
-            "regions_with_warn_on_force_orders", []
-        )
-
-        for trade in list_of_trades:
-            instr_code = trade.instrument_code
-            instr_region = diag_instruments.get_region(instr_code)
-            if (
-                instr_region in warn_regions
-                and diag_positions.is_double_sided_trade_roll_state(instr_code)
-            ):
-                roll_state = diag_positions.get_name_of_roll_state(instr_code)
-                self.log.critical(
-                    f"Optimal order created for {instr_code} with status {roll_state}"
+            # if configured for the instrument region, issue a warning if the instrument
+            # has Force/Force Outright state
+            if self.needs_force_warning(order):
+                roll_state = self.diag_positions.get_name_of_roll_state(
+                    order.instrument_code
                 )
+                self.log.critical(
+                    f"Order created for instrument with roll status {roll_state}",
+                    **log_attrs,
+                )
+
+    def needs_force_warning(self, order: instrumentOrder) -> bool:
+        instr_region = self.diag_instruments.get_region(order.instrument_code)
+        return (
+            instr_region in self.warn_regions
+            and self.diag_positions.is_double_sided_trade_roll_state(
+                order.instrument_code
+            )
+        )

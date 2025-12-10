@@ -77,8 +77,6 @@ class orderGeneratorForDynamicPositions(orderGeneratorForStrategy):
             current_positions=current_positions,
         )
 
-        self.issue_force_warnings(list_of_trades)
-
         return list_of_trades
 
     def calculate_write_and_return_optimised_positions_data(self) -> dict:
