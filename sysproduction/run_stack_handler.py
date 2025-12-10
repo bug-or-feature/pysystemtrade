@@ -6,14 +6,15 @@ from sysdata.data_blob import dataBlob
 def run_stack_handler():
     process_name = "run_stack_handler"
     data = dataBlob(log_name=process_name)
-    list_of_timer_names_and_functions = get_list_of_timer_functions_for_stack_handler()
+    list_of_timer_names_and_functions = get_list_of_timer_functions_for_stack_handler(
+        data
+    )
     price_process = processToRun(process_name, data, list_of_timer_names_and_functions)
     price_process.run_process()
 
 
-def get_list_of_timer_functions_for_stack_handler():
-    stack_handler_data = dataBlob(log_name="stack_handler")
-    stack_handler = stackHandler(stack_handler_data)
+def get_list_of_timer_functions_for_stack_handler(data: dataBlob):
+    stack_handler = stackHandler(data)
     list_of_timer_names_and_functions = [
         ("check_external_position_break", stack_handler),
         ("spawn_children_from_new_instrument_orders", stack_handler),

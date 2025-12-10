@@ -49,7 +49,7 @@ from sysproduction.data.generic_production_data import productionDataLayerGeneri
 class dataBroker(productionDataLayerGeneric):
     def __init__(self, data: dataBlob = arg_not_supplied):
         super().__init__(data)
-        self._diag_controls = diagControlProcess()
+        self._diag_controls = diagControlProcess(data)
 
     def _add_required_classes_to_data(self, data) -> dataBlob:
         # Add a list of broker specific classes that will be aliased as self.data.broker_fx_prices,
