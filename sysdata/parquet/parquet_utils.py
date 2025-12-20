@@ -1,23 +1,13 @@
 from syscore.dateutils import MIXED_FREQ, Frequency
 from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.config.production_config import get_production_config
-from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysdata.data_blob import dataBlob
 from sysdata.parquet.parquet_futures_per_contract_prices import (
     parquetFuturesContractPriceData,
 )
 from sysobjects.contracts import futuresContract
-
-BARCHART_CONFIG = ConfigCsvFuturesPrices(
-    input_date_index_name="Time",
-    input_skiprows=0,
-    input_skipfooter=0,
-    input_date_format="%Y-%m-%dT%H:%M:%S",
-    input_column_mapping=dict(
-        OPEN="Open", HIGH="High", LOW="Low", FINAL="Close", VOLUME="Volume"
-    ),
-)
+from sysinit.futures.contract_prices_from_split_freq_csv_to_db import BARCHART_CONFIG
 
 
 def convert_single_contract_csv_to_parquet(
