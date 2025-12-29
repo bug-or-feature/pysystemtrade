@@ -25,7 +25,7 @@ DB_TARGET=futures_development
 echo "Starting replication of PROD data to DEV environment..."
 
 echo "Dropping local databases..."
-mongo $DB_TARGET --eval "db.dropDatabase()"
+mongosh $DB_TARGET --eval "db.dropDatabase()"
 echo "Dropping local databases COMPLETE"
 
 echo "Restoring remote data to local database..."
