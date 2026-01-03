@@ -4,7 +4,7 @@ source ~/.zprofile
 
 
 # Search for pattern and capture results
-RESULTS=$(grep -rn 'FutureWarning' "$ECHO_PATH" 2>/dev/null)
+RESULTS=$(grep -rnE 'FutureWarning|DeprecationWarning' "$ECHO_PATH" 2>/dev/null)
 
 # Exit silently if nothing found
 if [[ -z "$RESULTS" ]]; then
@@ -12,7 +12,7 @@ if [[ -z "$RESULTS" ]]; then
 fi
 
 # Compose and send email
-SUBJECT="FuturesWarning instances found"
+SUBJECT="Future/Deprecation Warning instances found"
 BODY="$RESULTS"
 
 echo "$BODY" | /usr/bin/mail -s "$SUBJECT" "$PYSYS_EMAIL"
