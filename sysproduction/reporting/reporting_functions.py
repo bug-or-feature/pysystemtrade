@@ -277,7 +277,9 @@ def output_file_report(
     data.log.debug("Written report to %s" % full_filename)
 
 
-def resolve_report_filename(report_config, data: dataBlob, suffix: str = arg_not_supplied) -> str:
+def resolve_report_filename(
+    report_config, data: dataBlob, suffix: str = arg_not_supplied
+) -> str:
     filename_with_spaces = report_config.title
     if suffix is arg_not_supplied:
         suffix = get_report_file_suffix(report_config, data)
@@ -298,11 +300,13 @@ def resolve_report_filepath(report_config, data: dataBlob):
 
     return str(report_filepath)
 
+
 def get_report_file_suffix(report_config, data: dataBlob):
     default_ext = data.config.get_element_or_arg_not_supplied("report_file_extension")
     suffix = getattr(report_config, "suffix", default_ext)
 
     return suffix
+
 
 def get_directory_for_reporting(data):
     # eg '/home/rob/reports/'
