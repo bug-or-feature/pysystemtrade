@@ -7,7 +7,7 @@ from sysdata.data_blob import dataBlob
 
 from sysproduction.reporting.api import reportingApi
 
-list_of_periods = ["YTD", "12M", "3Y", "5Y", "10Y", "99Y"]
+list_of_periods = ["1M", "3M", "6M", "YTD", "12M", "3Y"]
 
 
 def account_curve_report(
