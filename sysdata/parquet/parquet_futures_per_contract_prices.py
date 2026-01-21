@@ -148,7 +148,7 @@ class parquetFuturesContractPriceData(futuresContractPriceData):
         self, contract_object: futuresContract, frequency: Frequency
     ) -> bool:
         ident = from_contract_and_freq_to_key(contract_object, frequency=frequency)
-        return self.parquet.does_idenitifier_with_data_type_exist(
+        return self.parquet.does_identifier_with_data_type_exist(
             data_type=CONTRACT_COLLECTION, identifier=ident
         )
 

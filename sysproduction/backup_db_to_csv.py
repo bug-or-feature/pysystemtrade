@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 import pandas as pd
 
@@ -98,10 +99,9 @@ def get_data_and_create_csv_directories(logname):
     )
 
     for class_name, path in class_paths.items():
-        dir_name = os.path.join(csv_dump_dir, path)
-        class_paths[class_name] = dir_name
-        if not os.path.exists(dir_name):
-            os.makedirs(dir_name)
+        dir_name = Path(csv_dump_dir, path)
+        class_paths[class_name] = str(dir_name)
+        Path(dir_name).mkdir(exist_ok=True)
 
         data = dataBlob(csv_data_paths=class_paths, log_name=logname)
 

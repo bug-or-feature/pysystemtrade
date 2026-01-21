@@ -3123,7 +3123,6 @@ resolve_path_and_filename_for_package("\\home/rob.file.csv")
 
 ```
 
-
 These functions are used internally whenever a file name is passed in, so feel free to use any of these file formats when specifying eg a configuration filename.
 ```
 ### Absolute: Windows (note use of double backslash in str)
@@ -3134,6 +3133,31 @@ These functions are used internally whenever a file name is passed in, so feel f
 
 ## Relative: Dot format to find a file in the installed pysystemtrade
 "syscore.tests.pricedata.csv"
+```
+
+Obviously, using 'dots' as a separator brings limitations, like supporting directories or files with 'dots' in their names. This won't work:
+```
+>>> resolve_path_and_filename_for_package("syscore/tests/price.test.data.csv")
+'/home/user/pysystemtrade/syscore/tests/price/test/data.csv'
+```
+
+do this instead:
+```
+>>> resolve_path_and_filename_for_package("syscore/tests", "price.test.data.csv")
+'/home/user/pysystemtrade/syscore/tests/price.test.data.csv'
+```
+
+This will also not work:
+```
+>>> get_resolved_pathname("data/dir.with.dots")
+'/home/user/pysystemtrade/data/dir/with/dots'
+```
+
+do this instead:
+```
+>>> from pathlib import Path
+>>> get_resolved_pathname(Path("data/dir.with.dots"))
+'/home/user/pysystemtrade/data/dir.with.dots'
 ```
 
 ## Logging

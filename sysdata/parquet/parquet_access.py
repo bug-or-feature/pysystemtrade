@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import pandas as pd
 from syscore.exceptions import missingFile
 from syscore.fileutils import (
@@ -20,13 +20,13 @@ class ParquetAccess(object):
         path = self._get_pathname_given_data_type(data_type)
         return files_with_extension_in_pathname(path, extension=EXTENSION)
 
-    def does_idenitifier_with_data_type_exist(
+    def does_identifier_with_data_type_exist(
         self, data_type: str, identifier: str
     ) -> bool:
         filename = self._get_filename_given_data_type_and_identifier(
             data_type=data_type, identifier=identifier
         )
-        return os.path.isfile(filename)
+        return Path(filename).exists()
 
     def delete_data_given_data_type_and_identifier(
         self, data_type: str, identifier: str
@@ -35,7 +35,7 @@ class ParquetAccess(object):
             data_type=data_type, identifier=identifier
         )
         try:
-            os.remove(filename)
+            Path(filename).unlink()
         except FileNotFoundError:
             raise missingFile(f"File '{filename}' does not exist")
 
@@ -67,7 +67,6 @@ class ParquetAccess(object):
 
     def _get_pathname_given_data_type(self, data_type: str):
         root = self.parquet_store
-        path = os.path.join(root, data_type)
-        Path(path).mkdir(parents=True, exist_ok=True)
-
-        return path
+        path = Path(root, data_type)
+        path.mkdir(parents=True, exist_ok=True)
+        return str(path)

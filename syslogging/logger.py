@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 import sys
 import socket
@@ -98,7 +99,7 @@ def _configure_sim():
 def _configure_prod(logging_config_file):
     print(f"Attempting to configure prod logging from {logging_config_file}")
     config_path = resolve_path_and_filename_for_package(logging_config_file)
-    if os.path.exists(config_path):
+    if Path(config_path).exists():
         try:
             config = parse_config(path=config_path)
             host, port = _get_log_server_config(config)

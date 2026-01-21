@@ -29,4 +29,4 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest syscore/tests/test_fileutils.py -s
+        pytest syscore/tests/test_fileutils.py

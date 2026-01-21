@@ -1,26 +1,35 @@
 import datetime
 from ib_insync import ContractDetails as ibContractDetails
 
-from sysdata.config.private_directory import get_full_path_for_private_config
+from sysdata.config.private_config import (
+    get_private_config_dir,
+)
 from sysobjects.production.trading_hours.trading_hours import (
     tradingHours,
     listOfTradingHours,
 )
-from syscore.fileutils import does_filename_exist
+from syscore.fileutils import (
+    does_resolved_filename_exist,
+    resolve_path_and_filename_for_package,
+)
 from sysdata.config.production_config import get_production_config
 from sysdata.production.trading_hours import read_trading_hours
 
 IB_CONFIG_TRADING_HOURS_FILE = "sysbrokers.IB.ib_config_trading_hours.yaml"
-PRIVATE_CONFIG_TRADING_HOURS_FILE = get_full_path_for_private_config(
-    "private_config_trading_hours.yaml"
-)
+PRIVATE_CONFIG_TRADING_HOURS_FILE = "private_config_trading_hours.yaml"
 
 
 def get_saved_trading_hours():
-    if does_filename_exist(PRIVATE_CONFIG_TRADING_HOURS_FILE):
-        return read_trading_hours(PRIVATE_CONFIG_TRADING_HOURS_FILE)
+    private_path = resolve_path_and_filename_for_package(
+        get_private_config_dir(), PRIVATE_CONFIG_TRADING_HOURS_FILE
+    )
+    if does_resolved_filename_exist(private_path):
+        return read_trading_hours(private_path)
     else:
-        return read_trading_hours(IB_CONFIG_TRADING_HOURS_FILE)
+        default_path = resolve_path_and_filename_for_package(
+            IB_CONFIG_TRADING_HOURS_FILE
+        )
+        return read_trading_hours(default_path)
 
 
 def get_trading_hours_from_contract_details(

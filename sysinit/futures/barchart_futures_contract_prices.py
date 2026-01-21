@@ -1,5 +1,5 @@
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
-import os
+from pathlib import Path
 from syscore.fileutils import (
     get_resolved_pathname,
     files_with_extension_in_resolved_pathname,
@@ -30,11 +30,11 @@ def strip_file_names(pathname):
         datecode = str(year) + "{0:02d}".format(month)
 
         new_file_name = "%s_%s00.csv" % (instrument, datecode)
-        new_full_name = os.path.join(resolved_pathname, new_file_name)
-        old_full_name = os.path.join(resolved_pathname, filename + ".csv")
+        new_full_name = Path(resolved_pathname, new_file_name)
+        old_full_name = Path(resolved_pathname, filename + ".csv")
         print("Rename %s to\n %s" % (old_full_name, new_full_name))
 
-        os.rename(old_full_name, new_full_name)
+        old_full_name.rename(new_full_name)
 
     return None
 

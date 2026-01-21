@@ -3,6 +3,7 @@ from collections import namedtuple
 from PyPDF2 import PdfMerger
 import datetime
 import pandas as pd
+from pathlib import Path
 import os
 import shutil
 import matplotlib.pyplot as plt
@@ -276,33 +277,32 @@ def output_file_report(
     data.log.debug("Written report to %s" % full_filename)
 
 
-def resolve_report_filename(
-    report_config, data: dataBlob, suffix: str = arg_not_supplied
-):
+def resolve_report_filename(report_config, data: dataBlob, suffix: str = arg_not_supplied) -> str:
     filename_with_spaces = report_config.title
     if suffix is arg_not_supplied:
         suffix = get_report_file_suffix(report_config, data)
     filename = filename_with_spaces.replace(" ", "_") + suffix
+    use_directory = get_directory_for_reporting(data)
+    use_directory_resolved = get_resolved_pathname(use_directory)
+    full_filename = Path(use_directory_resolved, filename)
 
-    return filename
+    return str(full_filename)
 
 
 def resolve_report_filepath(report_config, data: dataBlob):
     use_directory = get_directory_for_reporting(data)
     use_directory_resolved = get_resolved_pathname(use_directory)
-    report_filepath = os.path.join(
+    report_filepath = Path(
         use_directory_resolved, resolve_report_filename(report_config, data)
     )
 
-    return report_filepath
-
+    return str(report_filepath)
 
 def get_report_file_suffix(report_config, data: dataBlob):
     default_ext = data.config.get_element_or_arg_not_supplied("report_file_extension")
     suffix = getattr(report_config, "suffix", default_ext)
 
     return suffix
-
 
 def get_directory_for_reporting(data):
     # eg '/home/rob/reports/'
@@ -357,6 +357,6 @@ def _generate_temp_pdf_filename(
         TEMPFILE_PATTERN,
         str(datetime_to_long(datetime.datetime.now())),
     )
-    full_filename = os.path.join(use_directory_resolved, filename)
+    full_filename = Path(use_directory_resolved, filename)
 
-    return full_filename
+    return str(full_filename)

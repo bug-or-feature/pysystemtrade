@@ -77,7 +77,7 @@ class System(object):
         self._config = config
         self._log = log
 
-        self.config.system_init(self)
+        self.config.system_init()
         self.data.system_init(self)
         self._setup_stages(stage_list)
         self._cache = systemCache(self)

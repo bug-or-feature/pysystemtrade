@@ -1,5 +1,5 @@
 from copy import copy
-import os
+from pathlib import Path
 from shutil import copyfile
 
 from syscore.dateutils import create_datetime_marker_string
@@ -218,10 +218,7 @@ def store_backtest_state(data, system, strategy_name="default_strategy"):
 
 def ensure_backtest_directory_exists(strategy_name):
     full_directory = get_backtest_directory_for_strategy(strategy_name)
-    try:
-        os.makedirs(full_directory)
-    except FileExistsError:
-        pass
+    Path(full_directory).mkdir(exist_ok=True)
 
 
 def rchop(s, suffix):
@@ -262,9 +259,9 @@ def get_backtest_config_filename(strategy_name, datetime_marker):
 def get_backtest_filename_prefix(strategy_name, datetime_marker):
     # eg '/home/rob/data/backtests/medium_speed_TF_carry/20200622_102913'
     full_directory = get_backtest_directory_for_strategy(strategy_name)
-    full_filename_prefix = os.path.join(full_directory, datetime_marker)
+    full_filename_prefix = Path(full_directory, datetime_marker)
 
-    return full_filename_prefix
+    return str(full_filename_prefix)
 
 
 def get_backtest_directory_for_strategy(strategy_name):
@@ -272,9 +269,9 @@ def get_backtest_directory_for_strategy(strategy_name):
     directory_store_backtests = get_directory_store_backtests()
 
     directory_store_backtests = get_resolved_pathname(directory_store_backtests)
-    full_directory = os.path.join(directory_store_backtests, strategy_name)
+    full_directory = Path(directory_store_backtests, strategy_name)
 
-    return full_directory
+    return str(full_directory)
 
 
 def get_directory_store_backtests():

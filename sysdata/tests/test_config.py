@@ -1,10 +1,34 @@
 from sysdata.config.configdata import Config
 from sysdata.config.control_config import get_control_config
-from sysdata.config.private_directory import PRIVATE_CONFIG_DIR_ENV_VAR
+from sysdata.config.private_config import PRIVATE_CONFIG_DIR_ENV_VAR
 
 
 class TestConfig:
-    def test_default(self):
+    def test_init_dict(self, monkeypatch):
+        monkeypatch.delenv(PRIVATE_CONFIG_DIR_ENV_VAR, raising=False)
+        config = Config(dict(parameters=dict(p1=3, p2=4.6), another_thing="foo"))
+        assert config.as_dict()["parameters"]["p2"] == 4.6
+        assert config.as_dict()["another_thing"] == "foo"
+
+    def test_init_str(self, monkeypatch):
+        monkeypatch.delenv(PRIVATE_CONFIG_DIR_ENV_VAR, raising=False)
+        config = Config("systems.provided.example.exampleconfig.yaml")
+        assert config.as_dict()["forecast_cap"] == 21.0
+
+    def test_init_list(self, monkeypatch):
+        monkeypatch.delenv(PRIVATE_CONFIG_DIR_ENV_VAR, raising=False)
+        config = Config(
+            [
+                "systems.provided.example.exampleconfig.yaml",
+                dict(parameters=dict(p1=3, p2=4.6), another_thing="foo"),
+            ]
+        )
+        assert config.as_dict()["forecast_cap"] == 21.0
+        assert config.as_dict()["parameters"]["p2"] == 4.6
+        assert config.as_dict()["another_thing"] == "foo"
+
+    def test_default(self, monkeypatch):
+        monkeypatch.delenv(PRIVATE_CONFIG_DIR_ENV_VAR, raising=False)
         Config.reset()
         config = Config.default_config()
         assert config.get_element("ib_idoffset") == 100
@@ -25,7 +49,9 @@ class TestConfig:
         config = Config.default_config()
         assert config.get_element("ib_idoffset") == 100
 
-    def test_default_control(self):
+    def test_default_control(self, monkeypatch):
+        monkeypatch.delenv(PRIVATE_CONFIG_DIR_ENV_VAR, raising=False)
+        Config.reset()
         config = get_control_config()
         assert (
             config.as_dict()["process_configuration_start_time"]["run_stack_handler"]

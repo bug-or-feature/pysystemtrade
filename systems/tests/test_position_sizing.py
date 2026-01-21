@@ -1,6 +1,6 @@
 import unittest
 from _pytest.monkeypatch import MonkeyPatch
-from sysdata.config.private_directory import PRIVATE_CONFIG_DIR_ENV_VAR
+from sysdata.config.private_config import PRIVATE_CONFIG_DIR_ENV_VAR
 from systems.tests.testdata import get_test_object_futures_with_comb_forecasts
 from systems.basesystem import System
 from systems.positionsizing import PositionSizing
