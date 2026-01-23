@@ -284,11 +284,8 @@ def resolve_report_filename(
     if suffix is arg_not_supplied:
         suffix = get_report_file_suffix(report_config, data)
     filename = filename_with_spaces.replace(" ", "_") + suffix
-    use_directory = get_directory_for_reporting(data)
-    use_directory_resolved = get_resolved_pathname(use_directory)
-    full_filename = Path(use_directory_resolved, filename)
 
-    return str(full_filename)
+    return filename
 
 
 def resolve_report_filepath(report_config, data: dataBlob):
