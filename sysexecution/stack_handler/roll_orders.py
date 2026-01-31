@@ -188,6 +188,7 @@ class stackHandlerForRolls(stackHandlerCore):
                 "Cannot force roll %s as already other orders on stack"
                 % (instrument_code),
                 instrument_code=instrument_code,
+                method="temp",
             )
 
         return orders_already_on_stack
