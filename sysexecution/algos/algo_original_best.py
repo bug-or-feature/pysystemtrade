@@ -262,19 +262,18 @@ class algoOriginalBest(Algo):
             agg_txt = "Passive"
 
         limit_price = broker_order_with_controls.order.limit_price
-        broker_limit_price = broker_order_with_controls.broker_limit_price()
+        broker_limit_price = (
+            "None"
+            if (broker_order_with_controls.broker_limit_price() is None)
+            else f"{broker_order_with_controls.broker_limit_price():.4f}"
+        )
 
         ticker_object = broker_order_with_controls.ticker
         current_tick = str(ticker_object.current_tick())
 
         log_report = (
-            "%s execution with limit price desired:%f actual:%f last tick %s"
-            % (
-                agg_txt,
-                limit_price,
-                broker_limit_price,
-                current_tick,
-            )
+            f"{agg_txt} execution with limit price desired: {limit_price:.4f}, "
+            f"actual: {broker_limit_price}, last tick {current_tick}"
         )
 
         self.data.log.debug(
