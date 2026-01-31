@@ -268,6 +268,14 @@ class stackHandlerForSpawning(stackHandlerCore):
                     data=self.data, instrument_order=instrument_order
                 )
             else:
+                self.data.log.debug(
+                    "No contract orders created for %s, because roll status is %s"
+                    % (
+                        str(instrument_order),
+                        diag_positions.get_roll_state(instrument_code),
+                    ),
+                    **log_attrs,
+                )
                 ## do nothing
                 return []
 
