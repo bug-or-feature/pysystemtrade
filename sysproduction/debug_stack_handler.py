@@ -79,3 +79,4 @@ if __name__ == "__main__":
     # do_check_external_position_break()
     # do_completed_orders()
     # debug_get_all_priced_epics()
+    # do_spawn_children_from_new_instrument_orders()
