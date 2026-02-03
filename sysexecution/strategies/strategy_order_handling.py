@@ -15,6 +15,7 @@ from sysproduction.data.positions import diagPositions
 from sysproduction.data.instruments import diagInstruments
 from sysproduction.data.orders import dataOrders
 from sysproduction.data.controls import diagOverrides, dataLocks, dataPositionLimits
+from sysobjects.production.roll_state import is_type_of_active_rolling_roll_state
 
 name_of_main_generator_method = "get_and_place_orders"
 
@@ -231,21 +232,17 @@ class orderGeneratorForStrategy(object):
                 **log_attrs,
             )
             # if configured for the instrument region, issue a warning if the instrument
-            # has Force/Force Outright state
+            # has an active roll state
             if self.needs_force_warning(order):
-                roll_state = self.diag_positions.get_name_of_roll_state(
-                    order.instrument_code
-                )
                 self.log.critical(
-                    f"Order created for instrument with roll status {roll_state}",
+                    f"Order created for instrument with active roll state",
                     **log_attrs,
                 )
 
     def needs_force_warning(self, order: instrumentOrder) -> bool:
         instr_region = self.diag_instruments.get_region(order.instrument_code)
+        roll_state = self.diag_positions.get_name_of_roll_state(order.instrument_code)
         return (
             instr_region in self.warn_regions
-            and self.diag_positions.is_double_sided_trade_roll_state(
-                order.instrument_code
-            )
+            and is_type_of_active_rolling_roll_state(roll_state)
         )
