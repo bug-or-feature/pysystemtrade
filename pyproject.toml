@@ -21,7 +21,7 @@ dependencies = [
     "scipy>=1.0.0",
     "pymongo==3.12.3",
     "ib-insync==0.9.86",
-    "psutil==5.6.7",
+    "psutil==7.2.1",
     "Flask>=2.0.1",
     "Werkzeug>=2.0.1",
     "statsmodels==0.14.0",

@@ -25,6 +25,7 @@ Table of Contents
    * [Getting historical data for individual futures contracts](#getting-historical-data-for-individual-futures-contracts)
       * [Getting data from the broker (Interactive brokers)](#getting-data-from-the-broker-interactive-brokers)
       * [Getting data from an external data source (Barchart)](#getting-data-from-an-external-data-source-barchart)
+      * [Getting data from an external data source (Norgate Data)](#getting-data-from-an-external-data-source-norgate-data)
    * [Roll calendars](#roll-calendars)
       * [Generate a roll calendar from actual futures prices](#generate-a-roll-calendar-from-actual-futures-prices)
          * [Calculate the roll calendar](#calculate-the-roll-calendar)
@@ -230,6 +231,10 @@ def init_db_with_csv_futures_contract_prices_for_code(instrument_code: str, data
 ```
 
 The objects `csvFuturesContractPriceData` and `db_prices` are 'data pipelines', which allow us to read and write a specific type of data (in this case OHLC price data for individual futures contracts). They have the same methods (and they inherit from a more generic object, futuresContractPriceData), which allows us to write code that abstracts the actual place and way the data is stored. We'll see much more of this kind of thing later.
+
+### Getting data from an external data source (Norgate Data)
+
+For users preferring a one-time bulk import, [Norgate Data](https://norgatedata.com/) provides high-quality historical futures data with properly adjusted continuous contracts. If you have a Norgate subscription, you can use [norgate-pst-utils](https://github.com/davidszp/norgate-pst-utils) to export data in pysystemtrade format. Note that the Norgate API requires Windows, though this can be circumvented using virtual machines on macOS and Linux.
 
 ## Roll calendars
 
