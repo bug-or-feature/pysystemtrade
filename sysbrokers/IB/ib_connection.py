@@ -1,5 +1,6 @@
 """
 IB connection using ib-insync https://ib-insync.readthedocs.io/api.html
+
 """
 
 import time
@@ -7,7 +8,6 @@ import time
 from ib_insync import IB
 
 from sysbrokers.IB.ib_connection_defaults import ib_defaults
-from sysbrokers.IB.ib_contracts import ibContract
 from syscore.exceptions import missingData
 from syscore.constants import arg_not_supplied
 
@@ -32,11 +32,10 @@ class connectionIB(object):
     ):
         """
         :param client_id: client id
-        :param ib_ipaddress: IP address of machine running IB Gateway or TWS. If not
-          passed then will get from private config file, or defaults
-        :param ib_port: Port listened to by IB Gateway or TWS
+        :param ipaddress: IP address of machine running IB Gateway or TWS. If not passed then will get from private config file, or defaults
+        :param port: Port listened to by IB Gateway or TWS
         :param log_name: calling log name
-
+        :param mongo_db: mongoDB connection
         """
 
         # resolve defaults
