@@ -1,45 +1,23 @@
 # pysystemtrade
 
-Systematic futures trading in python
-
-Rob Carver
-
-[https://qoppac.blogspot.com/p/pysystemtrade.html](https://qoppac.blogspot.com/p/pysystemtrade.html)
-
-
-Version 1.8.2
- 
-
-2024-11-06
-
-
-
-## Release notes
-
-See [CHANGELOG](CHANGELOG.md) for release notes, and future plans.
-
+Systematic futures trading in python, using the systems developed by [Rob Carver](https://github.com/robcarver17/)
 
 ## Description
 
-**pysystemtrade** is the open source version of my own backtesting and trading engine that implements systems according to the framework outlined in my book ["Systematic Trading"](https://www.systematicmoney.org/systematic-trading), which is further developed on [my blog](https://qoppac.blogspot.com).
+**pysystemtrade** is the open source version of Rob Carver's own backtesting and trading engine that implements systems according to the framework outlined in his book ["Systematic Trading"](https://www.systematicmoney.org/systematic-trading), which is further developed on [his blog](https://qoppac.blogspot.com) and in his [other books](https://www.systematicmoney.org/).
 
-For a longer explanation of the motivation and point of this project see my [blog post.](https://qoppac.blogspot.com/2015/12/pysystemtrade.html)
+For a longer explanation of the motivation and point of this project see this [blog post.](https://qoppac.blogspot.com/2015/12/pysystemtrade.html)
 
 Pysystemtrade is a....:
-- Backtesting environment I used to test all the strategies in my various ["books"](https://www.systematicmoney.org)
-- Which implements all the optimisation and system design principles in the book and on my website and in my books
+- Backtesting environment that Rob uses to test all the strategies in his various [books](https://www.systematicmoney.org)
+- Which implements all the optimisation and system design principles in his books and on his blog.
 - A fully automated system for futures trading (for interactive brokers)
 
 pysystemtrade uses the [IB insync library](https://ib-insync.readthedocs.io/api.html) to connect to interactive brokers.
 
+## History
 
-
-## Stale? Stable?
-
-I trade with pysystemtrade 20 hours a day, 5 days a week. Almost any improvement or change I make to my trading system will appear here. So except for periods of time when I'm doing other projects like writing books, you'll see pretty regular updates.
-
-My live production system is always on the latest release. I make, and eat, my own dogfood on the same day. But there if you download a major version, you'll be getting something a little more stable.
-
+[Rob](https://github.com/robcarver17/) originally developed and open sourced the system in December 2015. In 2024 [Andy Geach](https://github.com/bug-or-feature) took over as primary maintainer of the project. In January 2026 Rob moved pysystemtrade to a new github "organisation", [pst-group](https://github.com/pst-group). The organisation is 'owned' by Andy and Rob. It is the intention that this organisation will always have at least two owners, which will ensure the project continues into the future in the event of Rob's demise or him losing his github token. 
 
 
 ## Use and documentation
@@ -82,24 +60,13 @@ There is a more complete installation guide [here](docs/installation.md)
 
 ### A note on support
 
-This is an open source project, designed for people who are already comfortable using and writing python code, are capable of installing the dependencies, and who want a head start on implementing a system of their own. I do not have the time to provide support. Primarily, this is my trading system which you are welcome to use or steal code from, I'm open sourcing it out of the goodness of my heart not so I can become an unpaid technical support helper to hundreds of strangers. Of course I am very happy if you get in touch with me on any of the following topics:
-
-- Confusing error messages
-- Missing or misleading documentation
-- Suggestions for extra features
- 
-However I can't guarantee that I will reply immediately, or at all. If you need that level of support then you are better off with another project. The most efficient way of doing this is by [opening an issue on github](https://github.com/robcarver17/pysystemtrade/issues/new). If you discover a bug please include:
+This is an open source project, designed for people who are already comfortable using and writing python code, are capable of installing the dependencies, and who want a head start on implementing a system of their own.  If you need a higher level of support then you are better off with another project. The most efficient way of getting support is by [opening an issue on github](https://github.com/robcarver17/pysystemtrade/issues/new). If you discover a bug please include:
 
 - The full script that produces the error, including all `import` statements, or if it's a standard example file a pointer to the file. Ideally this should be a "minimal example" - the shortest possible script that produces the problem.
 - Versions of any necessary libraries you have installed
 - The full output trace including the error messages
 
-If you don't include the information above I will close the issue and then ignore it.
-
-If you have a question like 'how to do X' or 'should we do Y' use the discussions board, not the error reporting.
-
-I'll try and incorporate any feedback into the code, but this is a part time (and unpaid!) venture for me, and it will be competing with my other interests (writing books, blogging and research). But if you occasionally check github you will hopefully find it gradually improving. Offers to contribute will of course be gratefully accepted.
-
+If you have a question like 'how to do X' or 'should we do Y' use the [discussions board](https://github.com/pst-group/pysystemtrade/discussions), not the error reporting. Offers to contribute will of course be gratefully accepted.
 
 
 ## Licensing and legal stuff
@@ -107,6 +74,6 @@ I'll try and incorporate any feedback into the code, but this is a part time (an
 GNU v3
 ( See [LICENSE](LICENSE) )
 
-Absolutely no warranty is implied with this product. Use at your own risk. I provide no guarantee that it will be profitable, or that it won't lose all your money very quickly, or delete every file on your computer (by the way: it's not *supposed* to do that. Just in case you thought it was). All financial trading offers the possibility of loss. Leveraged trading, such as futures trading, may result in you losing all your money, and still owing more. Backtested results are no guarantee of future performance. I can take no responsibility for any losses caused by live trading using pysystemtrade. Use at your own risk. I am not registered or authorised by any financial regulator. 
+Absolutely no warranty is implied with this product. Use at your own risk. No guarantee is provided that it will be profitable, or that it won't lose all your money very quickly, or delete every file on your computer (by the way: it's not *supposed* to do that. Just in case you thought it was). All financial trading offers the possibility of loss. Leveraged trading, such as futures trading, may result in you losing all your money, and still owing more. Backtested results are no guarantee of future performance. The owners of the project can take no responsibility for any losses caused by live trading using pysystemtrade. Use at your own risk. The owners of the project are not currently registered or authorised by any financial regulator. 
 
 
