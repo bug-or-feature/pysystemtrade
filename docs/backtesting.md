@@ -901,7 +901,7 @@ print(system.accounts.portfolio().sharpe())
 
 #### Arctic
 
-Early versions of this project used [Arctic](https://github.com/manahl/arctic) for storing time series data. Since November 2023, Parquet is the default. See [the reasoning behind the change](https://github.com/robcarver17/pysystemtrade/discussions/466), [switchover instructions](https://github.com/robcarver17/pysystemtrade/discussions/1290), and [required scheduling config changes](https://github.com/robcarver17/pysystemtrade/discussions/1291).
+Early versions of this project used [Arctic](https://github.com/manahl/arctic) for storing time series data. Since November 2023, Parquet is the default. See [the reasoning behind the change](https://github.com/pst-group/pysystemtrade/discussions/466), [switchover instructions](https://github.com/pst-group/pysystemtrade/discussions/1290), and [required scheduling config changes](https://github.com/pst-group/pysystemtrade/discussions/1291).
 
 The [original Arctic project](https://github.com/man-group/arctic) is no longer maintained - development has moved to [ArcticDB](https://github.com/man-group/ArcticDB)
 
@@ -3467,7 +3467,7 @@ I've included a smoothing function, otherwise jumps in the multiplier will cause
 
 ## Specifying weights as hierarchy
 
-It is possible to specify instrument and forecast weights as a hierarchical config. This has the advantage that the high-level characteristics of a trading strategy can be maintained, even when rules (or instruments) are excluded due to costs. Read more [here](https://github.com/robcarver17/pysystemtrade/discussions/1160). See below for example config snippets
+It is possible to specify instrument and forecast weights as a hierarchical config. This has the advantage that the high-level characteristics of a trading strategy can be maintained, even when rules (or instruments) are excluded due to costs. Read more [here](https://github.com/pst-group/pysystemtrade/discussions/1160). See below for example config snippets
 
 ### Hierarchical forecast weight example
 

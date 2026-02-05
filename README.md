@@ -44,7 +44,7 @@ This package isn't hosted on pypi.org. So to get the code the easiest way is to 
 
 ```
 # clone the repo to your local filesystem
-$ git clone https://github.com/robcarver17/pysystemtrade.git
+$ git clone https://github.com/pst-group/pysystemtrade.git
 
 # navigate to the project directory
 $ cd pysystemtrade
@@ -60,7 +60,7 @@ There is a more complete installation guide [here](docs/installation.md)
 
 ### A note on support
 
-This is an open source project, designed for people who are already comfortable using and writing python code, are capable of installing the dependencies, and who want a head start on implementing a system of their own.  If you need a higher level of support then you are better off with another project. The most efficient way of getting support is by [opening an issue on github](https://github.com/robcarver17/pysystemtrade/issues/new). If you discover a bug please include:
+This is an open source project, designed for people who are already comfortable using and writing python code, are capable of installing the dependencies, and who want a head start on implementing a system of their own.  If you need a higher level of support then you are better off with another project. The most efficient way of getting support is by [opening an issue on github](https://github.com/pst-group/pysystemtrade/issues/new). If you discover a bug please include:
 
 - The full script that produces the error, including all `import` statements, or if it's a standard example file a pointer to the file. Ideally this should be a "minimal example" - the shortest possible script that produces the problem.
 - Versions of any necessary libraries you have installed

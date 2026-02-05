@@ -2604,7 +2604,7 @@ The scheduler built into pysystemtrade does not launch processes (this is still 
 
 Processes still need to be launched every day, since the pysystemtrade scheduler doesn't do that. However, their start time isn't critical, since separate start times can be configured in YAML files (more of that below).
 
-Because I use cron myself, there are is a [cron tab included in pysystemtrade](https://github.com/robcarver17/pysystemtrade/blob/master/sysproduction/linux/crontab).
+Because I use cron myself, there are is a [cron tab included in pysystemtrade](https://github.com/pst-group/pysystemtrade/blob/master/sysproduction/linux/crontab).
 
 Useful things to note about the crontab:
 

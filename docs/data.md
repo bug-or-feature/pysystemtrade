@@ -126,7 +126,7 @@ Hence, there are five possible use cases:
 Because of this it's possible at (almost) every stage to store data in either CSV or databases (the exception are roll calendars, which only live in CSV format).
 
 ### Note on outdated shipped CSV data
-The CSV multiple and adjusted files supplied with the project have not been updated since March 2024, when Rob stepped back from the project. You can find an updated (sub)set of files in [this project](https://github.com/bug-or-feature/pst-csv-data). See the [discussion here](https://github.com/robcarver17/pysystemtrade/discussions/1553) 
+The CSV multiple and adjusted files supplied with the project have not been updated since March 2024, when Rob stepped back from the project. You can find an updated (sub)set of files in [this project](https://github.com/bug-or-feature/pst-csv-data). See the [discussion here](https://github.com/pst-group/pysystemtrade/discussions/1553) 
 
 ## Instrument configuration and spread costs
 
@@ -378,7 +378,7 @@ This will also copy adjusted prices, so you can now skip ahead to [creating FX d
 
 ### Updating shipped multiple prices
 
-See [this script](https://github.com/robcarver17/pysystemtrade/blob/develop/sysinit/futures/adhoc/update_provided_multiple_prices.py) 
+See [this script](https://github.com/pst-group/pysystemtrade/blob/develop/sysinit/futures/adhoc/update_provided_multiple_prices.py) 
 
 Assuming that you have an Interactive Brokers account, you might want to update the (stale) data that you have [downloaded from the repo](/docs/backtesting.md#setting-up-mongodb-and-parquet) before [calculating back adjusted prices](#creating-and-storing-back-adjusted-prices). [See this note](#note-on-outdated-shipped-csv-data)
 

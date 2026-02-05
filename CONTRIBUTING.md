@@ -13,7 +13,7 @@ For large changes, or new feature requests - please start an **Ideas** discussio
 > Credit to the [QuantConnect Lean project](https://github.com/QuantConnect/Lean), where most of these instructions originated
 
 * Set up a [GitHub](https://github.com/) account
-* [Fork](https://help.github.com/articles/fork-a-repo/) the [repository](https://github.com/robcarver17/pysystemtrade) of the project
+* [Fork](https://help.github.com/articles/fork-a-repo/) the [repository](https://github.com/pst-group/pysystemtrade) of the project
 * Clone your fork locally
 
 ```bash
@@ -24,7 +24,7 @@ $ git clone https://github.com/<your_username>/pysystemtrade.git
 
 ```bash
 $ cd pysystemtrade
-$ git remote add upstream https://github.com/robcarver17/pysystemtrade.git
+$ git remote add upstream https://github.com/pst-group/pysystemtrade.git
 ```
 
 The *upstream* remote links your fork of the project with the original
@@ -46,7 +46,7 @@ If you are not familiar with git branches, please read this [guide](https://www.
 
 The following names will be used to differentiate between the different repositories:
 
-* **upstream** - The 'official' pysystemtrade [repository](https://github.com/robcarver17/pysystemtrade.git) (what is on Rob's GitHub account)
+* **upstream** - The 'official' pysystemtrade [repository](https://github.com/pst-group/pysystemtrade.git) (what is on the pst-group GitHub account)
 * **origin** - Your fork of the official repository on GitHub (what is on your GitHub account)
 * **local** - This will be your local clone of **origin** (what is on your computer)
 
@@ -177,7 +177,7 @@ Or, configure your local git install to automatically check and fix your code as
 
 ### Black version
 
-Black needs to be consistent between the version running in the CI build and your local environment. To check the currently used version, see the `[tool.black]` section of the project [TOML file](https://github.com/robcarver17/pysystemtrade/blob/develop/pyproject.toml)
+Black needs to be consistent between the version running in the CI build and your local environment. To check the currently used version, see the `[tool.black]` section of the project [TOML file](https://github.com/pst-group/pysystemtrade/blob/develop/pyproject.toml)
 
 ## General code guidelines (INCOMPLETE)
 
@@ -196,7 +196,7 @@ In general, we try and follow the original texts: [PEP 8](https://peps.python.or
 
 - For classes, I prefer mixedCase to CamelCase, but single word names should always be Camels.
 - Common methods are `get`, `calculate`, `read`, `write`.
-- There is a specific procedure for naming objects which form part of the data heirarchy, see [here](https://github.com/robcarver17/pysystemtrade/blob/master/docs/data.md#part-2-overview-of-futures-data-in-pysystemtrade). If this is not followed, then the [automated abstraction of data inside Data 'blob' instances](https://github.com/robcarver17/pysystemtrade/blob/master/docs/data.md#data-blobs) won't work.
+- There is a specific procedure for naming objects which form part of the data heirarchy, see [here](https://github.com/pst-group/pysystemtrade/blob/master/docs/data.md#part-2-overview-of-futures-data-in-pysystemtrade). If this is not followed, then the [automated abstraction of data inside Data 'blob' instances](https://github.com/pst-group/pysystemtrade/blob/master/docs/data.md#data-blobs) won't work.
 - Although arguably redundant, I am a fan of describing eg objects that inherit from dicts with a dict_ prefix. This gives hints as to how they behave without having to look at their code.
  
 

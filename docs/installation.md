@@ -15,7 +15,7 @@ git clone https://github.com/<your_git_hub_id>/pysystemtrade.git
 otherwise, you'll want the main repo
 
 ```
-git clone https://github.com/robcarver17/pysystemtrade.git
+git clone https://github.com/pst-group/pysystemtrade.git
 ```
 
 
