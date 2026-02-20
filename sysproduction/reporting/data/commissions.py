@@ -7,11 +7,44 @@ from sysproduction.data.broker import dataBroker
 from sysproduction.data.contracts import dataContracts
 from sysobjects.contracts import futuresContract
 from sysdata.data_blob import dataBlob
+from sysdata.config.instruments import get_list_of_untradeable_instruments_in_config
 
 error_getting_costs = currencyValue(currency="Error", value=0)
 missing_contract = "price not collected"
 prices_not_collected = currencyValue(currency="No prices", value=0)
 percentage_commissions = currencyValue(currency="% commission ignore", value=0)
+
+
+def filter_tradeable_instruments_for_commission_report(
+    data: dataBlob, instrument_list: List[str]
+) -> List[str]:
+    """
+    Filter out trading-restricted and stale instruments from commission reporting.
+    Trading-restricted instruments can't be traded so commission accuracy is not
+    relevant. Stale instruments no longer exist so commission data retrieval will fail.
+
+    This fixes erroneous "Currency doesn't match" and "One or both missing" errors
+    that occurred when the system tried to get broker commission data for instruments
+    with trading restrictions, regulatory blocks, or permission issues.
+    """
+    trading_restricted = get_list_of_untradeable_instruments_in_config(data.config)
+    stale_instruments = data.config.get_element_or_default("stale_instruments", [])
+
+    exclude_list = list(set(trading_restricted + stale_instruments))
+    tradeable_instruments = [
+        instrument for instrument in instrument_list if instrument not in exclude_list
+    ]
+
+    if exclude_list:
+        restricted_count = len([i for i in instrument_list if i in trading_restricted])
+        stale_count = len([i for i in instrument_list if i in stale_instruments])
+        data.log.debug(
+            "Commission report: Analyzing %d tradeable instruments "
+            "(%d trading-restricted, %d stale instruments skipped)"
+            % (len(tradeable_instruments), restricted_count, stale_count)
+        )
+
+    return tradeable_instruments
 
 
 def df_of_configure_and_broker_block_cost_sorted_by_index(
@@ -27,6 +60,10 @@ def df_of_configure_and_broker_block_cost_sorted_by_diff(
     data: dataBlob,
 ) -> pd.DataFrame:
     list_of_instrument_codes = get_instrument_list(data)
+
+    list_of_instrument_codes = filter_tradeable_instruments_for_commission_report(
+        data, list_of_instrument_codes
+    )
 
     configured_costs = get_current_configured_block_costs(
         data=data, list_of_instrument_codes=list_of_instrument_codes
@@ -128,6 +165,9 @@ def update_valid_costs(
 
 
 def create_df_in_commission_report(some_dict: dict):
+    if not some_dict:
+        return pd.DataFrame(columns=[CONFIGURED_COLUMN, BROKER_COLUMN, DIFF_COLUMN])
+
     some_df = pd.DataFrame(some_dict)
     some_df = some_df.transpose()
     some_df.columns = [CONFIGURED_COLUMN, BROKER_COLUMN, DIFF_COLUMN]

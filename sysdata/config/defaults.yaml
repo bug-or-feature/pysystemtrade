@@ -322,9 +322,9 @@ small_system:
   tracking_error_buffer: 0.0125
   shrink_instrument_returns_correlation: 0.5
 #
-# Instruments with a region (ASIA, EMEA, US) listed here will be issued warnings
-# by the strategy order generator if the instrument is in Force or Force
-# Outright status. Leave empty for no warnings
+# Instruments with a region (ASIA, EMEA, US) listed here will cause warnings to
+# be issued by the strategy order generator if the instrument has 'active' roll
+# status (Force, Force Outright, Close, Roll Adjusted). Leave empty for no action
 regions_with_warn_on_force_orders: []
 #
 # duplicated/excluded instruments are ignored in backtests
