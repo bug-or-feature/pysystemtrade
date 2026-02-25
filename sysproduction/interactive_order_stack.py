@@ -50,6 +50,7 @@ from sysexecution.orders.instrument_orders import (
 from sysexecution.algos.allocate_algo_to_order import get_list_of_algos
 from sysbrokers.IB.ib_connection import connectionIB
 from syscore.constants import arg_not_supplied
+from syscore.exceptions import missingData
 
 from sysobjects.contracts import futuresContract
 
@@ -199,17 +200,18 @@ def create_balance_trade(data):
 
     broker_order = get_broker_order_details_for_balance_trade(data)
 
-    print(broker_order)
-    ans = input("Are you sure? (Y/other)")
-    if ans != "Y":
-        return None
+    if broker_order:
+        print(broker_order)
+        ans = input("Are you sure? (Y/other)")
+        if ans != "Y":
+            return
 
-    stack_handler = stackHandlerCreateBalanceTrades(data)
+        stack_handler = stackHandlerCreateBalanceTrades(data)
 
-    stack_handler.create_balance_trade(broker_order)
+        stack_handler.create_balance_trade(broker_order)
 
 
-def get_broker_order_details_for_balance_trade(data: dataBlob) -> brokerOrder:
+def get_broker_order_details_for_balance_trade(data: dataBlob) -> brokerOrder | None:
     ans = true_if_answer_is_yes(
         "Auto close an existing position (if not, manually enter details)?"
     )
@@ -242,10 +244,15 @@ def get_broker_order_details_for_balance_trade(data: dataBlob) -> brokerOrder:
         "Commission", type_expected=float, allow_default=True, default_value=0.0
     )
 
-    strategy_name = get_valid_strategy_name_from_user(data=data, source="positions")
+    try:
+        strategy_name = get_valid_strategy_name_from_user(
+            data=data, source="positions", backup_source="config"
+        )
+    except missingData as md:
+        print(f"Problem getting strategy name: {md}\n")
+        return None
 
-    data_broker = dataBroker(data)
-    default_account = data_broker.get_broker_account()
+    default_account = data.config.get_element("broker_account")
     broker_account = get_input_from_user_and_convert_to_type(
         "Account ID",
         type_expected=str,

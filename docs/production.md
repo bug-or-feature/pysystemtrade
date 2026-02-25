@@ -147,15 +147,16 @@ Table of Contents
             * [Choice of strategy and backtest](#choice-of-strategy-and-backtest)
             * [Choose stage / method / arguments](#choose-stage--method--arguments)
             * [Alternative Python code](#alternative-python-code)
-         * [Reports](#reports)
-         * [Logs, errors, emails](#logs-errors-emails)
+         * [Instrument configuration](#instrument-configuration)
+            * [View instrument configuration data](#view-instrument-configuration-data)
+            * [View contract configuration data](#view-contract-configuration-data)
+            * [View trading hours for all instruments](#view-trading-hours-for-all-instruments)
+         * [Emails](#emails)
             * [View stored emails](#view-stored-emails)
          * [View prices](#view-prices)
          * [View capital](#view-capital)
          * [Positions and orders](#positions-and-orders)
-         * [Instrument configuration](#instrument-configuration)
-            * [View instrument configuration data](#view-instrument-configuration-data)
-            * [View contract configuration data](#view-contract-configuration-data)
+         * [Reports](#reports)
       * [Interactive order stack](#interactive-order-stack)
          * [View](#view)
          * [Create orders](#create-orders)
@@ -211,6 +212,7 @@ Table of Contents
       * [Broker and data source specific configuration files](#broker-and-data-source-specific-configuration-files)
       * [Instrument and roll configuration](#instrument-and-roll-configuration)
       * [Set up configuration](#set-up-configuration)
+      * [Trading hours configuration](#trading-hours-configuration)
    * [Capital](#capital)
       * [Large changes in capital](#large-changes-in-capital)
       * [Withdrawals and deposits of cash or stock](#withdrawals-and-deposits-of-cash-or-stock)
@@ -277,6 +279,7 @@ You need to:
     - [Set up interactive brokers](/docs/IB.md), get a gateway running.
     - [Install MongoDB](https://docs.mongodb.com/manual/administration/install-on-linux/).
     - create a file `private_config.yaml` in the private directory of [pysystemtrade](/private), and optionally a [`private_control_config.yaml` file in the same directory](#process-configuration) See [here for more details](#system-defaults--private-config)
+    - if you are located anywhere other than GMT, then you must adjust the trading hours for your timezone. See [here](#trading-hours-configuration)
     - Set `parquet_store` in 'private_config.yaml' to the Parquet directory you set up earlier 
     - [check a MongoDB server is running with the right data directory](/docs/data.md#mongodb) command line: `mongod --dbpath $MONGO_DATA`
     - launch an IB gateway (this could be done automatically depending on your security setup)
@@ -1167,11 +1170,12 @@ Broker orders are unaffected by whether the contract order has been created as p
 Before a broker order is created we apply a number of steps to the contract order we retrieve from the database:
 
 - Check to see if the contract order is fully filled already.
+- Check that the current time falls within the trading hours for the instrument
 - Check to see if an order is 'controlled' by an algo. This is in case we have multiple stack handlers running; we apply a pseudo lock when an algo issues a 
 - Check to see if the instrument is locked. Locks are created when we have position mismatches, and cleared automatically when mismatches clear.
 - Check to see if the contract is being traded (checks with broker)
 - Resizes the order to comply with trade limits
-- Resize the order depending on the current liquidity (level 1 volume at the top of the order book, checks with the broker. This done on a leg by leg basis - not in the explicit spread market for multi-contract legs - and the most conservative size applied)
+- Resize the order depending on the current liquidity (level 1 volume at the top of the order book, checks with the broker. This is done on a leg-by-leg basis - not in the explicit spread market for multi-contract legs - and the most conservative size applied)
 
 Note that the size changes do not impact the contract order saved to the database; only the order that is passed onwards in memory to become a broker order. Thus, it's possible that we have a buy of +10 contract order, but there is only enough liquidity for +3. A broker order of +3 will be created (unless the order is further reduced by the algo: see next step), subsequently the system will try and create a second broker order of +7. Or if we have a buy of +10, but the trade sizing only allows for +5, then a broker order of +5 will be created and once executed no more broker orders can be created from this contract order (at the end of the day it will be cleared from the order stack, and the next day assuming it was a daily limit that was the constraint more contracts can be executed).
 
@@ -2149,14 +2153,48 @@ backtest = user_choose_backtest()
 system = backtest.system
 ```
 
+#### Instrument configuration
 
-#### Reports
+##### View instrument configuration data
 
-Allows you to run any of the [reports](#reporting) on an ad-hoc basis.
+View the configuration data for a particular instrument, eg for DAX:
 
-#### Logs, errors, emails
+```{'Description': 'DAX 30 Index (Deutsche Aktien Xchange 30)', 'Pointsize': 1.0, 'Currency': 'EUR', 'AssetClass': 'Equity', 'PerBlock': 0.4, 'Percentage': 0.0, 'PerTrade': 0, 'Region': 'EMEA'}```
 
-Allows you to look at various system diagnostics.
+Note there may be further configuration stored in other places, eg broker specific.
+
+#####  View contract configuration data
+
+View the configuration for a particular contract, eg:
+
+```
+{'contract_date_dict': {'expiry_date': (2023, 6, 19), 'contract_date': '202306', 'approx_expiry_offset': 0}, 'instrument_dict': {'instrument_code': 'EDOLLAR'}, 'contract_params': {'currently_sampling': True}}
+Rollcycle parameters hold_rollcycle:HMUZ, priced_rollcycle:HMUZ, roll_offset_day:-1100.0, carry_offset:-1.0, approx_expiry_offset:18.0
+```
+
+See [here](#interactively-roll-adjusted-prices) to understand roll parameters.
+
+#####  View trading hours for all instruments
+
+This function prints out the trading hours and session duration for the next three trading days, per instrument. For example:
+
+```
+AEX                 : 23/02 08:00 to 23/02 15:00 (7.0 hours) 24/02 08:00 to 24/02 15:00 (7.0 hours) 25/02 08:00 to 25/02 15:00 (7.0 hours)
+ALUMINIUM           : 23/02 14:00 to 23/02 19:00 (5.0 hours) 24/02 14:00 to 24/02 19:00 (5.0 hours) 25/02 14:00 to 25/02 19:00 (5.0 hours)
+AUDJPY              : 23/02 15:00 to 23/02 20:00 (5.0 hours) 24/02 15:00 to 24/02 20:00 (5.0 hours) 25/02 15:00 to 25/02 20:00 (5.0 hours)
+AUD_micro           : 23/02 15:00 to 23/02 20:00 (5.0 hours) 24/02 15:00 to 24/02 20:00 (5.0 hours) 25/02 15:00 to 25/02 20:00 (5.0 hours)
+BOBL                : 23/02 08:00 to 23/02 15:00 (7.0 hours) 24/02 08:00 to 24/02 15:00 (7.0 hours) 25/02 08:00 to 25/02 15:00 (7.0 hours)
+...
+V2X                 : 23/02 08:00 to 23/02 15:00 (7.0 hours) 24/02 08:00 to 24/02 15:00 (7.0 hours) 25/02 08:00 to 25/02 15:00 (7.0 hours)
+VIX                 : 23/02 15:00 to 23/02 20:00 (5.0 hours) 24/02 15:00 to 24/02 20:00 (5.0 hours) 25/02 15:00 to 25/02 20:00 (5.0 hours)
+WHEAT               : 23/02 15:30 to 23/02 18:20 (2.8 hours) 24/02 15:30 to 24/02 18:20 (2.8 hours) 25/02 15:30 to 25/02 18:20 (2.8 hours)
+YENEUR              : 23/02 15:00 to 23/02 20:00 (5.0 hours) 24/02 15:00 to 24/02 20:00 (5.0 hours) 25/02 15:00 to 25/02 20:00 (5.0 hours)
+ZAR                 : 23/02 15:00 to 23/02 20:00 (5.0 hours) 24/02 15:00 to 24/02 20:00 (5.0 hours) 25/02 15:00 to 25/02 20:00 (5.0 hours)
+```
+
+See [here](#trading-hours-configuration) for how to configure and customise trading hours.
+
+#### Emails
 
 ##### View stored emails
 
@@ -2194,27 +2232,10 @@ View historic series of positions and orders. Options are:
 - List of historic broker level orders (for strategy and instrument)
 - View full details of any individual order (of any type)
 
+#### Reports
 
-#### Instrument configuration
+Allows you to run any of the [reports](#reporting) on an ad-hoc basis.
 
-##### View instrument configuration data
-
-View the configuration data for a particular instrument, eg for DAX:
-
-```{'Description': 'DAX 30 Index (Deutsche Aktien Xchange 30)', 'Pointsize': 1.0, 'Currency': 'EUR', 'AssetClass': 'Equity', 'PerBlock': 0.4, 'Percentage': 0.0, 'PerTrade': 0, 'Region': 'EMEA'}```
-
-Note there may be further configuration stored in other places, eg broker specific.
-
-#####  View contract configuration data
-
-View the configuration for a particular contract, eg:
-
-```
-{'contract_date_dict': {'expiry_date': (2023, 6, 19), 'contract_date': '202306', 'approx_expiry_offset': 0}, 'instrument_dict': {'instrument_code': 'EDOLLAR'}, 'contract_params': {'currently_sampling': True}}
-Rollcycle parameters hold_rollcycle:HMUZ, priced_rollcycle:HMUZ, roll_offset_day:-1100.0, carry_offset:-1.0, approx_expiry_offset:18.0
-```
-
-See [here](#interactively-roll-adjusted-prices) to understand roll parameters.
 
 ### Interactive order stack
 
@@ -2908,6 +2929,12 @@ The following are used when initialising the database with its initial configura
 
 - [/data/futures/csvconfig/spreadcosts.csv](/data/futures/csvconfig/spreadcosts.csv) 
 
+### Trading hours configuration
+
+The default trading hours config for IB is specified at: [sysbrokers/IB/ib_config_trading_hours.yaml](https://github.com/pst-group/pysystemtrade/blob/develop/sysbrokers/IB/ib_config_trading_hours.yaml). The default config assumes GMT. Anyone living anywhere else must do both of the following for production trading:
+- Update `GMT_offset_hours` in private config to your local timezone
+- Copy the trading hours config into a new private config file at `private/private_config_trading_hours.yaml`, or if using a [custom private directory](#custom-private-directory), then `$PYSYS_PRIVATE_CONFIG_DIR/private_config_trading_hours.yaml`
+- Update the per-timezone trading hours. The simplest way to do that is to add (or subtract) your GMT offset from the default times. Keep in mind that the start time always has to be before the end time, which means in some cases you might want two sessions per day if the trading hours would span midnight. See the instrument-specific examples for how to configure multiple sessions per day.
 
 ## Capital
 

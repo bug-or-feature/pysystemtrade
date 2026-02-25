@@ -1,5 +1,6 @@
 from sysdata.data_blob import dataBlob
 from syscore.constants import arg_not_supplied
+from syscore.exceptions import missingData
 from syscore.interactive.menus import print_menu_of_values_and_get_response
 from sysproduction.data.positions import diagPositions
 from sysproduction.data.optimal_positions import dataOptimalPositions
@@ -47,14 +48,15 @@ class diagStrategiesConfig(productionDataLayerGeneric):
 
 
 def get_list_of_strategies(data: dataBlob = arg_not_supplied, source="config") -> list:
-    if source == "config":
-        return get_list_of_strategies_from_config(data)
-    elif source == "positions":
-        return get_list_of_strategies_from_positions(data)
-    elif source == "optimal_positions":
-        return get_list_of_strategies_from_optimal_positions(data)
-    else:
+    handlers = {
+        "config": get_list_of_strategies_from_config,
+        "positions": get_list_of_strategies_from_positions,
+        "optimal_positions": get_list_of_strategies_from_optimal_positions,
+    }
+    if source not in handlers.keys():
         raise Exception("Source %s not recognised!" % source)
+
+    return handlers[source](data)
 
 
 def get_list_of_strategies_from_config(data: dataBlob = arg_not_supplied) -> list:
@@ -87,9 +89,19 @@ def get_valid_strategy_name_from_user(
     allow_all: bool = False,
     all_code: str = "ALL",
     source: str = "config",
-):
+    prompt: str = "Which strategy?",
+    backup_source: str = None,
+) -> str:
+    assert source != backup_source
+    print(prompt)
     all_strategies = get_list_of_strategies(data=data, source=source)
-    # TODO print error if no strategies found
+    if not all_strategies and backup_source:
+        print(f"No strategies found using source '{source}', trying '{backup_source}'")
+        all_strategies = get_list_of_strategies(data=data, source=backup_source)
+
+    if not all_strategies:
+        raise missingData("No strategies found")
+
     if allow_all:
         default_strategy = all_code
     else:
