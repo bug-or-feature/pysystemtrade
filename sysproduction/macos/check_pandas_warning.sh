@@ -1,22 +1,19 @@
 #!/bin/zsh
 
-source ~/.zprofile
-
-TRAPZERR() {
-  datetime=$(date +%Y-%m-%d\ %H\:%M\:%S)
-  echo "Problem running 'check_pandas_warning.sh'" | /usr/bin/mail -s "FUTP Problem running 'check_pandas_warning.sh'" $PYSYS_EMAIL
-}
-
 # Search for pattern and capture results
-RESULTS=$(grep -rnE 'FutureWarning|DeprecationWarning|ChainedAssignmentError' "$ECHO_PATH" 2>/dev/null)
+RESULTS=$(/usr/bin/find "$ECHO_PATH" -type f -name "*.log" -exec /usr/bin/grep -E 'FutureWarning|DeprecationWarning|ChainedAssignmentError' /dev/null {} +)
+
+#echo "RESULTS=[$RESULTS]" >&2
 
 # Exit silently if nothing found
 if [[ -z "$RESULTS" ]]; then
     exit 0
 fi
 
-# Compose and send email
-SUBJECT="Future/Deprecation Warning instances found"
-BODY="$RESULTS"
+SUBJECT="Future/Deprecation/ChainedAssignment Warning instances found"
 
-echo "$BODY" | /usr/bin/mail -s "$SUBJECT" "$PYSYS_EMAIL"
+#echo "$ECHO_PATH=[$ECHO_PATH] SUBJECT=[$SUBJECT] PYSYS_EMAIL=[$PYSYS_EMAIL]" >&2
+#echo "HOME=[$HOME] USER=[$USER] LOGNAME=[$LOGNAME]" >&2
+
+echo "$RESULTS" | /usr/bin/mail -v -s $SUBJECT $PYSYS_EMAIL
+#echo "mail exit code: $?" >&2
