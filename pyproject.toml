@@ -1,5 +1,8 @@
 [build-system]
-requires = ["setuptools >= 61.0"]
+requires = [
+    "setuptools >= 61.0",
+    "setuptools-scm >= 8.0"
+]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -47,8 +50,11 @@ find = {}
 
 [tool.setuptools.package-data]
 "data" = ["*.csv"]
+"data.futures" = ["*.csv"]
 "private" = ["*.yaml"]
-"sysbrokers" = ["*.csv", "*.yaml"]
+"sysbrokers" = ["*.csv"]
+"sysbrokers.IB" = ["*.yaml"]
+"sysbrokers.IB.config" = ["*.csv"]
 "syscontrol" = ["*.yaml"]
 "sysdata" = ["*.csv"]
 "sysdata.config" = ["*.yaml"]

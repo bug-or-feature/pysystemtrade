@@ -1,6 +1,8 @@
+import datetime
 from sysdata.config.configdata import Config
 from sysdata.config.control_config import get_control_config
 from sysdata.config.private_config import PRIVATE_CONFIG_DIR_ENV_VAR
+from sysbrokers.IB.ib_trading_hours import get_saved_trading_hours
 
 
 class TestConfig:
@@ -77,3 +79,21 @@ class TestConfig:
             config.as_dict()["process_configuration_start_time"]["run_stack_handler"]
             == "00:01"
         )
+
+    def test_trading_hours_default(self, monkeypatch):
+        monkeypatch.delenv(PRIVATE_CONFIG_DIR_ENV_VAR, raising=False)
+        config = get_saved_trading_hours()
+        assert config["MET"]["Monday"][0].closing_time == datetime.time(15)
+
+    def test_trading_hours_custom(self, monkeypatch):
+        monkeypatch.setenv(
+            PRIVATE_CONFIG_DIR_ENV_VAR, "sysdata.tests.custom_private_config"
+        )
+        config = get_saved_trading_hours()
+        assert config["MET"]["Monday"][0].opening_time == datetime.time(9)
+        assert config["MET"]["Monday"][0].closing_time == datetime.time(14)
+
+    def test_trading_hours_bad_custom_dir(self, monkeypatch):
+        monkeypatch.setenv(PRIVATE_CONFIG_DIR_ENV_VAR, "sysdata.tests")
+        config = get_saved_trading_hours()
+        assert config["MET"]["Monday"][0].closing_time == datetime.time(15)

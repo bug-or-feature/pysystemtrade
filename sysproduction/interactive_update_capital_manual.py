@@ -266,3 +266,7 @@ def delete_all_capital(data: dataBlob):
             )
     else:
         print("OK you decided not to do it")
+
+
+if __name__ == "__main__":
+    interactive_update_capital_manual()
