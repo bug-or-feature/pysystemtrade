@@ -11,11 +11,9 @@ class spreadsForInstrument(pd.Series):
             current_time = datetime.datetime.now()
         new_row = pd.Series(spread, index=[current_time])
 
-        # TODO fix FutureWarning: The behavior of array concatenation with empty entries
-        #  is deprecated. In a future version, this will no longer exclude empty items
-        #  when determining the result dtype. To retain the old behavior, exclude the
-        #  empty entries before the concat operation
-        return spreadsForInstrument(pd.concat([self, new_row], axis=0))
+        return spreadsForInstrument(
+            pd.concat([self if not self.empty else None, new_row], axis=0)
+        )
 
     def average_spread_last_n_days(self, n_days: int = 14):
         recent_data = self[n_days_ago(n_days)]

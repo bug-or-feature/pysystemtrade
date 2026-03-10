@@ -1,5 +1,5 @@
 from copy import copy
-
+import numpy as np
 from syscore.constants import arg_not_supplied
 from syscore.dateutils import WEEKS_IN_YEAR
 

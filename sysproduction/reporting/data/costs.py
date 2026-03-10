@@ -188,7 +188,7 @@ def best_estimate_from_cost_data(
     configured_costs: pd.Series,
     trades_to_count_as_config=10,
     samples_to_count_as_config=150,
-) -> pd.Series:
+) -> pd.DataFrame:
     worst_execution = pd.concat([bid_ask_costs, actual_trade_costs], axis=1)
     worst_execution = worst_execution.max(axis=1)
 
@@ -208,16 +208,12 @@ def best_estimate_from_cost_data(
     weight_on_trades = all_weights.order_count / trades_to_count_as_config
     weight_on_trades[weight_on_trades.isna()] = 0.0
     weight_on_trades[all_weights.trading.isna()] = 0.0
-    all_weights.trading[
-        all_weights.trading.isna()
-    ] = 0.0  # TODO fix ChainedAssignmentError
+    all_weights.loc[all_weights.trading.isna(), "trading"] = 0.0
 
     weight_on_samples = all_weights.sample_count / samples_to_count_as_config
     weight_on_samples[weight_on_samples.isna()] = 0.0
     weight_on_samples[all_weights.sampled.isna()] = 0.0
-    all_weights.sampled[
-        all_weights.sampled.isna()
-    ] = 0.0  # TODO fix ChainedAssignmentError
+    all_weights.loc[all_weights.sampled.isna(), "sampled"] = 0.0
 
     weight_on_config = pd.Series(
         [1.0] * len(configured_costs), index=configured_costs.index
