@@ -32,10 +32,11 @@ from systems.system_utils import (
 # SAVED_SYSTEM = "systems.bof.pickle.fut_strategy_v1_0.pck"
 
 # CONFIG = "systems.bof.config.fut_simple_test.yaml"
-CONFIG = "systems.bof.config.fut_strategy_v1_8.yaml"
+#CONFIG = "systems.bof.config.fut_strategy_v1_8.yaml"
+CONFIG = "systems.bof.config.fut_strategy_v1_9.yaml"
 
 # SAVED_SYSTEM = "systems.bof.config.fut_simple_test.pck"
-SAVED_SYSTEM = "systems.bof.config.fut_strategy_v1_8.pck"
+SAVED_SYSTEM = "systems.bof.config.fut_strategy_v1_9.pck"
 
 # CONFIG = "systems.bof.config.futures_static_estimation_min.yaml"
 # CONFIG = "systems.bof.config.futures_static_estimation.yaml"
@@ -62,7 +63,7 @@ def run_static_system(
         if do_estimate:
             config.start_date = "1950-01-01"
             config.base_currency = "USD"  # so we're not restricted by FX history
-            config.use_forecast_scale_estimates = True
+            config.use_forecast_scale_estimates = False
             config.forecast_scalars = None
             config.use_instrument_div_mult_estimates = False
             config.use_instrument_weight_estimates = False
@@ -218,12 +219,12 @@ def check_no_costs():
 
 
 if __name__ == "__main__":
-    # run_static_system(
+    run_static_system(
+        load_pickle=False, write_pickle=False, do_estimate=True, write_config=False
+    )
+
+    # run_dynamic_system(
     #     load_pickle=False, write_pickle=True, do_estimate=False, write_config=False
     # )
-
-    run_dynamic_system(
-        load_pickle=False, write_pickle=True, do_estimate=False, write_config=False
-    )
 
     # check_no_costs()
