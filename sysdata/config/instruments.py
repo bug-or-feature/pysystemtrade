@@ -42,6 +42,10 @@ def generate_matching_duplicate_dict(config: Config):
     duplicate_instruments_config = config.get_element("duplicate_instruments")
     exclude_dict = duplicate_instruments_config.get("exclude", {})
     include_dict = duplicate_instruments_config.get("include", {})
+    if "things" in exclude_dict:
+        del exclude_dict["things"]
+    if "things" in include_dict:
+        del include_dict["things"]
 
     joint_keys = list(set(list(exclude_dict.keys()) + list(include_dict.keys())))
 

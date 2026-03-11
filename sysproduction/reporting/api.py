@@ -50,6 +50,7 @@ from sysproduction.reporting.data.duplicate_remove_markets import (
     text_suggest_changes_to_duplicate_markets,
     get_remove_market_data,
     RemoveMarketData,
+    generate_duplicate_pairs,
 )
 from sysproduction.reporting.data.pandl import (
     get_total_capital_pandl,
@@ -70,6 +71,7 @@ from sysproduction.reporting.data.risk import (
     get_portfolio_risk_across_strategies,
     get_margin_usage,
     minimum_capital_table,
+    get_correlation_matrix_for_instruments,
 )
 from sysproduction.reporting.data.rolls import (
     get_roll_data_for_instrument,
@@ -104,6 +106,7 @@ class reportingApi(object):
         start_date: datetime.datetime = arg_not_supplied,
         start_period: str = arg_not_supplied,
         end_period: str = arg_not_supplied,
+        min_correlation: float = arg_not_supplied,
     ):
         self._data = data
         self._calendar_days_back = calendar_days_back
@@ -111,6 +114,7 @@ class reportingApi(object):
         self._passed_end_date = end_date
         self._end_period = end_period
         self._start_period = start_period
+        self._min_correlation = min_correlation
         self._cache = Cache(self)
 
     def std_header(self, report_name: str):
@@ -316,6 +320,69 @@ class reportingApi(object):
 
     def _get_list_of_duplicate_market_tables(self) -> list:
         return get_list_of_duplicate_market_tables(self.data)
+
+    def get_correlations_for_configured_duplicates(self) -> table:
+        pairs = generate_duplicate_pairs(self.data)
+        corr_data = get_correlation_matrix_for_instruments(
+            self.data, self._get_configured_duplicates_list(pairs)
+        )
+        corr_data = cluster_correlation_matrix(corr_data)
+        corr_data = corr_data.as_pd().round(2)
+
+        rows = []
+        for inc, exc in pairs:
+            try:
+                corr_value = corr_data.loc[inc, exc]
+            except KeyError:
+                corr_value = float("nan")
+            rows.append(dict(included=inc, excluded=exc, correlation=corr_value))
+
+        configured_correlations = pd.DataFrame(rows)
+        configured_correlations = configured_correlations[
+            configured_correlations.correlation < self._min_correlation
+        ].sort_values("correlation", ascending=False)
+        table_corr = table(
+            "Potenially uncorrelated configured duplicates", configured_correlations
+        )
+
+        return table_corr
+
+    def get_potential_unconfigured_duplicates(self) -> table:
+        diag_prices = diagPrices(self.data)
+        pairs = generate_duplicate_pairs(self.data)
+
+        all_instruments = diag_prices.get_list_of_instruments_in_multiple_prices()
+        unconfigured = [
+            item
+            for item in all_instruments
+            if item not in self._get_configured_duplicates_list(pairs)
+        ]
+
+        corr_data = get_correlation_matrix_for_instruments(self.data, unconfigured)
+        corr_data = cluster_correlation_matrix(corr_data)
+        corr_data = corr_data.as_pd().round(2)
+
+        instruments = corr_data.index.tolist()
+        rows = []
+        for i, inst1 in enumerate(instruments):
+            for inst2 in instruments[i + 1 :]:
+                corr_value = corr_data.loc[inst1, inst2]
+                if corr_value >= self._min_correlation:
+                    rows.append(dict(first=inst1, second=inst2, correlation=corr_value))
+
+        potential_duplicates = pd.DataFrame(rows).sort_values(
+            "correlation", ascending=False
+        )
+        table_corr = table("Potentially unconfigured duplicates", potential_duplicates)
+
+        return table_corr
+
+    def _get_configured_duplicates_list(self, pairs_list):
+        configured = set()
+        for elem in pairs_list:
+            configured.add(elem[0])
+            configured.add(elem[1])
+        return list(configured)
 
     ### MINIMUM CAPITAL
     def table_of_minimum_capital(self) -> table:

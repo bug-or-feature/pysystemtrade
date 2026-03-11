@@ -348,6 +348,23 @@ def get_list_of_duplicate_market_tables(data):
     return duplicates
 
 
+def generate_duplicate_pairs(data):
+    """
+    Returns a list of configured duplicate pairs
+    """
+    results = []
+    duplicate_dict = generate_matching_duplicate_dict(config=data.config)
+
+    for dict_entry in duplicate_dict.values():
+        included = dict_entry["included"]
+        excluded = dict_entry["excluded"]
+        for inc in included:
+            for exc in excluded:
+                results.append([inc, exc])
+
+    return results
+
+
 def text_suggest_changes_to_duplicate_markets(
     list_of_duplicate_market_tables: list,
 ) -> str:

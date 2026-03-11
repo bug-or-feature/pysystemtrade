@@ -494,6 +494,15 @@ def get_correlation_matrix_all_instruments(data) -> correlationEstimate:
     return cmatrix
 
 
+def get_correlation_matrix_for_instruments(
+    data, instrument_list
+) -> correlationEstimate:
+    cmatrix = get_correlation_matrix_for_instrument_returns(data, instrument_list)
+    cmatrix = cmatrix.ordered_correlation_matrix()
+
+    return cmatrix
+
+
 def cluster_correlation_matrix(cmatrix: correlationEstimate) -> correlationEstimate:
     cluster_size = min(5, int(cmatrix.size / 3))
     new_order = assets_in_cluster_order(cmatrix, cluster_size=cluster_size)

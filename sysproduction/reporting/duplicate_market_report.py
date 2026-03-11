@@ -11,11 +11,15 @@ HEADER_TEXT = body_text(
 
 def duplicate_market_report(
     data: dataBlob = arg_not_supplied,
+    min_correlation: float = 0.95,
 ):
     if data is arg_not_supplied:
         data = dataBlob()
 
-    reporting_api = reportingApi(data)
+    reporting_api = reportingApi(
+        data,
+        min_correlation=min_correlation,
+    )
 
     formatted_output = []
     formatted_output.append(reporting_api.terse_header("Duplicate markets report"))
@@ -27,6 +31,10 @@ def duplicate_market_report(
         reporting_api.body_text_suggest_changes_to_duplicate_markets()
     )
     formatted_output = formatted_output + list_of_duplicate_market_tables
+
+    formatted_output.append(reporting_api.get_correlations_for_configured_duplicates())
+
+    formatted_output.append(reporting_api.get_potential_unconfigured_duplicates())
 
     formatted_output.append(reporting_api.footer())
 
