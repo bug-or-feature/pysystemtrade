@@ -2,23 +2,28 @@ from pathlib import Path
 import pandas as pd
 from syscore.exceptions import missingFile
 from syscore.fileutils import (
-    files_with_extension_in_pathname,
+    files_with_extension_in_resolved_pathname,
     resolve_path_and_filename_for_package,
-    get_resolved_pathname,
 )
-from pathlib import Path
 
 EXTENSION = "parquet"
 
 
 class ParquetAccess(object):
     def __init__(self, parquet_store_path: str):
+        """
+        Initialises an instance of the ParquetAccess class responsible for handling
+        the location of a Parquet data store
+
+        :param parquet_store_path: full absolute path to the Parquet data store
+        :type parquet_store_path: str
+        """
         print("%%% ParquetAccess %%%")
-        self.parquet_store = get_resolved_pathname(parquet_store_path)
+        self.parquet_store = parquet_store_path
 
     def get_all_identifiers_with_data_type(self, data_type: str):
         path = self._get_pathname_given_data_type(data_type)
-        return files_with_extension_in_pathname(path, extension=EXTENSION)
+        return files_with_extension_in_resolved_pathname(path, extension=EXTENSION)
 
     def does_identifier_with_data_type_exist(
         self, data_type: str, identifier: str

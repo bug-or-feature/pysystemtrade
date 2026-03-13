@@ -1,4 +1,4 @@
-from copy import copy
+import copy
 
 from sysbrokers.IB.ib_connection import connectionIB
 from syscore.objects import get_class_name
@@ -329,7 +329,13 @@ class dataBlob(object):
 
     @property
     def parquet_access(self) -> ParquetAccess:
-        return ParquetAccess(self.parquet_root_directory)
+        parquet_access = getattr(self, "_parquet_access", arg_not_supplied)
+        if parquet_access is arg_not_supplied:
+            parquet_access = ParquetAccess(self.parquet_root_directory)
+            self._parquet_access = parquet_access
+
+        return parquet_access
+
 
     @property
     def parquet_root_directory(self) -> str:
@@ -377,7 +383,13 @@ class dataBlob(object):
 source_dict = dict(arctic="db", mongo="db", csv="db", parquet="db", ib="broker")
 
 
-def get_parquet_root_directory(config):
+def get_parquet_root_directory(config: Config):
+    """
+    Fetches the fully qualified absolute path for Parquet files
+
+    :param config: Configuration object
+    :return: Fully resolved path to root directory for Parquet file storage
+    """
     path = config.get_element("parquet_store")
     return get_resolved_pathname(path)
 
