@@ -336,7 +336,6 @@ class dataBlob(object):
 
         return parquet_access
 
-
     @property
     def parquet_root_directory(self) -> str:
         path = self._parquet_store_path

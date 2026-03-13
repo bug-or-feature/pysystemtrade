@@ -32,7 +32,7 @@ from systems.system_utils import (
 # SAVED_SYSTEM = "systems.bof.pickle.fut_strategy_v1_0.pck"
 
 # CONFIG = "systems.bof.config.fut_simple_test.yaml"
-#CONFIG = "systems.bof.config.fut_strategy_v1_8.yaml"
+# CONFIG = "systems.bof.config.fut_strategy_v1_8.yaml"
 CONFIG = "systems.bof.config.fut_strategy_v1_9.yaml"
 
 # SAVED_SYSTEM = "systems.bof.config.fut_simple_test.pck"
