@@ -77,7 +77,6 @@ def run_static_system(
                 bad_markets=["ETHANOL"],
                 ignore_instruments=[
                     "BB3M",
-                    "BBCOMM",
                     "GAS_NL",
                     "GAS_UK",
                     "NICKEL_LME",
@@ -118,7 +117,7 @@ def run_dynamic_system(
     else:
         log.info(f"Building DO system from {CONFIG}")
         config.percentage_vol_target = 25.0
-        config.notional_trading_capital = 100000
+        config.notional_trading_capital = 200000
         config.start_date = "2020-01-01"
         # config.start_date = "1970-01-01"
         config.base_currency = "USD"  # so we're not restricted by FX history
