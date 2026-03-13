@@ -556,7 +556,8 @@ class Portfolios(SystemStage):
     def get_fixed_instrument_weights_from_config(self) -> dict:
         try:
             instrument_weights_dict = get_instrument_weights_from_config(self.config)
-        except:
+        except Exception as exc:
+            self.log.error(f"Problem loading instrument weights from config: {exc}")
             instrument_weights_dict = self.get_equal_instrument_weights_dict()
 
         instrument_weights_dict = self._add_zero_instrument_weights(
