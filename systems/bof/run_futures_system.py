@@ -63,18 +63,40 @@ def run_static_system(
         if do_estimate:
             config.start_date = "1950-01-01"
             config.base_currency = "USD"  # so we're not restricted by FX history
+
+            # forecast scalars
+            #config.forecast_scalars = None
             config.use_forecast_scale_estimates = False
-            config.forecast_scalars = None
-            config.use_instrument_div_mult_estimates = False
-            config.use_instrument_weight_estimates = False
-            config.instrument_weights = None
+
+            # forecast weights
+            #config.forecast_weights = None
             config.use_forecast_weight_estimates = False
-            config.use_forecast_div_mult_estimates = True
+
+            # forecast diversification multiplier
             config.forecast_div_multiplier = None
+            config.use_forecast_div_mult_estimates = True
+
+            # instrument weights
+            config.instrument_weights = None
+            config.use_instrument_weight_estimates = False
+
+            # instrument diversification multiplier
+            config.instrument_div_multiplier = None
+            config.use_instrument_div_mult_estimates = False
+
             config.forecast_post_ceiling_cost_SR = 999
-            # config.instruments = []
+
+            # risk overlay
+            config.risk_overlay = dict(
+                max_risk_fraction_normal_risk=9999999999.0,
+                max_risk_fraction_stdev_risk=9999999999.0,
+                max_risk_limit_sum_abs_risk=9999999999.0,
+                max_risk_leverage=9999999999.0,
+            )
+
+            # excluded
             config.exclude_instrument_lists = dict(
-                bad_markets=["ETHANOL"],
+                duplicate_instruments=["ETHANOL"],
                 ignore_instruments=[
                     "BB3M",
                     "GAS_NL",
@@ -84,6 +106,12 @@ def run_static_system(
                     "VNKI",
                 ],
                 trading_restrictions=[],
+            )
+
+            # duplicates
+            config.duplicate_instruments = dict(
+                include=dict(),
+                exclude=dict(),
             )
             # config.allocate_zero_instrument_weights_to_these_instruments = ["ETHANOL"]
             config.allocate_zero_instrument_weights_to_these_instruments = []
