@@ -1,4 +1,4 @@
-from ib_insync import Trade as ibTrade
+from ib_async import Trade as ibTrade
 
 from sysbrokers.IB.ib_futures_contracts_data import ibFuturesContractData
 from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData

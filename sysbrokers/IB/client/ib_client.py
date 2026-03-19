@@ -1,5 +1,5 @@
 from typing import List
-from ib_insync import IB, ContractDetails as ibContractDetails
+from ib_async import IB, ContractDetails as ibContractDetails
 
 from sysbrokers.IB.ib_connection import connectionIB
 from sysbrokers.IB.ib_contracts import ibContract

@@ -1,5 +1,5 @@
 from copy import copy
-from ib_insync import Contract
+from ib_async import Contract
 
 from syscore.cache import Cache
 from syscore.exceptions import missingData, missingContract

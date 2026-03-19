@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from ib_insync import Future
+from ib_async import Future
 
 from sysobjects.instruments import futuresInstrument
 

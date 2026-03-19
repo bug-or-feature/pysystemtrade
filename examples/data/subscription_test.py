@@ -3,10 +3,10 @@ import logging
 from typing import Dict
 from typing import List
 
-import ib_insync
-from ib_insync import ContractDetails
-from ib_insync import Future
-from ib_insync import IB
+import ib_async
+from ib_async import ContractDetails
+from ib_async import Future
+from ib_async import IB
 
 from sysbrokers.IB.config.ib_instrument_config import IBconfig, read_ib_config_from_file
 
@@ -14,7 +14,7 @@ HOSTNAME = "localhost"
 
 
 async def subscription_test(ib_config: IBconfig) -> Dict[str, List[ContractDetails]]:
-    ib_insync.util.logToConsole(logging.INFO)
+    ib_async.util.logToConsole(logging.INFO)
     ib = IB()
     failed = []
     exceptions = []

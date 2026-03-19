@@ -7,7 +7,7 @@ class IBFilter(logging.Filter):
     """
 
     def __init__(self):
-        super().__init__("ib_insync")
+        super().__init__("ib_async")
 
     def filter(self, record):
         # for all records with name starting 'ib_insync'

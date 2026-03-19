@@ -1,6 +1,6 @@
 from typing import Callable
 
-from ib_insync import Contract as ibContract, Contract, ComboLeg
+from ib_async import Contract as ibContract, Contract, ComboLeg
 import re
 
 from sysbrokers.IB.ib_instruments import (

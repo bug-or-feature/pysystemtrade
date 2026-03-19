@@ -1,5 +1,5 @@
 from typing import NamedTuple
-from ib_insync.ib import Position, Contract
+from ib_async.ib import Position, Contract
 from syscore.genutils import highest_common_factor_for_list, sign
 from syscore.constants import arg_not_supplied
 

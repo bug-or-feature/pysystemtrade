@@ -13,7 +13,7 @@ Pysystemtrade is a....:
 - Which implements all the optimisation and system design principles in his books and on his blog.
 - A fully automated system for futures trading (for interactive brokers)
 
-pysystemtrade uses the [IB insync library](https://ib-insync.readthedocs.io/api.html) to connect to interactive brokers.
+pysystemtrade uses the [ib_async library](https://ib-api-reloaded.github.io/ib_async/api.html) to connect to interactive brokers.
 
 ## History
 

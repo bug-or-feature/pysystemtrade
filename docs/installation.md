@@ -135,7 +135,7 @@ eventkit          1.0.3
 exceptiongroup    1.2.2
 Flask             3.0.3
 fonttools         4.54.1
-ib-insync         0.9.86
+ib_async          2.0.1
 iniconfig         2.0.0
 itsdangerous      2.2.0
 Jinja2            3.1.4
@@ -292,7 +292,7 @@ eventkit          1.0.3
 exceptiongroup    1.2.2
 flask             3.1.0
 fonttools         4.55.8
-ib-insync         0.9.86
+ib_async          2.0.1
 iniconfig         2.0.0
 itsdangerous      2.2.0
 jinja2            3.1.5

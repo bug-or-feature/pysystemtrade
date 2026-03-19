@@ -3,8 +3,8 @@ from dateutil.tz import tz
 import datetime
 import pandas as pd
 
-from ib_insync import Contract as ibContract
-from ib_insync import util
+from ib_async import Contract as ibContract
+from ib_async import util
 
 from sysbrokers.IB.client.ib_client import PACING_INTERVAL_SECONDS
 from sysbrokers.IB.client.ib_contracts_client import ibContractsClient

@@ -94,7 +94,7 @@ setup(
     install_requires=[
         "pandas==2.1.3",
         "matplotlib>=3.0.0",
-        "ib-insync==0.9.86",
+        "ib_async>=2,<3",
         "PyYAML>=5.3",
         "numpy>=1.24.0",
         "scipy>=1.0.0",
