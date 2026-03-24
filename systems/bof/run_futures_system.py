@@ -65,11 +65,11 @@ def run_static_system(
             config.base_currency = "USD"  # so we're not restricted by FX history
 
             # forecast scalars
-            #config.forecast_scalars = None
+            # config.forecast_scalars = None
             config.use_forecast_scale_estimates = False
 
             # forecast weights
-            #config.forecast_weights = None
+            # config.forecast_weights = None
             config.use_forecast_weight_estimates = False
 
             # forecast diversification multiplier
