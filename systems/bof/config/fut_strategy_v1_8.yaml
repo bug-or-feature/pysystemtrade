@@ -758,21 +758,21 @@ instrument_weights:
             SMI-MID: 0.0625
           sector:
             weight: 0.4
-            EU-AUTO: 0.0666
-            EU-BANKS: 0.0666
-            EU-BASIC: 0.0666
-            EU-CONSTRUCTION: 0.0666
-            EU-DJ-TELECOM: 0.0666
-            EU-FOOD: 0.0666
-            EU-HEALTH: 0.0666
-            EU-HOUSE: 0.0666
-            EU-INSURE: 0.0666
-            EU-MEDIA: 0.0666
-            EU-OIL: 0.0666
-            EU-REALESTATE: 0.0666
-            EU-RETAIL: 0.0666
-            EU-TECH: 0.0666
-            EU-UTILS: 0.0666
+            EU-AUTO: 0.0714
+            EU-BANKS: 0.0714
+            EU-BASIC: 0.0714
+            # EU-CONSTRUCTION: 0.0666
+            EU-DJ-TELECOM: 0.0714
+            EU-FOOD: 0.0714
+            EU-HEALTH: 0.0714
+            EU-HOUSE: 0.0714
+            EU-INSURE: 0.0714
+            EU-MEDIA: 0.0714
+            EU-OIL: 0.0714
+            EU-REALESTATE: 0.0714
+            EU-RETAIL: 0.0714
+            EU-TECH: 0.0714
+            EU-UTILS: 0.0714
         Emerging:
           weight: 0.25
           BOVESPA: 0.143
@@ -859,6 +859,7 @@ instrument_weights:
 # 1/9: 0.111
 # 1/11: 0.09
 # 1/12: 0.083
+# 1/14: 0.0714
 # 1/15: 0.0666
 # 1/16: 0.0625
 
