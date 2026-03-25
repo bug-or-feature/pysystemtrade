@@ -192,7 +192,7 @@ def add_phantom_row(
 if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     instrument_code = get_valid_instrument_code_from_user(
-        all_code=ALL_INSTRUMENTS, allow_all=True
+        all_code=ALL_INSTRUMENTS, allow_all=True, source="config",
     )
     # modify flags and datapath as required
     if instrument_code == ALL_INSTRUMENTS:
