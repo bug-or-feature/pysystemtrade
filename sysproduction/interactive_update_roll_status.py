@@ -57,7 +57,7 @@ def interactive_update_roll_status():
     with dataBlob(log_name="Interactive_Update-Roll-Status") as data:
         api = reportingApi(data)
         function_to_call = get_rolling_master_function()
-        function_to_call(api=api, data=data)
+        function_to_call(api=api)
 
 
 def get_rolling_master_function():
@@ -119,10 +119,10 @@ class RollDataWithStateReporting(object):
         print("")
 
 
-def update_roll_status_manual_cycle(api: reportingApi, data: dataBlob):
+def update_roll_status_manual_cycle(api: reportingApi):
     # TODO source of auto_parameters
     auto_parameters = get_auto_roll_parameters_potentially_using_default(
-        data=data, use_default=True
+        data=api.data, use_default=True
     )
     do_another = True
     while do_another:
@@ -145,13 +145,13 @@ def update_roll_status_manual_cycle(api: reportingApi, data: dataBlob):
     return success
 
 
-def update_roll_status_auto_cycle_manual_decide(api: reportingApi, data: dataBlob):
-    days_ahead = get_days_ahead_to_consider_when_auto_cycling()
+def update_roll_status_auto_cycle_manual_decide(api: reportingApi):
+    days_ahead = get_days_ahead_to_consider_when_auto_cycling(api)
     instrument_list = get_list_of_instruments_to_auto_cycle(
         api.data, days_ahead=days_ahead
     )
     auto_parameters = get_auto_roll_parameters_potentially_using_default(
-        data=data, use_default=True
+        data=api.data, use_default=True
     )
     for instrument_code in instrument_list:
         roll_data = setup_roll_data_with_state_reporting(api.data, instrument_code)
@@ -165,9 +165,9 @@ def update_roll_status_auto_cycle_manual_decide(api: reportingApi, data: dataBlo
     return success
 
 
-def update_roll_status_auto_cycle_manual_confirm(api: reportingApi, data: dataBlob):
-    days_ahead = get_days_ahead_to_consider_when_auto_cycling()
-    auto_parameters = get_auto_roll_parameters(data)
+def update_roll_status_auto_cycle_manual_confirm(api: reportingApi):
+    days_ahead = get_days_ahead_to_consider_when_auto_cycling(api)
+    auto_parameters = get_auto_roll_parameters(api.data)
     instrument_list = get_list_of_instruments_to_auto_cycle(
         api.data, days_ahead=days_ahead
     )
@@ -190,12 +190,12 @@ def update_roll_status_auto_cycle_manual_confirm(api: reportingApi, data: dataBl
             )
 
 
-def update_roll_status_full_auto(api: reportingApi, data: dataBlob):
-    days_ahead = get_days_ahead_to_consider_when_auto_cycling()
+def update_roll_status_full_auto(api: reportingApi):
+    days_ahead = get_days_ahead_to_consider_when_auto_cycling(api)
     instrument_list = get_list_of_instruments_to_auto_cycle(
         api.data, days_ahead=days_ahead
     )
-    auto_parameters = get_auto_roll_parameters(data)
+    auto_parameters = get_auto_roll_parameters(api.data)
 
     for instrument_code in instrument_list:
         roll_data = setup_roll_data_with_state_reporting(api.data, instrument_code)
@@ -215,12 +215,13 @@ def update_roll_status_full_auto(api: reportingApi, data: dataBlob):
             )
 
 
-def get_days_ahead_to_consider_when_auto_cycling() -> int:
+def get_days_ahead_to_consider_when_auto_cycling(api: reportingApi) -> int:
+    default_days_ahead = api.data.config.roll_days_ahead
     days_ahead = get_input_from_user_and_convert_to_type(
         "How many days ahead should I look for expiries?",
         type_expected=int,
         allow_default=True,
-        default_value=10,
+        default_value=default_days_ahead,
     )
 
     return days_ahead

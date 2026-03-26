@@ -836,22 +836,23 @@ instrument_weights:
                 EUROSTX-SMALL: 0.5
             sector:
               weight: 0.4
-              EU-AUTO: 0.0625
-              EU-BANKS: 0.0625
-              EU-BASIC: 0.0625
-              EU-CONSTRUCTION: 0.0625
-              EU-DJ-TELECOM: 0.0625
-              EU-FOOD: 0.0625
-              EU-HEALTH: 0.0625
-              EU-HOUSE: 0.0625
-              EU-INSURE: 0.0625
-              EU-MEDIA: 0.0625
-              EU-OIL: 0.0625
-              EU-REALESTATE: 0.0625
-              EU-RETAIL: 0.0625
-              EU-TECH: 0.0625
-              EU-TRAVEL: 0.0625
-              EU-UTILS: 0.0625
+              EU-AUTO: 0.0588
+              EU-BANKS: 0.0588
+              EU-BASIC: 0.0588
+              EU-CONSTRUCTION: 0.0588
+              EU-DJ-CHEM: 0.0588
+              EU-DJ-TELECOM: 0.0588
+              EU-FOOD: 0.0588
+              EU-HEALTH: 0.0588
+              EU-HOUSE: 0.0588
+              EU-INSURE: 0.0588
+              EU-MEDIA: 0.0588
+              EU-OIL: 0.0588
+              EU-REALESTATE: 0.0588
+              EU-RETAIL: 0.0588
+              EU-TECH: 0.0588
+              EU-TRAVEL: 0.0588
+              EU-UTILS: 0.0588
           finland:
             weight: 0.111
             OMX: 1.0
@@ -994,6 +995,7 @@ instrument_weights:
 # 1/12: 0.083
 # 1/15: 0.0666
 # 1/16: 0.0625
+# 1/17: 0.0588
 
 
 #

@@ -7,7 +7,7 @@ from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from sysdata.csv.csv_futures_contract_prices import csvFuturesContractPriceData
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
-from sysproduction.data.prices import diagPrices
+from sysproduction.data.prices import diagPrices, get_valid_instrument_code_from_user
 
 diag_prices = diagPrices()
 db_prices = diag_prices.db_futures_contract_price_data
@@ -214,16 +214,12 @@ def write_prices_for_contract_at_frequency(
 
 
 if __name__ == "__main__":
-    # input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    input("Will overwrite existing prices are you sure?! CTL-C to abort")
+    instrument_code = get_valid_instrument_code_from_user(source="config")
     # modify flags as required
     datapath = resolve_path_and_filename_for_package(
         get_production_config().get_element_or_default("barchart_path", None)
     )
-    # init_db_with_split_freq_csv_prices(datapath)
-
-    for instr in [
-        "CRUDE_W",
-    ]:
-        init_db_with_split_freq_csv_prices_for_code(
-            instr, datapath, csv_config=BARCHART_CONFIG
-        )
+    init_db_with_split_freq_csv_prices_for_code(
+        instrument_code, datapath, csv_config=BARCHART_CONFIG
+    )
