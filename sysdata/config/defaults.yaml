@@ -74,6 +74,8 @@ stale_instruments: ['an_instrument_i_no_longer_trade_or_sample']
 #
 stale_strategies: ['a strat we no longer run']
 #
+# Roll status
+roll_days_ahead: 10
 # Roll status auto-update
 roll_status_auto_update:
   auto_roll_if_relative_volume_higher_than: 1.0
