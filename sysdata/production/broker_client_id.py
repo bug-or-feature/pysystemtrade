@@ -87,7 +87,7 @@ class brokerClientIdData(baseData):
         :return:
         """
         client_id_list = self._get_list_of_clientids()
-        self.log.critical(
+        self.log.warning(
             "Clearing all broker client IDs: if anything still running will probably break!"
         )
         for client_id in client_id_list:

@@ -3942,9 +3942,10 @@ All other methods in pysystemtrade use fixed capital.
 The tables in this section list all the public methods that can be used to get data out of a system and its 'child' stages. You can also use the methods() method:
 
 ```python
-import private.projects.artandscience.methods
+from systems.provided.futures_chapter15.basesystem import futures_system
+system = futures_system()
 
-private.projects.artandscience.methods.methods()  ## works for any stage or data
+system.rawdata.methods.methods()  ## works for any stage or data
 ```
 
 ### Explanation of columns
