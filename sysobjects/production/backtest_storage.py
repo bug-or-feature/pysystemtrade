@@ -175,7 +175,7 @@ class interactiveBacktest(object):
 
     def get_list_of_methods_for_stage(self, stage_name):
         stage = self.get_stage(stage_name)
-        return private.projects.artandscience.methods.methods()
+        return stage.methods()
 
     def get_result_of_method_for_stage(self, stage_name, method_name):
         func = self.get_method_for_stage(stage_name, method_name)
