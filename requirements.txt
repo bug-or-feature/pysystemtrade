@@ -11,7 +11,7 @@ pyyaml==6.0.1
 numpy>=1.24.0
 scipy>=1.0.0
 pymongo==3.11.3
-ib-insync==0.9.86
+ib_async>=2,<3
 psutil==7.2.1
 pytest>6.2
 Flask>=2.0.1

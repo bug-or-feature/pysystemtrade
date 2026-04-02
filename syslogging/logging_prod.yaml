@@ -26,6 +26,8 @@ handlers:
     formatter: simple
     filters: [ibFilter]
 loggers:
+  ib_async:
+    level: WARNING
   arctic:
     level: INFO
   matplotlib:

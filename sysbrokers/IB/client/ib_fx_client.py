@@ -1,5 +1,5 @@
 import pandas as pd
-from ib_insync import MarketOrder, Forex
+from ib_async import MarketOrder, Forex
 
 from sysbrokers.IB.client.ib_price_client import ibPriceClient
 from sysbrokers.IB.ib_contracts import ibcontractWithLegs

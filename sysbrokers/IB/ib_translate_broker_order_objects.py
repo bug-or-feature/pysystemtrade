@@ -4,7 +4,7 @@ import datetime
 from collections import namedtuple
 from dateutil.tz import tz
 
-from ib_insync import Trade as ibTrade
+from ib_async import Trade as ibTrade
 from sysbrokers.IB.ib_contracts import ibcontractWithLegs, ibContract
 from sysbrokers.broker_trade import brokerTrade
 from syscore.exceptions import missingData

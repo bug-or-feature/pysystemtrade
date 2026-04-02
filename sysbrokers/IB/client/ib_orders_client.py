@@ -1,5 +1,5 @@
-from ib_insync import TagValue
-from ib_insync.order import (
+from ib_async import TagValue
+from ib_async.order import (
     MarketOrder as ibMarketOrder,
     LimitOrder as ibLimitOrder,
     Trade as ibTrade,

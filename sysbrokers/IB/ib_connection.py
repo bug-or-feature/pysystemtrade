@@ -1,11 +1,11 @@
 """
-IB connection using ib-insync https://ib-insync.readthedocs.io/api.html
+IB connection using ib_async https://github.com/ib-api-reloaded/ib_async
 
 """
 
 import time
 
-from ib_insync import IB
+from ib_async import IB
 
 from sysbrokers.IB.ib_connection_defaults import ib_defaults
 from syscore.exceptions import missingData
