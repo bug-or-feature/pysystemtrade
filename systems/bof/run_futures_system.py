@@ -64,24 +64,32 @@ def run_static_system(
             config.start_date = "1950-01-01"
             config.base_currency = "USD"  # so we're not restricted by FX history
 
+            # do estimates one by one in order
+
             # forecast scalars
+            # use as many instruments as possible
             # config.forecast_scalars = None
             config.use_forecast_scale_estimates = False
 
             # forecast weights
-            # config.forecast_weights = None
+            # don't estimate, use auto grouping
+            # config.forecast_weights = None # cannot be 'None' if config.use_forecast_scale_estimates is True
             config.use_forecast_weight_estimates = False
 
             # forecast diversification multiplier
+            # can be done in small batches of instruments if necessary
+            # set forecast_correlation_estimate['pool_instruments'] to False in private config when estimating FDMs, otherwise True
             config.forecast_div_multiplier = None
             config.use_forecast_div_mult_estimates = True
 
             # instrument weights
+            # don't estimate, use auto grouping
             config.instrument_weights = None
             config.use_instrument_weight_estimates = False
 
             # instrument diversification multiplier
-            config.instrument_div_multiplier = None
+            # use fixed 2.5 - 3.0, or can even be calculated live every time you run your system
+            config.instrument_div_multiplier = 2.5
             config.use_instrument_div_mult_estimates = False
 
             config.forecast_post_ceiling_cost_SR = 999
