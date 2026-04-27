@@ -405,7 +405,7 @@ SARONA,Three Month SaronA,2500,CHF,Bond,0,0,0,EMEA
 SEK,SEKUSD currency,2000000,USD,FX,2.47,0,0,US
 SGD,SGX US Dollar in Singapore Dollar Futures (Full-Sized),100000,SGD,FX,3.5,0,0,ASIA
 SGD_mini,SGX US Dollar in Singapore Dollar (Mini) Futures,25000,SGD,FX,3.25,0,0,ASIA
-SGX,SGX Straits Times Index,10,SGD,Equity,5,0,0,ASIA
+SGX,SGX Straits Times Index,2,SGD,Equity,5,0,0,ASIA
 SHATZ,German 2 year bond Schatz,1000,EUR,Bond,2,0,0,EMEA
 SILVER,NYMEX Silver Index,1000,USD,Metals,1.27,0,0,US
 SILVER-mini,COMEX MINY Silver,2500,USD,Metals,0.85,0,0,US
