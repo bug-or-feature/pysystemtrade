@@ -1,4 +1,4 @@
-from ib_async import Trade as ibTrade
+from ib_async import Trade as ibTrade, OrderStatus as ibOrderStatus
 
 from sysbrokers.IB.ib_futures_contracts_data import ibFuturesContractData
 from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData
@@ -438,7 +438,9 @@ class ibExecutionStackData(brokerExecutionStackData):
         self, broker_order_with_controls: ibOrderWithControls
     ) -> bool:
         status = self.get_status_for_control_object(broker_order_with_controls)
-        cancellation_status = status == "Cancelled"
+        cancellation_status = (
+            status in ibOrderStatus.DoneStates and status != ibOrderStatus.Filled
+        )
 
         return cancellation_status
 
