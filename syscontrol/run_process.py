@@ -101,9 +101,15 @@ class processToRun(object):
         except processNotStarted:
             return None
 
-        self._run_on_start()
-        self._main_loop_over_methods()
-        self._finish()
+        try:
+            self._run_on_start()
+            self._main_loop_over_methods()
+            self._finish()
+        except Exception:
+            config = self.data.config
+            if config.get_element_or_default("log_failed_processes", False):
+                self.log.critical(f"Process {self.process_name} failed!")
+            raise
 
     def _run_on_start(self):
         self.data_control.start_process(self.process_name)
