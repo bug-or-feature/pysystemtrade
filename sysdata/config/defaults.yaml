@@ -98,6 +98,10 @@ execution_algos:
   algo_overrides:
     some_market_name_eg_IRON: sysexecution.algos.algo_market.algoMarket
 #
+# Generate a critical log message when a process fails
+# Defaults to false to avoid duplicate notifications if the monitor app is used
+log_failed_processes: False
+#
 #           BACKTESTING STUFF
 #
 # Raw data
