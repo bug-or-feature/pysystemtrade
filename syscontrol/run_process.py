@@ -106,7 +106,9 @@ class processToRun(object):
             self._main_loop_over_methods()
             self._finish()
         except Exception:
-            self.log.critical(f"Process {self.process_name} failed!")
+            config = self.data.config
+            if config.get_element_or_default("log_failed_processes", False):
+                self.log.critical(f"Process {self.process_name} failed!")
             raise
 
     def _run_on_start(self):
