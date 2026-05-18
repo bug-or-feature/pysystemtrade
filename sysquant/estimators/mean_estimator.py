@@ -76,7 +76,7 @@ class exponentialMeans(exponentialEstimator):
             exponential_mean_df.index, fit_period.fit_end
         )
         if last_index is None:
-            return empty_stdev(self.data)
+            return empty_mean(self.data)
 
         mean = meanEstimates(exponential_mean_df.iloc[last_index])
         mean = annualise_mean_estimate(mean, frequency=self.frequency)
