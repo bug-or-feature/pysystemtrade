@@ -206,6 +206,8 @@ class ibExecutionStackData(brokerExecutionStackData):
         """
         try:
             try:
+                # TODO 1639 for spread orders, ib_contract here is a BAG, which the
+                #  rest of the code cannot handle
                 ib_contract = (
                     trade_with_contract_from_ib.ibcontract_with_legs.ibcontract
                 )
