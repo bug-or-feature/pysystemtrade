@@ -1,9 +1,7 @@
-import builtins
-from unittest.mock import MagicMock, patch
-
+import pytest
 from ib_async import Contract, Order, OrderStatus, Trade
 
-from sysbrokers.IB.ib_connection import connectionIB
+from sysbrokers.IB.client.ib_client import ibClient
 from sysbrokers.IB.ib_contracts import ibcontractWithLegs
 from sysbrokers.IB.ib_instruments import ib_futures_instrument
 from sysbrokers.IB.ib_orders import ibOrderWithControls
@@ -14,9 +12,58 @@ from sysbrokers.IB.ib_translate_broker_order_objects import (
 from sysbrokers.IB.config.ib_instrument_config import get_instrument_object_from_config
 from sysbrokers.broker_factory import get_ib_class_list
 from sysdata.data_blob import dataBlob
-from sysproduction.interactive_order_stack import view_broker_order_list
 
 ACCOUNT = "DU123456"
+
+
+class FakeContractInfo:
+    def __init__(self, symbol, multiplier, exchange):
+        self.symbol = symbol
+        self.multiplier = multiplier
+        self.exchange = exchange
+
+
+class FakeContractDetails:
+    def __init__(self, symbol, multiplier, exchange):
+        self.contract = FakeContractInfo(symbol, multiplier, exchange)
+        self.validExchanges = exchange
+
+
+class FakeIB:
+    """Replaces the ib_async.IB network connection. Returns canned responses."""
+
+    def __init__(self, trades: list, instrument_code: str = "SP500_micro"):
+        self._trades = trades
+        ib_data = get_instrument_object_from_config(instrument_code).ib_data
+        self._contract_details = FakeContractDetails(
+            symbol=ib_data.symbol,
+            multiplier=str(ib_data.ibMultiplier),
+            exchange=ib_data.exchange,
+        )
+
+    def sleep(self, *args, **kwargs):
+        pass
+
+    def reqAllOpenOrders(self):
+        pass
+
+    def trades(self):
+        return self._trades
+
+    def reqContractDetails(self, *args, **kwargs):
+        return [self._contract_details]
+
+
+class FakeConnection:
+    """Replaces connectionIB. Only the account attribute is used in tests."""
+    account = ACCOUNT
+
+
+class FakeIBClient:
+    """Replaces ibOrdersClient for stored orders. Only refresh() is called."""
+
+    def refresh(self):
+        pass
 
 
 def make_contract(instrument_code: str, contract_month: str) -> Contract:
@@ -54,46 +101,6 @@ def make_ib_trade(
     )
 
 
-def make_mock_ib(ib_trades: list, instrument_code: str = "SP500_micro") -> MagicMock:
-    mock_ib = MagicMock()
-    mock_ib.sleep.return_value = None
-    mock_ib.reqAllOpenOrders.return_value = None
-    mock_ib.trades.return_value = ib_trades
-
-    # reqContractDetails powers the symbol → instrument_code lookup (IB config file).
-    ib_data = get_instrument_object_from_config(instrument_code).ib_data
-    mock_cd = MagicMock()
-    mock_cd.contract.symbol = ib_data.symbol
-    mock_cd.contract.multiplier = str(ib_data.ibMultiplier)
-    mock_cd.contract.exchange = ib_data.exchange
-    mock_cd.validExchanges = ib_data.exchange
-    mock_ib.reqContractDetails.return_value = [mock_cd]
-
-    return mock_ib
-
-
-def build_data(
-    ib_trades: list,
-    stored_order: ibOrderWithControls = None,
-    instrument_code: str = "SP500_micro",
-) -> dataBlob:
-    mock_ib = make_mock_ib(ib_trades, instrument_code=instrument_code)
-
-    mock_conn = MagicMock(spec=connectionIB)
-    mock_conn.ib = mock_ib
-    mock_conn.account = ACCOUNT
-
-    data = dataBlob(ib_conn=mock_conn)
-    data.add_class_list(get_ib_class_list())
-
-    if stored_order is not None:
-        data.broker_execution_stack._traded_object_store = {
-            stored_order.order.broker_tempid: stored_order
-        }
-
-    return data
-
-
 def make_stored_order(ib_trade: Trade, instrument_code: str = "SP500_micro") -> ibOrderWithControls:
     trade_with_contract = tradeWithContract(
         ibcontractWithLegs(ib_trade.contract, legs=[]), ib_trade
@@ -103,13 +110,25 @@ def make_stored_order(ib_trade: Trade, instrument_code: str = "SP500_micro") -> 
     )
     return ibOrderWithControls(
         trade_with_contract,
-        ibclient=MagicMock(),
+        ibclient=FakeIBClient(),
         broker_order=broker_order,
     )
 
 
-def printed_lines(data: dataBlob) -> list:
-    with patch.object(builtins, "print") as mock_print:
-        view_broker_order_list(data)
+@pytest.fixture
+def data(monkeypatch):
+    """Factory fixture. Call with trades and an optional stored_order to get a
+    dataBlob with the IB network layer replaced by FakeIB."""
 
-    return [str(call.args[0]) for call in mock_print.call_args_list]
+    def _make(trades=None, instrument_code="SP500_micro", stored_order=None):
+        fake_ib = FakeIB(trades or [], instrument_code)
+        monkeypatch.setattr(ibClient, "ib", property(lambda self: fake_ib))
+        d = dataBlob(ib_conn=FakeConnection())
+        d.add_class_list(get_ib_class_list())
+        if stored_order is not None:
+            d.broker_execution_stack._traded_object_store = {
+                stored_order.order.broker_tempid: stored_order
+            }
+        return d
+
+    return _make
