@@ -56,6 +56,7 @@ class FakeIB:
 
 class FakeConnection:
     """Replaces connectionIB. Only the account attribute is used in tests."""
+
     account = ACCOUNT
 
 
@@ -101,7 +102,9 @@ def make_ib_trade(
     )
 
 
-def make_stored_order(ib_trade: Trade, instrument_code: str = "SP500_micro") -> ibOrderWithControls:
+def make_stored_order(
+    ib_trade: Trade, instrument_code: str = "SP500_micro"
+) -> ibOrderWithControls:
     trade_with_contract = tradeWithContract(
         ibcontractWithLegs(ib_trade.contract, legs=[]), ib_trade
     )

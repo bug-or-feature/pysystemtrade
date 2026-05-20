@@ -22,7 +22,9 @@ class TestViewBrokerOrderList:
             ibcontractWithLegs(ib_trade.contract, legs=[]), ib_trade
         )
         expected = str(
-            create_broker_order_from_trade_with_contract(trade_with_contract, "SP500_micro")
+            create_broker_order_from_trade_with_contract(
+                trade_with_contract, "SP500_micro"
+            )
         )
         assert expected in output
 

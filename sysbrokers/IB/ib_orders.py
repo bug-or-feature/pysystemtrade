@@ -206,8 +206,13 @@ class ibExecutionStackData(brokerExecutionStackData):
         """
         try:
             try:
-                if trade_with_contract_from_ib.ibcontract_with_legs.ibcontract.secType == "BAG":
-                    ib_contract = trade_with_contract_from_ib.ibcontract_with_legs.legs[0]
+                if (
+                    trade_with_contract_from_ib.ibcontract_with_legs.ibcontract.secType
+                    == "BAG"
+                ):
+                    ib_contract = trade_with_contract_from_ib.ibcontract_with_legs.legs[
+                        0
+                    ]
                 else:
                     ib_contract = (
                         trade_with_contract_from_ib.ibcontract_with_legs.ibcontract
