@@ -291,6 +291,14 @@ class Config(object):
             delattr(cls, "evaluated")
 
 
+try:
+    # replace default Config implementation with OmegaConf if installed
+    from sysdata.config.omegaconf_config import OmegaConfConfig as Config  # noqa: F811
+    get_logger("config").info("Using OmegaConf config implementation")
+except ImportError:
+    pass
+
+
 if __name__ == "__main__":
     import doctest
 
