@@ -1,0 +1,4 @@
+email_address: 'pstuser@gmail.com'
+email_pwd: ${oc.env:PYSYS_EMAIL_PW,s3cr3t}
+email_server: 'smtp.gmail.com'
+broker_account: ${oc.env:PYSYS_IB_ACCOUNT,ABC123456}

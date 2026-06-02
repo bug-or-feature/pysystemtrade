@@ -40,6 +40,7 @@ dependencies = [
 [project.optional-dependencies]
 arctic = ["arctic @ git+https://github.com/man-group/arctic.git"]
 dev = ["pytest>6.2", "black[d]==23.11.0"]
+omegaconf = ["omegaconf>2,<3"]
 
 [project.urls]
 "Homepage" = "https://github.com/pst-group/pysystemtrade"
@@ -63,7 +64,7 @@ find = {}
 
 [tool.pytest.ini_options]
 norecursedirs = "examples"
-addopts = "--doctest-modules --ignore=systems/provided/moretradingrules/temp.py"
+addopts = "--doctest-modules --ignore=systems/provided/moretradingrules/temp.py --ignore=sysdata/config/omegaconf_config.py"
 log_cli = "true"
 log_cli_level = 10
 log_format = "%(asctime)s %(levelname)s %(name)s %(message)s"
