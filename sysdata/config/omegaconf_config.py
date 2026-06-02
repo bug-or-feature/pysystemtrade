@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+import yaml
 from omegaconf import OmegaConf
 
 from syscore.fileutils import resolve_path_and_filename_for_package
@@ -123,4 +124,5 @@ class OmegaConfConfig(Config):
 
     def save(self, filename):
         saveable = _convert_for_save(self.as_dict())
-        OmegaConf.save(OmegaConf.create(saveable), filename)
+        with open(filename, "w") as f:
+            yaml.dump(saveable, f)
