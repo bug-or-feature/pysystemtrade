@@ -41,6 +41,8 @@ ib_idoffset: 100
 # Broker class list resolution function
 broker_factory_func: 'sysbrokers.broker_factory.get_ib_class_list'
 #
+# Broker connection factory function
+broker_connection_factory_func: 'sysbrokers.broker_factory.create_ib_broker_connection'
 # Mongo DB
 mongo_host: 127.0.0.1
 mongo_db: 'production'

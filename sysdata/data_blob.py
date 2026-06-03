@@ -1,13 +1,12 @@
 import copy
 
-from sysbrokers.IB.ib_connection import connectionIB
-from syscore.objects import get_class_name
+from sysbrokers.broker_connection import brokerConnection
+from syscore.objects import get_class_name, resolve_function
 from syscore.constants import arg_not_supplied
 from syscore.text import camel_case_split
 from sysdata.config.production_config import get_production_config, Config
 from sysdata.mongodb.mongo_connection import mongoDb
 from syslogging.logger import *
-from sysdata.mongodb.mongo_IB_client_id import mongoIbBrokerClientIdData
 from sysdata.parquet.parquet_access import ParquetAccess
 
 
@@ -18,7 +17,7 @@ class dataBlob(object):
         log_name: str = "",
         csv_data_paths: dict = arg_not_supplied,
         parquet_store_path: str = arg_not_supplied,
-        ib_conn: connectionIB = arg_not_supplied,
+        broker_conn: brokerConnection = arg_not_supplied,
         mongo_db: mongoDb = arg_not_supplied,
         log=arg_not_supplied,
         keep_original_prefix: bool = False,
@@ -33,7 +32,7 @@ class dataBlob(object):
 
         .... sets up the following equivalencies:
 
-            data.broker_contract_price  = ibFuturesContractPriceData(ib_conn)
+            data.broker_contract_price  = ibFuturesContractPriceData(broker_conn)
             data.db_futures_contract_price = arcticFuturesContractPriceData(mongo_db=mongo_db)
             data.db_futures_contract = mongoFuturesContractData(mongo_db=mongo_db)
 
@@ -47,7 +46,7 @@ class dataBlob(object):
 
         .... sets up the following equivalencies. This is useful if you are copying from one source to another
 
-            data.ib_contract_price  = ibFuturesContractPriceData(ib_conn)
+            data.ib_contract_price  = ibFuturesContractPriceData(broker_conn)
             data.arctic_futures_contract_price = arcticFuturesContractPriceData(mongo_db=mongo_db)
             data.mongo_futures_contract = mongoFuturesContractData(mongo_db=mongo_db)
 
@@ -56,7 +55,7 @@ class dataBlob(object):
         """
 
         self._mongo_db = mongo_db
-        self._ib_conn = ib_conn
+        self._broker_conn = broker_conn
         self._log = log
         self._log_name = log_name
         self._csv_data_paths = csv_data_paths
@@ -98,7 +97,7 @@ class dataBlob(object):
     def _get_class_adding_method(self, class_object):
         prefix = self._get_class_prefix(class_object)
         class_dict = dict(
-            ib=self._add_ib_class,
+            ib=self._add_broker_class,
             csv=self._add_csv_class,
             arctic=self._add_arctic_class,
             mongo=self._add_mongo_class,
@@ -121,15 +120,16 @@ class dataBlob(object):
 
         return prefix
 
-    def _add_ib_class(self, class_object):
+    def _add_broker_class(self, class_object):
         log = self._get_specific_logger(class_object)
         try:
-            resolved_instance = class_object(self.ib_conn, self, log=log)
+            resolved_instance = class_object(self.broker_conn, self, log=log)
         except Exception as e:
             class_name = get_class_name(class_object)
             msg = (
-                "Error %s couldn't evaluate %s(self.ib_conn, self) This might be because (a) IB gateway not running, or (b) import is missing\
-                         or (c) arguments don't follow pattern"
+                "Error %s couldn't evaluate %s(self.broker_conn, self) "
+                "This might be because (a) broker gateway not running, "
+                "(b) import is missing, or (c) arguments don't follow pattern"
                 % (str(e), class_name)
             )
             self._raise_and_log_error(msg)
@@ -275,47 +275,24 @@ class dataBlob(object):
         self.close()
 
     def close(self):
-        if self._ib_conn is not arg_not_supplied:
-            self.ib_conn.close_connection()
-            self.db_ib_broker_client_id.release_clientid(self.ib_conn.client_id())
+        if self._broker_conn is not arg_not_supplied:
+            self.broker_conn.close_connection()
 
         # No need to explicitly close Mongo connections; handled by Python garbage collection
 
     @property
-    def ib_conn(self) -> connectionIB:
-        ib_conn = getattr(self, "_ib_conn", arg_not_supplied)
-        if ib_conn is arg_not_supplied:
-            ib_conn = self._get_new_ib_connection()
-            self._ib_conn = ib_conn
+    def broker_conn(self) -> brokerConnection:
+        broker_conn = getattr(self, "_broker_conn", arg_not_supplied)
+        if broker_conn is arg_not_supplied:
+            broker_conn = self._get_new_broker_connection()
+            self._broker_conn = broker_conn
 
-        return ib_conn
+        return broker_conn
 
-    def _get_new_ib_connection(self) -> connectionIB:
-        # Try this 5 times...
-        attempts = 0
-        failed_ids = []
-        client_id = self._get_next_client_id_for_ib()
-        while True:
-            try:
-                ib_conn = connectionIB(client_id, log_name=self.log_name)
-                for id in failed_ids:
-                    self.db_ib_broker_client_id.release_clientid(id)
-                return ib_conn
-            except Exception as e:
-                failed_ids.append(client_id)
-                client_id = self._get_next_client_id_for_ib()
-                attempts += 1
-                if attempts > 5:
-                    for id in failed_ids:
-                        self.db_ib_broker_client_id.release_clientid(id)
-                    raise e
-
-    def _get_next_client_id_for_ib(self) -> int:
-        ## default to tracking ID through mongo change if required
-        self.add_class_object(mongoIbBrokerClientIdData)
-        client_id = self.db_ib_broker_client_id.return_valid_client_id()
-
-        return int(client_id)
+    def _get_new_broker_connection(self) -> brokerConnection:
+        conn_factory_path = self.config.get_element("broker_connection_factory_func")
+        factory = resolve_function(conn_factory_path)
+        return factory(self)
 
     @property
     def mongo_db(self) -> mongoDb:

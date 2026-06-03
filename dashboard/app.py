@@ -149,7 +149,7 @@ def processes():
     retval["config"] = {
         "monitor": describe_trading_server_login_data(),
         "mongo": f"{data.mongo_db.host}:{data.mongo_db.port} - {data.mongo_db.database_name}",
-        "ib": f"{data.ib_conn._ib_connection_config['ipaddress']}:{data.ib_conn._ib_connection_config['port']}",
+        "ib": data.broker_conn.connection_msg(),
     }
 
     return retval
