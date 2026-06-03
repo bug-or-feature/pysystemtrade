@@ -7,6 +7,7 @@ from sysbrokers.IB.ib_trading_hours import get_saved_trading_hours
 
 try:
     from omegaconf import OmegaConf
+
     omegaconf_installed = True
 except ImportError:
     omegaconf_installed = False

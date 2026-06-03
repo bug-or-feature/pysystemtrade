@@ -131,7 +131,9 @@ class TestExamples:
         my_config.forecast_scalar_estimate["pool_instruments"] = False
         print(my_system.forecastScaleCap.get_forecast_scalar("SOFR", "ewmac32").tail(5))
 
-    def test_simple_system_trading_rules_fixed(self, data, my_rules, fcs, ewmac_8, ewmac_32):
+    def test_simple_system_trading_rules_fixed(
+        self, data, my_rules, fcs, ewmac_8, ewmac_32
+    ):
         # or we can use the values from the book
         my_config = Config()
         my_config.trading_rules = dict(ewmac8=ewmac_8, ewmac32=ewmac_32)
