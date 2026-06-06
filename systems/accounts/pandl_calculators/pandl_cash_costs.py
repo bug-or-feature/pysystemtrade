@@ -43,7 +43,7 @@ class pandlCalculationWithCashCostsAndFills(
         net = self.net_pandl_in_instrument_currency()
 
         calculations_df = pd.concat([pandl, costs, net], axis=1)
-        calculations_df.index = ["gross", "costs", "net"]
+        calculations_df.columns = ["gross", "costs", "net"]
 
         return calculations_df
 
