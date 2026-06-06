@@ -46,6 +46,10 @@ class Estimates:
     @property
     def correlation_matrix(self) -> np.array:
         return self.correlation.values
+    
+    @property
+    def covariance_matrix(self) -> np.array:
+        return self.correlation.values * np.array(self.stdev_list) * np.array(self.stdev_list).reshape(-1, 1)
 
     @property
     def data_length_years(self) -> float:
