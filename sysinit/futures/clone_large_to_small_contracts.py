@@ -1,8 +1,12 @@
 from sysinit.futures.clone_data_for_instrument import clone_data_for_instrument
 
-# format is 'from' = 'to'
+# NOTE: this only works if the from:to instruments have the same roll config
+
+# format is 'from': 'to'
 mapping_dict = {
-    "CRUDE_W": "CRUDE_W_micro",
+    "CHF": "CHF_micro",
+    "GBP": "GBP_micro",
+    "R1000": "R1000_mini",
 }
 
 
@@ -14,7 +18,7 @@ if __name__ == "__main__":
             instrument_to=instrument_to,
             write_to_csv=write_to_csv,
             do_prices=True,
-            do_multiple=False,
-            do_adjusted=False,
+            do_multiple=True,
+            do_adjusted=True,
             ignore_duplication=False,
         )
