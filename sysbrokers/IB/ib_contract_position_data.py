@@ -67,13 +67,11 @@ class ibContractPositionData(brokerContractPositionData):
 
         list_of_contract_positions = listOfContractPositions(current_positions)
 
-        # TODO - is this really needed?
-        # list_of_contract_positions_no_duplicates = (
-        #     list_of_contract_positions.sum_for_contract()
-        # )
+        list_of_contract_positions_no_duplicates = (
+            list_of_contract_positions.sum_for_contract()
+        )
 
-        # return list_of_contract_positions_no_duplicates
-        return list_of_contract_positions
+        return list_of_contract_positions_no_duplicates
 
     def _get_contract_position_for_raw_entry(self, position_entry) -> contractPosition:
         position = position_entry["position"]
