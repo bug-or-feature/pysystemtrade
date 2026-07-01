@@ -118,7 +118,7 @@ class mongoDataWithSingleKey(object):
         if not self.key_is_in_data(key):
             raise missingData("%s:%s not in data %s" % (key_name, key, self.name))
 
-        self.collection.remove({key_name: key})
+        self.collection.delete_one({key_name: key})
 
     def delete_data_with_any_warning_for_custom_dict(self, custom_dict: dict):
         self.collection.remove(custom_dict)
@@ -275,7 +275,7 @@ class mongoDataWithMultipleKeys(object):
         self._mongo.collection.insert_one(dict_with_both_keys_and_data)
 
     def delete_data_without_any_warning(self, dict_of_keys):
-        self._mongo.collection.remove(dict_of_keys)
+        self._mongo.collection.delete_one(dict_of_keys)
 
 
 _date = date

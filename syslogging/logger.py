@@ -88,6 +88,7 @@ def _configure_sim():
     handler.addFilter(IBFilter())
     logging.getLogger("arctic").setLevel(logging.INFO)
     logging.getLogger("matplotlib").setLevel(logging.INFO)
+    logging.getLogger("pymongo").setLevel(logging.INFO)
     logging.basicConfig(
         handlers=[handler],
         format=LOG_FORMAT,
