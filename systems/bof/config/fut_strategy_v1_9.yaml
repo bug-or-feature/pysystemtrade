@@ -572,9 +572,9 @@ forecast_div_multiplier:
   FTSEVIET: 1.9154347762646164
   GAS-PEN: 2.0843713801487342
   GASOIL: 1.9092380146543653
-  GASOLINE: 2.1664530897560685
+  GASOLINE_micro: 2.1664530897560685
   GAS_US_mini: 2.0933557248721497
-  GBP: 2.038285586515529
+  GBP_micro: 2.038285586515529
   GBPCHF: 1.9822994032216807
   GBPEUR: 2.1487961324289513
   GBPJPY: 2.055437755574664
@@ -584,7 +584,7 @@ forecast_div_multiplier:
   HANGENT_mini: 2.1379098669276435
   HANGTECH: 2.025111033566201
   HANG_mini: 2.1171463038697897
-  HEATOIL: 1.9355432764839464
+  HEATOIL_micro: 1.9355432764839464
   HOUSE-US: 1.0037705869699844
   IBEX_mini: 2.2152029943222997
   IRON: 2.112810400691034
@@ -667,7 +667,7 @@ forecast_div_multiplier:
   US5: 1.920203934721971
   V2X: 2.015851065451229
   VIX_mini: 1.9085514520247848
-  WHEAT: 2.026276124028072
+  WHEAT_mini: 2.026276124028072
   WHEAT_ICE: 1.899722099746641
   WHEY: 2.103703614969524
   YENEUR: 2.024449714169382
@@ -706,7 +706,7 @@ instrument_weights:
             weight: 0.1667
             MILLWHEAT: 0.25
             REDWHEAT: 0.25
-            WHEAT: 0.25
+            WHEAT_mini: 0.25
             WHEAT_ICE: 0.25
         index:
           weight: 0.1
@@ -946,7 +946,7 @@ instrument_weights:
           CHF: 0.083
           DX: 0.083
           EUR_micro: 0.083
-          GBP: 0.083
+          GBP_micro: 0.083
           JPY: 0.083
           NZD: 0.083
           SEK: 0.083
@@ -1000,8 +1000,8 @@ instrument_weights:
           weight: 0.25
           EUA: 0.25
           GASOIL: 0.25
-          GASOLINE: 0.25
-          HEATOIL: 0.25
+          GASOLINE_micro: 0.25
+          HEATOIL_micro: 0.25
       vol:
         weight: 0.143
         VIX_mini: 0.5
