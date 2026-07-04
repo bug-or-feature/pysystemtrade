@@ -255,8 +255,10 @@ class dataBroker(productionDataLayerGeneric):
     def get_current_positions_with_contract_keys(self) -> listOfContractPositions:
         positions = []
         for pos in self.get_all_current_contract_positions():
-            contract_with_key = self.diag_contracts.find_contract_by_instrument_code_and_expiry(
-                pos.instrument_code, pos.date_str
+            contract_with_key = (
+                self.diag_contracts.find_contract_by_instrument_code_and_expiry(
+                    pos.instrument_code, pos.date_str
+                )
             )
             pos_with_key = contractPosition(pos.position, contract_with_key)
             positions.append(pos_with_key)
@@ -266,11 +268,10 @@ class dataBroker(productionDataLayerGeneric):
         return contract_positions_with_keys
 
     def get_list_of_breaks_between_broker_and_db_contract_positions(
-            self,
-            broker_contract_positions: listOfContractPositions = None,
-            db_contract_positions: listOfContractPositions = None,
+        self,
+        broker_contract_positions: listOfContractPositions = None,
+        db_contract_positions: listOfContractPositions = None,
     ) -> list:
-
         if broker_contract_positions is None:
             broker_contract_positions = self.get_all_current_contract_positions()
 

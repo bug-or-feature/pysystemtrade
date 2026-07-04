@@ -45,7 +45,6 @@ from sysproduction.data.production_data_objects import (
 
 
 class diagPositions(productionDataLayerGeneric):
-
     def __init__(self, data: dataBlob = arg_not_supplied):
         super().__init__(data)
         self._data_contracts = dataContracts(data)
@@ -389,7 +388,6 @@ class diagPositions(productionDataLayerGeneric):
 
 
 class updatePositions(productionDataLayerGeneric):
-
     def __init__(self, data: dataBlob = arg_not_supplied):
         super().__init__(data)
         self._diag_positions = diagPositions(data)

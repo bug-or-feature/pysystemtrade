@@ -305,7 +305,9 @@ def get_futures_contract_and_qty_to_close_position(
     data: dataBlob,
 ) -> Tuple[str, str, int]:
     diag_positions = diagPositions(data)
-    contract_positions = diag_positions.get_all_current_contract_positions_with_db_expiries()
+    contract_positions = (
+        diag_positions.get_all_current_contract_positions_with_db_expiries()
+    )
     print("Current contract positions in DB")
     print(contract_positions)
 
