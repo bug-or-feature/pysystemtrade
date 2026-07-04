@@ -17,6 +17,7 @@ from syscore.constants import arg_not_supplied
 from sysexecution.orders.named_order_objects import missing_order
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
+from sysobjects.production.positions import contractPosition
 
 from sysdata.data_blob import dataBlob
 from sysdata.tools.cleaner import apply_price_cleaning
@@ -41,13 +42,15 @@ from sysobjects.futures_per_contract_prices import futuresContractPrices
 from sysproduction.data.positions import diagPositions
 from sysproduction.data.currency_data import dataCurrency
 from sysproduction.data.control_process import diagControlProcess
+from sysproduction.data.contracts import dataContracts
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
 
 
 class dataBroker(productionDataLayerGeneric):
     def __init__(self, data: dataBlob = arg_not_supplied):
         super().__init__(data)
-        self._diag_controls = diagControlProcess()
+        self._diag_controls = diagControlProcess(data)
+        self._data_contracts = dataContracts(data)
 
     def _add_required_classes_to_data(self, data) -> dataBlob:
         # Add a list of broker specific classes that will be aliased as self.data.broker_fx_prices,
@@ -100,6 +103,10 @@ class dataBroker(productionDataLayerGeneric):
     @property
     def diag_controls(self) -> diagControlProcess:
         return self._diag_controls
+
+    @property
+    def diag_contracts(self) -> dataContracts:
+        return self._data_contracts
 
     ## Methods
     def get_commission_for_contract_in_currency_value(
@@ -245,17 +252,38 @@ class dataBroker(productionDataLayerGeneric):
 
         return list_of_positions
 
-    def get_list_of_breaks_between_broker_and_db_contract_positions(self) -> list:
-        db_contract_positions = (
-            self.get_all_current_contract_positions_with_db_expiries()
-        )
-        broker_contract_positions = self.get_all_current_contract_positions()
+    def get_current_positions_with_contract_keys(self) -> listOfContractPositions:
+        positions = []
+        for pos in self.get_all_current_contract_positions():
+            contract_with_key = self.diag_contracts.find_contract_by_instrument_code_and_expiry(
+                pos.instrument_code, pos.date_str
+            )
+            pos_with_key = contractPosition(pos.position, contract_with_key)
+            positions.append(pos_with_key)
+
+        contract_positions_with_keys = listOfContractPositions(positions)
+
+        return contract_positions_with_keys
+
+    def get_list_of_breaks_between_broker_and_db_contract_positions(
+            self,
+            broker_contract_positions: listOfContractPositions = None,
+            db_contract_positions: listOfContractPositions = None,
+    ) -> list:
+
+        if broker_contract_positions is None:
+            broker_contract_positions = self.get_all_current_contract_positions()
+
+        if db_contract_positions is None:
+            db_contract_positions = (
+                self.get_all_current_contract_positions_with_db_expiries()
+            )
 
         break_list = db_contract_positions.return_list_of_breaks(
             broker_contract_positions
         )
 
-        return break_list
+        return sorted(break_list, key=lambda contract: contract.key)
 
     def get_all_current_contract_positions_with_db_expiries(
         self,
