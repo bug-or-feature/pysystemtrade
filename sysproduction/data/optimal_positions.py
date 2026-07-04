@@ -126,6 +126,8 @@ class dataOptimalPositions(productionDataLayerGeneric):
     def get_pd_of_position_breaks(self) -> pd.DataFrame:
         optimal_and_current = self.get_list_of_optimal_and_current_positions()
         optimal_and_current_as_pd = optimal_and_current.as_pd_with_breaks()
+        optimal_and_current_as_pd.index.name = "index"
+        optimal_and_current_as_pd.sort_values(by=["breaks", "index"], inplace=True)
 
         return optimal_and_current_as_pd
 
