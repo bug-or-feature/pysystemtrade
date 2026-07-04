@@ -1,6 +1,7 @@
 CONTRACT_COLLECTION = "futures_contracts"
 
 from syscore.constants import arg_not_supplied
+from syscore.exceptions import ContractNotFound
 from sysdata.futures.contracts import futuresContractData
 from sysobjects.contracts import (
     contract_key_from_code_and_id,
@@ -116,3 +117,20 @@ class mongoFuturesContractData(futuresContractData):
         contract_object_as_dict = contract_object.as_dict()
         key = contract_object.key
         self.mongo_data.add_data(key, contract_object_as_dict, allow_overwrite=True)
+
+    def find_contract_for_instrument_code_and_expiry(
+        self, instrument_code: str, expiry_date: str
+    ) -> dict:
+        expiry_date = datetime.datetime.strptime(expiry_date, "%Y%m%d")
+        date_array = [expiry_date.year, expiry_date.month, expiry_date.day]
+        result = self.mongo_data.collection.find_one(
+            {
+                "instrument_dict.instrument_code": instrument_code,
+                "contract_date_dict.contract_list.expiry_date": date_array,
+            },
+        )
+        if result is None:
+            raise ContractNotFound(
+                f"No contract found for {instrument_code} and {expiry_date}"
+            )
+        return result

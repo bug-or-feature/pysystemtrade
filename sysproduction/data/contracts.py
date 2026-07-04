@@ -276,6 +276,17 @@ class dataContracts(productionDataLayerGeneric):
             instrument_code, areyoureallysure=are_you_sure
         )
 
+    def find_contract_by_instrument_code_and_expiry(self, instrument_code: str, expiry: str) -> futuresContract:
+        try:
+            contract_doc = self.db_contract_data.find_contract_for_instrument_code_and_expiry(
+                instrument_code, expiry
+            )
+            contract = futuresContract.create_from_dict(contract_doc)
+        except Exception as exc:
+            self.log.warning(f"Exception: {exc}")
+            contract = futuresContract(instrument_code, expiry)
+
+        return contract
 
 def get_valid_contract_object_from_user(
     data: dataBlob,
