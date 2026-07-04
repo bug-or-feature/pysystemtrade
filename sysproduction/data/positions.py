@@ -45,6 +45,11 @@ from sysproduction.data.production_data_objects import (
 
 
 class diagPositions(productionDataLayerGeneric):
+
+    def __init__(self, data: dataBlob = arg_not_supplied):
+        super().__init__(data)
+        self._data_contracts = dataContracts(data)
+
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(
             [
@@ -57,7 +62,7 @@ class diagPositions(productionDataLayerGeneric):
 
     @property
     def data_contracts(self) -> dataContracts:
-        return dataContracts(self.data)
+        return self._data_contracts
 
     @property
     def db_roll_state_data(self) -> rollStateData:
@@ -296,9 +301,9 @@ class diagPositions(productionDataLayerGeneric):
     def update_expiry_for_single_contract(
         self, original_contract: futuresContract
     ) -> futuresContract:
-        data_contracts = dataContracts(self.data)
+        new_contract = copy(original_contract)
         try:
-            actual_expiry = data_contracts.get_actual_expiry(
+            actual_expiry = self.data_contracts.get_actual_expiry(
                 original_contract.instrument_code, original_contract.contract_date
             )
         except ContractNotFound:
@@ -308,11 +313,8 @@ class diagPositions(productionDataLayerGeneric):
                 **original_contract.log_attributes(),
                 method="temp",
             )
-            new_contract = copy(original_contract)
         else:
-            expiry_date_as_str = actual_expiry.as_str()
-            instrument_code = original_contract.instrument_code
-            new_contract = futuresContract(instrument_code, expiry_date_as_str)
+            new_contract.update_single_expiry_date(actual_expiry)
 
         return new_contract
 
@@ -387,6 +389,11 @@ class diagPositions(productionDataLayerGeneric):
 
 
 class updatePositions(productionDataLayerGeneric):
+
+    def __init__(self, data: dataBlob = arg_not_supplied):
+        super().__init__(data)
+        self._diag_positions = diagPositions(data)
+
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(
             [
@@ -411,7 +418,7 @@ class updatePositions(productionDataLayerGeneric):
 
     @property
     def diag_positions(self):
-        return diagPositions(self.data)
+        return self._diag_positions
 
     def set_roll_state(self, instrument_code: str, roll_state_required: RollState):
         return self.db_roll_state_data.set_roll_state(
