@@ -48,7 +48,7 @@ from sysexecution.orders.instrument_orders import (
     balance_order_type as instrument_balance_order_type,
 )
 from sysexecution.algos.allocate_algo_to_order import get_list_of_algos
-from sysbrokers.broker_connection import brokerConnection
+from sysbrokers.IB.ib_connection import connectionIB
 from syscore.constants import arg_not_supplied
 from syscore.exceptions import missingData
 
@@ -56,13 +56,13 @@ from sysobjects.contracts import futuresContract
 
 
 def interactive_order_stack():
-    interactive_order_stack_with_broker_conn()
+    # Avoids pressing enter when running from script
+    ib_conn = arg_not_supplied
+    interactive_order_stack_with_ib_conn(ib_conn)
 
 
-def interactive_order_stack_with_broker_conn(
-    broker_conn: brokerConnection = arg_not_supplied,
-):
-    with dataBlob(log_name="Interactive-Order-Stack", broker_conn=broker_conn) as data:
+def interactive_order_stack_with_ib_conn(ib_conn: connectionIB = arg_not_supplied):
+    with dataBlob(log_name="Interactive-Order-Stack", ib_conn=ib_conn) as data:
         set_pd_print_options()
         menu = interactiveMenu(
             top_level_menu_of_options, nested_menu_of_options, dict_of_functions, data
@@ -305,7 +305,9 @@ def get_futures_contract_and_qty_to_close_position(
     data: dataBlob,
 ) -> Tuple[str, str, int]:
     diag_positions = diagPositions(data)
-    contract_positions = diag_positions.get_all_current_contract_positions()
+    contract_positions = (
+        diag_positions.get_all_current_contract_positions_with_db_expiries()
+    )
     print("Current contract positions in DB")
     print(contract_positions)
 
@@ -901,24 +903,27 @@ def view_positions(data):
 
     diag_positions = diagPositions(data)
     data_optimal = dataOptimalPositions(data)
-    ans0 = data_optimal.get_pd_of_position_breaks()
-    ans1 = diag_positions.get_all_current_strategy_instrument_positions()
-    ans2 = diag_positions.get_all_current_contract_positions_with_db_expiries()
-    ans3 = data_broker.get_all_current_contract_positions()
+    position_breaks = data_optimal.get_pd_of_position_breaks()
+    strategy_positions = diag_positions.get_all_current_strategy_instrument_positions()
+    db_positions = diag_positions.get_all_current_contract_positions_with_db_expiries()
+    broker_positions = data_broker.get_current_positions_with_contract_keys()
     print("\nOptimal vs actual")
-    print(ans0)
+    print(position_breaks)
     print("\nStrategy positions")
-    print(ans1.as_pd_df().sort_values("instrument_code"))
+    print(strategy_positions.as_pd_df().sort_values("instrument_code"))
     print("\nContract level positions")
-    print(ans2.as_pd_df().sort_values(["instrument_code", "contract_date"]))
+    print(db_positions.as_pd_df().sort_values(["instrument_code", "contract_date"]))
     breaks = diag_positions.get_list_of_breaks_between_contract_and_strategy_positions()
     if len(breaks) > 0:
         print("\nBREAKS between strategy and contract positions: %s\n" % str(breaks))
     else:
         print("(No breaks positions consistent)")
     print("\nBroker positions")
-    print(ans3.as_pd_df().sort_values(["instrument_code", "contract_date"]))
-    breaks = data_broker.get_list_of_breaks_between_broker_and_db_contract_positions()
+    print(broker_positions.as_pd_df().sort_values(["instrument_code", "contract_date"]))
+    breaks = data_broker.get_list_of_breaks_between_broker_and_db_contract_positions(
+        broker_positions,
+        db_positions,
+    )
     if len(breaks) > 0:
         print(
             "\nBREAKS between broker and DB stored contract positions: %s\n"
