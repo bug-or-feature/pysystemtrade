@@ -82,16 +82,7 @@ class ibContractPositionData(brokerContractPositionData):
         instrument_code = self._get_instrument_code_from_ib_position_entry(
             position_entry
         )
-
-        # look up contract object by code and expiry from db - we want the key
-        try:
-            contract_doc = self.data.db_futures_contract.find_contract_for_instrument_code_and_expiry(
-                instrument_code, expiry
-            )
-            contract = futuresContract.create_from_dict(contract_doc)
-        except:
-            # failover - the old way
-            contract = futuresContract(instrument_code, expiry)
+        contract = futuresContract(instrument_code, expiry)
 
         contract_position_object = contractPosition(position, contract)
 
