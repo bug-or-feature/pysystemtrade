@@ -61,7 +61,9 @@ def interactive_order_stack():
     interactive_order_stack_with_ib_conn(broker_conn)
 
 
-def interactive_order_stack_with_ib_conn(broker_conn: brokerConnection = arg_not_supplied):
+def interactive_order_stack_with_ib_conn(
+    broker_conn: brokerConnection = arg_not_supplied,
+):
     with dataBlob(log_name="Interactive-Order-Stack", broker_conn=broker_conn) as data:
         set_pd_print_options()
         menu = interactiveMenu(
