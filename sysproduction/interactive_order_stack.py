@@ -48,7 +48,7 @@ from sysexecution.orders.instrument_orders import (
     balance_order_type as instrument_balance_order_type,
 )
 from sysexecution.algos.allocate_algo_to_order import get_list_of_algos
-from sysbrokers.IB.ib_connection import connectionIB
+from sysbrokers.broker_connection import brokerConnection
 from syscore.constants import arg_not_supplied
 from syscore.exceptions import missingData
 
@@ -57,12 +57,12 @@ from sysobjects.contracts import futuresContract
 
 def interactive_order_stack():
     # Avoids pressing enter when running from script
-    ib_conn = arg_not_supplied
-    interactive_order_stack_with_ib_conn(ib_conn)
+    broker_conn: brokerConnection = arg_not_supplied
+    interactive_order_stack_with_ib_conn(broker_conn)
 
 
-def interactive_order_stack_with_ib_conn(ib_conn: connectionIB = arg_not_supplied):
-    with dataBlob(log_name="Interactive-Order-Stack", ib_conn=ib_conn) as data:
+def interactive_order_stack_with_ib_conn(broker_conn: brokerConnection = arg_not_supplied):
+    with dataBlob(log_name="Interactive-Order-Stack", broker_conn=broker_conn) as data:
         set_pd_print_options()
         menu = interactiveMenu(
             top_level_menu_of_options, nested_menu_of_options, dict_of_functions, data
@@ -1028,3 +1028,7 @@ dict_of_functions = {
 
 if __name__ == "__main__":
     interactive_order_stack()
+
+    # with dataBlob(log_name="Interactive-Order-Stack") as data:
+    #     set_pd_print_options()
+    #     view_positions(data)
