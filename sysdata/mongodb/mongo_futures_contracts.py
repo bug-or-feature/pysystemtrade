@@ -119,10 +119,10 @@ class mongoFuturesContractData(futuresContractData):
         self.mongo_data.add_data(key, contract_object_as_dict, allow_overwrite=True)
 
     def find_contract_for_instrument_code_and_expiry(
-        self, instrument_code: str, expiry_date: str
+        self, instrument_code: str, expiry_str: str
     ) -> dict:
-        expiry_date = datetime.datetime.strptime(expiry_date, "%Y%m%d")
-        date_array = [expiry_date.year, expiry_date.month, expiry_date.day]
+        expiry_obj = datetime.datetime.strptime(expiry_str, "%Y%m%d")
+        date_array = [expiry_obj.year, expiry_obj.month, expiry_obj.day]
         result = self.mongo_data.collection.find_one(
             {
                 "instrument_dict.instrument_code": instrument_code,
@@ -131,6 +131,6 @@ class mongoFuturesContractData(futuresContractData):
         )
         if result is None:
             raise ContractNotFound(
-                f"No contract found for {instrument_code} and {expiry_date}"
+                f"No contract found for {instrument_code} and {expiry_str}"
             )
         return result
