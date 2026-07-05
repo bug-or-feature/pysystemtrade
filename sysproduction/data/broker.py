@@ -1,3 +1,5 @@
+import pandas as pd
+
 from sysbrokers.broker_contract_commission_data import (
     brokerFuturesContractCommissionData,
 )
@@ -243,6 +245,41 @@ class dataBroker(productionDataLayerGeneric):
             contract
         )
         return result
+
+    def get_all_portfolio_items(self) -> pd.DataFrame:
+        currency_data = dataCurrency(self.data)
+        broker_account_id = self.get_broker_account()
+        list_of_portfolio_items = self.broker_contract_position_data.get_all_portfolio_items_as_list_with_contract_objects(
+            broker_account_id
+        )
+
+        for item in list_of_portfolio_items:
+            item["realized_pnl_base"] = currency_data.currency_value_in_base(
+                currencyValue(item["currency"], item["realized_pnl"])
+            )
+            item["unrealized_pnl_base"] = currency_data.currency_value_in_base(
+                currencyValue(item["currency"], item["unrealized_pnl"])
+            )
+
+        cols = [
+            "instrument_code",
+            "expiry",
+            "currency",
+            "realized_pnl_base",
+            "unrealized_pnl_base",
+        ]
+        df = pd.DataFrame.from_records(list_of_portfolio_items, columns=cols)
+        df = df.astype(
+            {
+                "instrument_code": "string",
+                "expiry": "string",
+                "currency": "string",
+            }
+        )
+        df = df.round({"realized_pnl_base": 2, "unrealized_pnl_base": 2})
+        df = df.rename(columns={"expiry": "contract_date"})
+
+        return df
 
     def get_all_current_contract_positions(self) -> listOfContractPositions:
         broker_account_id = self.get_broker_account()
