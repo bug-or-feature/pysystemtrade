@@ -45,7 +45,7 @@ def view_capital(data):
 
 def view_positions(data):
     data_broker = dataBroker(data)
-    positions = data_broker.get_all_current_contract_positions()
+    positions = data_broker.get_current_positions_with_contract_keys()
     positions = positions.as_pd_df()
     positions = positions.astype(
         {

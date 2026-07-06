@@ -53,6 +53,7 @@ class dataBroker(productionDataLayerGeneric):
         super().__init__(data)
         self._diag_controls = diagControlProcess(data)
         self._data_contracts = dataContracts(data)
+        self._data_currency = dataCurrency(data)
 
     def _add_required_classes_to_data(self, data) -> dataBlob:
         # Add a list of broker specific classes that will be aliased as self.data.broker_fx_prices,
@@ -109,6 +110,10 @@ class dataBroker(productionDataLayerGeneric):
     @property
     def diag_contracts(self) -> dataContracts:
         return self._data_contracts
+
+    @property
+    def data_currency(self) -> dataCurrency:
+        return self._data_currency
 
     ## Methods
     def get_commission_for_contract_in_currency_value(
@@ -247,19 +252,25 @@ class dataBroker(productionDataLayerGeneric):
         return result
 
     def get_all_portfolio_items(self) -> pd.DataFrame:
-        currency_data = dataCurrency(self.data)
         broker_account_id = self.get_broker_account()
         list_of_portfolio_items = self.broker_contract_position_data.get_all_portfolio_items_as_list_with_contract_objects(
             broker_account_id
         )
 
         for item in list_of_portfolio_items:
-            item["realized_pnl_base"] = currency_data.currency_value_in_base(
+            item["realized_pnl_base"] = self.data_currency.currency_value_in_base(
                 currencyValue(item["currency"], item["realized_pnl"])
             )
-            item["unrealized_pnl_base"] = currency_data.currency_value_in_base(
+            item["unrealized_pnl_base"] = self.data_currency.currency_value_in_base(
                 currencyValue(item["currency"], item["unrealized_pnl"])
             )
+
+            contract_with_key = (
+                self.diag_contracts.find_contract_by_instrument_code_and_expiry(
+                    item["instrument_code"], item["expiry"]
+                )
+            )
+            item["contract_date"] = contract_with_key.contract_date.key
 
         cols = [
             "instrument_code",
@@ -267,6 +278,7 @@ class dataBroker(productionDataLayerGeneric):
             "currency",
             "realized_pnl_base",
             "unrealized_pnl_base",
+            "contract_date",
         ]
         df = pd.DataFrame.from_records(list_of_portfolio_items, columns=cols)
         df = df.astype(
@@ -274,10 +286,10 @@ class dataBroker(productionDataLayerGeneric):
                 "instrument_code": "string",
                 "expiry": "string",
                 "currency": "string",
+                "contract_date": "string",
             }
         )
         df = df.round({"realized_pnl_base": 2, "unrealized_pnl_base": 2})
-        df = df.rename(columns={"expiry": "contract_date"})
 
         return df
 
