@@ -105,7 +105,7 @@ class dataBroker(productionDataLayerGeneric):
         return self._diag_controls
 
     @property
-    def diag_contracts(self) -> dataContracts:
+    def data_contracts(self) -> dataContracts:
         return self._data_contracts
 
     ## Methods
@@ -256,7 +256,7 @@ class dataBroker(productionDataLayerGeneric):
         positions = []
         for pos in self.get_all_current_contract_positions():
             contract_with_key = (
-                self.diag_contracts.find_contract_by_instrument_code_and_expiry(
+                self.data_contracts.find_contract_by_instrument_code_and_expiry(
                     pos.instrument_code, pos.date_str
                 )
             )
