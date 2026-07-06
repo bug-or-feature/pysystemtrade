@@ -273,7 +273,7 @@ class dataBroker(productionDataLayerGeneric):
         db_contract_positions: listOfContractPositions = None,
     ) -> list:
         if broker_contract_positions is None:
-            broker_contract_positions = self.get_all_current_contract_positions()
+            broker_contract_positions = self.get_current_positions_with_contract_keys()
 
         if db_contract_positions is None:
             db_contract_positions = (
