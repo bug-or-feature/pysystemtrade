@@ -266,7 +266,7 @@ class dataBroker(productionDataLayerGeneric):
             )
 
             contract_with_key = (
-                self.diag_contracts.find_contract_by_instrument_code_and_expiry(
+                self.data_contracts.find_contract_by_instrument_code_and_expiry(
                     item["instrument_code"], item["expiry"]
                 )
             )
