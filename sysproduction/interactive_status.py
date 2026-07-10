@@ -56,6 +56,7 @@ def view_positions(data):
     )
 
     portfolio_items = data_broker.get_all_portfolio_items()
+    portfolio_items.drop(columns=["expiry"], inplace=True)
     full = positions.merge(portfolio_items, on=["instrument_code", "contract_date"])
     print("\nBROKER POSITIONS")
     print(f"{full.sort_values(['instrument_code', 'contract_date'])}\n")
