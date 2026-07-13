@@ -308,6 +308,10 @@ def get_futures_contract_and_qty_to_close_position(
     contract_positions = (
         diag_positions.get_all_current_contract_positions_with_db_expiries()
     )
+    contract_positions = contract_positions.as_pd_df().sort_values(
+        ["instrument_code", "contract_date"]
+    )
+    contract_positions.reset_index(inplace=True, drop=True)
     print("Current contract positions in DB")
     print(contract_positions)
 
@@ -321,10 +325,9 @@ def get_futures_contract_and_qty_to_close_position(
         else:
             break
 
-    relevant_row = contract_positions[position_index]
-    instrument_code = relevant_row.instrument_code
-    contract_date_yyyy_mm = relevant_row.date_str
-    fill_qty = int(-relevant_row.position)
+    instrument_code = contract_positions.loc[position_index, "instrument_code"]
+    contract_date_yyyy_mm = contract_positions.loc[position_index, "contract_date"]
+    fill_qty = int(-contract_positions.loc[position_index, "position"])
 
     return instrument_code, contract_date_yyyy_mm, fill_qty
 
