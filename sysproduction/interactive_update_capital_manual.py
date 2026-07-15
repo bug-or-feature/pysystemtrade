@@ -1,3 +1,5 @@
+import sys
+
 from syscore.exceptions import missingData
 from syscore.constants import arg_not_supplied, success, failure
 from syscore.interactive.input import (
@@ -49,7 +51,7 @@ def interactive_update_capital_manual():
 
 
 def finished(data):
-    exit()
+    sys.exit()
 
 
 def print_capital_and_get_user_input(data: dataBlob):
