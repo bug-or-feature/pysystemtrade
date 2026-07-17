@@ -14,9 +14,9 @@ class parquetFuturesAdjustedPricesData(futuresAdjustedPricesData):
     """
     Read and write futures adjusted price data stored as Parquet files.
     
-    Implements the abstract `futuresAdjustedPricesData` interface using a
-    `ParquetAccess` backend. Each instrument's adjusted price series is stored
-    as a separate Parquet file in the `futures_adjusted_prices` collection.
+    Implements the abstract 'futuresAdjustedPricesData' interface using a
+    'ParquetAccess' backend. Each instrument's adjusted price series is stored
+    as a separate Parquet file in the 'futures_adjusted_prices' collection.
     """
 
     def __init__(
