@@ -4,26 +4,22 @@ jobs:
   black:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0 # Needed to discover changed files
 
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v44
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          files: |
-            **/*.py
+          python-version: '3.10'
 
-      - name: Format with Black
-        if: steps.changed-files.outputs.any_changed == 'true'
-        uses: psf/black@23.11.0
-        with:
-          options: "${{ steps.changed-files.outputs.all_changed_files }}"
-        continue-on-error: true
+      - name: Force Format with Black
+        run: |
+          pip install black==23.11.0
+          black sysdata/parquet/ || true
 
-      - name: Commit formatted changes
+      - name: Commit Formatted Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "style: auto-format python code with black"
