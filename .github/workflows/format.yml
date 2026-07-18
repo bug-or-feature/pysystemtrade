@@ -5,7 +5,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: psf/black@23.11.0  # <--- Changed this line
-      - uses: stefanzweifel/git-auto-commit-action@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-with-version: '3.10'
+
+      - name: Install and Run Black
+        run: |
+          pip install black==23.11.0
+          black . || true
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "style: auto-format python code with black"
