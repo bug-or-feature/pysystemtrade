@@ -1,25 +1,36 @@
 name: Format Python Code
 on: [push, pull_request]
+
 jobs:
-  black:
+  format-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Explicitly forces write permissions
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Force Format with Black
+      - name: Clean and Commit with Black
         run: |
           pip install black==23.11.0
-          black sysdata/parquet/ || true
-
-      - name: Commit Formatted Changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "style: auto-format python code with black"
+          
+          # Target only your specific folder
+          black sysdata/parquet/
+          
+          # Native Git configuration to push directly
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@://github.com"
+          
+          # Add changes and check if there is anything to commit
+          git add sysdata/parquet/
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "style: auto-format python code with black"
+            git push
+          else
+            echo "No formatting changes needed!"
+          fi
