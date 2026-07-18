@@ -5,7 +5,7 @@ jobs:
   format-and-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Explicitly forces write permissions
+      contents: write  # Explicitly grants write permissions to save files
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -19,12 +19,12 @@ jobs:
         run: |
           pip install black==23.11.0
           
-          # Target only your specific folder
+          # Targets ONLY your specific parquet data folder
           black sysdata/parquet/
           
-          # Native Git configuration to push directly
+          # Native Git configuration to push the clean files back
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@://github.com"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           # Add changes and check if there is anything to commit
           git add sysdata/parquet/
