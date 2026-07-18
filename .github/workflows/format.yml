@@ -5,18 +5,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
         with:
-          python-with-version: '3.10'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # Needed to discover changed files
 
-      - name: Install and Run Black
-        run: |
-          pip install black==23.11.0
-          black . || true
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.py
 
-      - name: Commit changes
+      - name: Format with Black
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: psf/black@23.11.0
+        with:
+          options: "${{ steps.changed-files.outputs.all_changed_files }}"
+        continue-on-error: true
+
+      - name: Commit formatted changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "style: auto-format python code with black"
