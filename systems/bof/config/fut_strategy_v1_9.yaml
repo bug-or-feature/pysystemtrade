@@ -1030,6 +1030,252 @@ risk_overlay:
 #   regardless of what an estimator does
 forecast_post_ceiling_cost_SR: 0.13
 
+#
+# duplicated/excluded instruments are ignored in backtests
+# we still collect price data for them in production, do rolls etc
+# this is to avoid double counting of basically the same instrument
+# anything in the 'exclude' list is ignored in backtests
+# we use the 'include section to match up for reporting when deciding which to trade
+# Be careful when swapping between instruments, a bit dangerous if a position is held...
+# You can override this by modifying the backtest config .yaml file used in either sim or production
+duplicate_instruments:
+  include:
+    #aex: 'AEX'
+    aluminium: 'ALUMINIUM'
+    #aud: 'AUD_micro'
+    brent: 'BRENT-LAST'
+    cad: 'CAD'
+    cad-bonds: 'CAD5'
+    chf: 'CHF'
+    #cnh: 'CNH'
+    copper: 'COPPER-micro'
+    cotton: 'COTTON2'
+    corn: 'CORN'
+    crude: 'CRUDE_W_micro'
+    #dow: 'DOW'
+    ethereum: 'ETHER-micro'
+    #eu-chem: 'EU-CHEM'
+    #eu-finance: 'EU-FINANCE'
+    #eu-food: 'EU-FOOD'
+    #eu-health: 'EU-HEALTH'
+    #eu-insure: 'EU-INSURE'
+    #eu-media: 'EU-MEDIA'
+    eu-oil: 'EU-OIL'
+    eu-realestate: 'EU-REALESTATE'
+    #eu-retail: 'EU-RETAIL'
+    eu-tech: 'EU-TECH'
+    eu-utils: 'EU-UTILS'
+    #eur: 'EUR_micro'
+    #euribor: 'EURIBOR-ICE'
+    eurostx: 'EUROSTX'
+    euro600: 'EURO600'
+    gas_us: 'GAS_US_mini'
+    gasoline: 'GASOLINE_micro'
+    gbp: 'GBP_micro'
+    #gold: 'GOLD_micro'
+    hang: 'HANG_mini'
+    hangent: 'HANGENT_mini'
+    heatoil: 'HEATOIL_micro'
+    ibex: 'IBEX_mini'
+    #inr: 'INR'
+    jgb: 'JGB-SGX-mini'
+    jpy: 'JPY'
+    kospi: 'KOSPI_mini'
+    #krw: 'KRWUSD_mini'
+    #nasdaq: 'NASDAQ_micro'
+    #nikkei: 'NIKKEI'
+    msciasia: 'MSCIASIA'
+    nikkei400: 'NIKKEI400'
+    #russell: 'RUSSELL'
+    sgd: 'SGD_mini'
+    silver: 'SILVER'
+    #soybean: 'SOYBEAN_mini'
+    #sp500: 'SP500_micro'
+    #twd: 'TWD'
+    taiwan: 'FTSETAIWAN'
+    treasury_short: 'US2'
+    treasury_long: 'US20'
+    vix: 'VIX_mini'
+    wheat: 'WHEAT_mini'
+  exclude:
+    #aex: 'AEX_mini'
+    aluminium: 'ALUMINIUM_LME'
+    #aud: 'AUD'
+    brent: 'BRENT_W'
+    cad: 'CAD_micro'
+    cad-bonds: 'CAD10'
+    chf: 'CHF_micro'
+    #cnh: 'CNH-onshore'
+    copper: 'COPPER'
+    corn: 'CORN_mini'
+    cotton: 'COTTON'
+    crude: 'CRUDE_ICE'
+    #dow: 'DOW_mini'
+    #eu-chem: 'EU-DJ-CHEM'
+    #eu-finance: 'EU-DJ-FINANCE'
+    #eu-food: 'EU-DJ-FOOD'
+    #eu-health: 'EU-DJ-HEALTH'
+    #eu-insure: 'EU-DJ-INSURE'
+    #eu-media: 'EU-DJ-MEDIA'
+    eu-oil: 'EU-DJ-OIL'
+    eu-realestate: 'EPRA-EUROPE'
+    #eu-retail: 'EU-DJ-RETAIL'
+    eu-tech: 'EU-DJ-TECH'
+    eu-utils: 'EU-DJ-UTIL'
+    ethereum: 'ETHEREUM'
+    #eur: ['EUR', 'EUR_mini']
+    #euribor: 'EURIBOR'
+    eurostx: 'EUROSTX-LARGE'
+    euro600: 'EUROSTX200-LARGE'
+    gas_us: 'GAS-LAST'
+    gasoline: ['GASOLINE', 'GASOLINE_ICE']
+    gbp: 'GBP'
+    #gold: ['GOLD', 'GOLD-mini']
+    hang: 'HANG'
+    hangent: 'HANGENT'
+    heatoil: ['HEATOIL', 'HEATOIL-ICE']
+    ibex: 'IBEX'
+    #inr: ['INR-mini', 'INR-SGX']
+    jpy: 'JPY_mini'
+    jgb: 'JGB'
+    kospi: 'KOSPI'
+    #krw: 'KRWUSD'
+    #nasdaq: 'NASDAQ'
+    #nikkei: 'NIKKEI-JPY'
+    msciasia: 'MSCIEMASIA'
+    nikkei400: 'TOPIX'
+    #russell: 'RUSSELL_mini'
+    sgd: 'SGD'
+    silver: 'SILVER-mini'
+    #soybean: 'SOYBEAN'
+    #sp500: 'SP500'
+    #twd: 'TWD-mini'
+    taiwan: 'MSCITAIWAN'
+    treasury_short: 'US3'
+    treasury_long: 'US30'
+    vix: 'VIX'
+    wheat: ['WHEAT']
 
+exclude_instrument_lists:
+  # ignore_instruments are ignored in backtests
+  # we still collect price data for them in production, do rolls etc
+  # You can override this by modifying the backtest config .yaml file used in either sim or production
+  # If you want to ignore because a duplicate market, use duplicate_instruments
+  # If you want to include in sim data, but not actually trade, use trading_restrictions
+  #
+  # BEST FOR INSTRUMENTS THAT LOOK EXPENSIVE, BUT WHERE WE HAVEN'T GOT ACCURATE DATA YET
+  #
+  # REVIEW REGULARLY AND CHECK THESE INSTRUMENTS AREN'T BETTER ELSEWHERE...
+  ignore_instruments:
+    - BB3M
+    - GAS_NL
+    - GAS_UK
+    - NICKEL_LME
+    - RUR
+    - VNKI
 
+  #
+  # Here we put stuff we can't trade, but for which we still want to bring in prices in sim
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # NOTE: This will be regionally biased, you will probably want to override this in private_config.yaml
+  #
+  trading_restrictions:
+    - BITCOIN
+    - COPPER_LME
+    - CZK
+    - ETHEREUM
+    - ETHER-micro
+    - GILT
+    - IRS
+    - NOK
+    - PLN
+    - SEK
+    - US-DISCRETE
+    - US-ENERGY
+    - US-HEALTH
+    - US-INDUSTRY
+    - US-MATERIAL
+    - US-PROPERTY
+    - US-REALESTATE
+    - US-STAPLES
+    - US-UTILS
 
+  # These are markets that are too expensive or illiquid to actually trade
+  # For the dynamically optimised strategy this list will be used in sim as 'don't trade'
+  # For static strategies, you will probably want to set these to zero instrument weights
+  # In production, things here will be added to the 'reduce_only' list of instruments
+  # Run interactive controls to get a list of suggested markets here
+  # To override this list, change in sim .yaml config (sim) and private_config.yaml (production)
+  bad_markets:
+    - ALUMINIUM
+    - AUDJPY
+    - AUD_micro
+    - BBCOMM
+    - BOBL
+    - BONO
+    - BOVESPA
+    - BTP3
+    - BUTTER
+    - CAD2
+    - CAD_micro
+    - CADJPY
+    - CH10
+    - CHFJPY
+    - CLP
+    - CNH
+    - CNH-onshore
+    - COAL
+    - COAL-GEORDIE
+    - DJSTX-SMALL
+    - EPRA-EUROPE
+    - ETHANOL
+    - EU-DJ-CHEM
+    - EU-DJ-OIL
+    - EU-DJ-TELECOM
+    - EU-HOUSE
+    - EU-MEDIA
+    - EU-RETAIL
+    - EU-TRAVEL
+    - EURAUD
+    - EURCAD
+    - EURCHF
+    - EURIBOR-ICE
+    - EUROSTX-LARGE
+    - EUROSTX-SMALL
+    - EUROSTX200-LARGE
+    - FED
+    - FTSEINDO
+    - FTSEVIET
+    - GBPCHF
+    - GBPEUR
+    - GBPJPY
+    - GICS
+    - HOUSE-US
+    - JGB-SGX-mini
+    - JGB
+    - JP-REALESTATE
+    - JPY_mini
+    - KR3
+    - LUMBER-new
+    - MILKDRY
+    - MILKWET
+    - OATIES
+    - OMX
+    - RUR
+    - SGD
+    - SGD_mini
+    - SHATZ
+    - SMI-MID
+    - SOFR
+    - SONIA3
+    - STEEL
+    - SUGAR16
+    - SWISSLEAD
+    - US2
+    - US3
+    - US5
+    - VNKI
+    - WHEAT_ICE
+    - WHEY
