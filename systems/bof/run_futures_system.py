@@ -49,7 +49,8 @@ def run_static_system(
 ):
     if load_pickle:
         log.info(f"Loading STATIC system from {SAVED_SYSTEM}")
-        system = futures_static_system()
+        config = Config(CONFIG)
+        system = futures_static_system(config=config)
         system.cache.get_items_with_data()
         system.cache.unpickle(SAVED_SYSTEM)
         system.cache.get_items_with_data()
@@ -251,6 +252,34 @@ def check_no_costs():
         else:
             print(f"{instr}: {spread}")
 
+def check_system_validity():
+    config = Config(CONFIG)
+    log.info(f"Loading DO system from {SAVED_SYSTEM}")
+    system = futures_do_system(config=config)
+    system.cache.get_items_with_data()
+    system.cache.unpickle(SAVED_SYSTEM)
+    system.cache.get_items_with_data()
+    weights = system.portfolio.get_instrument_weights().iloc[-1]
+    weights = dict(
+        (str(key), float(value)) for key, value in weights.items()
+    )
+    # print("Checking instrument weights")
+    # for key, val in weights.items():
+    #     if val == 0.0:
+    #         print(f"Zero weight for {key}")
+
+    print("Checking excluded")
+    dupes = system.config.get_element("duplicate_instruments")
+    excl_dupes = dupes["exclude"]
+    for key, val in excl_dupes.items():
+        if type(val) == str and val in weights:
+            print(f"Excluded instrument in weights: {val}")
+        if type(val) == list:
+            for instr in val:
+                if instr in weights:
+                    print(f"Excluded instrument in weights: {instr}")
+    # print(weights)
+
 
 if __name__ == "__main__":
     run_static_system(
@@ -262,3 +291,5 @@ if __name__ == "__main__":
     # )
 
     # check_no_costs()
+
+    # check_system_validity()
