@@ -252,6 +252,7 @@ def check_no_costs():
         else:
             print(f"{instr}: {spread}")
 
+
 def check_system_validity():
     config = Config(CONFIG)
     log.info(f"Loading DO system from {SAVED_SYSTEM}")
@@ -260,9 +261,7 @@ def check_system_validity():
     system.cache.unpickle(SAVED_SYSTEM)
     system.cache.get_items_with_data()
     weights = system.portfolio.get_instrument_weights().iloc[-1]
-    weights = dict(
-        (str(key), float(value)) for key, value in weights.items()
-    )
+    weights = dict((str(key), float(value)) for key, value in weights.items())
     # print("Checking instrument weights")
     # for key, val in weights.items():
     #     if val == 0.0:
