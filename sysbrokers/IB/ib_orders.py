@@ -1,4 +1,8 @@
-from ib_async import Trade as ibTrade, OrderStatus as ibOrderStatus
+from ib_async import (
+    Trade as ibTrade,
+    OrderStatus as ibOrderStatus,
+    Contract as ibContract,
+)
 
 from sysbrokers.IB.ib_futures_contracts_data import ibFuturesContractData
 from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData
@@ -25,6 +29,22 @@ from sysexecution.orders.broker_orders import brokerOrder
 from sysexecution.tick_data import tickerObject
 
 from syslogging.logger import *
+
+
+def contract_for_instrument_lookup(contract_with_legs) -> ibContract:
+    """
+    Which IB contract to identify the instrument from.
+
+    A combo (BAG) contract has no contract details of its own: IB never
+    answers reqContractDetails for it, so looking the instrument up from the
+    bag blocks forever. The legs are already resolved to ordinary futures
+    contracts, so use the first one.
+    """
+    contract = contract_with_legs.ibcontract
+    legs = contract_with_legs.legs
+    if getattr(contract, "secType", "") == "BAG" and isinstance(legs, list) and legs:
+        return legs[0]
+    return contract
 
 
 class ibOrderWithControls(orderWithControls):
@@ -206,19 +226,11 @@ class ibExecutionStackData(brokerExecutionStackData):
         """
         try:
             try:
-                if (
-                    trade_with_contract_from_ib.ibcontract_with_legs.ibcontract.secType
-                    == "BAG"
-                ):
-                    ib_contract = trade_with_contract_from_ib.ibcontract_with_legs.legs[
-                        0
-                    ]
-                else:
-                    ib_contract = (
-                        trade_with_contract_from_ib.ibcontract_with_legs.ibcontract
-                    )
+                lookup_contract = contract_for_instrument_lookup(
+                    trade_with_contract_from_ib.ibcontract_with_legs
+                )
                 instrument_code = self.futures_instrument_data.get_instrument_code_from_broker_contract_object(
-                    ib_contract
+                    lookup_contract
                 )
             except:
                 raise ibOrderCouldntCreateException()

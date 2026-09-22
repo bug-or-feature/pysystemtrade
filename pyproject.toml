@@ -95,6 +95,7 @@ testpaths = [
     # "sysquant/estimators",
     "sysquant/optimisation",
     "sysquant/tests",
+    "sysbrokers/IB/tests",
     # "systems",
     # "systems/accounts",
     # "systems/provided",

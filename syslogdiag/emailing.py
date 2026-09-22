@@ -2,6 +2,7 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from enum import Enum
+from html import escape
 import smtplib, ssl
 from typing import List
 
@@ -34,6 +35,11 @@ class MailType(Enum):
 
 
 def send_mail_msg(body: str, subject: str, mail_type: MailType = MailType.plain):
+    if mail_type == MailType.plain and get_production_config().get_element_or_default(
+        "email_body_preformatted", False
+    ):
+        body = "<pre>%s</pre>" % escape(body)
+        mail_type = MailType.html
     msg = MIMEMultipart()
     msg["Subject"] = _build_context_subject(subject)
     msg.attach(MIMEText(body, mail_type))

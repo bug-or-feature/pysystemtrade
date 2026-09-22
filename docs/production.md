@@ -882,6 +882,20 @@ email_to: "someotherbloke@anothermail.com"
 
 Pysystemtrade will automatically try to negotiate TLS encryption when connecting to SMTP server and will resort to unencrypted communication only as a last resort.
 
+Email reports are plain text by default. If your email client does not display
+them in a fixed-width font, enable preformatted HTML in `private_config.yaml`:
+
+```yaml
+email_body_preformatted: True
+```
+
+This wraps plain-text message bodies in HTML `<pre>` tags, preserving spaces
+and line breaks. HTML special characters in the original text are escaped.
+The setting defaults to `False`, keeping existing plain-text email unchanged.
+It applies to plain-text messages sent through `send_mail_msg`, including
+reports and notifications; explicitly HTML messages and file/PDF emails are
+unchanged. Restart processes that send emails after changing the configuration.
+
 To use Google SMTP server without trusting the config file with your plain text password, you can create an 'App password' specifically for pysystemtrade:
 - Go to [Manage my Google account](https://myaccount.google.com/security) and its 'Signing in to Google' subsection
 - Ensure that '2-step verification' is On
@@ -2865,6 +2879,10 @@ The following are configuration options that are not in `defaults.yaml` and *may
 
 
 The following are configuration options that are in `defaults.yaml` and can be overridden in `private_config.yaml`:
+
+[Email formatting](#psysystemtrade-reports)
+
+- `email_body_preformatted`: `False`; set to `True` to send plain-text message bodies as escaped HTML inside `<pre>` tags.
 
 [Backup paths](#data-backup)
 - `backtest_store_directory` parent directory, backtests are stored under strategy_name subdirectory

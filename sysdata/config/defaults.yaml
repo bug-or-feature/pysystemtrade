@@ -2,6 +2,9 @@
 #
 #           PRODUCTION STUFF
 #
+# Send plain-text email bodies as HTML with preformatted text (opt-in)
+email_body_preformatted: False
+#
 #
 ## Strategy configuration
 # This won't actually work unless you have a strategy called example.. so don't uncomment use as a template
