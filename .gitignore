@@ -25,7 +25,7 @@ notes/
 env/
 venv/
 .venv/
-.env
+.env*
 
 
 # libreoffice
@@ -57,3 +57,17 @@ data/mongo_dump/
 /reports_backup
 
 /issues
+
+# Claude
+.claude/
+
+# uv
+uv.lock
+
+# docker
+.dockerignore
+docker-entrypoint.sh
+Dockerfile
+
+# monitor site
+site/
