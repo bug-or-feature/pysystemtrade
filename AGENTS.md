@@ -100,6 +100,12 @@ Functions use `arg_not_supplied` (from `syscore.constants`) as default arguments
 - Production code must not raise unless unrecoverable; always pair a fatal error with `log.critical()` (triggers email alert)
 - Doctests in standalone functions are fine; avoid doctests on class methods (hard to set up)
 
+### Comments
+
+- Code comments must be in the style and voice of those in the existing code
+- Code comments must be at most 1-2 lines, unless something is unusual or complex enough to need more
+- The audience for code comments are a future reader of the code who has no knowledge of this conversation, the old implementation, or how the code evolved. Explain the *why* of the current code as it stands, not its history relative to a prior version
+- If unsure whether a comment is needed at all, lean toward omitting it — well-written code should carry most of the explanatory weight
 
 ## AI Workflow Restraints & Prohibitions
 
