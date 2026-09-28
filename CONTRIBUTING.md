@@ -4,7 +4,9 @@ Welcome and thank you for your interest in contributing to the project. This doc
 
 ## Contributing
 
-For small bugs, typos, documentation improvements, and minor changes - follow the steps in the [Working on topic branches](#working-on-topic-branches) section below to create a Pull Request.
+For typos, documentation improvements, and minor changes - follow the steps in the [Working on topic branches](#working-on-topic-branches) section below to create a Pull Request.
+
+For bugs or problems - create an entry in the [Issues](https://github.com/pst-group/pysystemtrade/issues) list, with detailed description and steps to reproduce.
 
 For large changes, or new feature requests - please start an **Ideas** discussion first. Explain your idea, include some reasoning, perhaps some implementation ideas.
 
