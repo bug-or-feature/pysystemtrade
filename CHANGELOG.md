@@ -1,5 +1,60 @@
 # Release notes
 
+## Version 1.8.3
+
+- fully adopt pyproject.toml (#1421)
+- improve docs (#1434)
+- fix pandas FutureWarnings (#1463, #1494)
+- fix forecast weight bug with auto-grouping (#1467)
+- handle zero spreads (#1478)
+- fix FX init (#1480)
+- fix instruments crash backtest when estimating instrument weights (#1482)
+- fix missing pyarrow dependency (#1489)
+- add uv install docs (#1495)
+- remove EDOLLAR from docs (#1497)
+- fix PnL report crash (#1498)
+- fix order generation exception (#1513)
+- fix licence file name (#1514)
+- fix market hours exception (#1516)
+- fix incorrect spread timestamps (#1517)
+- add update shipped IB prices init script (#1550)
+- update docs for getting recent data (#1553)
+- various minor improvements (#1566, #1558, #1567)
+- avoid strategy / roll order conflicts (#1571)
+- set existing optimal positions to 0 if not in system (#1581)
+- update psutil version (#1587)
+- add docs for Norgate as data source (#1590)
+- remove EDOLLAR from notebooks (#1591)
+- optional force roll warnings (#1592)
+- new project org (#1594)
+- fix commission report currency mismatch (#1596)
+- reduce stack handler logging (#1600)
+- fix roll status message (#1601)
+- fix error getting strategy when no trades (#1602)
+- document trading hours (#1604)
+- improve path resolution (#1605)
+- fix warnings (#1607)
+- report additional or unlikely duplicate instruments (#1608)
+- fix IBOXX roll config (#1611)
+- fix spread config instrument codes (#1612)
+- optimise parquet access (#1615)
+- fix invalid package refs (#1618)
+- fix IB client ID log level (#1619)
+- migrate to ib_async (#1620)
+- fix logging config when no log server (#1621)
+- fix SGX multiplier (#1623)
+- fix rejected order handling (#1624)
+- fix KRWUSD instrument config (#1626)
+- optionally log process fail at critical level (#1628)
+- optionally wrap email content with pre tags (#1634)
+- fix incorrect estimator function call (#1636)
+- index renamed instead of columns (#1637)
+- covariance instead of correlation (#1643)
+- fix SR cost sign error (#1644)
+- fix parquet_adjusted_prices docstring (#1651)
+- fix combo BAG lookup exception (#1659)
+- enforce issue and PR submission quality (#1665)
+
 ## Version 1.8.2
 
 - new Commission Report highlights where values need to be updated
@@ -8,7 +63,7 @@
 - add support for import of split frequency CSV prices
 - references to arctic updated in sysinit scripts
 - CONTRIBUTING.md updated
-- 
+
 ## Version 1.80
 
 - *NO LONGER REQUIRES ARCTIC* Time series data is stored in parquet, install pyarrow
