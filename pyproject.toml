@@ -98,7 +98,13 @@ testpaths = [
     "tests",
 ]
 
-[tool.black]
+[tool.ruff]
 line-length = 88
-target-version = ["py310"]
-required-version = "23.11.0"
+target-version = "py312"
+extend-exclude = ["*.md", "*.ipynb"]
+
+[tool.ruff.format]
+docstring-code-format = false
+
+[tool.ruff.lint]
+select = []  # disable for now. include "F403" for * imports
