@@ -1,4 +1,4 @@
-import copy
+from copy import copy
 
 from sysbrokers.IB.ib_connection import connectionIB
 from syscore.objects import get_class_name

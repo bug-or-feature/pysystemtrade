@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from ib_async import IB, ContractDetails as ibContractDetails
 
 from sysbrokers.IB.ib_connection import connectionIB
