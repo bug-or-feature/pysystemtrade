@@ -32,7 +32,7 @@ class Test(ut.TestCase):
             )
         )
 
-        return x
+        assert len(x) == 7
 
 
 if __name__ == "__main__":
