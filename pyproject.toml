@@ -107,4 +107,4 @@ extend-exclude = ["*.md", "*.ipynb"]
 docstring-code-format = false
 
 [tool.ruff.lint]
-select = ["F403"]
+select = ["F401", "F403"]
