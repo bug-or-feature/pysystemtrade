@@ -11,7 +11,7 @@ They can be stored, or worked out 'on the fly'
 """
 from syscore.exceptions import existingData
 from sysdata.base_data import baseData
-from syslogging.logger import *
+from syslogging import INSTRUMENT_CODE_LOG_LABEL
 
 # These are used when inferring prices in an incomplete series
 from sysobjects.multiple_prices import futuresMultiplePrices

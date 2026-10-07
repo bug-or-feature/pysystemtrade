@@ -107,4 +107,4 @@ extend-exclude = ["*.md", "*.ipynb"]
 docstring-code-format = false
 
 [tool.ruff.lint]
-select = []  # disable for now. include "F403" for * imports
+select = ["F403"]
