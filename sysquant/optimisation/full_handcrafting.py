@@ -1324,7 +1324,7 @@ def get_avg_corr(sigma):
 
     avg_corr = np.nanmean(new_sigma)
 
-    return avg_corr
+    return avg_corr.item()
 
 
 def cluster_correlation_matrix(corr_matrix: np.array, max_cluster_size=3) -> list:
