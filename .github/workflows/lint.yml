@@ -28,4 +28,3 @@ jobs:
 
       - name: Linting with 'ruff check'
         uses: astral-sh/ruff-action@v4
-        run: ruff check
