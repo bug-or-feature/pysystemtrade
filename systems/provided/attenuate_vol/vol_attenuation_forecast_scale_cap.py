@@ -6,6 +6,7 @@ from syscore.pandas.pdutils import from_scalar_values_to_ts
 from systems.forecast_scale_cap import ForecastScaleCap
 from systems.system_cache import input, diagnostic
 
+
 class volAttenForecastScaleCap(ForecastScaleCap):
     @diagnostic()
     def get_vol_quantile_points(self, instrument_code):

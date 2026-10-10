@@ -13,6 +13,7 @@ Use to analyse execution and also construct strategy/contract level p&l
 Doesn't have to reconcile with positions!
 
 """
+
 import datetime
 
 from syscore.constants import arg_not_supplied
