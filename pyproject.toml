@@ -35,6 +35,7 @@ dependencies = [
 parquet = ["pyarrow>=25,<26", "pymongo>4,<5"]
 arctic = ["arctic @ git+https://github.com/man-group/arctic.git", "pymongo==3.12.3"]
 flask = ["flask>=3,<4"]
+dev = ["pytest>=9,<10", "ruff>=0.16,<0.17", "coverage>=7,<8"]
 jupyter = ["jupyterlab>4,<5"]
 omegaconf = ["omegaconf>2,<3"]
 
