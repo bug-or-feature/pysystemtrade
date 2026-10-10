@@ -553,9 +553,7 @@ def align_parquet_contracts():
     data = get_data_blob("backup_arctic_to_parquet")
     valid_instruments = data.parquet_futures_adjusted_prices.get_list_of_instruments()
 
-    all_instruments = (
-        data.parquet_futures_contract_price.get_list_of_instrument_codes_with_merged_price_data()
-    )
+    all_instruments = data.parquet_futures_contract_price.get_list_of_instrument_codes_with_merged_price_data()
     # data.parquet_futures_contract_price.get_list_of_instrument_codes_with_price_data_at_frequency(
     #     DAILY_PRICE_FREQ
     # )
