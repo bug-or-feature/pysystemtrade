@@ -69,7 +69,7 @@ def intraday_date_rows_in_pd_object(
 
 def get_intraday_pdf_at_frequency(
     pd_object: Union[pd.DataFrame, pd.Series],
-    frequency: str = "H",
+    frequency: str = "h",
     closing_time: pd.DateOffset = NOTIONAL_CLOSING_TIME_AS_PD_OFFSET,
 ) -> Union[pd.Series, pd.DataFrame]:
     """
@@ -77,7 +77,7 @@ def get_intraday_pdf_at_frequency(
     >>> d = datetime.datetime
     >>> date_index = [d(2000,1,1,15),d(2000,1,1,16),d(2000,1,1,23), d(2000,1,2,15)]
     >>> df = pd.DataFrame(dict(a=[1, 2, 3,4], b=[4,5,6,7]), index=date_index)
-    >>> get_intraday_pdf_at_frequency(df,"2H")
+    >>> get_intraday_pdf_at_frequency(df,"2h")
                            a    b
     2000-01-01 14:00:00  1.0  4.0
     2000-01-01 16:00:00  2.0  5.0
@@ -233,7 +233,7 @@ def reindex_last_monthly_include_first_date(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty:
         return df
 
-    df_monthly_index = list(df.resample("1M").last().index)  ## last day in month
+    df_monthly_index = list(df.resample("1ME").last().index)  ## last day in month
     df_first_date_in_index = df.index[0]
     df_monthly_index = [df_first_date_in_index] + df_monthly_index
     df_reindex = df.reindex(df_monthly_index).ffill()

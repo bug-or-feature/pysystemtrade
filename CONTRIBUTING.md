@@ -173,29 +173,21 @@ Some tests are marked as `@pytest.mark.slow` because they take a long time. Thes
 pytest --runslow
 ```
 
+## formatting and linting
 
-## Lint / Black
-
-This project keeps its code pretty with [Black](https://black.readthedocs.io/en/stable/). Black gets automatically run over any PRs, and the PR won't be merged if it fails. To clean your code submission manually you'll need Black installed, instructions [here](https://black.readthedocs.io/en/stable/getting_started.html). Then run:
-```
-black .
-```
-
-If you have a virtual environment (venv), you will want to tell Black to ignore that. So if your venv is named `.venv`, the command would be:
+This project keeps its code pretty with [ruff](https://docs.astral.sh/ruff/). **ruff** gets automatically run over any PRs, and the PR won't be merged if those checks fail. To clean your code submission manually you'll need ruff installed, instructions [here](https://docs.astral.sh/ruff/installation/). Then run:
 
 ```
-black . --exclude '/.venv\/.+/'
+ruff format
 ```
 
-Or, get your IDE or editor to automatically re-format files as you save. Configuration instructions [here](https://black.readthedocs.io/en/stable/integrations/editors.html)
+Or, get your IDE or editor to automatically re-format files as you save. Configuration instructions [here](https://docs.astral.sh/ruff/editors/setup/)
 
-Note for pycharm users: The blackd plugin requires a blackd daemon to be running; add it to your crontab.
+Or, configure your local git install to automatically check and fix your code as you commit. Configuration instructions [here](https://docs.astral.sh/ruff/integrations/#pre-commit)
 
-Or, configure your local git install to automatically check and fix your code as you commit. Configuration instructions [here](https://black.readthedocs.io/en/stable/integrations/source_version_control.html)
+### linting
 
-### Black version
-
-Black needs to be consistent between the version running in the CI build and your local environment. To check the currently used version, see the `[tool.black]` section of the project [TOML file](https://github.com/pst-group/pysystemtrade/blob/develop/pyproject.toml)
+There is placeholder config to also use ruff for linting. As at Oct 2026 the configured ruleset is minimal; a more complete set will be introduced over time.  
 
 ## General code guidelines (INCOMPLETE)
 

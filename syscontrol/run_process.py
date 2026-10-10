@@ -25,7 +25,6 @@ from syscontrol.timer_functions import get_list_of_timer_functions, listOfTimerF
 
 from sysdata.data_blob import dataBlob
 
-from syslogging.logger import *
 
 from sysobjects.production.process_control import (
     process_no_run,

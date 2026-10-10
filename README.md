@@ -50,10 +50,10 @@ $ git clone https://github.com/pst-group/pysystemtrade.git
 $ cd pysystemtrade
 
 # either install pysystemtrade normally
-$ python -m pip install .
+$ python -m pip install '.[parquet]'
 
 # or install in editable mode, with development dependencies 
-$ python -m pip install --editable '.[dev]'
+$ python -m pip install --editable '.[parquet, dev]'
 ```
 
 There is a more complete installation guide [here](docs/installation.md)
