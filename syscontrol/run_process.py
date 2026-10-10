@@ -16,6 +16,7 @@ We kick them all off in the crontab at a specific time (midnight is easiest), bu
 - how do I mark myself as FINISHED for a subsequent process to know (in database)
 
 """
+
 import time
 import sys
 from syscontrol.report_process_status import reportProcessStatus

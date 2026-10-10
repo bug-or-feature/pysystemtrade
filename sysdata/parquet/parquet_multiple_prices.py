@@ -2,6 +2,7 @@
 Read and write data from mongodb for 'multiple prices'
 
 """
+
 import pandas as pd
 from sysdata.parquet.parquet_access import ParquetAccess
 from sysdata.futures.multiple_prices import (

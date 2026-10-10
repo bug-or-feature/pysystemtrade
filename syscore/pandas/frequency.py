@@ -93,7 +93,7 @@ def get_intraday_pdf_at_frequency(
 
 
 def merge_data_with_different_freq(
-    list_of_data: List[Union[pd.DataFrame, pd.Series]]
+    list_of_data: List[Union[pd.DataFrame, pd.Series]],
 ) -> Union[pd.Series, pd.DataFrame]:
     """
     Where items share a timestamp, the row from the later item in list_of_data wins,
@@ -280,7 +280,7 @@ def _probably_hourly_freq(avg_time_delta_in_days: float) -> bool:
 
 
 def average_time_delta_for_time_series(
-    df_or_ts: Union[pd.DataFrame, pd.Series]
+    df_or_ts: Union[pd.DataFrame, pd.Series],
 ) -> float:
     avg_time_delta = abs(np.diff(df_or_ts.index)).mean()
     avg_time_delta_in_days = avg_time_delta / np.timedelta64(1, "D")

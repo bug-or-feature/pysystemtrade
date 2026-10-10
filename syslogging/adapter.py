@@ -2,6 +2,7 @@ import logging.config
 
 from syslogging import ALLOWED_LOG_ATTRIBUTES
 
+
 class DynamicAttributeLogger(logging.LoggerAdapter):
     def __init__(self, logger, attributes) -> None:
         self._check_attributes(attributes)

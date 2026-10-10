@@ -6,6 +6,7 @@ When we want to trade (create an instrument / strategy order) we check that the 
 
 
 """
+
 from syscore.exceptions import missingData
 from sysdata.base_data import baseData
 from syslogging.logger import get_logger
