@@ -1,10 +1,11 @@
 import shutil
+import os
 from pathlib import Path
 from jinja2 import Environment, select_autoescape, FileSystemLoader
 
+from syscore.fileutils import resolve_path_and_filename_for_package
 from sysdata.data_blob import dataBlob
 from sysdata.config.production_config import get_production_config
-from syslogging.logger import *
 from sysproduction.data.reports import dataReports
 from sysproduction.reporting.reporting_functions import (
     resolve_report_filename,

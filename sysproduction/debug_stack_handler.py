@@ -14,7 +14,7 @@ from sysexecution.stack_handler.completed_orders import (
 )
 from sysexecution.stack_handler.fills import stackHandlerForFills
 from sysdata.data_blob import dataBlob
-from syslogging.logger import *
+from syslogging.logger import get_logger
 
 
 def do_check_external_position_break():

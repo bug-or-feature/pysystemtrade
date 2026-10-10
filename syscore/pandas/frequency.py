@@ -15,7 +15,6 @@ from syscore.dateutils import (
     CALENDAR_DAYS_IN_YEAR,
     HOURS_PER_DAY,
 )
-from syscore.pandas.pdutils import uniquets
 
 
 def closing_date_rows_in_pd_object(

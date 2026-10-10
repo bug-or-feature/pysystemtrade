@@ -1,6 +1,26 @@
 from sysdata.data_blob import dataBlob
 
-from sysproduction.reporting.report_configs import *
+from sysproduction.reporting.report_configs import (
+    slippage_report_config,
+    reportConfig,
+    costs_report_config,
+    roll_report_config,
+    daily_pandl_report_config,
+    reconcile_report_config,
+    trade_report_config,
+    strategy_report_config,
+    fsb_trend_report_config,
+    risk_report_config,
+    status_report_config,
+    liquidity_report_config,
+    instrument_risk_report_config,
+    min_capital_report_config,
+    duplicate_market_report_config,
+    market_monitor_report_config,
+    remove_markets_report_config,
+    account_curve_report_config,
+    commission_report_config,
+)
 from sysproduction.reporting.reporting_functions import (
     run_report_with_data_blob,
     pandas_display_for_reports,

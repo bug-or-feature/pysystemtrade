@@ -5,7 +5,6 @@ from sysbrokers.IB.ib_translate_broker_order_objects import (
 )
 from sysproduction.interactive_order_stack import view_broker_order_list
 from sysproduction.tests.broker_test_utils import (
-    data,  # pytest fixture
     make_ib_trade,
     make_stored_order,
 )

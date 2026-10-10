@@ -6,7 +6,7 @@ from sysdata.config.private_config import PRIVATE_CONFIG_DIR_ENV_VAR
 from sysbrokers.IB.ib_trading_hours import get_saved_trading_hours
 
 try:
-    from omegaconf import OmegaConf
+    from omegaconf import OmegaConf  # noqa: F401
 
     omegaconf_installed = True
 except ImportError:

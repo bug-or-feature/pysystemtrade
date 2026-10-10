@@ -8,7 +8,6 @@ from sysdata.config.production_config import get_production_config, Config
 from sysdata.mongodb.mongo_connection import mongoDb
 from syslogging import COMPONENT_LOG_LABEL
 from syslogging.logger import get_logger
-from sysdata.mongodb.mongo_IB_client_id import mongoIbBrokerClientIdData
 from sysdata.parquet.parquet_access import ParquetAccess
 
 
