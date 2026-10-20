@@ -10,7 +10,7 @@ from sysproduction.interactive_order_stack import view_generic_stack
 
 def interactive_status():
     with dataBlob(
-        log_name="Interactive-Order-Stack", broker_conn=arg_not_supplied
+        log_name="Interactive-Status", broker_conn=arg_not_supplied
     ) as data:
         set_pd_print_options()
         view_capital(data)
