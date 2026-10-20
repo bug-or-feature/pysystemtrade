@@ -1,5 +1,7 @@
 CONTRACT_COLLECTION = "futures_contracts"
 
+import datetime
+
 from syscore.constants import arg_not_supplied
 from syscore.exceptions import ContractNotFound
 from sysdata.futures.contracts import futuresContractData
