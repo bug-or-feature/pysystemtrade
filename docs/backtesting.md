@@ -914,7 +914,7 @@ Although Parquet is not a database, data in this project sits behind an abstract
 It is still possible to use the older method. Installation is different due to the older version of pymongo required by Arctic:
 
 ```
-(pysystemtrade) $ uv pip install --editable '.[arctic,dev]'
+$ uv sync --extra arctic --extra dev
 ```
 
 For backtesting, modify the classes assigned in `sysdata.sim.db_futures_sim_data.py` to point to the Arctic classes instead of Parquet:
