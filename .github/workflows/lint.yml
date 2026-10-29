@@ -22,9 +22,9 @@ jobs:
           uv sync --extra dev --extra parquet --extra flask 
 
       - name: Check formatting with 'ruff format'
-        uses: astral-sh/ruff-action@v4
+        uses: astral-sh/ruff-action@v4.1.0
         with:
             args: "format --check --diff"
 
       - name: Linting with 'ruff check'
-        uses: astral-sh/ruff-action@v4
+        uses: astral-sh/ruff-action@v4.1.0
