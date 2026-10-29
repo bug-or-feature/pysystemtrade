@@ -2,7 +2,8 @@ name: OS test
 
 on:
   workflow_dispatch:
-  push:
+  schedule:
+    - cron: '30 2 * * *'
 
 jobs:
   build:
