@@ -176,27 +176,15 @@ $ uv python install 3.12
 Once complete you should be able to see the new version in the output of `uv python list`
 
 ```
-
-cpython-3.14.6-macos-aarch64-none                    /Users/xxx/.local/share/uv/python/cpython-3.14-macos-aarch64-none/bin/python3.14
-cpython-3.14.3-macos-aarch64-none                    /opt/homebrew/bin/python3.14 -> ../Cellar/python@3.14/3.14.3_1/bin/python3.14
-cpython-3.14.3-macos-aarch64-none                    /opt/homebrew/bin/python3 -> ../Cellar/python@3.14/3.14.3_1/bin/python3
-cpython-3.13.15-macos-aarch64-none                   <download available>
-cpython-3.13.12-macos-aarch64-none                   /opt/homebrew/bin/python3.13 -> ../Cellar/python@3.13/3.13.12_1/bin/python3.13
-cpython-3.13.11-macos-aarch64-none                   /Users/xxx/.local/share/uv/python/cpython-3.13-macos-aarch64-none/bin/python3.13
-cpython-3.12.14-macos-aarch64-none                   <download available>
-cpython-3.12.12-macos-aarch64-none                   /Users/xxx/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12
-cpython-3.12.4-macos-aarch64-none                    /Users/xxx/miniconda3/bin/python3.12
-cpython-3.12.4-macos-aarch64-none                    /Users/xxx/miniconda3/bin/python -> python3.12
-cpython-3.11.16-macos-aarch64-none                   <download available>
-cpython-3.11.11-macos-aarch64-none                   /Users/xxx/.local/share/uv/python/cpython-3.11-macos-aarch64-none/bin/python3.11
-cpython-3.10.21-macos-aarch64-none                   <download available>
-cpython-3.10.16-macos-aarch64-none                   /Users/xxx/.local/share/uv/python/cpython-3.10-macos-aarch64-none/bin/python3.10
-cpython-3.10.13-macos-aarch64-none                   /Users/xxx/.local/share/uv/python/cpython-3.10.13-macos-aarch64-none/bin/python3.10
-pypy-3.12.14-macos-aarch64-none                      <download available>
-pypy-3.11.16-macos-aarch64-none                      <download available>
-pypy-3.10.16-macos-aarch64-none                      <download available>
-pypy-3.9.19-macos-aarch64-none                       <download available>
-pypy-3.8.16-macos-aarch64-none                       <download available>
+cpython-3.15.0rc2-macos-x86_64-none                 <download available>
+cpython-3.14.7-macos-x86_64-none                    /Users/pst/.local/share/uv/python/cpython-3.14-macos-x86_64-none/bin/python3.14
+cpython-3.13.15-macos-x86_64-none                   /Users/pst/.local/share/uv/python/cpython-3.13-macos-x86_64-none/bin/python3.13
+cpython-3.12.14-macos-x86_64-none                   /Users/pst/.local/share/uv/python/cpython-3.12-macos-x86_64-none/bin/python3.12
+cpython-3.11.16-macos-x86_64-none                   /Users/pst/.local/share/uv/python/cpython-3.11-macos-x86_64-none/bin/python3.11
+cpython-3.10.21-macos-x86_64-none                   <download available>
+cpython-3.9.25-macos-x86_64-none                    <download available>
+cpython-3.8.20-macos-x86_64-none                    <download available>
+...
 ```
 
 We pin the version of Python we will use for this project
@@ -205,58 +193,21 @@ We pin the version of Python we will use for this project
 $ uv python pin 3.12
 ```
 
-and now we want to create a virtual environment for the project with Python 3.12
+and now install the project. The project will be installed in *editable* mode by default
 
 ```
-$ uv venv --python 3.12
+$ uv sync --extra parquet
 ```
 
 This will create a brand new, isolated Python environment *inside the pysystemtrade project* at the directory
 `<your_path>/pysystemtrade/.venv`.
 
-You will see
-```
-Using CPython 3.12.12
-Creating virtual environment at: 3.12
-Activate with: source .venv/bin/activate
-```
-
-Now activate the virtual environment as instructed.
-```
-source .venv/bin/activate
-```
-
-Once your virtual env is activated, the prompt will change. It will look something like
-
-```
-(pysystemtrade) $
-```
-This reminds you that your virtual environment is active. You can exit the virtual environment at any time by running `deactivate`
-
-We can check this by running `python`
-
-```
-$ python
-Python 3.12.12 (main, Jan 13 2026, 17:48:58) [Clang 21.1.4 ]
-Type "help", "copyright", "credits" or "license" for more information.
->>>
-< ctrl-D to exit >
-```
-
-### dependencies
-
-And now install the project and its dependencies
-
-```
-(pysystemtrade) $ uv pip install '.[parquet]'
-```
-
 > We need to specify the `parquet` optional dependency because this project still supports storing time series data in an older format. See [here](/docs/backtesting.md#backtesting-with-arctic-instead-of-parquet) for more details
 
-Or, if you intend to contribute to the project, you will need the optional development dependencies too, and will want to install in *editable* mode
+If you intend to contribute to the project, you will need the optional development dependencies too
 
 ```
-(pysystemtrade) $ uv pip install --editable '.[parquet,dev]'
+$ uv sync --extra parquet --extra dev
 ```
 
 Check what is installed, should look something like
@@ -287,7 +238,7 @@ pyarrow           25.0.1
 pymongo           4.18.2
 pyparsing         3.3.3
 pypdf2            3.0.1
-pysystemtrade     1.8.3       /home/user/pysystemtrade
+pysystemtrade     1.8.3       /Users/pst/pysystemtrade
 python-dateutil   2.9.0.post0
 pytz              2026.4
 pyyaml            6.0.3

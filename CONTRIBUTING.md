@@ -6,7 +6,7 @@ Welcome and thank you for your interest in contributing to the project. This doc
 
 For typos, documentation improvements, and minor changes - follow the steps in the [Working on topic branches](#working-on-topic-branches) section below to create a Pull Request.
 
-For bugs or problems - create an entry in the [Issues](https://github.com/pst-group/pysystemtrade/issues) list, with detailed description and steps to reproduce.
+For bugs or problems - create an entry in the [Issues](https://github.com/pst-group/pysystemtrade/issues) list. Please include all information requested in the issue template; issues with missing fields may be ignored or deleted. 
 
 For large changes, or new feature requests - please start an **Ideas** discussion first. Explain your idea, include some reasoning, perhaps some implementation ideas.
 
@@ -138,7 +138,7 @@ To git@github.com:username/pysystemtrade.git
     * [new branch]       bug-123-short-issue-description -> bug-123-short-issue-description
 ```
 
-Now you're ready to send a [pull request](https://help.github.com/articles/using-pull-requests/) from this branch to **upstream/develop** and update the GitHub issue tracker to let a collaborator know that your branch is ready to be reviewed and merged.  If extra changes are required as part of the review process, make those changes on the topic branch and re-push. First re-checkout the topic branch you made your original changes on:
+Now you're ready to send a [pull request](https://help.github.com/articles/using-pull-requests/) from this branch to **upstream/develop** and update the GitHub issue tracker to let a collaborator know that your branch is ready to be reviewed and merged. Please include all information requested in the template; PRs with missing fields may be ignored or deleted. If extra changes are required as part of the review process, make those changes on the topic branch and re-push. First re-checkout the topic branch you made your original changes on:
 
 ```bash
 $ git checkout bug-123-short-issue-description
@@ -153,7 +153,11 @@ $ git push
 ```
 
 ## Unit tests
-This project has a few unit tests. They get run automatically when any PR is submitted. You'll see the result of the run in the PR page. To run the tests yourself locally, before submitting, you'll need `pytest` installed. Then run:
+This project has a few unit tests. They get run automatically when any PR is submitted. You'll see the result of the run in the PR page. 
+
+For new unit tests, the `pytest` style is preferred over `unittest`, though there are some existing `unittest` tests.
+
+To run the tests yourself locally, before submitting, you'll need `pytest` installed. Then run:
 ```
 pytest
 ```
@@ -187,7 +191,11 @@ Or, configure your local git install to automatically check and fix your code as
 
 ### linting
 
-There is placeholder config to also use ruff for linting. As at Oct 2026 the configured ruleset is minimal; a more complete set will be introduced over time.  
+ruff is also used for linting. As at Oct 2026 the configured ruleset is minimal; a more complete set will be introduced over time. To check your code run:
+
+```
+ruff check
+```
 
 ## General code guidelines (INCOMPLETE)
 
